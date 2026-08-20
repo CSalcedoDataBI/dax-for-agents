@@ -1,0 +1,58 @@
+/// Tabla vacia donde viven las medidas, para que las consultas del README puedan
+/// referenciarlas sin ensuciar las tablas de datos.
+table _Medidas
+	lineageTag: b1a70000-0000-4000-8000-000000000301
+
+	/// 110 en total. Es la medida base del escenario: todo lo demas la reagrupa de
+	/// una forma u otra, y la gracia esta en que no todas las formas dan 110.
+	measure Unidades = SUM(Ventas[Unidades])
+		lineageTag: b1a70000-0000-4000-8000-000000000303
+
+	/// Tres. La tabla base NO trae la fila en blanco.
+	measure Productos = COUNTROWS(DimProducto)
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000311
+
+	/// CUATRO. Aqui si aparece la fila en blanco que el motor anadio.
+	measure 'Valores del lado uno' = COUNTROWS(VALUES(DimProducto[ProductoKey]))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000312
+
+	/// Cuatro tambien, y NO significa lo mismo: aqui el cuarto elemento es la clave 99 de
+	/// verdad. Confundir los dos cuatros fue el error que detecto la review de la nota.
+	measure 'Valores del lado muchos' = COUNTROWS(VALUES(Ventas[ProductoKey]))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000313
+
+	/// Tres. Excluye la fila en blanco a proposito.
+	measure 'Productos sin fila en blanco' = COUNTROWS(ALLNOBLANKROW(DimProducto[ProductoKey]))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000314
+
+	/// 110: cuadra con el total.
+	measure 'Suma por producto' = SUMX(VALUES(DimProducto[Nombre]), CALCULATE(SUM(Ventas[Unidades])))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000315
+
+	/// 60. ALLNOBLANKROW suena a "quitar el ruido" y pierde 50 unidades sin avisar.
+	measure 'Suma sin fila en blanco' = SUMX(ALLNOBLANKROW(DimProducto[Nombre]), CALCULATE(SUM(Ventas[Unidades])))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000316
+
+	column Marcador
+		dataType: int64
+		isHidden
+		lineageTag: b1a70000-0000-4000-8000-000000000302
+		summarizeBy: none
+		sourceColumn: Marcador
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+					Source = #table(type table [Marcador = Int64.Type], {{1}})
+				in
+					Source
+
+	annotation PBI_ResultType = Table
+

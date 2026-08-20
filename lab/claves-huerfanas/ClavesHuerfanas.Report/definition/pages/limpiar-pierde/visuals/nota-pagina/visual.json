@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-pagina",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 8,
+    "height": 90,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Las dos primeras tarjetas dan 110 y la tercera 60. ALLNOBLANKROW suena a limpiar el ruido, y lo que hace es tirar las 50 unidades de la fila sin nombre que ves en la matriz. Sin aviso y sin error."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,11 @@
+/// URL base de los parquet de este escenario, en el repo PUBLICO SampleDataSets
+/// (github.com/CSalcedoDataBI/SampleDataSets -> dax-lab/rendimiento). Tenerlos ahi es lo que
+/// permite que ESTE repo siga siendo privado y el modelo refresque igual en la maquina de
+/// cualquiera por raw.githubusercontent: sin autenticacion, sin SQL Server, sin rutas locales.
+/// Es un PARAMETRO M de verdad (IsParameterQuery), asi que cada particion queda a salvo del
+/// cortafuegos de privacidad. Para usar un fork, una rama, una etiqueta o un espejo local se
+/// cambia este unico valor (una URL de carpeta, sin barra final).
+expression DataBaseUrl = "https://raw.githubusercontent.com/CSalcedoDataBI/SampleDataSets/main/dax-lab/rendimiento" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: c0de0000-0000-4000-8000-0000000005d0
+
+	annotation PBI_ResultType = Text

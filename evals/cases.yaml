@@ -1,0 +1,104 @@
+# Triggering eval cases: a realistic user prompt and the skill it should activate.
+# Static mode guards against description rot (the expected skill must still share
+# vocabulary with its own prompt). Model mode (--model) measures real routing
+# accuracy by asking Claude which skill matches.
+#
+# A case whose `expect` skill does not exist FAILS. Add cases together with the
+# skill they route to — dax-lib, dax-udf-authoring and dax-window-functions get
+# their cases when those folders land.
+cases:
+  - prompt: "what does CALCULATE actually do to the filter context, and what is its exact signature?"
+    expect: dax-reference
+  - prompt: "which DAX function returns the previous row value inside an iterator, and is it deprecated?"
+    expect: dax-reference
+  - prompt: "can I use this DAX function in a calculated column or is it measure only?"
+    expect: dax-reference
+  - prompt: "difference between ALL, ALLEXCEPT and ALLSELECTED in DAX"
+    expect: dax-reference
+
+  # Conceptual questions: no single function to look up, answered by concepts/.
+  # These guard the description as much as the routing — it described a function
+  # reference only, so a question about the language itself had nothing to match.
+  - prompt: "what is evaluation context in DAX and how does context transition work?"
+    expect: dax-reference
+  - prompt: "what is the syntax of an EVALUATE statement with DEFINE and ORDER BY in a DAX query?"
+    expect: dax-reference
+  - prompt: "what does BLANK mean in DAX and how do the comparison operators treat it?"
+    expect: dax-reference
+
+  # --- dax-lib ---
+  - prompt: "is there an existing DAX library function for moving averages before I write one from scratch?"
+    expect: dax-lib
+  - prompt: "I need a waterfall SVG visual in DAX — is there a ready-made UDF package I can install?"
+    expect: dax-lib
+  - prompt: "find a DAX user-defined function for RFM classification or ABC segmentation"
+    expect: dax-lib
+
+  # --- dax-udf-authoring ---
+  - prompt: "writing a DAX FUNCTION, how do I choose parameter types like scalar, columnref or measureref and VAL vs EXPR?"
+    expect: dax-udf-authoring
+  - prompt: "my DAX user-defined function shows a red underline on a column parameter, is it broken?"
+    expect: dax-udf-authoring
+  - prompt: "how do optional parameters work in a DAX UDF and what is TABLEOF for?"
+    expect: dax-udf-authoring
+
+  # --- dax-window-functions ---
+  - prompt: "I need a rolling trailing 3-month average using WINDOW and OFFSET, with ORDERBY and PARTITIONBY"
+    expect: dax-window-functions
+  - prompt: "my OFFSET year-over-year comparison returns blank when a slicer is applied, why?"
+    expect: dax-window-functions
+  - prompt: "difference between ABS and REL positioning in the DAX WINDOW function"
+    expect: dax-window-functions
+
+# --- exactitud de la biblioteca (expectFunction / expectFlag) ---------------------------
+# Estos casos NO miden el enrutado entre skills: miden el catalogo. Que la funcion exista,
+# que se encuentre a partir de lo que alguien escribiria, y que sus flags digan la verdad.
+#
+# Los valores de expectFlag estan LEIDOS del catalogo generado, no supuestos: escribir aqui
+# lo que uno cree recordar convertiria el eval en un espejo de mis suposiciones. EARLIER, por
+# ejemplo, NO esta marcada como desaconsejada — habria jurado que si.
+accuracy:
+  - prompt: "evaluate an expression in a modified filter context"
+    expectFunction: CALCULATE
+    expectFlag:
+      returns: scalar
+      primaryCategory: filter
+      notes: true
+      discouragedInVisualCalculations: false
+
+  - prompt: "returns the current value of a column in an outer evaluation pass"
+    expectFunction: EARLIER
+    expectFlag:
+      notes: true
+      # Contra la intuicion: EARLIER no lleva la marca. El flag solo se pone cuando el
+      # include de Microsoft dice que la funcion se desaconseja EN CALCULOS VISUALES.
+      discouragedInVisualCalculations: false
+
+  - prompt: "divide two numbers and handle division by zero"
+    expectFunction: DIVIDE
+    expectFlag:
+      returns: scalar
+      primaryCategory: math-and-trig
+      notes: true
+
+  - prompt: "returns a table of dates shifted forward or backward"
+    expectFunction: DATEADD
+    expectFlag:
+      returns: table
+      primaryCategory: time-intelligence
+      # Esta si la lleva, y es justo el caso que la leyenda vieja describia mal: no esta
+      # obsoleta, se desaconseja dentro de un calculo visual.
+      discouragedInVisualCalculations: true
+
+  - prompt: "removes context filters from columns and rows in the current query"
+    expectFunction: ALLSELECTED
+    expectFlag:
+      notes: true
+
+  - prompt: "returns the last value in a column filtered by the current context"
+    expectFunction: LASTNONBLANK
+    expectFlag:
+      returns: table
+      # Categoria que solo existe porque el sync lee toc.yml: ningun indice la lista.
+      primaryCategory: filter
+      discouragedInVisualCalculations: true

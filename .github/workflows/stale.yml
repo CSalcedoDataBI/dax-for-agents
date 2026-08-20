@@ -1,0 +1,41 @@
+name: Mark stale issues and PRs
+
+on:
+  # R7 — semanal, no diario. El umbral es de 60 dias: mirarlo cada dia no adelanta
+  # nada y son 365 runs al ano de un job que casi siempre no marca nada.
+  schedule:
+    - cron: "30 1 * * 1" # Mondays 01:30 UTC
+  workflow_dispatch: {} # allow manual runs
+
+permissions:
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    # R3 — recorre issues y PRs por la API: 11-13 s en los runs reales.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 60
+          days-before-close: 14
+          stale-issue-label: "stale"
+          stale-pr-label: "stale"
+          stale-issue-message: >
+            Este issue lleva 60 días sin actividad y se marcó como `stale`.
+            Comenta o quita la etiqueta para mantenerlo abierto; si no, se cerrará en 14 días.
+          stale-pr-message: >
+            Este PR lleva 60 días sin actividad y se marcó como `stale`.
+            Comenta o quita la etiqueta para mantenerlo abierto; si no, se cerrará en 14 días.
+          # Don't let active work go stale:
+          exempt-all-milestones: true
+          exempt-issue-labels: "pinned,security"
+          exempt-pr-labels: "pinned,security"
+          # Be gentle with PRs (work in progress):
+          days-before-pr-close: -1 # mark stale but never auto-close PRs

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-metodo",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 2,
+    "height": 100,
+    "width": 1200,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Estos tiempos se MIDIERON el 2026-08-12 en un portatil: en frio, tres corridas, mediana. No se estan calculando ahora y no se pueden calcular en un visual. Lo que se publica es la razon -unas 290 veces- no los milisegundos, porque un numero absoluto envejece con el hardware."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

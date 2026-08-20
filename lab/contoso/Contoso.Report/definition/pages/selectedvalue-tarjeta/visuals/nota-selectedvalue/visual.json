@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-selectedvalue",
+  "position": {
+    "x": 320,
+    "y": 470,
+    "z": 2,
+    "height": 130,
+    "width": 920,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Prueba las tres cosas: no selecciones nada, selecciona UNA marca, y selecciona DOS. La tarjeta da el mismo \"(sin un valor unico)\" en el primer caso y en el tercero. No distingue \"el usuario no eligio\" de \"el usuario eligio varias\", y esa ambiguedad es la trampa."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

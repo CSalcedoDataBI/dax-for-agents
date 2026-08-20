@@ -1,0 +1,4 @@
+relationship b1a70000-0000-4000-8000-000000000001
+	fromColumn: Ventas.ProductoKey
+	toColumn: DimProducto.ProductoKey
+

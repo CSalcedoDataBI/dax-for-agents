@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-pagina",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 8,
+    "height": 150,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Las cuatro tarjetas calculan la media de la misma columna. Las dos primeras dan 200 porque saltan los blancos; las dos ultimas dan 120 porque los convierten en cero y el denominador pasa de 3 a 5. Fijate en la cuarta: lo unico que hace de mas es sumar un cero, que no altera ningun valor existente. Ninguna de las cuatro esta mal. Lo que esta mal es publicar una sin saber cual."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

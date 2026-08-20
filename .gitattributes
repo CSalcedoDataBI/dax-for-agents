@@ -1,0 +1,22 @@
+# Normalizacion de finales de linea, dicha en el repo y no en la config de cada maquina.
+#
+# Sin este fichero el resultado depende de `core.autocrlf` de quien clone: un colaborador con
+# autocrlf=false ve CRLF donde otro ve LF, y cualquier fichero que toque Power BI Desktop sale
+# con el diff entero cambiado aunque no se haya editado ni una linea.
+
+* text=auto
+
+# Power BI Desktop reescribe TMDL, PBIR y sus JSON con CRLF cada vez que guarda. Fijarlo aqui
+# evita que un editor que guarde LF produzca un diff de fichero completo en el siguiente
+# guardado de Desktop.
+*.tmdl      text eol=crlf
+*.pbip      text eol=crlf
+*.pbism     text eol=crlf
+*.pbir      text eol=crlf
+*.platform  text eol=crlf
+
+# Los datos del laboratorio NO viven aqui --estan publicados en SampleDataSets-- pero si
+# alguien trae una copia local, que git no intente normalizarla.
+*.parquet   binary
+*.pbix      binary
+*.abf       binary

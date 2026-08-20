@@ -1,0 +1,61 @@
+table _Medidas
+	lineageTag: b1a70000-0000-4000-8000-000000000501
+
+	/// El denominador son las TRES filas con valor, no las cinco de la tabla. Hay que leerla
+	/// al lado de [Media por todas las filas], que da 120 sobre exactamente los mismos datos.
+	measure Media = AVERAGE(Tiendas[Metros])
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000511
+
+	/// Divide entre las CINCO filas. 120. Ni esta ni [Media] estan mal: dependen de si "sin
+	/// dato" significa "no aplica" o "cero". Lo que esta mal es que la diferencia se esconda.
+	measure 'Media por todas las filas' = DIVIDE(SUM(Tiendas[Metros]), COUNTROWS(Tiendas))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000512
+
+	/// Cinco. Cuenta filas sin mirar el contenido.
+	measure Filas = COUNTROWS(Tiendas)
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000513
+
+	/// Tres. COUNT cuenta VALORES, y el blanco no es un valor. Se llama Filas y no Tiendas
+	/// porque una medida no puede llamarse igual que una tabla del modelo.
+	measure 'Filas con metros' = COUNT(Tiendas[Metros])
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000514
+
+	/// AVERAGEX salta el blanco IGUAL que AVERAGE: 200, no 120. La intuicion de que el
+	/// iterador "recorre todas las filas y por tanto cuenta las vacias" es falsa.
+	measure 'Media con AVERAGEX' = AVERAGEX(Tiendas, Tiendas[Metros])
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000515
+
+	/// El COALESCE parece deliberado y defensivo. Lo que hace es cambiar la definicion de la
+	/// metrica: convierte el blanco en cero y el denominador pasa de 3 a 5. Da 120.
+	measure 'Media con COALESCE' = AVERAGEX(Tiendas, COALESCE(Tiendas[Metros], 0))
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000516
+
+	/// Un + 0 que no altera NINGUN valor existente y aun asi mueve la media de 200 a 120.
+	/// Es la version de la trampa que nadie ve en una revision de codigo.
+	measure 'Media con mas cero' = AVERAGEX(Tiendas, Tiendas[Metros] + 0)
+		formatString: #,0
+		lineageTag: b1a70000-0000-4000-8000-000000000517
+
+	column Marcador
+		dataType: int64
+		isHidden
+		lineageTag: b1a70000-0000-4000-8000-000000000502
+		summarizeBy: none
+		sourceColumn: Marcador
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+					Source = #table(type table [Marcador = Int64.Type], {{1}})
+				in
+					Source
+
+	annotation PBI_ResultType = Table
+

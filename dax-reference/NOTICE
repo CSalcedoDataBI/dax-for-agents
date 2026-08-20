@@ -1,0 +1,36 @@
+NOTICE — third-party content in dax-reference/
+==============================================
+
+The generated content in this folder is derived from Microsoft documentation.
+
+  Source : https://github.com/MicrosoftDocs/query-docs
+           query-languages/dax/
+  License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+           https://creativecommons.org/licenses/by/4.0/
+  © Microsoft Corporation
+
+Affected paths:
+
+  dax-reference/generated/library/     one card per DAX function
+  dax-reference/generated/concepts/    conceptual topics
+  dax-reference/generated/catalog.md   function index
+  dax-reference/generated/concepts.md  concept index
+  dax-reference/generated/catalog.json both indexes, for scripts
+
+Everything under dax-reference/generated/ is produced by the sync and replaced wholesale on
+every run, so that directory is exactly the CC BY 4.0 surface. Nothing outside it is derived
+from Microsoft's documentation.
+
+These files are transformed (restructured into agent-consumable cards, with normalized
+frontmatter and cross-links rewritten to local paths) but the substance is Microsoft's.
+Each generated file records its upstream source path and date in its frontmatter.
+
+NOT covered by this notice — these are original work under the repository's MIT license:
+
+  dax-reference/SKILL.md
+  dax-reference/notes/        hand-written field notes
+  dax-reference/overrides.json
+  dax-reference/scripts/      the sync pipeline
+
+Microsoft's own repository splits its licensing the same way: LICENSE (CC BY 4.0) for the
+documentation and LICENSE-CODE (MIT) for the code.

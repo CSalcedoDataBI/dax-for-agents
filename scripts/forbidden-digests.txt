@@ -1,0 +1,29 @@
+# Huellas SHA-256 de valores concretos que hay que vigilar.
+#
+# EL VALOR NUNCA SE ESCRIBE AQUI. Este fichero viaja con el repositorio, asi que anotar
+# un GUID de inquilino para vigilarlo lo publicaria el dia que el repositorio sea publico
+# — el guardia habria causado exactamente la fuga que existe para impedir. Se guarda la
+# huella, que no se puede deshacer, y el barrido compara huellas contra huellas.
+#
+# Esto es para lo que NO tiene forma reconocible. Un token de GitHub se caza por su
+# prefijo y su longitud, sin saber cual es; un GUID no se distingue de cualquier otro
+# GUID, y por eso hay que nombrarlo de esta manera indirecta.
+#
+# Anadir uno:
+#
+#   python -c "import hashlib,sys; print(hashlib.sha256(sys.argv[1].lower().encode()).hexdigest())" "<el valor>"
+#
+# y pegar SOLO la salida. Una linea que no sean 64 caracteres hexadecimales aborta el
+# barrido con un error, precisamente para que pegar el valor por descuido no pase en
+# silencio.
+#
+# Una huella por linea. Lineas en blanco y # se ignoran.
+#
+# Los tres de abajo son identificadores de inquilino y de aplicacion del entorno privado
+# desde el que se ensamblo parte de este repositorio. No son credenciales — no abren nada
+# por si solos — pero identifican a quien trabaja detras, y eso tampoco tiene vuelta atras
+# una vez publicado.
+
+d16daff2a81d1db41f21732894367e9d0269de6440ff222c812f5d38bc71eb5b
+5324084dae85e165a643a6c239741528cb92c58330a38bc82a229f1858d7fa0f
+7981d8e59903508335d133d73c539b67cff5e7db022aa72a7acfd1eb209bca8a

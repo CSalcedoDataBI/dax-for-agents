@@ -1,0 +1,160 @@
+name: Sync check (query-docs)
+
+# R7 — weekly, not daily. This is the job that runs whether or not anyone is
+# working, so it is the one that quietly eats the Actions quota.
+on:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  SYNC_BRANCH: sync/query-docs
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Compare upstream SHA against the stamped one
+        id: drift
+        shell: bash
+        run: |
+          UPSTREAM=$(git ls-remote https://github.com/MicrosoftDocs/query-docs.git HEAD | cut -f1)
+          echo "upstream=$UPSTREAM" >> "$GITHUB_OUTPUT"
+          # `ls-remote` gives 40 characters and the cards carry the 7 that `rev-parse
+          # --short` wrote. Both are kept: the long one to compare, the short one to read.
+          echo "upstream_short=${UPSTREAM:0:7}" >> "$GITHUB_OUTPUT"
+          if [ -f dax-reference/generated/catalog.json ]; then
+            STAMPED=$(python -c "import json;print(json.load(open('dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
+          else
+            STAMPED="(never synced)"
+          fi
+          echo "stamped=$STAMPED" >> "$GITHUB_OUTPUT"
+          echo "upstream: $UPSTREAM"
+          echo "stamped : $STAMPED"
+          if [ "${UPSTREAM:0:7}" = "${STAMPED:0:7}" ]; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Report no drift
+        if: steps.drift.outputs.drift != 'true'
+        run: echo "::notice::query-docs is unchanged at ${{ steps.drift.outputs.upstream }}."
+
+      # Only the DAX folder is read, and only its current commit. The whole repo is
+      # hundreds of MB; this is 19 MB and about three seconds. `.git` has to come with
+      # it — the sync reads the checkout's own HEAD to stamp every card.
+      - name: Sparse-clone query-docs
+        if: steps.drift.outputs.drift == 'true'
+        run: |
+          git clone --depth 1 --filter=blob:none --sparse \
+            https://github.com/MicrosoftDocs/query-docs.git /tmp/query-docs
+          git -C /tmp/query-docs sparse-checkout set query-languages/dax
+
+      - uses: actions/setup-python@v5
+        if: steps.drift.outputs.drift == 'true'
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        if: steps.drift.outputs.drift == 'true'
+        run: pip install pyyaml
+
+      # No --accept-count-change. The 5% gate exists to stop a parser collapse from
+      # publishing, and a real upstream release that moves the count that far is a
+      # person's call. An automatic run carrying the override could only ever hide the
+      # thing the gate is for.
+      - name: Regenerate
+        if: steps.drift.outputs.drift == 'true'
+        run: python dax-reference/scripts/sync_query_docs.py /tmp/query-docs/query-languages/dax --write
+
+      # A pull request opened with GITHUB_TOKEN does not trigger other workflows, so
+      # validate-skills and evals would never run on it. The checks run here instead,
+      # before anything is pushed: a red gate has to stop the pull request being
+      # opened, not be discovered on it later.
+      - name: Validate the regenerated tree
+        if: steps.drift.outputs.drift == 'true'
+        run: |
+          python scripts/validate_skills.py
+          python scripts/check_no_credentials.py
+          python scripts/check_plugin_manifest.py
+          # After regenerating, on purpose. This is the one job that can CHANGE the
+          # counts — upstream adding a function moves the tree away from the 479 written
+          # in the README — and the pull request it opens does not trigger the workflows
+          # that would notice. If this fails, the fix is a human editing the prose; the
+          # sync then runs clean on the next dispatch.
+          python scripts/check_doc_claims.py
+          python evals/run_evals.py
+
+      # Staged first, and read with --cached, because a card for a NEW upstream function
+      # is an untracked file: `git diff` does not show it and `git diff --quiet` calls
+      # the tree unchanged. A week where Microsoft ships one new function and touches
+      # nothing else would have failed as a no-op, and a week where it ships one
+      # alongside a stamp move would have opened a pull request whose body said there
+      # was nothing to review — with the new function sitting in the commit.
+      - name: Classify the diff
+        if: steps.drift.outputs.drift == 'true'
+        id: diff
+        shell: bash
+        run: |
+          git add -A dax-reference/generated
+          if git diff --cached --quiet -- dax-reference/generated; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --cached -U0 -- dax-reference/generated \
+              | python scripts/summarize_sync_diff.py \
+                  --old-sha "${{ steps.drift.outputs.stamped }}" \
+                  --new-sha "${{ steps.drift.outputs.upstream }}" > /tmp/pr-body.md
+            cat /tmp/pr-body.md
+          fi
+
+      # The commit moved and regenerating changed nothing at all, not even the stamp
+      # every card carries. That combination is not possible when the sync runs, so it
+      # is reported as a failure rather than as a quiet success.
+      - name: Fail when the regeneration was a no-op
+        if: steps.drift.outputs.drift == 'true' && steps.diff.outputs.changed != 'true'
+        run: |
+          echo "::error::query-docs moved to ${{ steps.drift.outputs.upstream }} but regenerating changed no file, not even the per-card stamp. The sync did not run."
+          exit 1
+
+      - name: Open or update the sync pull request
+        if: steps.drift.outputs.drift == 'true' && steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Already staged by the classify step, and `checkout -B` keeps the index.
+          git checkout -B "$SYNC_BRANCH"
+          git commit -m "chore(sync): regenerate from query-docs@${{ steps.drift.outputs.upstream_short }}" \
+                     -m "$(cat /tmp/pr-body.md)"
+          # Force, because the branch is a projection of upstream rather than a history:
+          # every run replaces it with the current answer.
+          git push --force origin "$SYNC_BRANCH"
+          TITLE="chore(sync): query-docs ${{ steps.drift.outputs.stamped }} -> ${{ steps.drift.outputs.upstream_short }}"
+          # `gh pr view <branch>` also finds a MERGED or CLOSED pull request from that
+          # branch, so the week after the first sync merges it would have tried to edit
+          # the merged one and never opened a new one. Only an open pull request counts.
+          OPEN=$(gh pr list --head "$SYNC_BRANCH" --state open --json number --jq '.[0].number')
+          if [ -n "$OPEN" ]; then
+            # Title too: it carries the SHA range, and leaving it would advertise the
+            # week the branch was first opened rather than what is in it now.
+            gh pr edit "$OPEN" --title "$TITLE" --body-file /tmp/pr-body.md
+            echo "::notice::Updated the open sync pull request #$OPEN."
+          else
+            gh pr create --base main --head "$SYNC_BRANCH" \
+              --title "$TITLE" --body-file /tmp/pr-body.md
+          fi

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-pagina",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 8,
+    "height": 90,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Selecciona dos o tres marcas y mira las dos ultimas columnas: ALLSELECTED se recalcula con lo que elegiste, ALL no se mueve. Una consulta lo demuestra igual, fijando el filtro por escrito (notes/allselected.md). Lo que solo se ve aqui es el numero cambiando sin que cambie la formula."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

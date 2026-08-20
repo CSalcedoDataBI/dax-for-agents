@@ -1,0 +1,35 @@
+{
+  "_comment": "Values the sync cannot derive from query-docs. Hand-maintained; the sync reads this and never writes it. Keys are function names in UPPERCASE.",
+  "_schema": {
+    "returns": "scalar | table - used when the doc has no '## Return value' section to parse",
+    "primaryCategory": "overrides the first-index-wins rule for functions listed in several category indexes",
+    "uncategorized": "functions upstream classifies nowhere - see its own _reason"
+  },
+  "returns": {
+    "DATEVALUE": "scalar",
+    "DEGREES": "scalar",
+    "RADIANS": "scalar"
+  },
+  "primaryCategory": {},
+  "uncategorized": {
+    "_reason": "No category index lists these and toc.yml has no entry for them, so upstream classifies them nowhere. No category is invented for them: an empty primaryCategory tells an agent that Microsoft did not classify the function, which is true, where a guessed one would be a claim this repo cannot back. Listing them by name is the decision on record - the sync fails on any OTHER function that ends up uncategorized, and fails again if one of these later gains a category and the name is left behind. Five of the original 21 were resolved by reading toc.yml; these 16 have no source at all. Measured against MicrosoftDocs/query-docs@c6a9a72.",
+    "functions": [
+      "ALLSELECTEDAPPLY",
+      "ALLSELECTEDREMOVE",
+      "ALWAYSAPPLY",
+      "COLLAPSE",
+      "COLLAPSEALL",
+      "DEPENDON",
+      "EXPAND",
+      "EXPANDALL",
+      "FILTERCLUSTER",
+      "GROUPCROSSAPPLY",
+      "GROUPCROSSAPPLYTABLE",
+      "ISATLEVEL",
+      "NONFILTER",
+      "SAMPLEAXISWITHLOCALMINMAX",
+      "SHADOWCLUSTER",
+      "TOPNSKIP"
+    ]
+  }
+}

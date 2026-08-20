@@ -1,0 +1,69 @@
+---
+name: TOPN
+category: [table-manipulation]
+primaryCategory: table-manipulation
+returns: table
+appliesTo: [measure, column, table, visual-calculation]
+discouragedInVisualCalculations: false
+source: query-languages/dax/topn-function-dax.md@323524c
+sourceDate: 
+notes: true
+examples: 0
+---
+# TOPN
+
+Returns the top N rows of the specified table.
+
+## Syntax
+
+```dax
+TOPN(<N_Value>, <Table>, <OrderBy_Expression>, [<Order>[, <OrderBy_Expression>, [<Order>]]…])
+```
+
+### Parameters
+
+|Parameter|Definition|
+|-------------|--------------|
+|`N_Value`|The number of rows to return. Any DAX expression that returns a scalar value, where the expression is to be evaluated multiple times (for each row/context). See Remarks to better understand when the number of rows returned could be larger than `n_value`.  |
+|`Table`|Any DAX expression that returns a table of data from where to extract the top 'n' rows. See Remarks to better understand when an empty table is returned.  |
+|`OrderBy_Expression`|(Optional) Any DAX expression where the result value is used to sort the table and evaluated for each row of `table`.  |
+|`Order`|(Optional) A value that specifies how to sort `OrderBy_Expression` values:<br /><br /> - `0` (zero) or  `FALSE`. Sorts in descending order of values of `Order`. Default when `Order` parameter is omitted. <br /><br /> - `1` or `TRUE`. Ranks in ascending order of `OrderBy`.|
+
+## Return value
+
+A table with the top N rows of `Table` or an empty table if `N_Value` is 0 (zero) or less. Rows are not sorted in any particular order.
+
+## Remarks
+
+- If there is a tie, in `Order_By` values, at the N-th row of the table, then all tied rows are returned. Then, when there are ties at the N-th row the function might return more than n rows.
+
+- If N_Value is 0 (zero) or less, TOPN returns an empty table.
+
+- TOPN does not guarantee any sort order for the results.
+
+- This function is not supported for use in DirectQuery mode when used in calculated columns or row-level security (RLS) rules.
+
+## Examples (Microsoft — no verificados aquí)
+
+> Estos ejemplos vienen de `query-docs` y están medidos sobre **Adventure Works DW
+> 2020**, un modelo que **no está en este repositorio**. Sus cifras no se han ejecutado
+> aquí y no hay forma de reproducirlas desde el repo. Se conservan por el contexto que
+> aportan, y porque son CC BY 4.0 de Microsoft.
+
+The following measure formula returns the top 10 sold products by sales amount.
+
+```dax
+= SUMX(
+        TOPN(
+            10, 
+            SUMMARIZE(
+                    InternetSales, 
+                    InternetSales[ProductKey], 
+                    "TotalSales", SUM(InternetSales[SalesAmount])
+            ),
+            [TotalSales], DESC
+        ),
+        [TotalSales]
+)
+ 
+```

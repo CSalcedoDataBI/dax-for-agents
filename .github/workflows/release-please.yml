@@ -1,0 +1,27 @@
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# R2 con la excepcion del estandar: cancel-in-progress FALSE. Un release cancelado
+# a medias deja tags y PRs inconsistentes, que cuesta mas que el minuto que ahorra.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    # R3 — la accion lee commits y actualiza una PR: 15-30 s en los runs reales.
+    timeout-minutes: 10
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # config + manifest are read from the repo root by default:
+          #   release-please-config.json  /  .release-please-manifest.json

@@ -1,0 +1,43 @@
+/// Dos millones de filas, leidas del parquet publicado en SampleDataSets. El volumen ES
+/// el escenario: por debajo de unos millones de filas un plan bueno y uno malo cuestan lo
+/// mismo y no hay nada que comparar.
+///
+/// El parquet pesa 385 KB, no 8,9 MB, porque VentaKey va codificada como diferencias en
+/// vez de por diccionario: son dos millones de valores consecutivos, y la diferencia
+/// entre una fila y la siguiente es siempre 1.
+///
+/// Importe: 1..1000 con un paso primo, para que los valores se repartan y el filtro
+/// > 900 se lleve aproximadamente el 10% sin que el motor pueda aprovechar un orden.
+/// CategoriaKey: 20 valores distintos. La diferencia entre filtrar la TABLA (2.000.000
+/// de filas) y filtrar la COLUMNA (20 valores) es justo lo que este escenario mide.
+table Ventas
+	lineageTag: c0de0000-0000-4000-8000-000000000501
+
+	column VentaKey
+		dataType: int64
+		lineageTag: c0de0000-0000-4000-8000-000000000502
+		summarizeBy: none
+		sourceColumn: VentaKey
+
+	column Importe
+		dataType: int64
+		lineageTag: c0de0000-0000-4000-8000-000000000503
+		summarizeBy: sum
+		sourceColumn: Importe
+
+	/// 20 valores distintos sobre 2.000.000 de filas: cardinalidad 1 entre 100.000.
+	column CategoriaKey
+		dataType: int64
+		lineageTag: c0de0000-0000-4000-8000-000000000504
+		summarizeBy: none
+		sourceColumn: CategoriaKey
+
+	partition Ventas = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Ventas.parquet"]))
+				in
+					Source
+
+	annotation PBI_ResultType = Table

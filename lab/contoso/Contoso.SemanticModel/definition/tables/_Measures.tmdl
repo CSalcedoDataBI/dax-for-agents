@@ -1,0 +1,188 @@
+/// Measures container — hidden calculated table holding all reusable measures, grouped in display folders. Contains no business data; a tidy, categorised home for metrics.
+table _Measures
+	lineageTag: f1000000-0000-0000-0000-000000000001
+
+	/// Net sales revenue = Σ(Quantity × NetPrice) over order lines. Additive; the primary revenue measure. Report alongside Total Quantity and Orders.
+	measure 'Total Sales' = SUMX(FactSales, FactSales[Quantity] * FactSales[NetPrice])
+		formatString: \$#,0
+		displayFolder: 01 Sales & Revenue
+		lineageTag: b1000000-0000-0000-0000-000000000001
+
+	/// Units sold = Σ Quantity across order lines. Additive volume measure.
+	measure 'Total Quantity' = SUM(FactSales[Quantity])
+		formatString: #,0
+		displayFolder: 01 Sales & Revenue
+		lineageTag: b1000000-0000-0000-0000-000000000002
+
+	/// Number of distinct orders (DISTINCTCOUNT of OrderKey), not order lines. Do not sum across overlapping filters.
+	measure Orders = DISTINCTCOUNT(FactSales[OrderKey])
+		formatString: #,0
+		displayFolder: 01 Sales & Revenue
+		lineageTag: b1000000-0000-0000-0000-000000000003
+
+	/// Total Sales ÷ Orders. Non-additive ratio — never sum; recompute per filter context.
+	measure 'Average Order Value' = DIVIDE([Total Sales], [Orders])
+		formatString: \$#,0.00
+		displayFolder: 01 Sales & Revenue
+		lineageTag: b1000000-0000-0000-0000-000000000004
+
+	/// Cost of goods sold = Σ(Quantity × UnitCost). Additive. Pairs with Total Sales to form Gross Margin.
+	measure 'Total Cost' = SUMX(FactSales, FactSales[Quantity] * FactSales[UnitCost])
+		formatString: \$#,0
+		displayFolder: 02 Profitability
+		lineageTag: b1000000-0000-0000-0000-000000000005
+
+	/// Total Sales − Total Cost, in currency. Additive. Absolute profit before overhead.
+	measure 'Gross Margin' = [Total Sales] - [Total Cost]
+		formatString: \$#,0
+		displayFolder: 02 Profitability
+		lineageTag: b1000000-0000-0000-0000-000000000006
+
+	/// Gross Margin ÷ Total Sales. Non-additive percentage — never sum; higher is better.
+	measure 'Margin %' = DIVIDE([Gross Margin], [Total Sales])
+		formatString: 0.0%
+		displayFolder: 02 Profitability
+		lineageTag: b1000000-0000-0000-0000-000000000007
+
+	/// Distinct customers with sales in context (DISTINCTCOUNT of CustomerKey). Semi-additive — do not sum across periods.
+	measure 'Distinct Customers' = DISTINCTCOUNT(FactSales[CustomerKey])
+		formatString: #,0
+		displayFolder: 03 Customers
+		lineageTag: b1000000-0000-0000-0000-000000000008
+
+	/// Total Sales ÷ Distinct Customers. Non-additive ratio; state the denominator (Distinct Customers = N).
+	measure 'Sales per Customer' = DIVIDE([Total Sales], [Distinct Customers])
+		formatString: \$#,0
+		displayFolder: 03 Customers
+		lineageTag: b1000000-0000-0000-0000-000000000009
+
+	/// Total Sales ÷ Total Quantity — realized price per unit. Non-additive ratio.
+	measure 'Average Selling Price' = DIVIDE([Total Sales], [Total Quantity])
+		formatString: \$#,0.00
+		displayFolder: 04 Pricing & Basket
+		lineageTag: b1000000-0000-0000-0000-00000000000a
+
+	/// Total Quantity ÷ Orders — average basket size in units. Non-additive ratio.
+	measure 'Units per Order' = DIVIDE([Total Quantity], [Orders])
+		formatString: #,0.0
+		displayFolder: 04 Pricing & Basket
+		lineageTag: b1000000-0000-0000-0000-00000000000b
+
+	/// Share of Total Sales versus the all-rows total (REMOVEFILTERS). Non-additive; use for mix / contribution.
+	measure '% of Total Sales' = DIVIDE([Total Sales], CALCULATE([Total Sales], REMOVEFILTERS()))
+		formatString: 0.0%
+		displayFolder: 04 Pricing & Basket
+		lineageTag: b1000000-0000-0000-0000-00000000000c
+
+	/// Total Sales accumulated from Jan 1 of the current year to the context date (over DimDate). Non-additive across years.
+	measure 'Sales YTD' = TOTALYTD([Total Sales], DimDate[Date])
+		formatString: \$#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: b1000000-0000-0000-0000-00000000000d
+
+	/// Total Sales for the same period one year earlier (SAMEPERIODLASTYEAR). Comparison base for year-over-year.
+	measure 'Sales PY' = CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date]))
+		formatString: \$#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: b1000000-0000-0000-0000-00000000000e
+
+	/// (Total Sales − Sales PY) ÷ Sales PY. Non-additive percentage; positive = growth versus last year.
+	measure 'Sales YoY %' = DIVIDE([Total Sales] - [Sales PY], [Sales PY])
+		formatString: 0.0%
+		displayFolder: 05 Time Intelligence
+		lineageTag: b1000000-0000-0000-0000-00000000000f
+
+	/// allselected — respeta el filtro EXTERNO (slicer, filtro de pagina) y quita el interno.
+	/// Al lado de [Ventas ALL] en una matriz con slicer, la diferencia es la nota entera.
+	measure 'Ventas ALLSELECTED' = CALCULATE([Total Sales], ALLSELECTED(DimProduct[Brand]))
+		formatString: #,0.00
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000101
+
+	/// La misma forma con ALL: ignora TAMBIEN lo que el usuario selecciono en el slicer.
+	measure 'Ventas ALL' = CALCULATE([Total Sales], ALL(DimProduct[Brand]))
+		formatString: #,0.00
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000102
+
+	/// rankx — en una matriz por Brand el contexto ya trae UNA sola marca, asi que
+	/// VALUES(DimProduct[Brand]) es una tabla de una fila y el ranking es 1 en todas.
+	measure 'Ranking en la matriz' = RANKX(VALUES(DimProduct[Brand]), [Total Sales])
+		formatString: #,0
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000103
+
+	/// La version que si rankea: ALL abre la tabla entera antes de ordenar.
+	measure 'Ranking bien' = RANKX(ALL(DimProduct[Brand]), [Total Sales])
+		formatString: #,0
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000104
+
+	/// selectedvalue — devuelve la marca SOLO si queda exactamente una. Con ninguna y con dos
+	/// o mas devuelve la alternativa, asi que la tarjeta no distingue los dos casos.
+	measure 'Marca seleccionada' = SELECTEDVALUE(DimProduct[Brand], "(sin un valor unico)")
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000105
+
+	/// La fila de Total de una matriz NO suma las filas que tienes encima: evalua la medida
+	/// otra vez, con los filtros de fila quitados. Con una medida aditiva las dos cosas
+	/// coinciden y no se nota; con esta no.
+	///
+	/// Por marca da la venta media POR PRODUCTO de esa marca. En la fila de Total da la media
+	/// sobre TODOS los productos: 145.282,32 frente a los 8.406.341,92 que suman las filas.
+	///
+	/// Aqui habia escrita otra medida, SUMX(DimProduct, [Total Sales]), con un comentario que
+	/// afirmaba justo esto. Se midio y es FALSO: esa forma cuadra exactamente con el total,
+	/// porque cada venta pertenece a un producto y solo a uno, asi que la transicion de
+	/// contexto reparte sin solapar ni perder nada. La transicion de contexto no basta para
+	/// romper el total; lo que lo rompe es que la medida no sea aditiva.
+	measure 'Media por producto' = AVERAGEX(DimProduct, [Total Sales])
+		formatString: #,0.00
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000106
+
+	/// La misma forma sin medida dentro. Aqui el Total si cuadra con sus filas.
+	measure 'Suma con columna' = SUMX(FactSales, FactSales[Quantity] * FactSales[NetPrice])
+		formatString: #,0.00
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000107
+
+	/// divide — sin denominador devuelve BLANCO, y el blanco BORRA la categoria del visual.
+	///
+	/// La semana esta DENTRO de la medida y no es un adorno: sin acotar, las 58 marcas de
+	/// Contoso venden todas y las dos versiones salen IDENTICAS — la pagina no ensenaria
+	/// nada. Se busco donde si pasa y se midio: en el mes entero solo hay 4 marcas sin
+	/// ventas, en una semana hay 14, y ninguna subcategoria se queda vacia nunca, asi que
+	/// Brand es el unico eje donde esta trampa existe en estos datos. La semana del 26 de
+	/// agosto de 2024 vende 172.036,56 en total: no es una ventana muerta.
+	measure 'Margen de una semana con DIVIDE' =
+			CALCULATE(DIVIDE([Gross Margin], [Total Sales]), DATESBETWEEN(DimDate[Date], DATE(2024, 8, 26), DATE(2024, 9, 1)))
+		formatString: #,0.00 %
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000108
+
+	/// La misma division protegida con un cero. El cero DIBUJA la categoria a ras de suelo.
+	/// Los dos se leen igual en una tabla y distinto en un grafico: esa es la nota.
+	measure 'Margen de una semana con cero' =
+			COALESCE(CALCULATE(DIVIDE([Gross Margin], [Total Sales]), DATESBETWEEN(DimDate[Date], DATE(2024, 8, 26), DATE(2024, 9, 1))), 0)
+		formatString: #,0.00 %
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-000000000109
+
+	/// format — convierte el numero en CADENA. A partir de ahi el visual ordena
+	/// alfabeticamente, donde el 9 va despues del 10.
+	measure 'Ventas como texto' = FORMAT([Total Sales], "#,0")
+		displayFolder: 06 Trampas visuales
+		lineageTag: b1000000-0000-0000-0000-00000000010a
+
+	column Placeholder
+		dataType: string
+		isHidden
+		lineageTag: f1000000-0000-0000-0000-0000000000c1
+		summarizeBy: none
+		sourceColumn: [Placeholder]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("Placeholder", "")
+

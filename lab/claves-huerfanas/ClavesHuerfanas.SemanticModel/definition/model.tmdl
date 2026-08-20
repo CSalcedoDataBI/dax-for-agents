@@ -1,0 +1,17 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DimProducto","Ventas","_Medidas"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DimProducto
+ref table Ventas
+ref table _Medidas
+

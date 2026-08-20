@@ -1,0 +1,68 @@
+/// Las medidas van en pares, y las dos de cada par devuelven EL MISMO numero. Si dieran
+/// resultados distintos, comparar sus tiempos no diria nada.
+///
+/// Estan en dos grupos, y el reparto no es el que se esperaba al escribir el escenario:
+/// tres pares que el consejo habitual da por caros salen iguales, y el que cuesta es
+/// otro. Los numeros medidos estan en el README de este escenario.
+table _Medidas
+	lineageTag: c0de0000-0000-4000-8000-000000000601
+
+	column Marcador
+		isHidden
+		dataType: int64
+		lineageTag: c0de0000-0000-4000-8000-000000000602
+		summarizeBy: none
+		sourceColumn: Marcador
+
+	/// La base de todo lo demas.
+	measure Total = SUM(Ventas[Importe])
+		formatString: #,0
+
+
+	/// A1. FILTER sobre la tabla entera con un predicado de una columna.
+	measure 'Alto FILTER' = CALCULATE([Total], FILTER(ALL(Ventas), Ventas[Importe] > 900))
+		formatString: #,0
+
+	/// A1. El mismo filtro escrito como predicado.
+	measure 'Alto predicado' = CALCULATE([Total], Ventas[Importe] > 900)
+		formatString: #,0
+
+	/// A2. Filtrar la TABLA (2.000.000 de filas) por un valor de categoria.
+	measure 'Categoria por tabla' = CALCULATE([Total], FILTER(ALL(Ventas), Ventas[CategoriaKey] = 3))
+		formatString: #,0
+
+	/// A2. Filtrar la COLUMNA (20 valores distintos).
+	measure 'Categoria por columna' = CALCULATE([Total], FILTER(ALL(Ventas[CategoriaKey]), Ventas[CategoriaKey] = 3))
+		formatString: #,0
+
+	/// A3. Predicado que compara DOS columnas entre si — el que no deberia poder
+	/// empujarse al motor de almacenamiento. Se empuja igual.
+	measure 'Cruce por tabla' = CALCULATE([Total], FILTER(ALL(Ventas), Ventas[Importe] > Ventas[CategoriaKey] * 50))
+		formatString: #,0
+
+	/// A3. El mismo cruce sobre las combinaciones distintas de las dos columnas.
+	measure 'Cruce por columnas' = CALCULATE([Total], FILTER(ALL(Ventas[Importe], Ventas[CategoriaKey]), Ventas[Importe] > Ventas[CategoriaKey] * 50))
+		formatString: #,0
+
+
+	/// B1. Iterar la tabla de hechos referenciando una medida.
+	measure 'Suma con medida' = SUMX(Ventas, [Total])
+		formatString: #,0
+
+	/// B1. Iterar la tabla de hechos leyendo la columna.
+	measure 'Suma con columna' = SUMX(Ventas, Ventas[Importe])
+		formatString: #,0
+
+	/// B2. La misma trampa dentro de un FILTER. Devuelve lo mismo que 'Alto predicado'.
+	measure 'Alto con medida' = CALCULATE([Total], FILTER(ALL(Ventas), [Total] > 900))
+		formatString: #,0
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+					Source = #table(type table [Marcador = Int64.Type], {{1}})
+				in
+					Source
+
+	annotation PBI_ResultType = Table

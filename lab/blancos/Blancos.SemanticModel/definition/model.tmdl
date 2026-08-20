@@ -1,0 +1,16 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Tiendas","_Medidas","DataBaseUrl"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Tiendas
+ref table _Medidas
+

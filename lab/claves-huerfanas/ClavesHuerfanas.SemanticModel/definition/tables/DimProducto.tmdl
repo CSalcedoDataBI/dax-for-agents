@@ -1,0 +1,26 @@
+/// Dimension de producto. TRES productos: 1, 2 y 3.
+table DimProducto
+	lineageTag: b1a70000-0000-4000-8000-000000000101
+
+	column ProductoKey
+		dataType: int64
+		lineageTag: b1a70000-0000-4000-8000-000000000102
+		summarizeBy: none
+		sourceColumn: ProductoKey
+
+	column Nombre
+		dataType: string
+		lineageTag: b1a70000-0000-4000-8000-000000000103
+		summarizeBy: none
+		sourceColumn: Nombre
+
+	partition DimProducto = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="DimProducto.parquet"]))
+				in
+					Source
+
+	annotation PBI_ResultType = Table
+

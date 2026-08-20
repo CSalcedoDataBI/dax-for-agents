@@ -1,0 +1,61 @@
+name: Validate skills
+
+on:
+  # R1 — solo en PR. El push a main revalidaba el mismo commit que la PR ya
+  # habia aprobado: dos runs por cambio.
+  pull_request:
+
+permissions:
+  contents: read
+
+# R2 — varios pushes seguidos a la misma PR: solo importa el ultimo veredicto.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    # R3 — contra el default de 360 min. Esto valida frontmatter y scripts:
+    # si tarda mas de 10 min, algo se colgo.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Install deps
+        run: pip install pyyaml
+      - name: Validate skills (frontmatter, INDEX, scripts)
+        run: python scripts/validate_skills.py
+
+      # Solo el arbol. El modo --history necesita el historial completo, y el checkout de
+      # Actions viene con profundidad 1: pedirlo entero en cada PR es pagar el clon del
+      # repositorio por un barrido que solo hace falta antes de publicar. Ese se corre a
+      # mano y esta escrito en docs/publishing.md.
+      - name: No credentials
+        run: python scripts/check_no_credentials.py
+
+      - name: Actions cost rules
+        run: python scripts/check_workflow_cost.py
+
+      - name: Plugin manifest matches the skills on disk
+        run: python scripts/check_plugin_manifest.py
+
+      - name: Prose counts match the tree
+        run: python scripts/check_doc_claims.py
+
+      # Estructura, no numeros: 3 ejemplos por funcion, modelo real, un result detras de
+      # cada consulta. Que el numero sea el correcto lo comprueba lab/check_lab.py, y eso
+      # necesita un motor tabular que CI no tiene.
+      - name: Examples keep their contract
+        run: python scripts/check_examples.py
+
+      - name: Unit tests (sync pipeline)
+        run: python -m unittest discover -s dax-reference/scripts -t dax-reference/scripts -v
+
+      - name: Unit tests (repo scripts)
+        run: python -m unittest discover -s scripts -t scripts -v
+
+      - name: Unit tests (evals)
+        run: python -m unittest discover -s evals -t evals -v

@@ -1,0 +1,58 @@
+/// Los tiempos MEDIDOS del escenario, no calculados aqui. Un visual de Power BI no puede
+/// cronometrarse a si mismo, asi que la pagina "lo-que-cuesta" grafica esta tabla.
+///
+/// Medidos el 2026-08-12 en Power BI Desktop sobre un portatil: en frio (ClearCache antes de
+/// cada corrida), tres corridas por medida, mediana. Metricas del propio motor, no tiempo de
+/// pared del cliente. Lo que se publica es la RAZON (~290x), no los milisegundos: un numero
+/// absoluto envejece con el hardware.
+///
+/// Cuatro filas y no nueve porque eso es lo que se midio. El grupo A se cronometro con sus
+/// seis medidas juntas.
+table Tiempos
+	lineageTag: c0de0000-0000-4000-8000-000000000701
+
+	/// La forma medida, escrita como se escribe en DAX.
+	column Caso
+		dataType: string
+		lineageTag: c0de0000-0000-4000-8000-000000000702
+		summarizeBy: none
+		sourceColumn: Caso
+
+	/// A = lo que el motor empuja al almacenamiento. B = lo que obliga a transitar contexto.
+	column Grupo
+		dataType: string
+		lineageTag: c0de0000-0000-4000-8000-000000000703
+		summarizeBy: none
+		sourceColumn: Grupo
+
+	/// Mediana de tres corridas en frio, en milisegundos.
+	column MedianaMs
+		dataType: int64
+		formatString: #,0
+		lineageTag: c0de0000-0000-4000-8000-000000000704
+		summarizeBy: sum
+		sourceColumn: MedianaMs
+
+	column PicoMemoriaKB
+		dataType: int64
+		formatString: #,0
+		lineageTag: c0de0000-0000-4000-8000-000000000705
+		summarizeBy: sum
+		sourceColumn: PicoMemoriaKB
+
+	/// Consultas al motor de almacenamiento.
+	column ConsultasSE
+		dataType: int64
+		lineageTag: c0de0000-0000-4000-8000-000000000706
+		summarizeBy: sum
+		sourceColumn: ConsultasSE
+
+	partition Tiempos = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Tiempos.parquet"]))
+				in
+					Source
+
+	annotation PBI_ResultType = Table

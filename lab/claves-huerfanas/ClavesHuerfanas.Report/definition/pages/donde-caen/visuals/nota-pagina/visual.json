@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-pagina",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 8,
+    "height": 90,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "La primera barra no tiene nombre de producto y vale 50. Son ventas con una clave que no existe en la tabla de productos: el motor las agrupa en una fila en blanco que se anade sola. No falta ningun dato — falta la fila que lo explica."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

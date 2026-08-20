@@ -1,0 +1,54 @@
+name: Evals
+
+on:
+  # R1 — solo en PR, igual que validate-skills. El push a main volvia a correr
+  # el mismo arbol que la PR ya habia aprobado: dos runs por cambio.
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "static (free) or model (LLM-judge, uses ANTHROPIC_API_KEY, costs tokens)"
+        type: choice
+        options: [static, model]
+        default: static
+
+permissions:
+  contents: read
+
+# R2 — varios pushes seguidos a la misma PR: solo importa el ultimo veredicto.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    # Always on PR; on manual runs only when 'static' is chosen.
+    if: github.event_name != 'workflow_dispatch' || inputs.mode == 'static'
+    runs-on: ubuntu-latest
+    # R3 — contra el default de 360 min. Esto corre 22 casos contra un JSON local:
+    # los runs reales tardan 10-20 s.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install pyyaml
+      - run: python evals/run_evals.py
+
+  llm-judge:
+    # Manual only — real routing accuracy, spends tokens.
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'model'
+    runs-on: ubuntu-latest
+    # R3 — una llamada por caso a la API. Sin limite, una respuesta que no llega
+    # deja el job colgado con la factura corriendo.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install pyyaml
+      - run: python evals/run_evals.py --model
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

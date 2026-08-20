@@ -1,0 +1,39 @@
+/// Cinco tiendas. TRES tienen metros cuadrados y DOS los tienen en blanco.
+/// Los numeros estan elegidos para que la diferencia se lea de un vistazo:
+/// 100 + 200 + 300 = 600. Entre 3 son 200; entre 5 son 120.
+/// 
+/// El blanco viaja como null dentro del parquet y Power Query lo entrega como null: por
+/// eso la columna llega a DAX en blanco y no como cero. Ese detalle es el escenario
+/// entero, asi que el origen tiene que preservarlo.
+table Tiendas
+	lineageTag: b1a70000-0000-4000-8000-000000000401
+
+	column TiendaKey
+		dataType: int64
+		lineageTag: b1a70000-0000-4000-8000-000000000402
+		summarizeBy: none
+		sourceColumn: TiendaKey
+
+	column Nombre
+		dataType: string
+		lineageTag: b1a70000-0000-4000-8000-000000000403
+		summarizeBy: none
+		sourceColumn: Nombre
+
+	/// En blanco en dos de las cinco filas. Ese es el escenario.
+	column Metros
+		dataType: int64
+		lineageTag: b1a70000-0000-4000-8000-000000000404
+		summarizeBy: sum
+		sourceColumn: Metros
+
+	partition Tiendas = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Tiendas.parquet"]))
+				in
+					Source
+
+	annotation PBI_ResultType = Table
+

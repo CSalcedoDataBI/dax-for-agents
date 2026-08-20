@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "dax-for-agents",
+  "description": "The canonical DAX language reference for AI agents, derived from Microsoft's own query-docs and annotated with the gotchas the documentation leaves out.",
+  "owner": {
+    "name": "CSalcedoDataBI",
+    "url": "https://github.com/CSalcedoDataBI"
+  },
+  "plugins": [
+    {
+      "name": "dax",
+      "source": "./",
+      "description": "The DAX language, agent-native: 479 function cards, 34 conceptual pages, hand-written field notes, the daxlib.org catalogue, UDF authoring and the window family. Not performance tuning."
+    }
+  ]
+}

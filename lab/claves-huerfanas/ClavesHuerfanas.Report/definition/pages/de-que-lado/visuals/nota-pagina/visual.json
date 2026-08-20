@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-pagina",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 8,
+    "height": 150,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "La tabla de productos tiene TRES filas, y las dos tarjetas del medio dicen CUATRO. No dicen lo mismo: la de la izquierda cuenta la fila en blanco que el motor anadio por su cuenta para las ventas huerfanas, y la de la derecha cuenta la clave 99, que existe de verdad en Ventas. Confundir esos dos cuatros fue un error real que detecto una review."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

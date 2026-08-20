@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "rankx-matriz",
+  "displayName": "RANKX - 1 en todas las filas de la matriz",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280
+}

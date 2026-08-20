@@ -1,0 +1,33 @@
+/// Contoso Retail — el modelo contra el que se midieron las notas de campo.
+/// 
+/// Es el MISMO modelo, no una reconstruccion: mismas tablas, mismas columnas, mismas
+/// relaciones y las mismas medidas. Los numeros que publican las notas se reproducen aqui
+/// tal cual, y por eso el pie de cada nota apunta a este escenario en vez de a una maquina.
+/// 
+/// Lo unico que se dejo fuera al traerlo es cultures/es-ES.tmdl: 400 KB de traducciones de
+/// nombres para mostrar. No cambia ni un resultado de DAX y era el fichero mas grande del
+/// modelo con diferencia.
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
+
+annotation PBI_QueryOrder = ["DimCurrency","DimCurrencyExchange","DimCustomer","DimDate","DimProduct","DimStore","FactSales","DataBaseUrl"]
+
+ref table DimCurrency
+ref table DimCurrencyExchange
+ref table DimCustomer
+ref table DimDate
+ref table DimProduct
+ref table DimStore
+ref table FactSales
+ref table _Measures
+

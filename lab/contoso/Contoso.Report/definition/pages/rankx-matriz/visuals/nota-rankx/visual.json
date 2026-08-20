@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-rankx",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 1,
+    "height": 120,
+    "width": 1200,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "La matriz ya trae UNA sola marca al contexto de cada fila, asi que VALUES(DimProduct[Brand]) dentro de RANKX es una tabla de una fila y todo el mundo queda primero. La tercera columna usa ALL, que abre la tabla entera antes de ordenar, y esa si rankea."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

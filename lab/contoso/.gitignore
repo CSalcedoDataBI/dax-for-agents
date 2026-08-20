@@ -1,0 +1,4 @@
+# Cache de datos y estado local del editor de Power BI Desktop.
+# Son megabytes de binario por modelo y cambian en cada refresco: nunca se versionan.
+# Aqui pesa mas que en los otros escenarios: 126.524 filas de FactSales acaban en cache.abf.
+**/.pbi/

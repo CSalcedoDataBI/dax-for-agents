@@ -1,0 +1,172 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "tabla-pares",
+  "position": {
+    "x": 40,
+    "y": 140,
+    "z": 0,
+    "height": 460,
+    "width": 1200,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Alto FILTER"
+                }
+              },
+              "queryRef": "_Medidas.Alto FILTER",
+              "nativeQueryRef": "Alto FILTER"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Alto predicado"
+                }
+              },
+              "queryRef": "_Medidas.Alto predicado",
+              "nativeQueryRef": "Alto predicado"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Categoria por tabla"
+                }
+              },
+              "queryRef": "_Medidas.Categoria por tabla",
+              "nativeQueryRef": "Categoria por tabla"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Categoria por columna"
+                }
+              },
+              "queryRef": "_Medidas.Categoria por columna",
+              "nativeQueryRef": "Categoria por columna"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Cruce por tabla"
+                }
+              },
+              "queryRef": "_Medidas.Cruce por tabla",
+              "nativeQueryRef": "Cruce por tabla"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Cruce por columnas"
+                }
+              },
+              "queryRef": "_Medidas.Cruce por columnas",
+              "nativeQueryRef": "Cruce por columnas"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Suma con medida"
+                }
+              },
+              "queryRef": "_Medidas.Suma con medida",
+              "nativeQueryRef": "Suma con medida"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Suma con columna"
+                }
+              },
+              "queryRef": "_Medidas.Suma con columna",
+              "nativeQueryRef": "Suma con columna"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Alto con medida"
+                }
+              },
+              "queryRef": "_Medidas.Alto con medida",
+              "nativeQueryRef": "Alto con medida"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Cada par devuelve el mismo numero - sin eso, comparar sus tiempos no diria nada'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,32 @@
+/// Hechos. Cuatro filas, y la ultima apunta al producto 99, QUE NO EXISTE en DimProducto.
+/// Esa sola fila es todo el escenario: el motor tendra que colgar de algun sitio sus 50
+/// unidades, y ese sitio es la fila en blanco que anade a la dimension.
+///
+/// La clave huerfana esta escrita en el parquet a proposito, no la inyecta un porcentaje
+/// de calidad: el escenario necesita UNA huerfana concreta, con un numero de unidades
+/// concreto, para que las tablas del README cuadren fila a fila.
+table Ventas
+	lineageTag: b1a70000-0000-4000-8000-000000000201
+
+	column ProductoKey
+		dataType: int64
+		lineageTag: b1a70000-0000-4000-8000-000000000202
+		summarizeBy: none
+		sourceColumn: ProductoKey
+
+	column Unidades
+		dataType: int64
+		lineageTag: b1a70000-0000-4000-8000-000000000203
+		summarizeBy: sum
+		sourceColumn: Unidades
+
+	partition Ventas = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Ventas.parquet"]))
+				in
+					Source
+
+	annotation PBI_ResultType = Table
+

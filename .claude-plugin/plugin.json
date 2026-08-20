@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "dax",
+  "displayName": "DAX for agents",
+  "version": "0.3.0",
+  "description": "The DAX language, agent-native. Every built-in function with its signature, return type, where it is legal (measure, calculated column, calculated table, visual calculation, query) and the gotchas the docs leave out; the conceptual pages behind them (evaluation context, context transition, EVALUATE/DEFINE, operators, BLANK semantics, VAR); the daxlib.org catalogue to check before writing a UDF; how to author a FUNCTION correctly; and the window family in depth. Derived from MicrosoftDocs/query-docs and annotated with field notes measured against a real model. Not performance tuning - that is data-goblin's dax skill.",
+  "author": {
+    "name": "CSalcedoDataBI",
+    "url": "https://github.com/CSalcedoDataBI"
+  },
+  "homepage": "https://github.com/CSalcedoDataBI/dax-for-agents",
+  "repository": "https://github.com/CSalcedoDataBI/dax-for-agents",
+  "license": "MIT",
+  "keywords": [
+    "dax",
+    "power-bi",
+    "fabric",
+    "semantic-model",
+    "tabular",
+    "reference"
+  ],
+  "skills": [
+    "./dax-reference",
+    "./dax-lib",
+    "./dax-udf-authoring",
+    "./dax-window-functions"
+  ]
+}
