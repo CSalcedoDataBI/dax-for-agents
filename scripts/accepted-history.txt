@@ -1,0 +1,43 @@
+# Objetos de la HISTORIA cuyos hallazgos POR HUELLA ya estan rendidos.
+#
+# Esto no perdona una credencial. `_aceptado` solo mira los hallazgos por huella; un
+# patron —un token, una clave— no lo exime ningun SHA, porque una credencial SI tiene
+# arreglo y el arreglo es rotarla.
+#
+# Lo que hay aqui son NOMBRES: tres repositorios privados de la cuenta y una maquina de
+# trabajo, que entraron con el arbol el 2026-08-20 al ensamblar este repositorio desde uno
+# privado. Se quitaron del arbol el 2026-08-25. En la historia se quedan, y conviene
+# entender por que no se "arreglan":
+#
+#   Reescribir la historia NO los quita de GitHub. Comprobado en este mismo repositorio:
+#   tras la reescritura del 2026-08-24 los commits viejos dejaron de tener ninguna ref
+#   (`git ls-remote` limpio) y la API los seguia devolviendo por SHA. Un objeto sin
+#   referencia se sirve igual hasta que GitHub recolecta, y eso no lo dispara un push.
+#   Las unicas salidas reales son pedirselo a GitHub Support o rehacer el repositorio.
+#
+# Asi que un push no puede satisfacer este hallazgo, y un guardia que solo se satisface
+# desactivandolo termina desactivado. Se rinden cuentas de el aqui, por SHA, y el guardia
+# conserva los dientes para lo que importa: un nombre que REAPAREZCA lo hara en un objeto
+# nuevo, con un SHA que no esta en esta lista, y el push volvera a abortar.
+#
+# El ARBOL no consulta esta lista. Ahi no se rinde nada: si el nombre esta, se quita.
+#
+# Anadir una linea aqui es una DECISION, no un tramite. Va con su ruta al lado.
+
+# evals/run_evals.py
+1e1aecf8c805d6f1a696cf3672c2254d655aac94
+
+# evals/run_evals.py
+33494eaefc3497f662ba8cb7903b06d8eacac39d
+
+# evidence/9.md
+6426fb7dc6aef897e3cd262285d692de85cd537c
+
+# (mensaje del commit a4cd04c4d)
+a4cd04c4de5a94d10a67135341d79460f061e813
+
+# docs/superpowers/specs/2026-08-06-dax-for-agents-design.md
+b545ecea08221f84480122da480b2ca92ee886ce
+
+# scripts/test_check_workflow_cost.py
+f25eeb6c61adf3b2d3370d803e9580105ccd16a0

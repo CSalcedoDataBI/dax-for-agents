@@ -15,7 +15,8 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from check_no_credentials import (find_in_text, load_digests, tramos,  # noqa: E402
+from check_no_credentials import (_aceptado, find_in_text, load_accepted,
+                                  load_digests, tramos,  # noqa: E402
                                   scan_history, scan_tree)
 
 PAT_CLASICO = "ghp_" + "a1B2" * 9                     # 4 + 36
@@ -190,6 +191,51 @@ class Ficheros(unittest.TestCase):
         self.assertEqual(len(h), 1)
         self.assertEqual(h[0]["path"], "ci/deploy.sh")
         self.assertNotIn(PAT_CLASICO, h[0]["text"])
+
+
+class LineaBase(unittest.TestCase):
+    """La historia se rinde; el arbol no. Y una credencial no se rinde nunca."""
+
+    def test_un_nombre_en_un_objeto_rendido_deja_de_contar(self):
+        h = {"label": "valor vigilado por huella"}
+        self.assertTrue(_aceptado(h, "abc1234def", {"abc1234"}))
+
+    def test_una_credencial_no_la_exime_ningun_sha(self):
+        # La linea que separa las dos mitades del guardia. Una credencial se ROTA: dejar
+        # que un SHA la silencie convertiria la lista en el sitio donde se entierran.
+        h = {"label": "PAT clasico de GitHub"}
+        self.assertFalse(_aceptado(h, "abc1234def", {"abc1234"}))
+
+    def test_el_mismo_nombre_en_un_objeto_NUEVO_sigue_fallando(self):
+        # Lo que hace que esto sea una linea base y no un apagado: reaparecer significa
+        # objeto nuevo, SHA nuevo, y el guardia vuelve a morder.
+        h = {"label": "valor vigilado por huella"}
+        self.assertFalse(_aceptado(h, "0000nuevo", {"abc1234"}))
+
+    def test_un_hallazgo_sin_sha_no_se_puede_rendir(self):
+        # Una ruta o una ref no son un objeto: no hay nada que anotar, asi que falla
+        # cerrado en vez de colarse por no tener SHA que comparar.
+        h = {"label": "valor vigilado por huella"}
+        self.assertFalse(_aceptado(h, "", {"abc1234"}))
+
+    def test_lee_shas_y_salta_comentarios_en_linea(self):
+        d = tempfile.mkdtemp()
+        p = os.path.join(d, "aceptados.txt")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write("\n".join(
+                ["# cabecera", "", "abc1234  # ruta/al/fichero.md", "def5678", ""]))
+        self.assertEqual(load_accepted(p), {"abc1234", "def5678"})
+
+    def test_una_linea_que_no_es_un_sha_es_un_error(self):
+        d = tempfile.mkdtemp()
+        p = os.path.join(d, "aceptados.txt")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write("esto-no-es-un-sha\n")
+        with self.assertRaises(ValueError):
+            load_accepted(p)
+
+    def test_una_lista_que_no_existe_no_rinde_nada(self):
+        self.assertEqual(load_accepted("/no/existe/aceptados.txt"), set())
 
 
 class Digests(unittest.TestCase):

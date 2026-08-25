@@ -34,6 +34,9 @@ from git_objects import (  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIGESTS_PATH = os.path.join(ROOT, "scripts", "forbidden-digests.txt")
+ACCEPTED_PATH = os.path.join(ROOT, "scripts", "accepted-history.txt")
+
+ETIQUETA_HUELLA = "valor vigilado por huella"
 
 SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules"}
 
@@ -135,6 +138,47 @@ def load_digests(path):
     return out
 
 
+def load_accepted(path):
+    """SHAs de objetos historicos cuyos hallazgos POR HUELLA ya estan rendidos.
+
+    Existe por una asimetria real entre las dos cosas que vigila este barrido:
+
+    - Una **credencial** en la historia se arregla: se ROTA. El hallazgo es accionable, y
+      por eso no se puede aceptar nunca — ningun SHA exime a un patron.
+    - Un **nombre** en la historia no se rota. Una vez publicado no hay push que lo
+      deshaga, y reescribir la historia tampoco: los objetos que dejan de estar
+      referenciados siguen sirviendose por SHA. Lo unico que cabe hacer con el es rendir
+      cuentas de donde esta.
+
+    Sin esta distincion el guardia solo se podria satisfacer desactivandolo, que es
+    exactamente como mueren los guardias. Con ella conserva los dientes para lo nuevo: un
+    nombre que reaparezca lo hace en un objeto distinto, con un SHA que no esta aqui.
+
+    El ARBOL no consulta esta lista. Ahi no hay nada que rendir: si el nombre esta en el
+    arbol, se quita.
+    """
+    out = set()
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8") as f:
+        for n, line in enumerate(f, 1):
+            line = line.split("#", 1)[0].strip()
+            if not line:
+                continue
+            if not re.fullmatch(r"[0-9a-fA-F]{7,40}", line):
+                raise ValueError(f"{path}:{n} no es un SHA de git.")
+            out.add(line.lower())
+    return out
+
+
+def _aceptado(hit, sha, accepted):
+    """Solo un hallazgo POR HUELLA y sobre un objeto rendido deja de contar."""
+    if hit["label"] != ETIQUETA_HUELLA or not sha:
+        return False
+    sha = sha.lower()
+    return any(sha.startswith(a) or a.startswith(sha) for a in accepted)
+
+
 def _redact(line, start, end):
     """La linea con el hallazgo sustituido por su longitud. Nunca devuelve el valor."""
     largo = end - start
@@ -183,7 +227,7 @@ def scan_tree(root, digests, skip=frozenset()):
     return hits
 
 
-def scan_history(root, digests, skip=frozenset()):
+def scan_history(root, digests, skip=frozenset(), accepted=frozenset()):
     """Hallazgos de todos los blobs alcanzables Y de todos los mensajes de commit.
 
     Los mensajes se anadieron por el mismo motivo que las rutas, y el motivo
@@ -195,13 +239,16 @@ def scan_history(root, digests, skip=frozenset()):
     hits = []
     for sha, path, text in blob_texts(root, skip=skip):
         for h in find_in_text(text, digests):
-            hits.append(dict(h, path=path, blob=sha))
+            if not _aceptado(h, sha, accepted):
+                hits.append(dict(h, path=path, blob=sha))
     for sha, message in commit_messages(root):
         for h in find_in_text(message, digests):
-            hits.append(dict(h, path=f"(mensaje del commit {sha[:9]})", blob=""))
+            if not _aceptado(h, sha, accepted):
+                hits.append(dict(h, path=f"(mensaje del commit {sha[:9]})", blob=sha))
     for sha, quien in commit_identities(root):
         for h in find_in_text(quien, digests):
-            hits.append(dict(h, path=f"(identidad del commit {sha[:9]})", blob=""))
+            if not _aceptado(h, sha, accepted):
+                hits.append(dict(h, path=f"(identidad del commit {sha[:9]})", blob=sha))
     # Las RUTAS: su hermano de nombres las mira desde el principio y este no las miraba.
     # Un token en un nombre de fichero se publica igual, y GitHub lo pinta en el listado.
     for ruta in historical_paths(root):
@@ -217,12 +264,13 @@ def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     history = "--history" in argv
     digests = load_digests(DIGESTS_PATH) if os.path.exists(DIGESTS_PATH) else set()
+    accepted = load_accepted(ACCEPTED_PATH)
 
     report = [(os.path.relpath(h["file"], ROOT).replace("\\", "/"), h)
               for h in scan_tree(ROOT, digests)]
     if history:
         report += [(f"{h['path']}@{h['blob'][:9]}", h)
-                   for h in scan_history(ROOT, digests)]
+                   for h in scan_history(ROOT, digests, accepted=accepted)]
 
     if report:
         print("CREDENTIAL CHECK FAILED — esto no puede llegar a un repositorio publico:")
@@ -234,8 +282,10 @@ def main(argv=None):
               f"Si es un ejemplo de documentacion, use un marcador (<TU_CLAVE>).")
         return 1
     alcance = "arbol e historia" if history else "arbol"
+    rendidos = (f", {len(accepted)} objetos historicos rendidos" if history and accepted
+                else "")
     print(f"OK: sin credenciales en el {alcance} "
-          f"({len(PATTERNS)} patrones, {len(digests)} huellas).")
+          f"({len(PATTERNS)} patrones, {len(digests)} huellas{rendidos}).")
     return 0
 
 
