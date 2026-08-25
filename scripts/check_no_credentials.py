@@ -80,6 +80,37 @@ def _es_marcador(valor):
 # Un GUID, o cualquier cadena larga sin espacios, es candidato a comparar por huella.
 CANDIDATO = re.compile(r"[A-Za-z0-9][A-Za-z0-9~._\-]{7,}")
 
+# Un nombre vigilado casi nunca viaja solo. Aparece incrustado: en una rama
+# (`issue-9-copiar-dax-lib-desde-<nombre>-con-su`), en una ruta, en un slug. Comparar solo
+# el token entero dejaba pasar exactamente ese caso, que es el mas frecuente de todos.
+#
+# Asi que se comparan tambien los TRAMOS CONTIGUOS de sus segmentos. Sigue siendo huella
+# contra huella: el valor vigilado no se escribe aqui ni en ningun otro sitio, y un tramo
+# que no este en la lista no deja rastro. El limite de segmentos existe porque el numero de
+# tramos crece con el cuadrado y una linea patologica no debe costar sin tope.
+MAX_SEGMENTOS = 12
+MIN_TRAMO = 8  # el mismo umbral que CANDIDATO: no se vigila nada mas corto
+
+
+def tramos(token):
+    """El token y cada tramo contiguo de sus segmentos, sin repetir.
+
+    `a-b-c` produce `a-b-c`, `a-b`, `b-c` (y los sueltos, si llegan al minimo). El
+    separador se conserva, de modo que el tramo reconstruye el texto original tal cual
+    y su huella coincide con la del valor vigilado.
+    """
+    partes = re.split(r"([-_.])", token)
+    segmentos = partes[::2]
+    if len(segmentos) > MAX_SEGMENTOS:
+        return
+    vistos = set()
+    for i in range(0, len(partes), 2):
+        for j in range(i, len(partes), 2):
+            tramo = "".join(partes[i:j + 1])
+            if len(tramo) >= MIN_TRAMO and tramo not in vistos:
+                vistos.add(tramo)
+                yield tramo
+
 
 def load_digests(path):
     """Un SHA-256 en hexadecimal por linea; blancos y # se ignoran.
@@ -123,9 +154,14 @@ def find_in_text(text, digests=frozenset()):
                        "text": _redact(line, m.start(), m.end())}
         if digests:
             for m in CANDIDATO.finditer(line):
-                if hashlib.sha256(m.group(0).lower().encode()).hexdigest() in digests:
-                    yield {"line": n, "label": "valor vigilado por huella",
-                           "text": _redact(line, m.start(), m.end())}
+                for tramo in tramos(m.group(0)):
+                    if hashlib.sha256(tramo.lower().encode()).hexdigest() in digests:
+                        # Se tacha el candidato entero y no solo el tramo: senalar el
+                        # tramo exacto seria decir cual de todos encajo, que es una pista
+                        # sobre el valor vigilado en un log que puede ser publico.
+                        yield {"line": n, "label": "valor vigilado por huella",
+                               "text": _redact(line, m.start(), m.end())}
+                        break
 
 
 def scan_tree(root, digests, skip=frozenset()):

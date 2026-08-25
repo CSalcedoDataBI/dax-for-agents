@@ -57,8 +57,8 @@ class Timeout(unittest.TestCase):
         self.assertIn("timeout-minutes", errors[0])
 
     def test_every_job_is_checked_not_just_the_first(self):
-        # En visual-studio-pbi se colaron 2 de 4 jobs sin limite por mirar solo los
-        # que mencionaba el ticket. El gate cuenta los jobs del archivo.
+        # La regresion real: 2 de 4 jobs se colaron sin limite porque la revision miro
+        # solo los que mencionaba el ticket. El gate cuenta los jobs del ARCHIVO.
         errors = self.check(GOOD + """\
   second:
     runs-on: ubuntu-latest

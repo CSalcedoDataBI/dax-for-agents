@@ -656,7 +656,7 @@ Sin esto la Task 5 no tiene datos que graficar. **No hay informe en esta tarea**
 - Modify: `lab/build_datasets.py`
 - Create: `lab/rendimiento/Rendimiento.SemanticModel/definition/tables/Tiempos.tmdl`
 - Modify: `lab/rendimiento/Rendimiento.SemanticModel/definition/model.tmdl`
-- Modify (otro repo): `E:\MIS-REPO\SampleDataSets\dax-lab\README.md`
+- Modify (otro repo, `CSalcedoDataBI/SampleDataSets`): `dax-lab/README.md`
 
 **Interfaces:**
 - Produces: la entidad `Tiempos` con las columnas `Caso` (texto), `Grupo` (texto), `MedianaMs` (int64), `PicoMemoriaKB` (int64), `ConsultasSE` (int64), y el parquet `dax-lab/rendimiento/Tiempos.parquet`.
@@ -692,12 +692,12 @@ En `lab/build_datasets.py`, dentro de `def rendimiento()`, añadir al diccionari
 - [ ] **Step 2: Regenerar y publicar**
 
 ```bash
-python lab/build_datasets.py /e/MIS-REPO/SampleDataSets/dax-lab
+python lab/build_datasets.py <clon-de-SampleDataSets>/dax-lab
 ```
 
 Esperado: cinco líneas, la nueva `4 filas` en `rendimiento\Tiempos.parquet`.
 
-Añadir a `E:\MIS-REPO\SampleDataSets\dax-lab\README.md`, al final de la sección `rendimiento/`:
+Añadir a `dax-lab/README.md` de `CSalcedoDataBI/SampleDataSets`, al final de la sección `rendimiento/`:
 
 ```markdown
 `Tiempos.parquet` carries the four measured medians the scenario publishes (cold, `ClearCache`
@@ -706,7 +706,7 @@ measures together, so splitting those 5 ms across six rows would invent six numb
 measured.
 ```
 
-Luego, desde `E:\MIS-REPO\SampleDataSets`:
+Luego, desde el clon de `CSalcedoDataBI/SampleDataSets`:
 
 ```bash
 git add dax-lab && git commit -m "data(dax-lab): add the measured timings behind the rendimiento scenario"

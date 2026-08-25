@@ -1,6 +1,6 @@
 # Las 16 funciones sin categoría van a `sin-categoria/`
 
-Fecha: 2026-08-17. Contexto: fase 0 de la biblioteca de ejemplos (#45).
+Fecha: 2026-08-17. Contexto: fase 0 de la biblioteca de ejemplos.
 
 ## El hecho
 

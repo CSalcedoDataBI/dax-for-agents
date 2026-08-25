@@ -15,7 +15,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from check_no_credentials import (find_in_text, load_digests,  # noqa: E402
+from check_no_credentials import (find_in_text, load_digests, tramos,  # noqa: E402
                                   scan_history, scan_tree)
 
 PAT_CLASICO = "ghp_" + "a1B2" * 9                     # 4 + 36
@@ -87,6 +87,40 @@ class FindInText(unittest.TestCase):
         valor = "11111111-2222-3333-4444-555555555555"
         d = {hashlib.sha256(b"otra-cosa").hexdigest()}
         self.assertEqual(self.hits(f"id = {valor}\n", d), [])
+
+    def test_un_nombre_vigilado_se_encuentra_incrustado_en_una_rama(self):
+        # El caso que motivo los tramos: el nombre privado no viajaba solo, iba dentro del
+        # slug de una rama. Comparar solo el token entero lo dejaba pasar.
+        d = {hashlib.sha256(b"nombre-privado").hexdigest()}
+        h = self.hits("Branch: issue-9-copiar-algo-desde-nombre-privado-con-su", d)
+        self.assertEqual(len(h), 1)
+        self.assertIn("huella", h[0]["label"])
+
+    def test_un_nombre_vigilado_incrustado_no_se_reporta_dos_veces(self):
+        # Un candidato con muchos tramos podria encajar varias veces y llenar el informe
+        # de ruido sobre la misma linea.
+        d = {hashlib.sha256(b"nombre-privado").hexdigest()}
+        self.assertEqual(len(self.hits("a-nombre-privado-b-nombre-privado-c", d)), 1)
+
+    def test_un_nombre_publico_que_es_prefijo_del_vigilado_no_cuenta(self):
+        # `proyecto-x` vigilado no puede hacer saltar a `proyecto`, ni al reves: son
+        # huellas distintas. Si esto fallara, el guardia bloquearia el nombre publico.
+        d = {hashlib.sha256(b"proyecto-x-lab").hexdigest()}
+        self.assertEqual(self.hits("clone https://example.invalid/proyecto-x.git", d), [])
+
+    def test_el_tramo_que_encaja_no_se_revela_en_el_informe(self):
+        # Decir cual de los tramos encajo es una pista sobre el valor vigilado, y el
+        # informe puede acabar en un log publico.
+        d = {hashlib.sha256(b"nombre-privado").hexdigest()}
+        h = self.hits("rama: x-nombre-privado-y", d)
+        self.assertNotIn("nombre-privado", h[0]["text"])
+        self.assertIn("REDACTADO", h[0]["text"])
+
+    def test_un_token_con_demasiados_segmentos_no_dispara_el_cuadratico(self):
+        # El tope existe para que una linea patologica no cueste sin limite. Por encima
+        # del tope se deja de trocear; el token entero se seguiria comparando aparte.
+        largo = "-".join(str(i) for i in range(60))
+        self.assertEqual(list(tramos(largo)), [])
 
     def test_el_digest_no_distingue_mayusculas(self):
         valor = "AABBCCDD-1122-3344-5566-778899AABBCC"

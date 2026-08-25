@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Triggering evals for the dax-skills repo.
+"""Triggering evals for the dax-for-agents repo.
 
 Static mode (default, no API): guards against routing rot. For each case it
 verifies the expected skill exists and still shares vocabulary with a prompt

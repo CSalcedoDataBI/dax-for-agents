@@ -1,6 +1,6 @@
 # Las páginas conceptuales son 34, no 61
 
-**Fecha:** 2026-08-13 · **Estado:** aceptada · **Afecta a:** el spec de diseño y el épico #2
+**Fecha:** 2026-08-13 · **Estado:** aceptada · **Afecta a:** el spec de diseño y la épica de la biblioteca
 
 ## El problema
 

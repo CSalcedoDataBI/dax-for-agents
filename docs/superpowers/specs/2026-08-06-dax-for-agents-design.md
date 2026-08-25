@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-06
 **Estado:** aprobado por secciones, pendiente de revisión final
 **Repo destino:** `CSalcedoDataBI/dax-for-agents` (privado al inicio, público al liberar)
-**Repo de origen del estudio:** `CSalcedoDataBI/dax-skills` (privado, se queda como está)
+**Repo de origen del estudio:** un repositorio privado anterior, que se queda como está
 
 ---
 
@@ -63,9 +63,9 @@ en GitHub lo usa como fuente.
 | Skill | Origen | Licencia de origen |
 |---|---|---|
 | **`dax-reference`** | **nueva** — derivada de `query-docs` | CC BY 4.0, atribuida |
-| `dax-lib` | copiada de `dax-skills` | deriva de `daxlib/daxlib`, MIT |
-| `dax-udf-authoring` | copiada de `dax-skills` | propia |
-| `dax-window-functions` | copiada de `dax-skills` | propia |
+| `dax-lib` | copiada del estudio previo | deriva de `daxlib/daxlib`, MIT |
+| `dax-udf-authoring` | copiada del estudio previo | propia |
+| `dax-window-functions` | copiada del estudio previo | propia |
 
 Las tres existentes encajan porque son **lenguaje**: cómo escribir un UDF, cómo funcionan las
 window functions, qué UDFs ya existen. Con `dax-reference` forman una sola idea.
@@ -220,7 +220,7 @@ biblioteca**, y es lo único del repo que no puede generar un script.
 
 `dax-reference/scripts/sync_query_docs.py`.
 
-> **Corregido el 2026-08-07 (issue #3): Python, no PowerShell.** El diseño decía
+> **Corregido el 2026-08-07: Python, no PowerShell.** El diseño decía
 > `sync-query-docs.ps1` por familiaridad con el `refresh-daxlib.ps1` existente. Es un pipeline
 > de parseo de 540 markdown con regex, YAML y salida JSON: Python encaja mejor, el CI ya
 > depende de Python + pyyaml, `validate_skills.py` ya hace `py_compile` de `*/scripts/*.py`
@@ -232,7 +232,7 @@ filter, financial, info, information, logical, math-and-trig, other, parent-and-
 relationship, statistical, table-manipulation, text, time-intelligence) y construye el mapa
 `función → categoría + resumen` desde la tabla `## In this category`.
 
-> **Corregido el 2026-08-07 al implementar la pasada 1 (issue #3).** El diseño asumía que los
+> **Corregido el 2026-08-07 al implementar la pasada 1.** El diseño asumía que los
 > 15 índices eran la única y suficiente fuente de categoría. Medido contra `query-docs@c6a9a72`,
 > **solo cubren 386 de 479 funciones**. Dos huecos reales:
 >
@@ -286,7 +286,7 @@ El sync termina con un reporte. Estas condiciones lo hacen **fallar**, no advert
 
 ## 9. CI
 
-Espejo de las convenciones de `dax-skills`, respetando las reglas de costo (R1 un run por
+Espejo de las convenciones del estudio previo, respetando las reglas de costo (R1 un run por
 cambio, R2 concurrency, R3 timeout, R5 ubuntu, R7 cron semanal):
 
 | Workflow | Disparo | Qué hace |

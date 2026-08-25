@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-08-10
 **Estado:** decidido por el owner
-**Afecta a:** issues #9, #18 · PR #16
+**Afecta a:** la incorporación de `dax-lib` y la limpieza de su `SKILL.md`
 
 ---
 
@@ -13,7 +13,7 @@
 código se obtiene de la fuente.
 
 Se descarta el espejo completo (55 paquetes, 116 versiones, 232 archivos, ~90.000 líneas de
-40 autores) que se había construido en la PR #16.
+40 autores) que se había construido en la incorporación inicial.
 
 ## Los hechos que llevaron a ella
 
@@ -91,8 +91,8 @@ dependencia circular) es generalizable y publicable, pero no como está.
 
 ## Consecuencias
 
-- La PR #16 se reduce a catálogo + `NOTICE` + evals. Se eliminan `dax-lib/library/` y el
+- La incorporación de `dax-lib` se reduce a catálogo + `NOTICE` + evals. Se eliminan `dax-lib/library/` y el
   script de espejo, o el script se reorienta a regenerar solo el catálogo.
 - `dax-lib/SKILL.md` deja de prometer TMDL instalable local y pasa a enrutar a daxlib.org.
-- Sigue pendiente por #18: quitar de `dax-lib/SKILL.md` la recomendación dirigida a una medida
-  concreta de un modelo de cliente, que no puede entrar aqui.
+- Hecho antes de publicar: se quitó de `dax-lib/SKILL.md` la recomendación dirigida a una
+  medida concreta de un modelo privado. El `SKILL.md` que se publica no la contiene.

@@ -27,3 +27,18 @@
 d16daff2a81d1db41f21732894367e9d0269de6440ff222c812f5d38bc71eb5b
 5324084dae85e165a643a6c239741528cb92c58330a38bc82a229f1858d7fa0f
 7981d8e59903508335d133d73c539b67cff5e7db022aa72a7acfd1eb209bca8a
+
+# Los cuatro de abajo no son credenciales ni identificadores de entorno: son NOMBRES.
+# Tres repositorios privados de la misma cuenta y el nombre de una maquina de trabajo, que
+# aparecieron en este arbol por haberse ensamblado desde un tronco privado. Ninguno abre
+# nada; los cuatro dicen quien trabaja detras y con que, y eso tampoco tiene vuelta atras
+# una vez publicado.
+#
+# Se vigilan aqui y no con un patron por el motivo de siempre: escribir el nombre para
+# vigilarlo lo publicaria. La huella lo caza sin nombrarlo. Y desde que el barrido compara
+# tambien tramos contiguos, lo caza incrustado — en una rama, en una ruta, en un slug —
+# que es como aparecio la ultima vez.
+0328bf79dcc8bee384c97e5b529252b65f4a37cf7ec27ff15557d74be2cf92db
+f65fae33731a2dbd5057bbf56d44b2ef006b58e5534e46e87a31eb744e30db6a
+c450a673b51ee5e0172a5e5ef2fddba8eb06fc2ccd60ad1c121a46d2fddd7dfe
+9709397444f3c91b80b7dbe75d684606e28580c30aea9af52a1e2222e67e7694
