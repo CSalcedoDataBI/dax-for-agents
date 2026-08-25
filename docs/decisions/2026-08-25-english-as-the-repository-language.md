@@ -53,12 +53,21 @@ plugin description are English. What is left is making the content agree with th
 
 In order, and deliberately not all at once:
 
-| | What | Cost |
+| | What | Status |
 |---|---|---|
 | 1 | `INDEX.md` | done with this record |
-| 2 | Every new example from the epic, English from the first one | zero — it only had to be decided |
-| 3 | The 31 field notes | incremental, as each is touched |
-| 4 | The `lab/` READMEs | whoever downloads a `.pbip` reads them |
+| 2 | Every new example from the epic, English from the first one | decided; the ~380 files are still to write |
+| 3 | The 31 field notes | **done** — see below |
+| 4 | The five `lab/` READMEs | **done** |
+
+Steps 3 and 4 were meant to be incremental and were finished in the same sitting instead. That
+changes the plan, not the reasoning: the argument for English did not depend on doing it slowly,
+only the risk did. The risk was handled by hashing all 39 `dax` blocks in the notes before the
+first edit and checking them after the last — `check_lab.py` reads those blocks out of the `.md`
+by position, so a single changed character would have altered what runs while CI stayed green.
+
+What is left in Spanish is `examples/`, and it is the one place where leaving it costs nothing:
+the epic that grows it is the reason this decision exists, and every file it adds is English.
 
 ## What "in English" does not reach: identifiers
 
@@ -107,8 +116,8 @@ tests would not notice a meaning drift.
 - `INDEX.md` is English, and carries the rule as convention 8 so it is visible where skills
   are added rather than only here.
 - A new note or example written in Spanish is now a review comment, not a matter of taste.
-- Nothing already published moves. This record changes what gets written next; it does not
-  invalidate the 31 notes or the 99 covered functions, which stay correct and stay useful
-  until each is touched for another reason.
+- No measurement changed. The notes carry the same queries, the same results and the same dates
+  they were published with; only the prose around them is different. The 99 covered example
+  files stay in Spanish and stay correct.
 - No gate enforces this. Language is not something `check_doc_claims.py` can measure without
   guessing, and a guard that guesses gets switched off. This is a convention held by review.
