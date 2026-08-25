@@ -165,7 +165,9 @@ class NumbersWrittenAsWords(unittest.TestCase):
     def test_the_indefinite_article_is_not_the_number_one(self):
         # El motivo de empezar en DOS. En espanol 'una' va pegada a estos sustantivos
         # constantemente sin contar nada, y leerla como 1 seria alarma falsa sobre prosa
-        # correcta. Las tres frases son reales, de INDEX.md y lab/README.md.
+        # correcta. Las tres frases salieron de INDEX.md y lab/README.md cuando estaban
+        # en espanol; los dos se tradujeron y ya no estan ahi. El caso sigue vivo porque
+        # las 31 notas, los ejemplos y docs/ siguen en espanol, y el guardia los vigila.
         #
         # Se afirma sobre claims_in, no sobre check(): el fixture tiene 1 skill, asi que
         # leer 'una skill' como 1 COINCIDIRIA con el arbol y check() seguiria devolviendo
@@ -174,6 +176,18 @@ class NumbersWrittenAsWords(unittest.TestCase):
                       "una nota sin demostrar no se escribe",
                       "sospecha de una nota"):
             self.assertEqual(claims_in(prosa), [], prosa)
+
+    def test_a_hyphenated_word_number_is_not_its_second_half(self):
+        # "Twenty-nine field notes" no afirma NUEVE. El guion es un limite de palabra, asi
+        # que un \b pelado dejaba pasar la cola de un numero compuesto. En espanol nunca se
+        # vio —"veintinueve" es una sola palabra—, asi que llego con el cambio a ingles.
+        self.assertEqual(claims_in("Twenty-nine field notes carried the footer"), [])
+        self.assertEqual(claims_in("the twenty-five field notes"), [])
+
+    def test_a_markdown_bullet_before_a_number_still_counts(self):
+        # El lookbehind rechaza un guion, y un elemento de lista empieza por uno. No puede
+        # dejar ciego al guardia ante "- five skills", que es como se escribe media tabla.
+        self.assertEqual(claims_in("- five skills"), [("skills", 5, "five skills")])
 
     def test_one_in_english_is_not_counted_either(self):
         self.assertEqual(claims_in("one skill per folder"), [])

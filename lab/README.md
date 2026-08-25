@@ -1,180 +1,183 @@
-# lab — evidencia que se puede ejecutar
+# lab — evidence you can run
 
-Las notas de campo de [`dax-reference/notes/`](../skills/dax-reference/notes/) traen la consulta que
-demuestra cada trampa y el número que devolvió. Este directorio es el otro lado de esa
-promesa: **los modelos donde ejecutarlas**.
+The field notes in [`dax-reference/notes/`](../skills/dax-reference/notes/) each carry the query
+that demonstrates the trap and the number it returned. This directory is the other half of that
+promise: **the models to run them against**.
 
-## Por qué existe
+> The prose here is English; the model, column and page names are not. They are the strings you
+> will see on screen and the ones `check_lab.py` compares literally — see
+> [the language decision](../docs/decisions/2026-08-25-english-as-the-repository-language.md).
 
-Por dos razones distintas, y conviene no mezclarlas.
+## Why it exists
 
-**La primera: el modelo base.** Treinta de las treinta y una notas se midieron sobre Contoso
-Retail, y ese modelo vivía en una máquina. El lector tenía la consulta y el número, y ninguna
-forma de ejecutarlos. Ahora está aquí: [`contoso`](./contoso/).
+For two different reasons, and it is worth not mixing them.
 
-**La segunda: lo que Contoso no puede enseñar.** Al escribir las primeras notas hubo tres que
-no se escribieron porque el modelo base no podía demostrarlas — y una nota sin demostrar no se
-escribe:
+**The first: the base model.** Thirty of the thirty-one notes were measured against Contoso
+Retail, and that model lived on one machine. The reader had the query and the number, and no way
+to run either. Now it is here: [`contoso`](./contoso/).
 
-| No se pudo demostrar | Por qué | Escenario que lo resuelve |
+**The second: what Contoso cannot show.** While writing the first notes, three were not written
+because the base model could not demonstrate them — and a note you cannot demonstrate does not
+get written:
+
+| Could not be demonstrated | Why | Scenario that solves it |
 |---|---|---|
-| La fila en blanco de una relación con claves huérfanas | Contoso tiene la integridad referencial intacta | [`claves-huerfanas`](./claves-huerfanas/) |
-| `AVERAGE` vs `AVERAGEX` con blancos | Ninguna columna numérica tiene blancos | [`blancos`](./blancos/) |
-| Cualquier cifra de rendimiento | 126.524 filas se resuelven en milisegundos | [`rendimiento`](./rendimiento/) |
+| The blank row of a relationship with orphan keys | Contoso's referential integrity is intact | [`claves-huerfanas`](./claves-huerfanas/) |
+| `AVERAGE` vs `AVERAGEX` with blanks | No numeric column has blanks | [`blancos`](./blancos/) |
+| Any performance figure | 126,524 rows resolve in milliseconds | [`rendimiento`](./rendimiento/) |
 
-Las tres tienen ya su escenario. El de rendimiento además **desmintió** lo que se fue a
-buscar: se construyó para enseñar que `FILTER` sobre una tabla entera es caro, y resultó no
-serlo. Lo que cuesta es la transición de contexto. Los números están en su
+All three have their scenario now. The performance one also **disproved** what it set out to
+find: it was built to show that `FILTER` over a whole table is expensive, and it turned out not
+to be. What costs is the context transition. The numbers are in its
 [README](./rendimiento/README.md).
 
-## Cómo son los modelos
+## What the models look like
 
-**Los cuatro se conectan igual.** Lo que se versiona aquí son `.pbip` de kilobytes; las filas
-viven fuera, en parquet publicados en
-[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) — repo
-**público**, licencia **MIT**, datos **100% sintéticos**. Cada modelo los lee por
+**All four connect the same way.** What is versioned here are `.pbip` files of a few kilobytes;
+the rows live outside, in Parquet published in
+[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) — a
+**public** repo, **MIT** licence, **100% synthetic** data. Each model reads them over
 `raw.githubusercontent.com`:
 
 ```
 Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Ventas.parquet"]))
 ```
 
-`DataBaseUrl` es un **parámetro M de verdad** (`IsParameterQuery`), así que cada partición
-queda a salvo del cortafuegos de privacidad y apuntar a un fork, una rama o un espejo local es
-cambiar un solo valor.
+`DataBaseUrl` is a **real M parameter** (`IsParameterQuery`), so every partition stays clear of
+the privacy firewall, and pointing at a fork, a branch or a local mirror is one value to change.
 
-| escenario | carpeta publicada | tamaño | filas |
+| scenario | published folder | size | rows |
 |---|---|---|---|
 | [`blancos`](./blancos/) | `dax-lab/blancos` | 1 KB | 5 |
 | [`claves-huerfanas`](./claves-huerfanas/) | `dax-lab/claves-huerfanas` | 2 KB | 3 + 4 |
-| [`rendimiento`](./rendimiento/) | `dax-lab/rendimiento` | 385 KB | 2.000.000 |
-| [`contoso`](./contoso/) | `contoso-retail` | 2,2 MB | 126.524 + dimensiones |
+| [`rendimiento`](./rendimiento/) | `dax-lab/rendimiento` | 385 KB | 2,000,000 |
+| [`contoso`](./contoso/) | `contoso-retail` | 2.2 MB | 126,524 + dimensions |
 
-Que sea el mismo patrón en los cuatro no es cosmética. **Lo que se publica de este repo son
-los `.pbip`**, y un `.pbip` solo vale si refresca en la máquina del que lo descarga: sin
-autenticación, sin SQL Server, sin rutas locales, sin credenciales que pedir. Un origen por
-escenario sería un origen que arreglar por escenario.
+That the pattern is identical across all four is not cosmetic. **What this repo publishes are
+the `.pbip` files**, and a `.pbip` is only worth anything if it refreshes on the machine of
+whoever downloads it: no authentication, no SQL Server, no local paths, no credentials to ask
+for. One source per scenario would be one source to fix per scenario.
 
-**El precio es que los cuatro necesitan internet para refrescar.** Si
-`raw.githubusercontent.com` no es alcanzable, no hay datos. Se acepta a cambio de que el repo
-no cargue con los megabytes y de que no haya nada que configurar.
+**The price is that all four need internet to refresh.** If `raw.githubusercontent.com` is not
+reachable, there is no data. That is accepted in exchange for the repo not carrying the
+megabytes and for there being nothing to configure.
 
-Los datos siguen siendo legibles sin abrir Power BI: los dos escenarios de comportamiento son
-cinco y siete filas elegidas a mano y están escritas en el README de cada uno, fila a fila.
-Que estén en un parquet en vez de en el TMDL no las esconde — las publica.
+The data is still readable without opening Power BI: the two behaviour scenarios are five and
+seven hand-picked rows, and they are written out row by row in each README. Living in a Parquet
+file rather than in the TMDL does not hide them — it publishes them.
 
-## Cómo usarlos
+## How to use them
 
-1. Abre el `.pbip` del escenario en Power BI Desktop y **refresca**. Al abrir un PBIP el
-   modelo carga sin datos: hay que pedirlo. No hay nada que configurar; la primera vez Power
-   BI pregunta por el nivel de privacidad del origen web y basta con **Anónimo/Público**.
-2. Ejecuta las consultas del `README.md` de ese escenario en la vista de consulta DAX.
-3. Compara con la tabla de resultados publicada.
+1. Open the scenario's `.pbip` in Power BI Desktop and **refresh**. Opening a PBIP loads the
+   model without data: you have to ask for it. There is nothing to configure; the first time,
+   Power BI asks for the web source's privacy level and **Anonymous/Public** is enough.
+2. Run the queries from that scenario's `README.md` in the DAX query view.
+3. Compare against the published results table.
 
-En `contoso` el paso 2 son las consultas de las **notas de campo**, que están en
-[`dax-reference/notes/`](../skills/dax-reference/notes/) y no repetidas en su README.
+In `contoso`, step 2 means the queries from the **field notes**, which live in
+[`dax-reference/notes/`](../skills/dax-reference/notes/) and are not repeated in its README.
 
-El `.gitignore` de cada escenario excluye `.pbi/`, que es la caché local de Power BI Desktop
-(unos megas de binario por modelo). Solo se versiona el texto.
+Each scenario's `.gitignore` excludes `.pbi/`, the local Power BI Desktop cache (a few megabytes
+of binary per model). Only text is versioned.
 
-## Los informes, y el límite de lo que se comprueba
+## The reports, and the limit of what gets checked
 
-Los cuatro escenarios traen **trece páginas**, una por trampa, y existen para las trampas que
-**solo viven dentro de un visual**: el blanco que borra una barra mientras el cero la dibuja, la
-categoría sin nombre de una relación rota, `ALLSELECTED` cambiando según el filtro venga de un
-slicer, `RANKX` devolviendo 1 en todas las filas de una matriz. De esas el README puede hablar;
-no puede enseñarlas.
+The four scenarios carry **thirteen pages**, one per trap, and they exist for the traps that
+**only live inside a visual**: the blank that erases a bar while the zero draws it, the unnamed
+category of a broken relationship, `ALLSELECTED` changing depending on whether the filter came
+from a slicer, `RANKX` returning 1 on every row of a matrix. A README can talk about those; it
+cannot show them.
 
-Lo que se comprueba solo: **las medidas**. Cada una de las veintitrés que alimentan las páginas
-está en [`check_lab.py`](./check_lab.py) con su valor esperado, así que si un número cambia, sale
-rojo.
+What is checked automatically: **the measures**. Every one of the twenty-three that feed the
+pages is in [`check_lab.py`](./check_lab.py) with its expected value, so if a number changes it
+goes red.
 
-Lo que **no** se comprueba solo: **el dibujo**. Ningún test sabe si la barra se pintó. Eso se
-verifica abriendo el `.pbip`, y en las dos páginas con slicer hace falta además mover el slicer —
-en una consulta DAX no hay slicer, que es justo por lo que esas páginas existen.
+What is **not** checked automatically: **the drawing**. No test knows whether the bar was
+painted. That is verified by opening the `.pbip`, and on the two pages with a slicer you also
+have to move the slicer — a DAX query has no slicer, which is exactly why those pages exist.
 
-Esas trece son las páginas de **trampa visual-only**. `contoso` trae cuatro páginas más, de otro
-tipo: una por cada skill de la biblioteca, mostrando lo que aportó al escenario real de
-[`window.md`](../skills/dax-reference/notes/window.md). Ver
-[`lab/contoso/README.md`](./contoso/README.md#las-otras-cuatro-lo-que-aportó-cada-skill).
+Those thirteen are the **visual-only trap** pages. `contoso` carries four more, of a different
+kind: one per skill in the library, showing what each contributed to the real scenario in
+[`window.md`](../skills/dax-reference/notes/window.md). See
+[`lab/contoso/README.md`](./contoso/README.md#the-other-four-what-each-skill-contributed).
 
-Y no es una precaución teórica. Al construirlas, mirar el dibujo encontró tres cosas que ninguna
-consulta habría encontrado: un gráfico que salía **vacío** porque a una columna en el pozo de
-valores le faltaba el envoltorio `Aggregation`, una tabla que se quedaba en la cabecera por un
-`"active": true` de más, y dos páginas cuyo diseño daba por hecho un contraste que los datos no
-tenían. Las tres abren el informe **sin un solo error**.
+And this is not a theoretical precaution. While building them, looking at the drawing found
+three things no query would have found: a chart that came out **empty** because a column in the
+values well was missing its `Aggregation` wrapper, a table that stopped at the header because of
+one `"active": true` too many, and two pages whose design assumed a contrast the data did not
+have. All three open the report **without a single error**.
 
 
-## Estructura
+## Structure
 
 ```
 lab/
-  check_lab.py              ejecuta y compara — el runner
-  notes_expected.py         lo que devuelve la consulta de cada nota sobre contoso
-  dump_notes.py             regenera notes_expected.py contra un modelo abierto
-  build_datasets.py         produce los parquet de los tres escenarios sintéticos
-  <escenario>/
-    README.md               qué demuestra, las consultas y los resultados medidos
-    <Nombre>.pbip           el proyecto que se abre
-    <Nombre>.SemanticModel/ TMDL: tablas, relaciones y expressions.tmdl (DataBaseUrl)
-    <Nombre>.Report/        informe vacío de una página
-    .gitignore              excluye .pbi/
+  check_lab.py              runs and compares — the runner
+  notes_expected.py         what each note's query returns against contoso
+  dump_notes.py             regenerates notes_expected.py against an open model
+  build_datasets.py         produces the Parquet for the three synthetic scenarios
+  <scenario>/
+    README.md               what it demonstrates, the queries, and the measured results
+    <Name>.pbip             the project you open
+    <Name>.SemanticModel/   TMDL: tables, relationships and expressions.tmdl (DataBaseUrl)
+    <Name>.Report/          the report
+    .gitignore              excludes .pbi/
 ```
 
-[`build_datasets.py`](./build_datasets.py) es lo que produce los parquet de `blancos`,
-`claves-huerfanas` y `rendimiento`. Existe para que los ficheros publicados no sean un binario
-opaco: quien dude de que el parquet dice lo que dice el README, lo regenera y compara. La
-generación es **determinista** —sin azar y sin fechas—, así que dos ejecuciones dan lo mismo.
+[`build_datasets.py`](./build_datasets.py) is what produces the Parquet for `blancos`,
+`claves-huerfanas` and `rendimiento`. It exists so the published files are not an opaque binary:
+anyone who doubts that the Parquet says what the README says regenerates it and compares. The
+generation is **deterministic** — no randomness and no dates — so two runs give the same thing.
 
 ```bash
-python lab/build_datasets.py <directorio-destino>
+python lab/build_datasets.py <destination-directory>
 ```
 
-Escribe ficheros y nada más; publicar el destino es un paso aparte y a mano.
+It writes files and nothing else; publishing the destination is a separate, manual step.
 
-El informe está vacío a propósito: un `.pbip` declara artefactos de **informe**, y es el
-informe el que enlaza al modelo por `definition.pbir`. Un `.pbip` que apunta directo al
-`SemanticModel` abre Power BI Desktop en un estado sin tablas — comprobado al construir el
-primer escenario.
+A `.pbip` declares **report** artifacts, and it is the report that links to the model through
+`definition.pbir`. A `.pbip` pointing straight at the `SemanticModel` opens Power BI Desktop in a
+state with no tables — verified while building the first scenario.
 
-## Comprobar sin abrir nada a mano
+## Checking without opening anything by hand
 
-[`check_lab.py`](./check_lab.py) ejecuta las consultas de cada escenario y las compara con el
-resultado publicado. Si un número cambia, falla.
+[`check_lab.py`](./check_lab.py) runs each scenario's queries and compares them against the
+published result. If a number changes, it fails.
 
 ```bash
-python lab/check_lab.py claves-huerfanas localhost:<puerto>
+python lab/check_lab.py claves-huerfanas localhost:<port>
 ```
 
-Sin puerto, busca las instancias locales de Power BI Desktop que **estén escuchando** y las
-lista con el comando ya montado.
+With no port, it finds the local Power BI Desktop instances that **are listening** and lists them
+with the command already assembled.
 
-`contoso` hace además otra cosa: ejecuta **las 39 consultas publicadas en las notas de
-campo** y las compara con [`notes_expected.py`](./notes_expected.py). Las consultas no están
-copiadas ahí — las lee del propio `.md` de cada nota, así que editar una nota cambia lo que
-se ejecuta. Es lo que convierte una nota de «afirmación con evidencia citada» en test.
+`contoso` does one more thing: it runs **the 39 queries published in the field notes** and
+compares them against [`notes_expected.py`](./notes_expected.py). The queries are not copied
+there — it reads them from each note's own `.md`, so editing a note changes what runs. That is
+what turns a note from "an assertion with cited evidence" into a test.
 
 ```bash
-python lab/check_lab.py contoso localhost:<puerto>
+python lab/check_lab.py contoso localhost:<port>
 ```
 
-Necesita `pyadomd` **y** el proveedor ADOMD.NET, que no viene con pip: lo instalan Power BI
-Desktop y SSMS. El runner lo busca solo en el GAC; si falta, lo dice por su nombre.
+It needs `pyadomd` **and** the ADOMD.NET provider, which does not come from pip: Power BI Desktop
+and SSMS install it. The runner looks for it in the GAC on its own; if it is missing, it says so
+by name.
 
-**No corre en CI**, y es deliberado: necesita un motor tabular con los datos cargados, y CI no
-tiene Power BI Desktop. Es una herramienta local para cuando se toca un escenario o se
-sospecha de una nota.
+**It does not run in CI**, and that is deliberate: it needs a tabular engine with the data
+loaded, and CI has no Power BI Desktop. It is a local tool for when a scenario is touched or a
+note is under suspicion.
 
-### Validar la estructura del proyecto
+### Validating the project structure
 
-Que el modelo cargue en tu máquina no prueba que el `.pbip` sea válido. Si tienes
+That the model loads on your machine does not prove the `.pbip` is valid. If you have
 [`pbir-cli`](https://github.com/pbir-cli/pbir-cli):
 
 ```bash
 pbir validate "lab/claves-huerfanas/ClavesHuerfanas.Report"
 ```
 
-Los cuatro escenarios pasan como **Valid**. Mereció la pena comprobarlo: la primera versión
-cargaba y refrescaba perfectamente en Power BI Desktop y aun así tenía **dos errores de
-esquema** (`themeCollection` ausente en `report.json`, `$schema` ausente en
-`definition.pbism`). Tolerado hoy no es lo mismo que correcto mañana.
+All four scenarios pass as **Valid**. It was worth checking: the first version loaded and
+refreshed perfectly in Power BI Desktop and still had **two schema errors** (`themeCollection`
+missing from `report.json`, `$schema` missing from `definition.pbism`). Tolerated today is not
+the same as correct tomorrow.

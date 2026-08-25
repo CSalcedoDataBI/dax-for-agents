@@ -1,119 +1,120 @@
-# rendimiento — qué cuesta de verdad sobre dos millones de filas
+# rendimiento — what actually costs, over two million rows
 
-Este escenario existe porque sobre Contoso no se podía medir nada: 126.524 filas se
-resuelven en milisegundos y cualquier comparación caía dentro del ruido.
+This scenario exists because nothing could be measured on Contoso: 126,524 rows resolve in
+milliseconds and any comparison fell inside the noise.
 
-Y salió lo contrario de lo que se fue a buscar. Se construyó para demostrar que `FILTER`
-sobre una tabla entera es caro —el consejo que todo el mundo repite— y **no lo es**. Lo que
-cuesta es otra cosa.
+And it came out the opposite of what it set out to find. It was built to demonstrate that
+`FILTER` over a whole table is expensive — the advice everyone repeats — and **it is not**. What
+costs is something else.
 
-## El modelo
+## The model
 
-Una tabla, `Ventas`, con **2.000.000 de filas**. En los otros dos escenarios sintéticos los
-datos son cinco o siete filas elegidas a mano porque la anomalía se lee de un vistazo; aquí el
-volumen **es** el escenario: por debajo de unos millones de filas un plan bueno y uno malo
-cuestan lo mismo y no hay nada que comparar.
+One table, `Ventas`, with **2,000,000 rows**. In the other two synthetic scenarios the data is
+five or seven hand-picked rows because the anomaly reads at a glance; here the volume **is** the
+scenario: below a few million rows a good plan and a bad one cost the same and there is nothing
+to compare.
 
-| columna | qué es |
+| column | what it is |
 |---|---|
-| `VentaKey` | 1..2.000.000, única |
-| `Importe` | 1..1000, repartido con un paso primo |
-| `CategoriaKey` | 20 valores distintos — cardinalidad 1 entre 100.000 |
+| `VentaKey` | 1..2,000,000, unique |
+| `Importe` | 1..1000, spread with a prime step |
+| `CategoriaKey` | 20 distinct values — cardinality 1 in 100,000 |
 
-Las medidas van **en pares, y las dos de cada par devuelven el mismo número**. Sin eso,
-comparar tiempos no diría nada sobre rendimiento.
+The measures come **in pairs, and the two in each pair return the same number**. Without that,
+comparing times would say nothing about performance.
 
-## De dónde salen los datos
+## Where the data comes from
 
-Un parquet publicado en
-[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) (público,
-MIT, sintético), leído igual que en los otros tres escenarios:
+A Parquet file published in
+[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) (public, MIT,
+synthetic), read the same way as in the other three scenarios:
 
 ```
 Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Ventas.parquet"]))
 ```
 
-**Pesa 385 KB, no 8,9 MB**, y esa diferencia tiene una causa concreta. `VentaKey` son dos
-millones de valores distintos y consecutivos: el diccionario de parquet no le sirve de nada y
-con snappy a secas la columna deja el fichero en 8,9 MB — cuatro veces el Contoso entero.
-Codificada como **diferencias** (`DELTA_BINARY_PACKED`) baja 23×, porque el salto entre una
-fila y la siguiente es siempre 1. Las otras dos columnas conservan su diccionario.
+**It weighs 385 KB, not 8.9 MB**, and that difference has a concrete cause. `VentaKey` is two
+million distinct, consecutive values: the Parquet dictionary is useless for it, and with plain
+snappy that column leaves the file at 8.9 MB — four times the whole of Contoso. Encoded as
+**deltas** (`DELTA_BINARY_PACKED`) it drops 23×, because the step from one row to the next is
+always 1. The other two columns keep their dictionary.
 
-Que Power Query lea esa codificación **está comprobado, no supuesto**: es lo que refresca este
-modelo. Las otras dos columnas se dejaron en diccionario porque no ganaban nada con el cambio.
+That Power Query reads that encoding is **verified, not assumed**: it is what refreshes this
+model. The other two columns were left on dictionary encoding because they gained nothing from
+the change.
 
-Quitar `VentaKey` habría hecho el fichero aún más pequeño —ninguna medida la usa— y **no se
-hizo**: los tiempos publicados abajo se midieron con ella, y un modelo sin ella sería otro
-modelo. Los nueve valores de la tabla final se volvieron a medir tras cambiar el origen y
-salen idénticos.
+Dropping `VentaKey` would have made the file smaller still — no measure uses it — and it **was
+not done**: the times published below were measured with it, and a model without it would be a
+different model. The nine values in the final table were re-measured after changing the source
+and come out identical.
 
-Se regenera con [`build_datasets.py`](../build_datasets.py), de forma determinista:
-`Importe = (i × 7919) mod 1000 + 1` y `CategoriaKey = i mod 20 + 1`.
+It is regenerated with [`build_datasets.py`](../build_datasets.py), deterministically:
+`Importe = (i × 7919) mod 1000 + 1` and `CategoriaKey = i mod 20 + 1`.
 
-## Cómo se midió
+## How it was measured
 
-- **En frío**: `ClearCache` antes de cada corrida. Sin eso se mide la caché, no el plan.
-- **Tres corridas** por medida, se toma la **mediana**.
-- Se publican **razones y órdenes de magnitud**, no tiempos absolutos: un número en
-  milisegundos envejece con el hardware; que una forma cueste ~290 veces más que otra, no.
-- Métricas del propio motor (duración, pico de memoria, consultas al motor de
-  almacenamiento), no tiempo de pared del cliente.
+- **Cold**: `ClearCache` before every run. Without that you measure the cache, not the plan.
+- **Three runs** per measure, taking the **median**.
+- What is published are **ratios and orders of magnitude**, not absolute times: a number in
+  milliseconds ages with the hardware; that one form costs ~290 times another does not.
+- Engine metrics (duration, peak memory, storage-engine queries), not client wall time.
 
-## Lo que NO cuesta
+## What does NOT cost
 
-Las seis medidas del grupo A, **las seis juntas y en frío**:
+The six measures in group A, **all six together and cold**:
 
 | | |
 |---|---|
-| duración | **5 ms** |
-| pico de memoria | 1.027 KB |
-| consultas al motor de almacenamiento | 3 |
+| duration | **5 ms** |
+| peak memory | 1,027 KB |
+| storage-engine queries | 3 |
 
-Y ahí dentro están las tres formas que el consejo habitual da por caras:
+And inside that are the three forms the usual advice treats as expensive:
 
-| par | las dos formas | resultado |
+| pair | the two forms | result |
 |---|---|---|
-| A1 | `FILTER(ALL(Ventas), Ventas[Importe] > 900)` vs el predicado `Ventas[Importe] > 900` | 190.100.000 |
-| A2 | filtrar la **tabla** por categoría vs filtrar la **columna** (20 valores) | 50.900.000 |
-| A3 | predicado que compara **dos columnas** entre sí, sobre la tabla vs sobre las columnas | 642.600.000 |
+| A1 | `FILTER(ALL(Ventas), Ventas[Importe] > 900)` vs the predicate `Ventas[Importe] > 900` | 190,100,000 |
+| A2 | filtering the **table** by category vs filtering the **column** (20 values) | 50,900,000 |
+| A3 | a predicate comparing **two columns** against each other, over the table vs over the columns | 642,600,000 |
 
-**El motor empuja el predicado al almacenamiento en los tres casos**, incluido el que compara
-dos columnas entre sí. Envolver la tabla en un `FILTER` no cuesta nada aquí.
+**The engine pushes the predicate down to storage in all three cases**, including the one that
+compares two columns against each other. Wrapping the table in a `FILTER` costs nothing here.
 
-## Lo que SÍ cuesta
+## What DOES cost
 
-La **transición de contexto**: referenciar una *medida* donde hay contexto de fila obliga a
-convertir esa fila en filtro, dos millones de veces.
+The **context transition**: referencing a *measure* where there is row context forces that row
+to become a filter, two million times.
 
-| medida | mediana en frío | pico de memoria | consultas SE |
+| measure | cold median | peak memory | SE queries |
 |---|---|---|---|
-| `SUMX(Ventas, [Total])` | **871 ms** | **197.300 KB** | 2 |
+| `SUMX(Ventas, [Total])` | **871 ms** | **197,300 KB** | 2 |
 | `SUMX(Ventas, Ventas[Importe])` | **3 ms** | 0 KB | 1 |
-| `CALCULATE([Total], FILTER(ALL(Ventas), [Total] > 900))` | **873 ms** | **197.342 KB** | 2 |
-| `CALCULATE([Total], Ventas[Importe] > 900)` | dentro de los 5 ms del grupo A | — | — |
+| `CALCULATE([Total], FILTER(ALL(Ventas), [Total] > 900))` | **873 ms** | **197,342 KB** | 2 |
+| `CALCULATE([Total], Ventas[Importe] > 900)` | within group A's 5 ms | — | — |
 
-**≈ 290×**, y de cero a ~193 MB de memoria. Las dos parejas devuelven el mismo número que su
-versión barata: 1.001.000.000 y 190.100.000.
+**≈ 290×**, and from zero to ~193 MB of memory. Both pairs return the same number as their cheap
+version: 1,001,000,000 and 190,100,000.
 
-> Esta trampa también está **dibujada**: página «2. Lo que cuesta cada forma (medido, no calculado)» del informe. Ábrela con
-> el `.pbip` y míralo, que es donde se ve lo que el resultado de la consulta no enseña.
+> This trap is also **drawn**: page «2. Lo que cuesta cada forma (medido, no calculado)» of the
+> report. Open it with the `.pbip` and look, because that is where you see what the query result
+> does not show.
 
-## Lo que esto quiere decir
+## What this means
 
-El bulto no está en `FILTER`, ni en pasarle una tabla en vez de una columna. Está en **qué
-hay dentro del predicado**. Un predicado sobre columnas lo resuelve el motor de
-almacenamiento de una pasada; una **medida** dentro obliga al motor de fórmulas a materializar
-y a transitar el contexto fila a fila.
+The bulk is not in `FILTER`, nor in passing it a table instead of a column. It is in **what is
+inside the predicate**. A predicate over columns is resolved by the storage engine in one pass; a
+**measure** inside forces the formula engine to materialise and to transition context row by row.
 
-La regla que se sostiene con estos números no es «no uses FILTER sobre tablas», sino:
+The rule these numbers support is not "don't use FILTER over tables", but:
 
-> **No metas una medida donde vas a iterar dos millones de filas.**
+> **Do not put a measure where you are going to iterate two million rows.**
 
-Ver [`sumx`](../../skills/dax-reference/notes/sumx.md) y [`calculate`](../../skills/dax-reference/notes/calculate.md)
-para el mecanismo, que es el mismo que hace que `SUMX` con una medida dé un número distinto
-al de `SUMX` con la expresión escrita a mano. Aquí se ve lo que además cuesta.
+See [`sumx`](../../skills/dax-reference/notes/sumx.md) and
+[`calculate`](../../skills/dax-reference/notes/calculate.md) for the mechanism, which is the same
+one that makes `SUMX` with a measure return a different number from `SUMX` with the expression
+written out. Here you also see what it costs.
 
-## Las consultas
+## The queries
 
 ```dax
 EVALUATE
@@ -130,30 +131,31 @@ EVALUATE
 }
 ```
 
-| medida | valor |
+| measure | value |
 |---|---|
-| A1 (las dos) | 190.100.000 |
-| A2 (las dos) | 50.900.000 |
-| A3 (las dos) | 642.600.000 |
-| B1 (las dos) | 1.001.000.000 |
-| B2 | 190.100.000 |
+| A1 (both) | 190,100,000 |
+| A2 (both) | 50,900,000 |
+| A3 (both) | 642,600,000 |
+| B1 (both) | 1,001,000,000 |
+| B2 | 190,100,000 |
 
-Esos valores sí son estables y los comprueba [`check_lab.py`](../check_lab.py). **Los tiempos
-no se comprueban automáticamente**: dependen de la máquina, y un umbral en un test sería una
-falsa promesa. Lo que el runner garantiza es que los pares siguen devolviendo lo mismo, que es
-la condición sin la cual la comparación de tiempos no significa nada.
+Those values are stable and [`check_lab.py`](../check_lab.py) checks them. **The times are not
+checked automatically**: they depend on the machine, and a threshold in a test would be a false
+promise. What the runner guarantees is that the pairs still return the same thing, which is the
+condition without which comparing times means nothing.
 
-> Esta trampa también está **dibujada**: página «1. Los pares devuelven el mismo numero» del informe. Ábrela con
-> el `.pbip` y míralo, que es donde se ve lo que el resultado de la consulta no enseña.
+> This trap is also **drawn**: page «1. Los pares devuelven el mismo numero» of the report. Open
+> it with the `.pbip` and look, because that is where you see what the query result does not show.
 
-## Límites, dichos
+## Limits, stated
 
-- **Un modelo, una máquina, un motor.** Estos números salieron de Power BI Desktop en un
-  portátil. La razón ~290× es lo que se publica porque es lo que aguanta un cambio de
-  hardware; los milisegundos están para dar contexto, no para citarlos.
-- **Que aquí no cueste no quiere decir que nunca cueste.** `FILTER` sobre una tabla puede
-  costar mucho con más columnas, con relaciones de por medio o con predicados que el motor no
-  sepa empujar. Lo medido es lo que se afirma: en este modelo, con estos predicados, no cuesta.
-- **El refresco necesita internet**, como los otros tres escenarios. Dos millones de filas
-  entran en 385 KB de parquet, así que la descarga no es el cuello de botella; cargarlas en el
-  motor sí tarda unos segundos.
+- **One model, one machine, one engine.** These numbers came out of Power BI Desktop on a
+  laptop. The ~290× ratio is what gets published because it is what survives a change of
+  hardware; the milliseconds are there for context, not to be quoted.
+- **That it does not cost here does not mean it never costs.** `FILTER` over a table can cost a
+  lot with more columns, with relationships in between, or with predicates the engine cannot push
+  down. What was measured is what is claimed: in this model, with these predicates, it does not
+  cost.
+- **Refreshing needs internet**, like the other three scenarios. Two million rows fit in 385 KB
+  of Parquet, so the download is not the bottleneck; loading them into the engine does take a few
+  seconds.

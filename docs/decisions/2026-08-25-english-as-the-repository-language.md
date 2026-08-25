@@ -60,6 +60,32 @@ In order, and deliberately not all at once:
 | 3 | The 31 field notes | incremental, as each is touched |
 | 4 | The `lab/` READMEs | whoever downloads a `.pbip` reads them |
 
+## What "in English" does not reach: identifiers
+
+Prose translates. The things around it often cannot, and the line is not a matter of taste — it
+is what the reader sees on screen and what the runner compares literally.
+
+**Report page names.** The lab READMEs quote pages by name: «2. El + 0 que mueve el
+denominador». That string is a `displayName` inside the report definition, and it is what a
+reader sees in the Power BI page tab. Translating the quote and not the report would send them
+looking for a page that does not exist; translating both means editing seventeen page
+definitions in four `.pbip` projects. The quotes stay verbatim, in Spanish, because they are UI
+strings and not prose.
+
+**Model identifiers.** `Ventas[Importe]`, `Tiendas[Metros]`, `DimProducto[Nombre]` are bound to
+Parquet files published in another repository. Renaming them means regenerating the data, editing
+the TMDL, and re-measuring every published result. That is a migration with a verification cost,
+not a translation. (Contoso's own schema — `FactSales`, `DimProduct`, `DimDate` — is already
+English, because it is Microsoft's.)
+
+**Result aliases inside queries.** `"con_metros"`, `"es_blanco"`, `"suma_sin_fila_en_blanco"`
+appear both in the query and in the published result that `check_lab.py` compares against a live
+run. A find-and-replace over those changes what the runner expects. They move only when a file is
+rewritten and its result re-measured — never as a sweep.
+
+So a lab README is English prose wrapping Spanish identifiers, and that is the intended end
+state, not a half-finished migration. Each README says so at the top.
+
 ## What stays in Spanish, on purpose
 
 **`docs/decisions/` and `docs/superpowers/`.** These are dated records of what was decided and

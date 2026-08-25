@@ -1,19 +1,19 @@
-# Claves huérfanas y la fila en blanco
+# Orphan keys and the blank row
 
-## Qué demuestra
+## What it demonstrates
 
-Cuando la tabla de hechos referencia una clave que **no existe** en la dimensión, el motor no
-descarta esas filas ni da error: añade una **fila en blanco** a la dimensión y cuelga de ella
-todo lo huérfano. Esa fila no está en los datos, aparece sola.
+When the fact table references a key that **does not exist** in the dimension, the engine does
+not discard those rows and does not raise an error: it adds a **blank row** to the dimension and
+hangs everything orphaned off it. That row is not in the data, it appears on its own.
 
-Contoso no sirve para enseñarlo porque tiene la integridad referencial intacta. Por eso la
-nota de [`countrows`](../../skills/dax-reference/notes/countrows.md) tuvo que **retirar** esa
-afirmación tras una review: no se podía demostrar, y una nota sin demostrar no se escribe.
-Este modelo existe para poder escribirla.
+Contoso cannot show this because its referential integrity is intact. That is why the
+[`countrows`](../../skills/dax-reference/notes/countrows.md) note had to **withdraw** that claim
+after a review: it could not be demonstrated, and a note you cannot demonstrate does not get
+written. This model exists so it can be.
 
-## El modelo
+## The model
 
-Tres tablas, siete filas de datos, y el problema en una sola línea:
+Three tables, seven rows of data, and the problem on a single line:
 
 | `DimProducto` | | | `Ventas` | |
 |---|---|---|---|---|
@@ -23,10 +23,10 @@ Tres tablas, siete filas de datos, y el problema en una sola línea:
 | 3 | Gamma | | 3 | 30 |
 | | | | **99** | **50** |
 
-`Ventas[ProductoKey] = 99` no existe en `DimProducto`. Esas siete filas son la tabla de
-arriba, entera: no hay nada más en el modelo.
+`Ventas[ProductoKey] = 99` does not exist in `DimProducto`. Those seven rows are the table
+above, in full: there is nothing else in the model.
 
-## 1. De qué lado se ve la fila en blanco
+## 1. Which side the blank row shows up on
 
 ```dax
 EVALUATE
@@ -38,21 +38,21 @@ ROW(
 )
 ```
 
-| expresión | resultado | |
+| expression | result | |
 |---|---|---|
-| `COUNTROWS(DimProducto)` | **3** | la tabla base no tiene la fila en blanco |
-| `COUNTROWS(VALUES(DimProducto[ProductoKey]))` | **4** | ← aquí sí aparece |
-| `COUNTROWS(VALUES(Ventas[ProductoKey]))` | **4** | pero por otro motivo: son 1, 2, 3 y **99** |
-| `COUNTROWS(ALLNOBLANKROW(DimProducto[ProductoKey]))` | **3** | la excluye a propósito |
+| `COUNTROWS(DimProducto)` | **3** | the base table does not have the blank row |
+| `COUNTROWS(VALUES(DimProducto[ProductoKey]))` | **4** | ← here it does appear |
+| `COUNTROWS(VALUES(Ventas[ProductoKey]))` | **4** | but for another reason: they are 1, 2, 3 and **99** |
+| `COUNTROWS(ALLNOBLANKROW(DimProducto[ProductoKey]))` | **3** | it excludes it on purpose |
 
-Los dos `VALUES` dan 4 y **no significan lo mismo**. Del lado *uno* el cuarto elemento es la
-fila en blanco que el motor inventó; del lado *muchos* es la clave 99 de verdad, que sigue
-ahí. Confundir las dos cosas fue exactamente el error que la review de la nota detectó.
+The two `VALUES` give 4 and **do not mean the same thing**. On the *one* side the fourth element
+is the blank row the engine invented; on the *many* side it is the real key 99, which is still
+there. Confusing the two was exactly the mistake the note's review caught.
 
-> Esta trampa también está **dibujada**: página «1. De que lado se ve la fila en blanco» del informe. Ábrela con
-> el `.pbip` y míralo, que es donde se ve lo que el resultado de la consulta no enseña.
+> This trap is also **drawn**: page «1. De que lado se ve la fila en blanco» of the report. Open
+> it with the `.pbip` and look, because that is where you see what the query result does not show.
 
-## 2. Dónde van a parar las unidades huérfanas
+## 2. Where the orphaned units end up
 
 ```dax
 EVALUATE
@@ -65,19 +65,19 @@ ORDER BY DimProducto[Nombre]
 
 | Nombre | unidades |
 |---|---|
-| *(en blanco)* | **50** |
+| *(blank)* | **50** |
 | Alfa | 10 |
 | Beta | 20 |
 | Gamma | 30 |
 
-Una fila sin nombre con 50 unidades. En un informe real esto es la categoría vacía que sale
-en el gráfico y que nadie sabe de dónde viene: son las ventas cuyo producto no está en la
-dimensión.
+A row with no name holding 50 units. In a real report this is the empty category that shows up
+in the chart and that nobody can account for: they are the sales whose product is not in the
+dimension.
 
-> Esta trampa también está **dibujada**: página «2. Donde caen las unidades huerfanas» del informe. Ábrela con
-> el `.pbip` y míralo, que es donde se ve lo que el resultado de la consulta no enseña.
+> This trap is also **drawn**: page «2. Donde caen las unidades huerfanas» of the report. Open it
+> with the `.pbip` and look, because that is where you see what the query result does not show.
 
-## 3. El total sí las cuenta, y "limpiar" la fila en blanco las pierde
+## 3. The total does count them, and "cleaning up" the blank row loses them
 
 ```dax
 EVALUATE
@@ -88,46 +88,46 @@ ROW(
 )
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
 | `SUM(Ventas[Unidades])` | **110** |
-| Suma por producto, con `VALUES` | **110** ✅ cuadra |
-| Suma por producto, con `ALLNOBLANKROW` | **60** ❌ faltan 50 |
+| Sum per product, with `VALUES` | **110** ✅ reconciles |
+| Sum per product, with `ALLNOBLANKROW` | **60** ❌ 50 missing |
 
-Esta es la parte que hace daño. `ALLNOBLANKROW` suena a "quitar el ruido", y lo que hace es
-**perder 50 unidades sin avisar**: el detalle deja de sumar el total y la diferencia son
-justo las huérfanas.
+This is the part that hurts. `ALLNOBLANKROW` sounds like "remove the noise", and what it does is
+**lose 50 units without warning**: the detail stops adding up to the total, and the difference is
+exactly the orphans.
 
-> Esta trampa también está **dibujada**: página «3. Limpiar la fila en blanco pierde 50» del informe. Ábrela con
-> el `.pbip` y míralo, que es donde se ve lo que el resultado de la consulta no enseña.
+> This trap is also **drawn**: page «3. Limpiar la fila en blanco pierde 50» of the report. Open
+> it with the `.pbip` and look, because that is where you see what the query result does not show.
 
-## De dónde salen los datos
+## Where the data comes from
 
-Dos parquet de **2 KB entre los dos**, publicados en
-[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) (público,
-MIT, sintético), que el modelo lee igual que los otros tres escenarios:
+Two Parquet files, **2 KB between them**, published in
+[`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) (public, MIT,
+synthetic), which the model reads the same way as the other three scenarios:
 
 ```
 Parquet.Document(Web.Contents(DataBaseUrl, [RelativePath="Ventas.parquet"]))
 ```
 
-La huérfana está **escrita a mano**, no inyectada por un porcentaje de calidad de datos. La
-diferencia importa: el escenario necesita *una* huérfana concreta con *un* número de unidades
-concreto, porque las tres tablas de resultados de arriba cuadran fila a fila con ella. Un
-`orphan_fk_pct = 0.25` daría una huérfana distinta en cada regeneración y los 110, 60 y 50 de
-este README dejarían de ser comprobables.
+The orphan is **written by hand**, not injected by a data-quality percentage. The difference
+matters: the scenario needs *one* specific orphan with *one* specific number of units, because
+the three result tables above reconcile with it row by row. An `orphan_fk_pct = 0.25` would give
+a different orphan on every regeneration and the 110, 60 and 50 in this README would stop being
+checkable.
 
-Se regeneran con [`build_datasets.py`](../build_datasets.py).
+They are regenerated with [`build_datasets.py`](../build_datasets.py).
 
-## Cómo reproducirlo
+## How to reproduce it
 
-1. Abre `ClavesHuerfanas.pbip` en Power BI Desktop.
-2. **Refresca** — al abrir un PBIP el modelo carga sin datos, hay que pedirlo. Necesita
-   internet; no hay credenciales que dar.
-3. Pega las consultas en la vista de consulta DAX, o deja que el runner las ejecute:
+1. Open `ClavesHuerfanas.pbip` in Power BI Desktop.
+2. **Refresh** — opening a PBIP loads the model without data, you have to ask for it. It needs
+   internet; there are no credentials to give.
+3. Paste the queries into the DAX query view, or let the runner execute them:
 
 ```bash
-python lab/check_lab.py claves-huerfanas localhost:<puerto>
+python lab/check_lab.py claves-huerfanas localhost:<port>
 ```
 
-Medido el 2026-08-12 con las tres consultas de arriba, tal cual están escritas.
+Measured on 2026-08-12 with the three queries above, exactly as written.

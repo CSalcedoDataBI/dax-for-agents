@@ -193,7 +193,12 @@ def _as_int(text):
     return int(text.replace(".", "").replace(",", ""))
 
 
-_NUMBER = r"(\d[\d.,]*|\b(?:" + "|".join(sorted(WORDS)) + r")\b)"
+# The lookbehind rejects a hyphen as well as a word character, and it is not decoration:
+# with a plain \b, "Twenty-nine field notes" reads as a claim of NINE notes, because
+# the hyphen is a word boundary. Spanish never showed this — "veintinueve" is one word — so
+# it arrived with the move to English. It is the exact failure the WORDS comment above warns
+# about: a checker that cries wolf on correct prose is a checker someone switches off.
+_NUMBER = r"(\d[\d.,]*|(?<![\w-])(?:" + "|".join(sorted(WORDS)) + r")\b)"
 
 
 def claims_in(text):
