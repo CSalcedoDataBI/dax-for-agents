@@ -8,7 +8,7 @@ promesa: **los modelos donde ejecutarlas**.
 
 Por dos razones distintas, y conviene no mezclarlas.
 
-**La primera: el modelo base.** Veintinueve de las treinta notas se midieron sobre Contoso
+**La primera: el modelo base.** Treinta de las treinta y una notas se midieron sobre Contoso
 Retail, y ese modelo vivía en una máquina. El lector tenía la consulta y el número, y ninguna
 forma de ejecutarlos. Ahora está aquí: [`contoso`](./contoso/).
 
@@ -93,6 +93,11 @@ Lo que **no** se comprueba solo: **el dibujo**. Ningún test sabe si la barra se
 verifica abriendo el `.pbip`, y en las dos páginas con slicer hace falta además mover el slicer —
 en una consulta DAX no hay slicer, que es justo por lo que esas páginas existen.
 
+Esas trece son las páginas de **trampa visual-only**. `contoso` trae cuatro páginas más, de otro
+tipo: una por cada skill de la biblioteca, mostrando lo que aportó al escenario real de
+[`window.md`](../dax-reference/notes/window.md). Ver
+[`lab/contoso/README.md`](./contoso/README.md#las-otras-cuatro-lo-que-aportó-cada-skill).
+
 Y no es una precaución teórica. Al construirlas, mirar el dibujo encontró tres cosas que ninguna
 consulta habría encontrado: un gráfico que salía **vacío** porque a una columna en el pozo de
 valores le faltaba el envoltorio `Aggregation`, una tabla que se quedaba en la cabecera por un
@@ -144,7 +149,7 @@ python lab/check_lab.py claves-huerfanas localhost:<puerto>
 Sin puerto, busca las instancias locales de Power BI Desktop que **estén escuchando** y las
 lista con el comando ya montado.
 
-`contoso` hace además otra cosa: ejecuta **las 34 consultas publicadas en las notas de
+`contoso` hace además otra cosa: ejecuta **las 39 consultas publicadas en las notas de
 campo** y las compara con [`notes_expected.py`](./notes_expected.py). Las consultas no están
 copiadas ahí — las lee del propio `.md` de cada nota, así que editar una nota cambia lo que
 se ejecuta. Es lo que convierte una nota de «afirmación con evidencia citada» en test.

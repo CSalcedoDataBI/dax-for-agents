@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-reutilizable",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 1,
+    "height": 120,
+    "width": 1200,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Las dos medidas de la pagina anterior son envoltorios delgados sobre UNA funcion persistida en el modelo (Contoso.Lab.MediaMovil3M_Corregida: parametros ANYREF EXPR, mas un opcional \"months\" con default 3) -- no logica repetida dos veces. Esta matriz llama a la MISMA funcion dos veces, con distinto months: la reutilizacion es el punto, no la trampa."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

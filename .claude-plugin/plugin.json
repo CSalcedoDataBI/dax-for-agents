@@ -22,6 +22,7 @@
   "skills": [
     "./dax-reference",
     "./dax-lib",
+    "./dax-lib-install",
     "./dax-udf-authoring",
     "./dax-window-functions"
   ]

@@ -175,6 +175,33 @@ table _Measures
 		displayFolder: 06 Trampas visuales
 		lineageTag: b1000000-0000-0000-0000-00000000010a
 
+	/// La version SIN blindar: WINDOW con ALL(DimDate) en la relation, pero AVERAGEX
+	/// evalua cada fila por transicion de contexto, que se COMBINA con cualquier filtro
+	/// externo en vez de reemplazarlo. Con un ano fijado por fuera, un mes fuera de ese
+	/// ano da BLANK en silencio y AVERAGEX lo descarta sin avisar. Envuelve la funcion
+	/// 'Contoso.Lab.MediaMovil3M' (functions.tmdl). Ver dax-reference/notes/window.md.
+	measure 'Media 3M (rota)' = Contoso.Lab.MediaMovil3M(DimDate, DimDate[YearMonth], [Total Sales])
+		formatString: #,0.00
+		displayFolder: 07 Media movil (4 skills)
+		lineageTag: 19879584-3283-4353-8eac-f5db74de48fb
+
+	/// La version corregida: captura el periodo con ADDCOLUMNS antes de CALCULATE, y usa
+	/// REMOVEFILTERS + el valor ya capturado -- pasar la columna a secas dejaria que
+	/// REMOVEFILTERS se llevara por delante el mismo filtro que la transicion de contexto
+	/// acaba de poner. Envuelve 'Contoso.Lab.MediaMovil3M_Corregida' (functions.tmdl).
+	measure 'Media 3M (corregida)' = Contoso.Lab.MediaMovil3M_Corregida(DimDate, DimDate[YearMonth], [Total Sales])
+		formatString: #,0.00
+		displayFolder: 07 Media movil (4 skills)
+		lineageTag: 98d34017-8c0e-4745-9c30-55288b024e0a
+
+	/// La MISMA funcion corregida, con el parametro opcional months=6 en vez del default
+	/// (3). Prueba que la funcion es reutilizable -- el motivo real de dax-udf-authoring
+	/// frente a escribir la logica dos veces.
+	measure 'Media 6M (corregida)' = Contoso.Lab.MediaMovil3M_Corregida(DimDate, DimDate[YearMonth], [Total Sales], 6)
+		formatString: #,0.00
+		displayFolder: 07 Media movil (4 skills)
+		lineageTag: bf5d09ff-82aa-4fbb-b5d5-5e77e6f7d6e1
+
 	column Placeholder
 		dataType: string
 		isHidden

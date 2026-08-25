@@ -14,7 +14,8 @@ can answer "does this already exist?" without a network round trip.
 **It does not carry the DAX code.** The code lives at the registry, which is where it stays
 current. See [`NOTICE`](./NOTICE).
 
-Pairs with **`dax-udf-authoring`** (how to write your own when none fits) and
+Pairs with **`dax-lib-install`** (actually install what this index found),
+**`dax-udf-authoring`** (how to write your own when none fits), and
 **`dax-reference`** (what the built-in functions do).
 
 ## Files
@@ -33,9 +34,9 @@ Pairs with **`dax-udf-authoring`** (how to write your own when none fits) and
    function names too.
 3. **Report what you found**: package id, author, the function signature from `functions[]`,
    and the `url` to its source. Say plainly that the code has to come from the registry.
-4. **Point at the install route**, do not paste code you do not have:
-   - **Tabular Editor 3** → DAX Package Manager → search the package id → Install.
-   - **Manually** → open the package `url` and copy its `functions.tmdl`.
+4. **If the user wants it installed**, not just documented, route to
+   **`dax-lib-install`** — do not fetch, paste, or install the code yourself.
+   That skill owns the fetch, the license check, the install, and the attribution.
 5. **If nothing fits**, say so and route to `dax-udf-authoring`.
 
 ## Example

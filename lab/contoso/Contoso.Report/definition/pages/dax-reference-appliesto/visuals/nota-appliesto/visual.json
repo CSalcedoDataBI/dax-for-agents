@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-appliesto",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 1,
+    "height": 120,
+    "width": 1200,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "MOVINGAVERAGE nativo es appliesTo: [visual-calculation] -- solo se puede usar dentro de un calculo visual de un informe, nunca en una medida ni en una consulta DAX. WINDOW es appliesTo: [measure, column, table, visual-calculation] -- funciona en los cuatro. Por eso la media movil de esta biblioteca se construye con WINDOW + AVERAGEX: es la unica forma de que funcione como medida reutilizable."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -6,7 +6,11 @@
     "rankx-matriz",
     "sumx-total",
     "blanco-desaparece",
-    "format-ordena-mal"
+    "format-ordena-mal",
+    "dax-lib-indice",
+    "dax-reference-appliesto",
+    "dax-window-media-movil",
+    "dax-udf-reutilizable"
   ],
   "activePageName": "allselected-slicer"
 }

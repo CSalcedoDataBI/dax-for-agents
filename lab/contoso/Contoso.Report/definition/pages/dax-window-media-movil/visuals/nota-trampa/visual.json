@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-trampa",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 8,
+    "height": 90,
+    "width": 1200,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Corregir la relation de WINDOW con ALL(DimDate) no basta: la ventana ve las filas correctas, pero AVERAGEX evalua la metrica de cada fila por transicion de contexto, que se COMBINA con cualquier filtro externo en vez de reemplazarlo. Fija el ano en 2024 y mira enero-febrero: Media 3M (rota) se separa de Media 3M (corregida) sin que aparezca ningun error. Medido en dax-reference/notes/window.md."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

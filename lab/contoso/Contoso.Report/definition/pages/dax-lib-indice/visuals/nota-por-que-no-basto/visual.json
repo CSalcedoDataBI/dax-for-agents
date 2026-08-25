@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-por-que-no-basto",
+  "position": {
+    "x": 40,
+    "y": 200,
+    "z": 1,
+    "height": 460,
+    "width": 1200,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "El codigo vive en el registro, no en este indice -- por diseno: publicarlo aqui lo dejaria sin control de version ni licencia. Para este escenario hacia falta codigo en la mano para medirlo contra Contoso, asi que la ruta fue escribir la funcion propia (Contoso.Lab.MediaMovil3M) con la guia de dax-window-functions y dax-udf-authoring -- ver las dos paginas siguientes."
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "El hallazgo real de dax-lib no es \"no hay nada\": es \"ya hay algo, decide si te sirve sin verlo primero\"."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

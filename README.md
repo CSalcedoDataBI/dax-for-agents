@@ -9,14 +9,14 @@ semantics, and the gotchas the documentation doesn't tell you.
 |---|---|
 | **479 function cards** | derived from [`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs), one file each |
 | **34 conceptual pages** | evaluation context, `EVALUATE`/`DEFINE`, operators, glossary |
-| **30 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
+| **31 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
 | **4 lab scenarios** | runnable `.pbip` models. Download, refresh, run the queries yourself |
-| **4 skills** | routed by `INDEX.md`, ~650 tokens of descriptions always on |
+| **5 skills** | routed by `INDEX.md`, ~650 tokens of descriptions always on |
 
 An agent reads `catalog.md` once, finds the function, opens **one** card. The other 376,000
 tokens never enter the context window.
 
-**And what you are not getting.** The 30 field notes are the highest-traffic functions, not
+**And what you are not getting.** The 31 field notes are the highest-traffic functions, not
 coverage of 479. Runnable examples reach further than the notes but still nowhere near all the
 cards. This README deliberately does not print that count — a number typed in prose is exactly
 what rots. For the live figure, run:
@@ -78,7 +78,7 @@ HTTPS from a public data repo, so a `.pbip` of a few kilobytes is all that is ve
 
 | scenario | what only it can show |
 |---|---|
-| `contoso` | the model 29 of the 30 field notes were measured against |
+| `contoso` | the model 30 of the 31 field notes were measured against |
 | `blancos` | a blank in a numeric column: which functions count it and which skip it |
 | `claves-huerfanas` | orphan foreign keys, and the blank row the engine adds on its own |
 | `rendimiento` | 2,000,000 rows, for comparing what a query plan actually costs |
@@ -111,7 +111,7 @@ git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git .claude/s
 
 ### Why the version floor
 
-The four skills sit flat at the repo root rather than under `skills/`, so that the
+The five skills sit flat at the repo root rather than under `skills/`, so that the
 submodule line above drops them straight into `.claude/skills/`. Nothing is
 auto-discovered from there: `.claude-plugin/plugin.json` names each one by path.
 

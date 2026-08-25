@@ -10,7 +10,7 @@ The complete DAX function library, agent-native. Derived from
 [`NOTICE`](./NOTICE)) and annotated with the gotchas the docs leave out.
 
 > **Status.** `generated/` is built — 479 functions and 34 conceptual pages from
-> `MicrosoftDocs/query-docs@323524c`, plus **30 field notes**, each one measured
+> `MicrosoftDocs/query-docs@323524c`, plus **31 field notes**, each one measured
 > against a real model rather than asserted.
 > See [the design spec](../docs/superpowers/specs/2026-08-06-dax-for-agents-design.md).
 

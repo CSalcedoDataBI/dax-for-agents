@@ -1,0 +1,21 @@
+/// Media movil de N meses (rota): relation con ALL, pero la metrica de cada fila se sigue evaluando por transicion de contexto sin blindar contra un filtro externo. Ver dax-reference/notes/window.md.
+function 'Contoso.Lab.MediaMovil3M' =
+		( dateTable : ANYREF EXPR, periodCol : ANYREF EXPR, metric : ANYREF EXPR, months : SCALAR INT64 = 3 ) =>
+		    AVERAGEX(
+		        WINDOW( -(months - 1), REL, 0, REL, SUMMARIZE(ALL(dateTable), periodCol), ORDERBY(periodCol, ASC) ),
+		        metric
+		    )
+	lineageTag: 158f078e-6d77-422e-8045-134657e5e493
+
+/// Media movil de N meses (corregida): captura el valor del periodo con ADDCOLUMNS antes de CALCULATE, y usa REMOVEFILTERS + el valor capturado para blindar la metrica contra cualquier filtro externo sobre la tabla de fechas. Ver dax-reference/notes/window.md.
+function 'Contoso.Lab.MediaMovil3M_Corregida' =
+		( dateTable : ANYREF EXPR, periodCol : ANYREF EXPR, metric : ANYREF EXPR, months : SCALAR INT64 = 3 ) =>
+		    AVERAGEX(
+		        ADDCOLUMNS(
+		            WINDOW( -(months - 1), REL, 0, REL, SUMMARIZE(ALL(dateTable), periodCol), ORDERBY(periodCol, ASC) ),
+		            "@p", periodCol
+		        ),
+		        VAR _cur = [@p]
+		        RETURN CALCULATE(metric, REMOVEFILTERS(dateTable), periodCol = _cur)
+		    )
+	lineageTag: 6a247190-b8c4-4e82-afd6-26311b056a3b

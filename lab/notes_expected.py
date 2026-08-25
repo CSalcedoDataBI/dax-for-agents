@@ -297,4 +297,26 @@ NOTES = {
         ),
         ("error", "Calculation error in measure '_Measures'[forzado]: A table of multiple"),
     ],
+    "window": [
+        (
+            [
+                (805753.73, 805753.73),
+            ], 1,
+        ),
+        (
+            [
+                (834142.57, 805753.73),
+            ], 1,
+        ),
+        (
+            [
+                (24,),
+            ], 1,
+        ),
+        (
+            [
+                (None,),
+            ], 1,
+        ),
+    ],
 }

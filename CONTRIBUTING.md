@@ -53,7 +53,7 @@ Rules:
 
 - **Only write a note when you have something the docs don't say.** A note that paraphrases the
   official description is noise and makes the ★ flag meaningless.
-- **Show it, don't claim it.** The 30 notes already here each carry the query that
+- **Show it, don't claim it.** The 31 notes already here each carry the query that
   demonstrates the trap and the number it returned, measured against a real model. A note
   is the one place in this repo where the content is an assertion rather than derived from
   a source — so it has to bring its own evidence. If you cannot reproduce the behaviour,

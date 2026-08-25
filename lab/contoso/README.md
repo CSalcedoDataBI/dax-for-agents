@@ -1,4 +1,4 @@
-# contoso — el modelo contra el que se midieron 29 de las 30 notas
+# contoso — el modelo contra el que se midieron 30 de las 31 notas
 
 Los otros tres escenarios existen para demostrar una trampa que Contoso **no puede**
 demostrar. Este es el contrario: es el modelo donde se midió casi todo lo demás.
@@ -25,10 +25,17 @@ Las cifras en negrita son las que citan los pies de las notas, y las comprueba
 [`check_lab.py`](../check_lab.py) antes de ejecutar ninguna consulta: si el modelo deja de
 ser el que dicen, no tiene sentido seguir.
 
-## Las seis páginas del informe
+## Las diez páginas del informe
 
-Las notas de campo que este modelo respalda se leen en texto. Seis de ellas **no se pueden
-enseñar** así, porque la trampa solo aparece dentro de un visual. Esas seis están dibujadas:
+Seis existen porque una trampa de las notas de campo **no se puede enseñar en texto** —
+solo vive dentro de un visual. Las otras cuatro, añadidas después, muestran en vivo lo que
+aportó, una por una, cada skill de las que existían al construirlas, a un escenario real (la media móvil de
+3 meses medida en [`dax-reference/notes/window.md`](../../dax-reference/notes/window.md)).
+Los dos grupos comparten el mismo lenguaje visual: un textbox de nota arriba, un visual de
+datos real debajo, contra medidas persistidas en `_Measures.tmdl` — nunca contra una consulta
+suelta.
+
+### Las seis primeras: trampas que solo viven en un visual
 
 | página | qué se ve, y no se puede contar |
 |---|---|
@@ -41,6 +48,19 @@ enseñar** así, porque la trampa solo aparece dentro de un visual. Esas seis es
 
 Ábrelas con el `.pbip`. **El dibujo no lo comprueba ningún test**, y las dos primeras necesitan
 además que muevas el slicer con el ratón.
+
+### Las otras cuatro: lo que aportó cada skill
+
+| página | qué muestra |
+|---|---|
+| dax-lib — ya existe, pero solo el índice | `TimeSeries.MovingAverage` ya está publicado en daxlib.org; el índice dice qué existe, no trae el código |
+| dax-reference — MOVINGAVERAGE no aplica aquí | `MOVINGAVERAGE` nativo es `appliesTo: [visual-calculation]` únicamente; una matriz sin filtro prueba que la alternativa con `WINDOW` sí funciona como medida |
+| dax-window-functions — la trampa medida, en vivo | Fija el slicer de `Year` en 2024: `Media 3M (rota)` se separa de `Media 3M (corregida)` cerca de enero-febrero, sin ningún error visible. La demostración interactiva del hallazgo de `window.md` |
+| dax-udf-authoring — reutilizable, no un one-off | Las dos medidas de la página anterior son envoltorios de una sola función persistida (`Contoso.Lab.MediaMovil3M_Corregida`); esta matriz la llama dos veces con distinto parámetro `months` |
+
+`Contoso.Lab.MediaMovil3M` y `Contoso.Lab.MediaMovil3M_Corregida` viven en
+[`functions.tmdl`](./Contoso.SemanticModel/definition/functions.tmdl) — nuevas desde estas
+cuatro páginas, y requieren `compatibilityLevel: 1702` (antes 1606), también nuevo aquí.
 
 
 ## De dónde salen los datos
@@ -71,7 +91,7 @@ versiona son los ~20 KB de TMDL.
 python lab/check_lab.py contoso localhost:<puerto>
 ```
 
-Eso comprueba primero que el modelo es el que declaran las notas, y después ejecuta **las 34
+Eso comprueba primero que el modelo es el que declaran las notas, y después ejecuta **las 39
 consultas** publicadas en las notas de campo comparándolas con
 [`notes_expected.py`](../notes_expected.py).
 

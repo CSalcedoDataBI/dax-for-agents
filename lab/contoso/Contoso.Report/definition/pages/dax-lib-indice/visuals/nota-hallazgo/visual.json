@@ -1,0 +1,33 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "nota-hallazgo",
+  "position": {
+    "x": 40,
+    "y": 60,
+    "z": 0,
+    "height": 120,
+    "width": 1200,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "TimeSeries.MovingAverage ya existe publicado en daxlib.org (Tate Bowman, v0.1.1) -- funciones Simple, Weighted, LinearWeighted, Exponential, DoubleExponential, Triangular, Geometric, todas sobre WINDOW nativo. dax-lib es un indice: sabe que existe, quien lo escribio y donde esta -- no trae el codigo."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
