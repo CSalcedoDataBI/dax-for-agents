@@ -3,9 +3,9 @@ function: ABS
 model: ninguno
 ---
 
-# ABS — ejemplos
+# ABS — examples
 
-## 1. Lo previsible, y el texto que se convierte solo
+## 1. The predictable part, and the text that converts itself
 
 ```dax
 EVALUATE
@@ -22,11 +22,11 @@ negativo | positivo | cero | texto
 7.5 | 7.5 | 0 | 3
 ```
 
-La cuarta columna es una conversión implícita: la cadena `"-3"` se lee como número. Funciona,
-pero depende de la cultura del modelo — mira [`convert`](./convert.md), donde `"1.5"` sale
-**15** en un modelo en español.
+The fourth column is an implicit conversion: the string `"-3"` is read as a number. It works,
+but it depends on the model's culture — see [`convert`](./convert.md), where `"1.5"` comes out
+as **15** in a Spanish model.
 
-## 2. Un blanco sale en blanco, y aun así vale cero
+## 2. A blank comes out blank, and still equals zero
 
 ```dax
 EVALUATE
@@ -44,17 +44,17 @@ abs_blanco | es_blanco | compara_con_cero | abs_cero | cero_es_blanco
 (blank) | True | True | 0 | False
 ```
 
-Las dos afirmaciones del medio parecen contradecirse y no lo hacen. El blanco entra como cero,
-`ABS(0)` es cero, y un cero que viene de un blanco vuelve a salir como blanco. Un `0` escrito a
-mano devuelve un cero que **no** está en blanco.
+The two middle claims look like they contradict each other and they do not. The blank goes in as
+zero, `ABS(0)` is zero, and a zero that came from a blank comes back out as blank. A `0` written
+by hand returns a zero that is **not** blank.
 
-Importa al filtrar: `FILTER(T, ABS(T[x]) = 0)` se queda también con las filas donde `x` está
-vacío, no solo con las que valen cero.
+It matters when filtering: `FILTER(T, ABS(T[x]) = 0)` also keeps the rows where `x` is empty, not
+only the ones that are zero.
 
-## 3. Es lo que separa «desviación» de «error»
+## 3. It is what separates "deviation" from "error"
 
-El uso real de `ABS` casi siempre es este: una diferencia cuyo signo no interesa, y una suma
-que sin ella se cancela sola.
+The real use of `ABS` is almost always this: a difference whose sign is beside the point, and a
+sum that without it cancels itself out.
 
 ```dax
 EVALUATE
@@ -72,7 +72,7 @@ suma_con_signo | suma_absoluta | media_absoluta
 0 | 10 | 3.333333
 ```
 
-La primera columna dice **0** y no significa que no haya error: significa que los errores se
-compensaron. Es la diferencia entre un sesgo y una magnitud.
+The first column says **0** and that does not mean there is no error: it means the errors
+cancelled each other. That is the difference between a bias and a magnitude.
 
-Ver [`sign`](./sign.md), que responde a la otra mitad de la pregunta.
+See [`sign`](./sign.md), which answers the other half of the question.

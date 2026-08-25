@@ -3,12 +3,12 @@ function: QUOTIENT
 model: ninguno
 ---
 
-# QUOTIENT — ejemplos
+# QUOTIENT — examples
 
-## 1. Trunca hacia cero, no hacia abajo
+## 1. It truncates towards zero, not downwards
 
-Con números positivos las dos cosas coinciden y nadie lo nota. Con negativos se separan, y
-`QUOTIENT` **no** es `INT` de la división.
+With positive numbers the two coincide and nobody notices. With negatives they part company, and
+`QUOTIENT` is **not** `INT` of the division.
 
 ```dax
 EVALUATE
@@ -26,12 +26,13 @@ quotient_pos | int_pos | quotient_neg | int_neg | trunc_neg
 3 | 3 | -3 | -4 | -3
 ```
 
-`QUOTIENT` va con `TRUNC` (hacia cero) y no con `INT` (hacia abajo). Si estás paginando o
-troceando por lotes y algún valor puede ser negativo, la diferencia es un lote entero.
+`QUOTIENT` goes with `TRUNC` (towards zero) and not with `INT` (downwards). If you are paginating
+or batching and some value can be negative, the difference is a whole batch.
 
-## 2. Descarta el resto en silencio, incluso con decimales
+## 2. It discards the remainder silently, decimals included
 
-No redondea: se queda con la parte entera del cociente y tira lo demás sin avisar.
+It does not round: it keeps the integer part of the quotient and throws the rest away without
+warning.
 
 ```dax
 EVALUATE
@@ -48,13 +49,12 @@ casi_cuatro | division_real | decimales_arriba | division_real_2
 3 | 3.966667 | 3 | 3.5
 ```
 
-3,97 se convierte en 3. Es lo que se pide de una división entera, pero conviene verlo escrito
-antes de usarla para repartir importes.
+3.97 becomes 3. It is what integer division is for, but it is worth seeing written down before
+using it to allocate amounts.
 
-## 3. El divisor cero aborta la consulta
+## 3. A zero divisor aborts the query
 
-Como [`mod`](./mod.md) y a diferencia de [`divide`](./divide.md), aquí no hay blanco de
-cortesía.
+Like [`mod`](./mod.md) and unlike [`divide`](./divide.md), there is no courtesy blank here.
 
 ```dax
 EVALUATE
@@ -70,7 +70,7 @@ divisor_cero | dividendo_blanco | divisor_blanco
 aborta | (blank) | aborta
 ```
 
-Un divisor **en blanco** también aborta, porque entra como cero. Ese es el caso que llega desde
-los datos y no desde una constante escrita a mano.
+A **blank** divisor also aborts, because it goes in as zero. That is the case that arrives from
+the data rather than from a constant written by hand.
 
-Ver [`mod`](./mod.md), [`divide`](./divide.md) e [`int`](./int.md).
+See [`mod`](./mod.md), [`divide`](./divide.md) and [`int`](./int.md).

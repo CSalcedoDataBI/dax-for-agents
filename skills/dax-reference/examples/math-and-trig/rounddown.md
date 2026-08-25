@@ -3,12 +3,12 @@ function: ROUNDDOWN
 model: ninguno
 ---
 
-# ROUNDDOWN — ejemplos
+# ROUNDDOWN — examples
 
-## 1. «Abajo» significa HACIA CERO, no hacia menos infinito
+## 1. "Down" means TOWARDS ZERO, not towards minus infinity
 
-Es la confusión que produce cuentas descuadradas con importes negativos. `ROUNDDOWN(-2.7)` no
-es `-3`: es `-2`, porque se acerca al cero. Quien quiera el suelo de verdad necesita
+It is the confusion that produces broken sums with negative amounts. `ROUNDDOWN(-2.7)` is not
+`-3`: it is `-2`, because it moves towards zero. Anyone who wants a real floor needs
 [`int`](./int.md).
 
 ```dax
@@ -26,13 +26,13 @@ positivo | negativo | int_negativo | trunc_negativo
 2 | -2 | -3 | -2
 ```
 
-Con positivos las tres coinciden. Con negativos, `INT` se separa de las otras dos — y solo se
-nota cuando llega el primer importe negativo.
+With positives all three coincide. With negatives, `INT` parts from the other two — and it only
+shows when the first negative amount arrives.
 
-## 2. No mira el medio: siempre corta
+## 2. It does not look at the half: it always cuts
 
-A diferencia de [`round`](./round.md), aquí `.5` no decide nada. Es truncar en la posición que
-le digas.
+Unlike [`round`](./round.md), `.5` decides nothing here. It is truncation at whatever position
+you name.
 
 ```dax
 EVALUATE
@@ -49,7 +49,7 @@ medio_arriba | medio_abajo | casi_tres | dos_decimales
 3 | 2 | 2 | 2.99
 ```
 
-## 3. Decimales negativos, y el blanco
+## 3. Negative decimals, and the blank
 
 ```dax
 EVALUATE
@@ -66,7 +66,7 @@ a_decenas | a_millares | blanco | es_blanco
 1990 | 1000 | (blank) | True
 ```
 
-`ROUNDDOWN(1999, -3)` da 1000: para agrupar por magnitud es lo que se quiere, y para calcular
-un total no lo es.
+`ROUNDDOWN(1999, -3)` gives 1000: for grouping by magnitude that is what you want, and for
+computing a total it is not.
 
-Ver [`roundup`](./roundup.md), que es su espejo y tiene la misma confusión al revés.
+See [`roundup`](./roundup.md), which is its mirror and carries the same confusion in reverse.

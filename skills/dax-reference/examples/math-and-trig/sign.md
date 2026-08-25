@@ -3,11 +3,11 @@ function: SIGN
 model: ninguno
 ---
 
-# SIGN — ejemplos
+# SIGN — examples
 
-## 1. Tres valores y nada más, por pequeño que sea el número
+## 1. Three values and nothing else, however small the number
 
-`SIGN` no gradúa: cualquier negativo es -1 y cualquier positivo es 1, sin importar la magnitud.
+`SIGN` does not grade: any negative is -1 and any positive is 1, whatever the magnitude.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ casi_cero_neg | muy_negativo | cero | casi_cero_pos
 -1 | -1 | 0 | 1
 ```
 
-Que devuelva **0** y no solo ±1 es lo que la hace útil para agrupar en tres cubos —
-empeoró, igual, mejoró— con una sola expresión.
+That it returns **0** and not only ±1 is what makes it useful for bucketing into three — got
+worse, stayed the same, got better — with a single expression.
 
-## 2. El blanco sale en blanco, y eso rompe el agrupamiento en tres
+## 2. The blank comes out blank, and that breaks the three-way bucketing
 
 ```dax
 EVALUATE
@@ -45,12 +45,13 @@ sign_blanco | es_blanco | sign_cero | cero_es_blanco | compara
 (blank) | True | 0 | False | True
 ```
 
-Hay **cuatro** resultados posibles y no tres: -1, 0, 1 y blanco. Un `SWITCH(SIGN([m]), -1, ..., 0, ..., 1, ...)`
-deja las filas sin dato fuera de las tres ramas y las manda al `else`, o a blanco si no hay
-`else`. La comparación `= 0` sí las captura, porque el blanco se compara como cero — así que
-`SWITCH` y `IF([x] = 0, ...)` **no** clasifican igual.
+There are **four** possible results, not three: -1, 0, 1 and blank. A
+`SWITCH(SIGN([m]), -1, ..., 0, ..., 1, ...)` leaves the rows with no data outside all three
+branches and sends them to the `else`, or to blank if there is no `else`. The `= 0` comparison
+does catch them, because the blank compares as zero — so `SWITCH` and `IF([x] = 0, ...)` do
+**not** classify the same way.
 
-## 3. Junto con `ABS`, descompone un número en magnitud y dirección
+## 3. Together with `ABS`, it decomposes a number into magnitude and direction
 
 ```dax
 EVALUATE
@@ -70,8 +71,8 @@ original | direccion | magnitud | reconstruido | cuadra
 -42.5 | -1 | 42.5 | -42.5 | True
 ```
 
-`n = SIGN(n) × ABS(n)` para todo número distinto de cero, y también para el cero. Es la forma
-de ordenar por magnitud sin perder el signo, o de pintar de rojo lo que baja usando el mismo
-valor que da la altura de la barra.
+`n = SIGN(n) × ABS(n)` for every non-zero number, and for zero as well. It is how you sort by
+magnitude without losing the sign, or paint what fell in red using the same value that gives the
+bar its height.
 
-Ver [`abs`](./abs.md).
+See [`abs`](./abs.md).

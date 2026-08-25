@@ -3,12 +3,12 @@ function: EXP
 model: ninguno
 ---
 
-# EXP — ejemplos
+# EXP — examples
 
-## 1. Un blanco sale como 1, no en blanco
+## 1. A blank comes out as 1, not blank
 
-Es la trampa que separa a `EXP` de casi todas sus vecinas. El blanco entra como cero, y `e⁰` es
-**uno**, así que no hay ningún cero que colapsar de vuelta a blanco.
+It is the trap that separates `EXP` from almost all its neighbours. The blank goes in as zero,
+and `e⁰` is **one**, so there is no zero to collapse back to blank.
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ exp_blanco | exp_cero | sqrt_blanco | abs_blanco
 1 | 1 | (blank) | (blank)
 ```
 
-En una columna calculada sobre datos con huecos, `EXP` **rellena** cada hueco con un 1 y las
-otras dos los dejan pasar. Es la misma mecánica que separa a [`cosh`](./cosh.md) de
+In a calculated column over data with gaps, `EXP` **fills** every gap with a 1 and the other two
+let them through. It is the same mechanic that separates [`cosh`](./cosh.md) from
 [`sinh`](./sinh.md).
 
-## 2. El muro está en 710, y es un muro de verdad
+## 2. The wall is at 710, and it is a real wall
 
 ```dax
 EVALUATE ROW("desbordado", EXP(710))
@@ -39,7 +39,7 @@ EVALUATE ROW("desbordado", EXP(710))
 ERROR: An argument of function 'EXP' has the wrong data type or the result is too large or too small.
 ```
 
-Justo por debajo todavía cabe, y por poco:
+Just below it still fits, and only just:
 
 ```dax
 EVALUATE
@@ -56,10 +56,10 @@ exp_709_enorme | exp_1 | exp_menos_1 | producto_es_1
 True | 2.718282 | 0.367879 | 1
 ```
 
-709 y 710 son la frontera del `double`. Un exponente que venga de datos y crezca sin techo
-—una tasa acumulada, por ejemplo— llega ahí antes de lo que parece.
+709 and 710 are the `double`'s frontier. An exponent that comes from data and grows without a
+ceiling — a compounded rate, say — reaches it sooner than you would think.
 
-## 3. Es la inversa de `LN`, y por eso deshace una suma de logaritmos
+## 3. It is the inverse of `LN`, and that is why it undoes a sum of logarithms
 
 ```dax
 EVALUATE
@@ -77,7 +77,7 @@ ln_ida_vuelta | producto | por_logaritmos
 7 | 1.386 | 1.386
 ```
 
-Las dos últimas columnas son la misma cuenta por dos caminos. Ese rodeo es lo que permite
-calcular una media geométrica con las herramientas que hay — ver [`ln`](./ln.md).
+The last two columns are the same sum by two routes. That detour is what makes it possible to
+compute a geometric mean with the tools available — see [`ln`](./ln.md).
 
-Ver [`ln`](./ln.md), [`power`](./power.md) y [`sinh`](./sinh.md).
+See [`ln`](./ln.md), [`power`](./power.md) and [`sinh`](./sinh.md).

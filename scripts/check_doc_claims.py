@@ -65,6 +65,7 @@ HISTORICAL = [
     "CHANGELOG.md",                                   # release-please, past releases
     os.path.join("docs", "decisions"),                # what was true when decided
     os.path.join("docs", "superpowers"),              # specs and plans, dated
+    os.path.join("docs", "examples-es"),              # frozen Spanish snapshot of examples/
     "HANDOFF.md",                                     # a session snapshot, true when written
     ".handoffs",                                      # the archived ones, same reason
 ]

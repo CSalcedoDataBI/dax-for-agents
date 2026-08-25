@@ -3,12 +3,12 @@ function: TRUNC
 model: ninguno
 ---
 
-# TRUNC — ejemplos
+# TRUNC — examples
 
-## 1. Corta hacia cero, y por eso NO es INT
+## 1. It cuts towards zero, and that is why it is NOT INT
 
-Es la misma distinción de toda la familia, vista desde el otro lado: `TRUNC` quita los
-decimales sin mirar el signo. `INT` baja al entero inferior.
+It is the same distinction as across the whole family, seen from the other side: `TRUNC` drops
+the decimals without looking at the sign. `INT` goes down to the lower integer.
 
 ```dax
 EVALUATE
@@ -25,9 +25,9 @@ positivo | negativo | int_negativo | coinciden_en_positivo
 2 | -2 | -3 | True
 ```
 
-## 2. Acepta un segundo argumento, como ROUND
+## 2. It takes a second argument, like ROUND
 
-Lo que la separa de `INT`, que solo hace enteros. `TRUNC` puede cortar en cualquier posición.
+That is what separates it from `INT`, which only makes integers. `TRUNC` can cut at any position.
 
 ```dax
 EVALUATE
@@ -44,9 +44,9 @@ sin_segundo | dos_decimales | a_decenas | negativo_dos
 2 | 2.78 | 1990 | -2.78
 ```
 
-`TRUNC(-2.789, 2)` da `-2,78`, no `-2,79`: corta, no redondea.
+`TRUNC(-2.789, 2)` gives `-2.78`, not `-2.79`: it cuts, it does not round.
 
-## 3. Con blanco y con cero
+## 3. With blank and with zero
 
 ```dax
 EVALUATE
@@ -63,8 +63,8 @@ blanco | es_blanco | cero | cero_neg
 (blank) | True | 0 | 0
 ```
 
-Los dos últimos son la señal de que esto no es redondeo: `0,9999` da 0 y `-0,9999` da 0
-también — el mismo cero por los dos lados.
+The last two are the sign that this is not rounding: `0.9999` gives 0 and `-0.9999` gives 0 as
+well — the same zero from both sides.
 
-Ver [`int`](./int.md) y [`rounddown`](./rounddown.md), que hace lo mismo que `TRUNC` pero se
-llama de otra manera.
+See [`int`](./int.md) and [`rounddown`](./rounddown.md), which does the same as `TRUNC` but goes
+by another name.

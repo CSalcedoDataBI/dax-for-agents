@@ -3,12 +3,12 @@ function: INT
 model: ninguno
 ---
 
-# INT — ejemplos
+# INT — examples
 
-## 1. Es el ÚNICO que va hacia menos infinito
+## 1. It is the ONLY one that goes towards minus infinity
 
-De toda la familia, `INT` es el que hace suelo de verdad. `TRUNC` y `ROUNDDOWN` cortan hacia
-cero. Con positivos los tres coinciden; con negativos, `INT` se separa.
+Of the whole family, `INT` is the one that really floors. `TRUNC` and `ROUNDDOWN` cut towards
+zero. With positives all three agree; with negatives, `INT` parts company.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ int_positivo | int_negativo | trunc | rounddown
 2 | -3 | -2 | -2
 ```
 
-Si estás repartiendo importes negativos —devoluciones, ajustes— elegir mal aquí descuadra el
-total en una unidad por fila.
+If you are allocating negative amounts — refunds, adjustments — choosing wrong here throws the
+total out by one unit per row.
 
-## 2. Sin decimales, no toca nada
+## 2. With no decimals, it touches nothing
 
 ```dax
 EVALUATE
@@ -45,9 +45,9 @@ entero | negativo_ent | casi_entero | justo_medio
 42 | -42 | 2 | -1
 ```
 
-`INT(-0.5)` es `-1`: cualquier parte decimal en un negativo baja un entero.
+`INT(-0.5)` is `-1`: any decimal part in a negative drops it a whole integer.
 
-## 3. Con blanco y con cero
+## 3. With blank and with zero
 
 ```dax
 EVALUATE
@@ -64,5 +64,5 @@ blanco | es_blanco | cero | cero_neg
 (blank) | True | 0 | 0
 ```
 
-Ver [`trunc`](./trunc.md) para la versión que corta hacia cero, y
-[`quotient`](./quotient.md) para la división entera, que tiene la misma decisión dentro.
+See [`trunc`](./trunc.md) for the version that cuts towards zero, and
+[`quotient`](./quotient.md) for integer division, which carries the same decision inside.

@@ -3,12 +3,12 @@ function: EVEN
 model: ninguno
 ---
 
-# EVEN — ejemplos
+# EVEN — examples
 
-## 1. No comprueba si un número es par: lo redondea al par siguiente
+## 1. It does not check whether a number is even: it rounds up to the next even one
 
-El nombre engaña a todo el mundo una vez. `EVEN` no devuelve verdadero ni falso — devuelve
-**otro número**.
+The name fools everybody once. `EVEN` returns neither true nor false — it returns **another
+number**.
 
 ```dax
 EVALUATE
@@ -25,12 +25,12 @@ even_3 | even_2 | even_1 | even_0
 4 | 2 | 2 | 0
 ```
 
-Para preguntar si algo es par, la forma es `MOD(n, 2) = 0`. Ojo con los negativos, que en
-[`mod`](./mod.md) no se comportan como en otros lenguajes.
+To ask whether something is even, the form is `MOD(n, 2) = 0`. Watch out for negatives, which in
+[`mod`](./mod.md) do not behave the way they do in other languages.
 
-## 2. Redondea ALEJÁNDOSE del cero, no hacia arriba
+## 2. It rounds AWAY from zero, not upwards
 
-Con positivos «al par siguiente» y «hacia arriba» son lo mismo. Con negativos no.
+With positives, "to the next even" and "upwards" are the same thing. With negatives they are not.
 
 ```dax
 EVALUATE
@@ -47,10 +47,10 @@ even_m3 | even_m1 | even_m2 | ceiling_m3
 -4 | -2 | -2 | -2
 ```
 
-`EVEN(-3)` es **-4** y `CEILING(-3, 2)` es -2. Van en direcciones opuestas: `EVEN` se aleja del
-cero y [`ceiling`](./ceiling.md) sube hacia el infinito positivo.
+`EVEN(-3)` is **-4** and `CEILING(-3, 2)` is -2. They go in opposite directions: `EVEN` moves away
+from zero and [`ceiling`](./ceiling.md) climbs towards positive infinity.
 
-## 3. Con decimales sube al par, aunque el salto sea mínimo
+## 3. With decimals it goes up to the even one, however small the step
 
 ```dax
 EVALUATE
@@ -67,11 +67,12 @@ even_1_5 | even_2_0001 | even_blanco | even_texto
 2 | 4 | (blank) | 4
 ```
 
-`EVEN(2.0001)` da **4**: cualquier cosa por encima de 2 ya necesita el par siguiente.
+`EVEN(2.0001)` gives **4**: anything above 2 already needs the next even number.
 
-La columna del blanco merece pararse. `EVEN(BLANK())` sale **en blanco**, y `EVEN(0)` sale
-**0**. No es incoherencia: el blanco entra como cero, `EVEN(0)` es cero, y un cero que viene de
-un blanco vuelve a salir como blanco. Compara con [`odd`](./odd.md), donde `ODD(BLANK())` es
-**1** por esto mismo — su resultado en cero no es cero, así que no hay nada que colapsar.
+The blank column is worth stopping on. `EVEN(BLANK())` comes out **blank**, and `EVEN(0)` comes
+out **0**. It is not an inconsistency: the blank goes in as zero, `EVEN(0)` is zero, and a zero
+that came from a blank comes back out as blank. Compare with [`odd`](./odd.md), where
+`ODD(BLANK())` is **1** for this very reason — its result at zero is not zero, so there is nothing
+to collapse.
 
-Ver [`odd`](./odd.md), [`ceiling`](./ceiling.md) y [`mround`](./mround.md).
+See [`odd`](./odd.md), [`ceiling`](./ceiling.md) and [`mround`](./mround.md).

@@ -3,12 +3,12 @@ function: GCD
 model: ninguno
 ---
 
-# GCD — ejemplos
+# GCD — examples
 
-## 1. Admite solo DOS argumentos, no los 255 de Excel
+## 1. It takes only TWO arguments, not Excel's 255
 
-Esto es lo primero que rompe al portar una fórmula. En Excel `GCD` acepta hasta 255 números; en
-DAX, dos.
+This is the first thing that breaks when porting a formula. In Excel `GCD` accepts up to 255
+numbers; in DAX, two.
 
 ```dax
 EVALUATE ROW("tres_numeros", GCD(24, 36, 60))
@@ -18,7 +18,8 @@ EVALUATE ROW("tres_numeros", GCD(24, 36, 60))
 ERROR: Too many arguments were passed to the GCD function. The maximum argument count for the function is 2.
 ```
 
-Con más de dos hay que anidar, y esto sí funciona porque el máximo común divisor es asociativo:
+With more than two you have to nest, and this does work because the greatest common divisor is
+associative:
 
 ```dax
 EVALUATE
@@ -35,9 +36,9 @@ dos | tres_anidada | coprimos | iguales
 12 | 12 | 1 | 7
 ```
 
-## 2. Redondea los decimales — Excel los trunca
+## 2. It rounds decimals — Excel truncates them
 
-Misma fórmula, distinta respuesta al migrar. Y `FACT`, en el mismo repertorio, sí trunca.
+Same formula, different answer on migration. And `FACT`, in the same repertoire, does truncate.
 
 ```dax
 EVALUATE
@@ -55,10 +56,11 @@ cuatro_coma_cuatro | cuatro_coma_cinco | cuatro_coma_seis | cuatro | cinco
 2 | 1 | 1 | 2 | 1
 ```
 
-4,4 se comporta como 4 y 4,5 como 5. Si trunca lo esperabas, 4,5 te da 1 donde creías tener 2.
-Redondea tú antes con la regla que quieras y deja de depender de esta.
+4.4 behaves like 4 and 4.5 like 5. If you expected truncation, 4.5 gives you 1 where you thought
+you had 2. Round it yourself beforehand with whatever rule you want, and stop depending on this
+one.
 
-## 3. Los negativos abortan; el cero y el blanco no
+## 3. Negatives abort; zero and blank do not
 
 ```dax
 EVALUATE
@@ -75,8 +77,8 @@ cero | blanco | ambos_cero | negativo
 5 | 5 | 0 | aborta
 ```
 
-`GCD(0, n)` es `n`, que es la definición correcta. El blanco entra como cero y se comporta
-igual. Un negativo, en cambio, mata la consulta — y en datos reales el negativo llega antes que
-el cero.
+`GCD(0, n)` is `n`, which is the correct definition. The blank goes in as zero and behaves the
+same. A negative, on the other hand, kills the query — and in real data the negative arrives
+before the zero does.
 
-Ver [`lcm`](./lcm.md), que comparte estas reglas, y [`fact`](./fact.md), que no.
+See [`lcm`](./lcm.md), which shares these rules, and [`fact`](./fact.md), which does not.

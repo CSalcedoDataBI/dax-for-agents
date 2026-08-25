@@ -3,13 +3,13 @@ function: MOD
 model: ninguno
 ---
 
-# MOD — ejemplos
+# MOD — examples
 
-## 1. El signo lo pone el DIVISOR, no el dividendo
+## 1. The sign comes from the DIVISOR, not the dividend
 
-Aquí es donde `MOD` sorprende a quien viene de C, Java, JavaScript o Go, donde el resto se
-queda con el signo del dividendo. DAX sigue la convención de Excel: **el resultado tiene el
-signo del segundo argumento.**
+This is where `MOD` surprises anyone arriving from C, Java, JavaScript or Go, where the
+remainder keeps the dividend's sign. DAX follows Excel's convention: **the result carries the
+sign of the second argument.**
 
 ```dax
 EVALUATE
@@ -26,13 +26,13 @@ pos_pos | neg_pos | pos_neg | neg_neg
 1 | 2 | -2 | -1
 ```
 
-`MOD(-10, 3)` es **2**, no -1. Si estás usando `MOD` para repartir en grupos o para detectar
-pares, con dividendos negativos el reparto no es el que crees.
+`MOD(-10, 3)` is **2**, not -1. If you are using `MOD` to spread into groups or to detect even
+numbers, with negative dividends the spread is not the one you think.
 
-## 2. No cuadra con `QUOTIENT`, y esa es la consecuencia
+## 2. It does not reconcile with `QUOTIENT`, and that is the consequence
 
-La identidad `dividendo = divisor × cociente + resto` **se rompe** al mezclar las dos, porque
-`QUOTIENT` trunca hacia cero y `MOD` no.
+The identity `dividend = divisor × quotient + remainder` **breaks** when you mix the two, because
+`QUOTIENT` truncates towards zero and `MOD` does not.
 
 ```dax
 EVALUATE
@@ -49,13 +49,13 @@ quotient | mod | reconstruido | original
 -3 | 2 | -7 | -10
 ```
 
-Sale **-7** donde debería salir -10. El cociente que sí cuadra con este resto es el de
-`INT(-10/3)` = -4, no el de `QUOTIENT`. Escribir las dos juntas y esperar que se cancelen es
-un error que no da ningún aviso.
+It comes out **-7** where it should be -10. The quotient that does reconcile with this remainder
+is `INT(-10/3)` = -4, not `QUOTIENT`'s. Writing the two together and expecting them to cancel is
+a mistake that gives no warning at all.
 
-## 3. Acepta decimales, y el divisor cero aborta
+## 3. It accepts decimals, and a zero divisor aborts
 
-El nombre y la costumbre sugieren enteros. No lo es.
+The name and the habit suggest integers. It is not.
 
 ```dax
 EVALUATE
@@ -72,7 +72,7 @@ decimal | divisor_decimal | divisor_cero | dividendo_blanco
 1.5 | 0 | aborta | (blank)
 ```
 
-El divisor cero **no** devuelve blanco como haría [`divide`](./divide.md): aborta. Si el
-divisor puede venir de datos, envuélvelo.
+A zero divisor does **not** return blank the way [`divide`](./divide.md) would: it aborts. If the
+divisor can come from data, wrap it.
 
-Ver [`quotient`](./quotient.md), [`even`](./even.md) y [`odd`](./odd.md).
+See [`quotient`](./quotient.md), [`even`](./even.md) and [`odd`](./odd.md).

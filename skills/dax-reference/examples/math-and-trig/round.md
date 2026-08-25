@@ -3,13 +3,13 @@ function: ROUND
 model: ninguno
 ---
 
-# ROUND — ejemplos
+# ROUND — examples
 
-## 1. El medio se va SIEMPRE hacia afuera, no al par
+## 1. The half always goes outwards, never to even
 
-DAX no usa redondeo bancario. `2.5` sube a 3 y `3.5` sube a 4 — los dos se alejan del cero. Si
-vienes de Python, de R o de SQL Server con `ROUND` bancario, esta es la diferencia que hace
-que los totales no cuadren entre sistemas.
+DAX does not use banker's rounding. `2.5` goes up to 3 and `3.5` goes up to 4 — both move away
+from zero. If you come from Python, from R or from SQL Server with banker's `ROUND`, this is the
+difference that makes totals disagree across systems.
 
 ```dax
 EVALUATE
@@ -26,11 +26,11 @@ dos_y_medio | tres_y_medio | negativo | menos_medio
 3 | 4 | -3 | -1
 ```
 
-Con redondeo al par, `2.5` daría 2 y `3.5` daría 4. Aquí dan 3 y 4.
+With round-half-to-even, `2.5` would give 2 and `3.5` would give 4. Here they give 3 and 4.
 
-## 2. Decimales negativos redondean a la izquierda de la coma
+## 2. Negative decimals round to the left of the point
 
-Poco conocido y útil para agrupar magnitudes sin dividir.
+Little known, and useful for grouping magnitudes without dividing.
 
 ```dax
 EVALUATE
@@ -47,12 +47,12 @@ dos_decimales | a_decenas | a_millares | mas_alla
 1234.57 | 1230 | 1000 | 0
 ```
 
-Redondear más allá de la magnitud del número da cero, no error.
+Rounding beyond the number's own magnitude gives zero, not an error.
 
-## 3. Con blanco devuelve blanco, y no cero
+## 3. With a blank it returns blank, not zero
 
-Así que un `ROUND` sobre una columna con huecos no los rellena — que es lo correcto, y a la vez
-la razón por la que el resultado sigue desapareciendo del visual.
+So a `ROUND` over a column with gaps does not fill them — which is correct, and at the same time
+the reason the result keeps disappearing from the visual.
 
 ```dax
 EVALUATE
@@ -69,5 +69,5 @@ blanco | es_blanco | cero | ya_entero
 (blank) | True | 0 | 42
 ```
 
-Ver [`rounddown`](./rounddown.md) y [`roundup`](./roundup.md), que **no** son «hacia abajo» y
-«hacia arriba» en el sentido que parece, y [`int`](./int.md), que sí lo es.
+See [`rounddown`](./rounddown.md) and [`roundup`](./roundup.md), which are **not** "down" and
+"up" in the sense they appear to be, and [`int`](./int.md), which is.

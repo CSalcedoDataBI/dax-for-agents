@@ -3,12 +3,12 @@ function: FACT
 model: ninguno
 ---
 
-# FACT — ejemplos
+# FACT — examples
 
-## 1. Trunca los decimales, y ahí se separa de `GCD` y `LCM`
+## 1. It truncates decimals, and that is where it parts from `GCD` and `LCM`
 
-Las tres reciben números que deberían ser enteros. `FACT` **trunca** y las otras dos
-**redondean**, así que la misma entrada da respuestas distintas según la función.
+All three take numbers that ought to be integers. `FACT` **truncates** and the other two
+**round**, so the same input gives different answers depending on the function.
 
 ```dax
 EVALUATE
@@ -25,10 +25,11 @@ fact_4_9 | fact_4_1 | fact_4 | gcd_4_9_con_6
 24 | 24 | 24 | 1
 ```
 
-`FACT(4.9)` es 24, o sea 4!. Pero `GCD(4.9, 6)` trata el 4,9 como **5** y devuelve 1 en vez del
-2 que daría con 4. Dos reglas distintas en la misma familia — está medido en [`gcd`](./gcd.md).
+`FACT(4.9)` is 24, that is 4!. But `GCD(4.9, 6)` treats the 4.9 as **5** and returns 1 instead of
+the 2 it would give with 4. Two different rules in the same family — it is measured in
+[`gcd`](./gcd.md).
 
-## 2. El techo está en 170, y el blanco vale 1
+## 2. The ceiling is at 170, and the blank is worth 1
 
 ```dax
 EVALUATE ROW("desbordado", FACT(171))
@@ -38,7 +39,7 @@ EVALUATE ROW("desbordado", FACT(171))
 ERROR: An argument of function 'FACT' has the wrong data type or the result is too large or too small.
 ```
 
-Justo debajo todavía cabe, y el blanco tiene una respuesta que sorprende:
+Just below it still fits, and the blank has an answer that surprises:
 
 ```dax
 EVALUATE
@@ -55,11 +56,11 @@ fact_170_enorme | fact_0 | fact_blanco | negativo
 True | 1 | 1 | aborta
 ```
 
-`FACT(BLANK())` es **1**, no blanco: el blanco entra como cero y `0!` es uno, que no es cero,
-así que no hay nada que colapsar. Misma mecánica que [`exp`](./exp.md) y [`cosh`](./cosh.md).
-En una columna calculada eso significa que los huecos se rellenan con un 1 en silencio.
+`FACT(BLANK())` is **1**, not blank: the blank goes in as zero and `0!` is one, which is not
+zero, so there is nothing to collapse. Same mechanic as [`exp`](./exp.md) and
+[`cosh`](./cosh.md). In a calculated column that means the gaps get filled with a 1 in silence.
 
-## 3. Crece tan rápido que 170 es poco margen
+## 3. It grows so fast that 170 is not much headroom
 
 ```dax
 EVALUATE
@@ -76,7 +77,8 @@ fact_10 | fact_20 | fact_50_orden | fact_100_orden
 3628800 | 2432902008176640000 | 64.4831 | 157.97
 ```
 
-50! ya tiene 65 dígitos. Para combinatoria sobre datos reales, lo práctico es trabajar con
-[`log10`](./log10.md) del factorial y no con el factorial, o el desbordamiento llega enseguida.
+50! already has 65 digits. For combinatorics over real data, the practical route is to work with
+the [`log10`](./log10.md) of the factorial rather than the factorial itself, or the overflow
+arrives immediately.
 
-Ver [`gcd`](./gcd.md), [`lcm`](./lcm.md) y [`log10`](./log10.md).
+See [`gcd`](./gcd.md), [`lcm`](./lcm.md) and [`log10`](./log10.md).

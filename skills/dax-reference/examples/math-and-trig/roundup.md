@@ -3,12 +3,12 @@ function: ROUNDUP
 model: ninguno
 ---
 
-# ROUNDUP — ejemplos
+# ROUNDUP — examples
 
-## 1. «Arriba» significa ALEJÁNDOSE DE CERO
+## 1. "Up" means AWAY FROM ZERO
 
-El espejo de [`rounddown`](./rounddown.md), con la misma confusión al revés:
-`ROUNDUP(-2.1)` es `-3`, no `-2`. Un negativo se hace **más negativo**.
+The mirror of [`rounddown`](./rounddown.md), with the same confusion in reverse:
+`ROUNDUP(-2.1)` is `-3`, not `-2`. A negative becomes **more negative**.
 
 ```dax
 EVALUATE
@@ -25,12 +25,13 @@ positivo | negativo | ceiling | iso
 3 | -3 | -2 | -2
 ```
 
-`CEILING` con significancia positiva sí va hacia más infinito, así que da `-2`. Las dos
-funciones que suenan a «hacia arriba» no coinciden en los negativos.
+`CEILING` with a positive significance does go towards positive infinity, so it gives `-2`. The
+two functions that sound like "upwards" do not agree on negatives.
 
-## 2. Cualquier resto sube, por pequeño que sea
+## 2. Any remainder rounds up, however small
 
-Es lo que se quiere para calcular cajas, licencias o lotes: sobra un poco, hace falta uno más.
+It is what you want for working out boxes, licences or batches: a little is left over, one more
+is needed.
 
 ```dax
 EVALUATE
@@ -47,7 +48,7 @@ justo | un_pelin | cajas_de_12 | dos_dec
 2 | 3 | 3 | 2.01
 ```
 
-## 3. Decimales negativos, y el blanco
+## 3. Negative decimals, and the blank
 
 ```dax
 EVALUATE

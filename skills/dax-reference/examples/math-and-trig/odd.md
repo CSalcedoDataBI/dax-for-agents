@@ -3,12 +3,12 @@ function: ODD
 model: ninguno
 ---
 
-# ODD — ejemplos
+# ODD — examples
 
-## 1. No comprueba si un número es impar: lo redondea al impar siguiente
+## 1. It does not check whether a number is odd: it rounds up to the next odd one
 
-Igual que [`even`](./even.md), el nombre promete una pregunta y la función devuelve **otro
-número**.
+Just like [`even`](./even.md), the name promises a question and the function returns **another
+number**.
 
 ```dax
 EVALUATE
@@ -25,12 +25,12 @@ odd_2 | odd_3 | odd_1 | odd_1_5
 3 | 3 | 1 | 3
 ```
 
-Para preguntar si algo es impar, la forma es `MOD(n, 2) <> 0`, con el cuidado que pide
-[`mod`](./mod.md) cuando hay negativos.
+To ask whether something is odd, the form is `MOD(n, 2) <> 0`, with the care [`mod`](./mod.md)
+calls for when there are negatives.
 
-## 2. Se aleja del cero, y el cero **no** se queda quieto
+## 2. It moves away from zero, and zero does **not** stay put
 
-Esta es la diferencia real con `EVEN`, y la que hace que el blanco se comporte distinto.
+This is the real difference from `EVEN`, and the one that makes the blank behave differently.
 
 ```dax
 EVALUATE
@@ -47,10 +47,10 @@ odd_0 | even_0 | odd_m2 | odd_m1
 1 | 0 | -3 | -1
 ```
 
-`ODD(0)` es **1**: el cero no es impar, así que hay que moverse. `EVEN(0)` es 0 porque ya
-estaba donde tenía que estar. Ese detalle, que parece trivia, decide el punto siguiente.
+`ODD(0)` is **1**: zero is not odd, so it has to move. `EVEN(0)` is 0 because it was already where
+it had to be. That detail, which looks like trivia, decides the next point.
 
-## 3. Un blanco sale como 1, no en blanco
+## 3. A blank comes out as 1, not blank
 
 ```dax
 EVALUATE
@@ -67,11 +67,11 @@ odd_blanco | even_blanco | odd_texto | odd_m0_5
 1 | (blank) | 3 | -1
 ```
 
-El blanco entra como cero en las dos. `EVEN(0)` es cero, y un cero que viene de un blanco
-vuelve a salir en blanco; `ODD(0)` es **1**, que no es cero, así que no hay nada que colapsar y
-el 1 se queda. Es la misma mecánica que separa a [`sinh`](./sinh.md) de [`cosh`](./cosh.md).
+The blank goes in as zero in both. `EVEN(0)` is zero, and a zero that came from a blank comes back
+out blank; `ODD(0)` is **1**, which is not zero, so there is nothing to collapse and the 1 stays.
+It is the same mechanic that separates [`sinh`](./sinh.md) from [`cosh`](./cosh.md).
 
-En una columna calculada sobre datos con huecos, eso significa que `ODD` **rellena** los huecos
-con un 1 y `EVEN` los deja pasar. Rara vez es lo que se quería.
+In a calculated column over data with gaps, that means `ODD` **fills** the gaps with a 1 and
+`EVEN` lets them through. It is rarely what was wanted.
 
-Ver [`even`](./even.md), [`mround`](./mround.md) y [`ceiling`](./ceiling.md).
+See [`even`](./even.md), [`mround`](./mround.md) and [`ceiling`](./ceiling.md).

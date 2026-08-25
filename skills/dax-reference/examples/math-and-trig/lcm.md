@@ -3,9 +3,9 @@ function: LCM
 model: ninguno
 ---
 
-# LCM — ejemplos
+# LCM — examples
 
-## 1. Dos argumentos como máximo, igual que `GCD`
+## 1. Two arguments at most, just like `GCD`
 
 ```dax
 EVALUATE
@@ -22,10 +22,10 @@ dos | tres_anidada | coprimos | uno_multiplo_del_otro
 12 | 60 | 63 | 12
 ```
 
-Con coprimos el mínimo común múltiplo es el producto; cuando uno divide al otro, es el mayor.
-Para más de dos números hay que anidar, como en [`gcd`](./gcd.md).
+With coprimes the least common multiple is the product; when one divides the other, it is the
+larger. For more than two numbers you have to nest, as in [`gcd`](./gcd.md).
 
-## 2. Redondea los decimales, no los trunca
+## 2. It rounds decimals, it does not truncate them
 
 ```dax
 EVALUATE
@@ -42,10 +42,10 @@ cuatro_coma_cuatro | cuatro_coma_seis | cuatro | cinco
 12 | 30 | 12 | 30
 ```
 
-4,6 se comporta como 5 y devuelve 30 en vez de 12. Es la misma regla de [`gcd`](./gcd.md) y la
-contraria de [`fact`](./fact.md).
+4.6 behaves like 5 and returns 30 instead of 12. It is the same rule as [`gcd`](./gcd.md) and the
+opposite of [`fact`](./fact.md).
 
-## 3. El cero absorbe, los negativos abortan, y el resultado crece rápido
+## 3. Zero absorbs, negatives abort, and the result grows fast
 
 ```dax
 EVALUATE
@@ -62,10 +62,10 @@ con_cero | con_blanco | negativo | grandes
 0 | 0 | aborta | 8117355456
 ```
 
-`LCM(0, n)` es **0**, no `n` — al revés que [`gcd`](./gcd.md), donde el cero es el elemento
-neutro. Un blanco en los datos convierte todo el cálculo en cero sin avisar.
+`LCM(0, n)` is **0**, not `n` — the opposite of [`gcd`](./gcd.md), where zero is the identity. A
+blank in the data turns the whole calculation into zero without warning.
 
-Y con dos números de seis cifras el resultado ya pasa de 8.000 millones: `LCM(a, b)` es
-`a × b / GCD(a, b)`, así que con coprimos grandes desborda antes de lo que parece.
+And with two six-figure numbers the result already passes 8 billion: `LCM(a, b)` is
+`a × b / GCD(a, b)`, so with large coprimes it overflows sooner than you would think.
 
-Ver [`gcd`](./gcd.md) y [`mod`](./mod.md).
+See [`gcd`](./gcd.md) and [`mod`](./mod.md).

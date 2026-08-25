@@ -3,12 +3,12 @@ function: SQRT
 model: ninguno
 ---
 
-# SQRT — ejemplos
+# SQRT — examples
 
-## 1. Un negativo aborta la consulta entera
+## 1. A negative aborts the whole query
 
-No devuelve blanco ni un error de celda: mata la consulta. Con una constante se ve venir; con
-una columna que a veces trae un negativo, no.
+It returns neither blank nor a cell error: it kills the query. With a constant you see it
+coming; with a column that occasionally carries a negative, you do not.
 
 ```dax
 EVALUATE ROW("raiz_de_menos_uno", SQRT(-1))
@@ -18,7 +18,7 @@ EVALUATE ROW("raiz_de_menos_uno", SQRT(-1))
 ERROR: An argument of function 'SQRT' has the wrong data type or the result is too large or too small.
 ```
 
-La protección, y dónde ponerla:
+The protection, and where to put it:
 
 ```dax
 EVALUATE
@@ -36,10 +36,10 @@ protegido | iferror_dentro | filtrando
 5 | 5 | 5
 ```
 
-Las tres funcionan porque la protección va **dentro** del iterador. Envolver el `SUMX` entero
-en `IFERROR` no basta — medido en [`ln`](./ln.md).
+All three work because the protection goes **inside** the iterator. Wrapping the whole `SUMX` in
+`IFERROR` is not enough — measured in [`ln`](./ln.md).
 
-## 2. El blanco sí pasa, y sale en blanco
+## 2. The blank does get through, and comes out blank
 
 ```dax
 EVALUATE
@@ -56,10 +56,11 @@ blanco | es_blanco | compara_cero | cero
 (blank) | True | True | 0
 ```
 
-El cero no es negativo, así que no aborta: entra, sale cero, y ese cero que venía de un blanco
-vuelve a salir blanco. Es la misma mecánica de [`abs`](./abs.md) y [`sign`](./sign.md).
+Zero is not negative, so it does not abort: it goes in, comes out zero, and that zero which came
+from a blank comes back out blank. It is the same mechanic as [`abs`](./abs.md) and
+[`sign`](./sign.md).
 
-## 3. Es `POWER(n, 0.5)`, con la precisión que eso implica
+## 3. It is `POWER(n, 0.5)`, with the precision that implies
 
 ```dax
 EVALUATE
@@ -77,12 +78,12 @@ sqrt_2 | power_2 | identicos | cuadrado | exacto
 1.414214 | 1.414214 | True | 2 | False
 ```
 
-Las dos últimas columnas son el punto. `SQRT(2) * SQRT(2)` **se imprime como 2** y **no es 2**:
-sobran 4,4 × 10⁻¹⁶. El formato de salida redondea, la comparación no, y un `IF(x = 2, ...)`
-sobre eso se va por la rama equivocada sin dar ninguna señal.
+The last two columns are the point. `SQRT(2) * SQRT(2)` **prints as 2** and **is not 2**: there is
+4.4 × 10⁻¹⁶ left over. The output format rounds, the comparison does not, and an
+`IF(x = 2, ...)` over that takes the wrong branch without any signal.
 
-La tercera columna, en cambio, sí es verdadera: `SQRT(2)` y `POWER(2, 0.5)` devuelven
-exactamente el mismo `double`. Que dos cálculos coincidan bit a bit no implica que el ida y
-vuelta cuadre — es la misma trampa que [`currency`](./currency.md) resuelve para el dinero.
+The third column, on the other hand, is true: `SQRT(2)` and `POWER(2, 0.5)` return exactly the
+same `double`. Two calculations agreeing bit for bit does not mean the round trip reconciles — it
+is the same trap [`currency`](./currency.md) solves for money.
 
-Ver [`power`](./power.md), [`sqrtpi`](./sqrtpi.md) y [`abs`](./abs.md).
+See [`power`](./power.md), [`sqrtpi`](./sqrtpi.md) and [`abs`](./abs.md).

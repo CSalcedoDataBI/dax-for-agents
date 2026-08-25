@@ -3,12 +3,12 @@ function: POWER
 model: ninguno
 ---
 
-# POWER — ejemplos
+# POWER — examples
 
-## 1. `POWER(0, 0)` aborta la consulta
+## 1. `POWER(0, 0)` aborts the query
 
-Muchos lenguajes devuelven 1 por convención. DAX no: lo trata como indefinido y mata la
-consulta.
+Many languages return 1 by convention. DAX does not: it treats it as undefined and kills the
+query.
 
 ```dax
 EVALUATE ROW("cero_a_la_cero", POWER(0, 0))
@@ -18,7 +18,7 @@ EVALUATE ROW("cero_a_la_cero", POWER(0, 0))
 ERROR: An argument of function 'POWER' has the wrong data type or the result is too large or too small.
 ```
 
-Los vecinos sí funcionan, lo que hace el agujero más fácil de pisar:
+The neighbours do work, which makes the hole easier to step in:
 
 ```dax
 EVALUATE
@@ -35,12 +35,13 @@ cero_a_la_dos | dos_a_la_cero | cero_a_la_menos_uno | base_blanca
 0 | 1 | aborta | (blank)
 ```
 
-Si el exponente viene de datos y puede ser cero al mismo tiempo que la base, hay que protegerlo.
+If the exponent comes from data and can be zero at the same time as the base, it has to be
+guarded.
 
-## 2. La base negativa funciona, incluso con exponente fraccionario
+## 2. A negative base works, even with a fractional exponent
 
-Excel se niega con `(-8)^(1/3)`. DAX lo calcula — y el resultado enseña de paso que esto es
-coma flotante.
+Excel refuses `(-8)^(1/3)`. DAX computes it — and the result shows in passing that this is
+floating point.
 
 ```dax
 EVALUATE
@@ -58,12 +59,12 @@ menos_dos_al_cubo | menos_dos_al_cuadrado | raiz_cubica_negativa | es_exactament
 -8 | 4 | -2 | False | 2.220446
 ```
 
-La tercera columna **se imprime** como -2 y la cuarta dice que no lo es. La quinta está
-multiplicada por 10¹⁶ justamente porque, sin escalar, el residuo también se imprime como 0:
-sobran 2,220446 × 10⁻¹⁶. El formato de salida redondea y la comparación no. `POWER` devuelve un `double`, así que compararlo
-con un entero esperado falla en silencio — redondea antes, o compara con una tolerancia.
+The third column **prints** as -2 and the fourth says it is not. The fifth is multiplied by 10¹⁶
+precisely because, unscaled, the remainder also prints as 0: there is 2.220446 × 10⁻¹⁶ left over.
+The output format rounds and the comparison does not. `POWER` returns a `double`, so comparing it
+against an expected integer fails silently — round first, or compare with a tolerance.
 
-## 3. Exponentes negativos y fraccionarios, que es donde deja de ser «multiplicar varias veces»
+## 3. Negative and fractional exponents, which is where it stops being "multiply several times"
 
 ```dax
 EVALUATE
@@ -80,7 +81,6 @@ inverso | raiz_cuadrada | raiz_cubica | interes_compuesto
 0.25 | 3 | 3 | 1.628895
 ```
 
-El último es el uso real en un informe: un 5 % durante diez periodos es un 62,9 % acumulado, no
-un 50 %.
+The last one is the real use in a report: 5% over ten periods is 62.9% compounded, not 50%.
 
-Ver [`sqrt`](./sqrt.md), [`exp`](./exp.md) y [`log`](./log.md), su inversa.
+See [`sqrt`](./sqrt.md), [`exp`](./exp.md) and [`log`](./log.md), its inverse.

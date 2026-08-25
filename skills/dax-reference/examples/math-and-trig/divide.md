@@ -3,12 +3,12 @@ function: DIVIDE
 model: ninguno
 ---
 
-# DIVIDE — ejemplos
+# DIVIDE — examples
 
-## 1. La diferencia con `/` no es el estilo: es que una aborta la consulta
+## 1. The difference from `/` is not style: it is that one aborts the query
 
-Esta es la razón entera de que `DIVIDE` exista. Con denominador cero, la función devuelve
-**blanco** y el operador **mata la consulta**.
+This is the entire reason `DIVIDE` exists. With a zero denominator, the function returns
+**blank** and the operator **kills the query**.
 
 ```dax
 EVALUATE
@@ -24,15 +24,14 @@ con_funcion | con_alternativa | con_operador
 (blank) | 0 | aborta
 ```
 
-El `IFERROR` está ahí solo para poder enseñar la tercera columna en la misma fila; sin él, la
-consulta entera falla y no se ve ninguna de las tres. Eso es lo que le pasa a un informe cuando
-una sola fila trae un cero en el denominador.
+The `IFERROR` is only there so the third column can be shown on the same row; without it the
+whole query fails and none of the three is visible. That is what happens to a report when a
+single row carries a zero in the denominator.
 
-## 2. El tercer argumento cambia lo que promete la métrica
+## 2. The third argument changes what the metric promises
 
-`DIVIDE(a, b)` sin alternativa devuelve blanco, y el blanco **borra la categoría** de un
-gráfico. `DIVIDE(a, b, 0)` la dibuja a ras de suelo. Ninguno está mal; son afirmaciones
-distintas.
+`DIVIDE(a, b)` with no alternative returns blank, and the blank **erases the category** from a
+chart. `DIVIDE(a, b, 0)` draws it flat on the floor. Neither is wrong; they are different claims.
 
 ```dax
 EVALUATE
@@ -49,11 +48,11 @@ sin_alternativa | es_blanco | con_cero | es_blanco_con_cero
 (blank) | True | 0 | False
 ```
 
-El blanco dice «no lo medí» y el cero dice «lo medí y dio cero». La página
-«El blanco borra la categoría; el cero la dibuja» del escenario `contoso` enseña esa diferencia
-dibujada, que es donde se ve.
+The blank says "I did not measure it" and the zero says "I measured it and it was zero". The
+«El blanco borra la categoria; el cero la dibuja» page of the `contoso` scenario shows that
+difference drawn, which is where you see it.
 
-## 3. Un denominador en blanco cuenta como cero, y `0 / 0` también es blanco
+## 3. A blank denominator counts as zero, and `0 / 0` is blank too
 
 ```dax
 EVALUATE
@@ -70,9 +69,9 @@ denominador_blanco | cero_entre_cero | numerador_blanco | normal
 (blank) | (blank) | (blank) | 2.5
 ```
 
-Las tres primeras columnas salen igual y **no significan lo mismo**: la primera es un divisor
-que faltaba, la segunda una indeterminación, y la tercera un numerador que no existía. `DIVIDE`
-las colapsa todas en blanco, así que si tu informe necesita distinguirlas, la distinción tienes
-que escribirla tú.
+The first three columns come out the same and **do not mean the same thing**: the first is a
+divisor that was missing, the second an indeterminate form, and the third a numerator that did
+not exist. `DIVIDE` collapses them all into blank, so if your report needs to tell them apart,
+you have to write that distinction yourself.
 
-Ver [`quotient`](./quotient.md) para la división entera y [`mod`](./mod.md) para el resto.
+See [`quotient`](./quotient.md) for integer division and [`mod`](./mod.md) for the remainder.
