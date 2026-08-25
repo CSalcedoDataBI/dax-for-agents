@@ -1,10 +1,10 @@
-## Trampa: `CALCULATE(m, FILTER(T, p))` y `CALCULATE(m, p)` no son la misma cosa
+## Trap: `CALCULATE(m, FILTER(T, p))` and `CALCULATE(m, p)` are not the same thing
 
-Se leen como sinónimos y devuelven resultados distintos. `FILTER(T, p)` **itera T dentro
-del contexto de filtro actual**; el predicado suelto se expande a `FILTER(ALL(columna), p)`
-y por tanto **reemplaza** el filtro que hubiera sobre esa columna.
+They read like synonyms and return different results. `FILTER(T, p)` **iterates T inside the
+current filter context**; the bare predicate expands to `FILTER(ALL(column), p)` and therefore
+**replaces** whatever filter was on that column.
 
-Con el contexto puesto en `Color = "White"`:
+With the context set to `Color = "White"`:
 
 ```dax
 DEFINE
@@ -19,22 +19,22 @@ CALCULATETABLE(
 )
 ```
 
-| forma | resultado |
+| form | result |
 |---|---|
-| contexto (`White`) | 3.450 |
-| `FILTER(DimProduct, Color="Black")` | **(en blanco)** |
-| `DimProduct[Color] = "Black"` | **11.102** |
-| `KEEPFILTERS(Color="Black")` | (en blanco) |
+| context (`White`) | 3,450 |
+| `FILTER(DimProduct, Color="Black")` | **(blank)** |
+| `DimProduct[Color] = "Black"` | **11,102** |
+| `KEEPFILTERS(Color="Black")` | (blank) |
 
-`FILTER` recorre los productos que quedan tras el filtro White: ninguno es Black, así que
-la tabla sale vacía y la medida en blanco. El predicado quita el filtro de color y da el
-total de Black. Ninguno de los dos está "mal" — miden cosas distintas, y esa es la trampa.
+`FILTER` walks the products left after the White filter: none is Black, so the table comes out
+empty and the measure blank. The predicate removes the colour filter and gives the Black total.
+Neither is "wrong" — they measure different things, and that is the trap.
 
-## No confundir con
-`KEEPFILTERS`, que sí conserva el filtro existente y lo **intersecta**: White ∩ Black es
-vacío, de ahí el blanco. Úsalo cuando quieras añadir una condición sin pisar la del usuario.
+## Not to be confused with
+`KEEPFILTERS`, which does keep the existing filter and **intersects** it: White ∩ Black is empty,
+hence the blank. Use it when you want to add a condition without overriding the user's.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

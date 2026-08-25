@@ -1,8 +1,8 @@
-## Trampa: sin `EARLIER` la comparación es siempre verdadera
+## Trap: without `EARLIER` the comparison is always true
 
-Dentro de un `FILTER` anidado sobre la misma tabla, `DimProduct[Col] = DimProduct[Col]`
-compara la fila interna consigo misma. Es cierta siempre, así que el filtro no filtra nada
-y devuelve la tabla entera — sin error, sin aviso.
+Inside a `FILTER` nested over the same table, `DimProduct[Col] = DimProduct[Col]` compares the
+inner row with itself. That is always true, so the filter filters nothing and returns the whole
+table — no error, no warning.
 
 ```dax
 EVALUATE
@@ -13,19 +13,19 @@ ADDCOLUMNS(
 )
 ```
 
-| categoría | con_EARLIER | sin_EARLIER |
+| category | con_EARLIER | sin_EARLIER |
 |---|---|---|
 | Electrónica | **46** ✅ | **137** ❌ |
 
-137 es el total de productos del modelo. El síntoma es que todas las filas del resultado
-muestran el mismo número.
+137 is the model's total product count. The symptom is that every row of the result shows the
+same number.
 
-## No confundir con
-Una **variable**. `VAR cat = DimProduct[CategoryName]` capturada antes del `FILTER` hace lo
-mismo y se lee sin pensar en cuántos contextos de fila hay abiertos. `EARLIER` sigue siendo
-necesario en columnas calculadas antiguas, pero en código nuevo la variable gana casi siempre.
+## Not to be confused with
+A **variable**. `VAR cat = DimProduct[CategoryName]` captured before the `FILTER` does the same
+thing and reads without having to think about how many row contexts are open. `EARLIER` is still
+needed in older calculated columns, but in new code the variable wins almost every time.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

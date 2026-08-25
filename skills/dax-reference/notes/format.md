@@ -1,8 +1,11 @@
-## Trampa: devuelve **texto**, y el texto ordena por caracteres
+## Trap: it returns **text**, and text sorts by character
 
-`FORMAT` no cambia cómo se ve un número: lo convierte en una cadena. A partir de ahí no se
-suma, no se compara como número, y el visual lo ordena alfabéticamente — donde el 9 va
-después del 10.
+`FORMAT` does not change how a number looks: it turns it into a string. From then on it does not
+add up, it does not compare as a number, and the visual sorts it alphabetically — where 9 comes
+after 10.
+
+> The numbers in this note are printed exactly as the engine returned them, under the model's
+> culture. They are output, not prose, which is the whole subject here.
 
 ```dax
 DEFINE
@@ -18,51 +21,50 @@ EVALUATE
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| tipo de `[Ventas]` | NUMERO |
-| tipo de `FORMAT([Ventas])` | **TEXTO** |
+| type of `[Ventas]` | NUMERO |
+| type of `FORMAT([Ventas])` | **TEXTO** |
 | `FORMAT([Ventas], "#,##0")` | `19.903.678` |
 | `"9" > "10"` | **9 va DESPUES de 10** ❌ |
 | `9 > 10` | 9 va ANTES de 10 ✅ |
 
-Ordenar por esa columna coloca `9.500` detrás de `10.200`, y el eje de un gráfico, el formato
-condicional o cualquier medida que la use en una resta dejan de funcionar: esperan un número
-y reciben una cadena.
+Sorting by that column puts `9.500` behind `10.200`, and a chart axis, conditional formatting, or
+any measure that uses it in a subtraction stop working: they expect a number and get a string.
 
-**El total no avisa.** Una medida es una expresión, así que en la fila de totales se vuelve a
-evaluar en el contexto del total y devuelve el total formateado:
+**The total does not warn you.** A measure is an expression, so on the totals row it is evaluated
+again in the total's context and returns the formatted total:
 
-| fila | `[Ventas]` | `FORMAT([Ventas], "#,##0")` |
+| row | `[Ventas]` | `FORMAT([Ventas], "#,##0")` |
 |---|---|---|
 | Sony | 1.273.417,32 | `1.273.417` |
 | Microsoft | 1.164.898,94 | `1.164.899` |
-| **TOTAL** | 19.903.677,62 | **`19.903.678`** ← correcto |
+| **TOTAL** | 19.903.677,62 | **`19.903.678`** ← correct |
 
-Ese total correcto es lo que hace que el problema tarde en aparecer: la tabla se ve bien, y lo
-que falla es el orden, el eje o el condicional, que nadie relaciona con el formato.
+That correct total is what makes the problem slow to surface: the table looks fine, and what fails
+is the sort order, the axis or the conditional, which nobody connects to the formatting.
 
-## Lo que casi siempre había que hacer
+## What almost always should have been done
 
-Poner el **formato de la medida** (`formatString` en el modelo, "Formato" en Power BI
-Desktop). El valor sigue siendo numérico, el visual lo pinta formateado, y todo lo que
-depende de que sea un número —totales, orden, condicionales, ejes— sigue funcionando.
+Set the **measure's format** (`formatString` in the model, "Format" in Power BI Desktop). The value
+stays numeric, the visual paints it formatted, and everything that depends on it being a number —
+totals, sorting, conditionals, axes — keeps working.
 
-`FORMAT` tiene su sitio cuando el resultado **es** texto de verdad: una etiqueta que mezcla
-número y palabras, un título dinámico, una cadena para exportar.
+`FORMAT` has its place when the result genuinely **is** text: a label mixing number and words, a
+dynamic title, a string for export.
 
-## El formato depende de la configuración regional
+## The format depends on the regional settings
 
-`FORMAT(fecha, "Short Date")` y los formatos con nombre siguen la configuración del modelo o
-del usuario. En un informe que se ve en varios países, el mismo número sale con distinto
-separador. Los formatos personalizados (`"#,##0"`, `"yyyy-MM-dd"`) son los predecibles; el
-tercer argumento fija la cultura si hace falta.
+`FORMAT(date, "Short Date")` and the named formats follow the model's or the user's settings. In a
+report viewed across several countries, the same number comes out with a different separator.
+Custom formats (`"#,##0"`, `"yyyy-MM-dd"`) are the predictable ones; the third argument pins the
+culture if you need it.
 
-## No confundir con
-- `CONVERT` — cambia el tipo de dato, no la apariencia.
-- `VALUE` — el camino de vuelta: texto a número. Da error si la cadena no es convertible.
+## Not to be confused with
+- `CONVERT` — changes the data type, not the appearance.
+- `VALUE` — the way back: text to number. It errors if the string is not convertible.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

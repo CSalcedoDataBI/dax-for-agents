@@ -1,8 +1,8 @@
-## Trampa: sobre una tabla vacía devuelve **blanco**, y el blanco vale cero al compararlo
+## Trap: over an empty table it returns **blank**, and the blank equals zero when compared
 
-`MAXX` de nada no es cero: es `BLANK()`. Y como el blanco se convierte al tipo del otro
-operando, `[Máximo] = 0` da verdadero — así que la comprobación con la que ibas a
-protegerte no distingue "no hay filas" de "el máximo es cero".
+`MAXX` of nothing is not zero: it is `BLANK()`. And since the blank is coerced to the type of the
+other operand, `[Máximo] = 0` comes out true — so the check you were going to protect yourself
+with does not distinguish "there are no rows" from "the maximum is zero".
 
 ```dax
 EVALUATE
@@ -18,40 +18,40 @@ RETURN
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| `MAXX(DimProduct, [Price])` | 3.804,72 |
-| `COUNTROWS(<tabla vacía>)` | **BLANK** ← no 0 |
-| `MAXX(<tabla vacía>, [Price])` | **BLANK** |
-| `MAXX(…) + 0` | 0,00 ← la suma convierte el blanco |
+| `MAXX(DimProduct, [Price])` | 3,804.72 |
+| `COUNTROWS(<empty table>)` | **BLANK** ← not 0 |
+| `MAXX(<empty table>, [Price])` | **BLANK** |
+| `MAXX(…) + 0` | 0.00 ← the addition coerces the blank |
 | `MAXX(…) = 0` | **IGUAL A CERO** ❌ |
 | `MAXX(…) == 0` | distinto ✅ |
 
-`COUNTROWS` también devuelve blanco, no cero, así que `IF(COUNTROWS(T) = 0, …)` sufre lo
-mismo. Para preguntar de verdad si hay filas: `ISEMPTY(T)`, que responde a esa pregunta y no
-a otra.
+`COUNTROWS` also returns blank, not zero, so `IF(COUNTROWS(T) = 0, …)` suffers the same. To
+genuinely ask whether there are rows: `ISEMPTY(T)`, which answers that question and not another
+one.
 
-Ver [`blank`](./blank.md) para el mecanismo de conversión y la diferencia entre `=` y `==`.
+See [`blank`](./blank.md) for the coercion mechanism and the difference between `=` and `==`.
 
-## El máximo de columnas distintas no es `MAX` de la fila
+## The maximum across different columns is not `MAX` of the row
 
-`MAXX(T, expr)` recorre filas y devuelve el mayor de la expresión. Para el mayor **entre dos
-columnas de la misma fila** la función es `MAXX` sobre un `{}` de valores, o directamente
-`MAX(a, b)` con dos argumentos escalares — que es una sobrecarga distinta de la agregación
-`MAX(columna)` y se confunde con ella.
+`MAXX(T, expr)` walks rows and returns the largest value of the expression. For the largest
+**between two columns of the same row** the function is `MAXX` over a `{}` of values, or directly
+`MAX(a, b)` with two scalar arguments — which is a different overload from the `MAX(column)`
+aggregation and gets confused with it.
 
-## Ignora los blancos, no los cuenta como cero
+## It ignores blanks, it does not count them as zero
 
-Si la columna tiene blancos, `MAXX` los salta. Eso suele ser lo que quieres; deja de serlo
-cuando el blanco significaba "cero" en el origen. Es la misma decisión que hay detrás de
-[`AVERAGEX`](./averagex.md), y allí cambia el resultado mucho más.
+If the column has blanks, `MAXX` skips them. That is usually what you want; it stops being so when
+the blank meant "zero" at the source. It is the same decision behind
+[`AVERAGEX`](./averagex.md), and there it changes the result far more.
 
-## No confundir con
-- `MAX(columna)` — la agregación simple, sin contexto de fila. Más barata y más clara.
-- [`TOPN`](./topn.md) — te da la **fila** del máximo, no el valor.
-- `MAXA` — la variante que trata `TRUE`/`FALSE` y el texto como números.
+## Not to be confused with
+- `MAX(column)` — the plain aggregation, with no row context. Cheaper and clearer.
+- [`TOPN`](./topn.md) — gives you the **row** of the maximum, not the value.
+- `MAXA` — the variant that treats `TRUE`/`FALSE` and text as numbers.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura y no toca el modelo. Se ejecuta y se compara sola con `python
-> lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only and
+> does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
+> localhost:<port>`.

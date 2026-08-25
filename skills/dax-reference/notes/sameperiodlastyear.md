@@ -1,10 +1,10 @@
-## Trampa: con la fecha del hecho el resultado sale en blanco, sin error
+## Trap: with the fact's date the result comes out blank, with no error
 
-La función devuelve un conjunto de fechas desplazado un año, y ese conjunto filtra **la
-columna que le pasaste**. Si le pasas la fecha de la tabla de hechos, el filtro cae sobre
-`FactSales[OrderDate]` — mientras que el contexto del visual sigue filtrando `DimDate`. Las
-dos condiciones tienen que cumplirse a la vez: fechas de 2023 en el hecho **y** 2024 en la
-dimensión. No hay ninguna fila así, y el resultado es blanco.
+The function returns a set of dates shifted by a year, and that set filters **the column you
+passed it**. If you pass it the fact table's date, the filter lands on `FactSales[OrderDate]` —
+while the visual's context is still filtering `DimDate`. Both conditions have to hold at once:
+2023 dates on the fact **and** 2024 on the dimension. No row is like that, and the result is
+blank.
 
 ```dax
 DEFINE
@@ -19,37 +19,36 @@ CALCULATETABLE(
 )
 ```
 
-| mes | unidades | LY con DimDate | LY con FactSales |
+| month | units | LY with DimDate | LY with FactSales |
 |---|---|---|---|
-| 2024-01 | 7.483 | **7.272** ✅ | **(en blanco)** ❌ |
-| 2024-02 | 7.059 | **6.782** ✅ | **(en blanco)** ❌ |
+| 2024-01 | 7,483 | **7,272** ✅ | **(blank)** ❌ |
+| 2024-02 | 7,059 | **6,782** ✅ | **(blank)** ❌ |
 
-Con `DimDate[Date]` el filtro desplazado sustituye al del propio contexto, porque cae sobre
-la misma columna. Ese es el motivo por el que la familia entera pide la columna de la tabla
-de fechas: no es una regla arbitraria, es que el filtro tiene que aterrizar donde ya está
-filtrando el visual.
+With `DimDate[Date]` the shifted filter replaces the context's own, because it lands on the same
+column. That is why the whole family asks for the date table's column: it is not an arbitrary
+rule, it is that the filter has to land where the visual is already filtering.
 
-Una columna interanual entera en blanco casi siempre es esto, no falta de histórico.
+An entire year-over-year column of blanks is almost always this, not missing history.
 
-**El blanco no es la única forma del fallo.** El mismo error con `DATESYTD` no devuelve
-blanco: devuelve el valor del periodo **sin acumular**, que es más difícil de detectar porque
-parece un número razonable. La consulta que lo mide está en
-[`datesytd`](./datesytd.md) y da:
+**The blank is not the only shape of the failure.** The same mistake with `DATESYTD` does not
+return blank: it returns the period's value **without accumulating**, which is harder to spot
+because it looks like a reasonable number. The query that measures it is in
+[`datesytd`](./datesytd.md) and gives:
 
-| mes | YTD con `DimDate[Date]` | YTD con `FactSales[OrderDate]` |
+| month | YTD with `DimDate[Date]` | YTD with `FactSales[OrderDate]` |
 |---|---|---|
-| 2024-01 | 7.483 | 7.483 |
-| 2024-02 | **14.542** | **7.059** |
-| 2024-03 | **22.520** | **7.978** |
+| 2024-01 | 7,483 | 7,483 |
+| 2024-02 | **14,542** | **7,059** |
+| 2024-03 | **22,520** | **7,978** |
 
-`DATESYTD` no desplaza al año anterior, así que no hay contradicción que deje la intersección
-vacía: el filtro simplemente cae en la columna equivocada y no acumula. Cada función de la
-familia falla a su manera; lo común es la causa, no el síntoma.
+`DATESYTD` does not shift to the previous year, so there is no contradiction to leave the
+intersection empty: the filter simply lands on the wrong column and does not accumulate. Each
+function in the family fails in its own way; what they share is the cause, not the symptom.
 
-## No confundir con
-Que falte histórico. Comprueba a qué columna apunta la función; el dato suele estar.
+## Not to be confused with
+Missing history. Check which column the function points at; the data is usually there.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

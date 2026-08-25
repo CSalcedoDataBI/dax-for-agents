@@ -1,8 +1,7 @@
-## Trampa: `/` no protege, y el "0" que devuelves cambia el gráfico
+## Trap: `/` does not protect you, and the "0" you return changes the chart
 
-`DIVIDE` devuelve **(en blanco)** al dividir por cero, no un error. Ese blanco es
-deliberado: hace que la categoría desaparezca del visual en lugar de dibujar un cero que
-nadie midió.
+`DIVIDE` returns **(blank)** when dividing by zero, not an error. That blank is deliberate: it
+makes the category disappear from the visual instead of drawing a zero nobody measured.
 
 ```dax
 EVALUATE
@@ -12,25 +11,25 @@ ROW(
 )
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
 | `ISBLANK(DIVIDE(1,0))` | **TRUE** |
 | `DIVIDE(1,0,0)` | 0 |
 
-El tercer argumento es una decisión de negocio, no una medida de seguridad: pon `0` solo si
-"no había divisor" y "el resultado fue cero" significan lo mismo para quien lee el informe.
-Casi nunca lo significan.
+The third argument is a business decision, not a safety measure: use `0` only if "there was no
+divisor" and "the result was zero" mean the same thing to whoever reads the report. They almost
+never do.
 
-## Lo que dice Microsoft, y no está en la ficha
-Recomiendan `DIVIDE` frente a `IF(divisor = 0, BLANK(), a/b)` porque el `IF` evalúa el divisor
-dos veces. Está en
-[su página de buenas prácticas](https://learn.microsoft.com/en-us/dax/best-practices/dax-divide-function-operator),
-no en la página de la función, que es por lo que existe esta nota.
+## What Microsoft says, and is not in the card
+They recommend `DIVIDE` over `IF(divisor = 0, BLANK(), a/b)` because the `IF` evaluates the
+divisor twice. It is in
+[their best-practices page](https://learn.microsoft.com/en-us/dax/best-practices/dax-divide-function-operator),
+not in the function's page, which is why this note exists.
 
-Es una recomendación **suya**, citada, no una medición de este repo: sobre este modelo las
-dos formas tardan lo mismo dentro del ruido.
+That is **their** recommendation, quoted, not a measurement from this repo: on this model both
+forms take the same time within the noise.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

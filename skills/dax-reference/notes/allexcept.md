@@ -1,27 +1,27 @@
-## Trampa: ignora el slicer del usuario
+## Trap: it ignores the user's slicer
 
-`ALLEXCEPT(T, col)` conserva **solo** los filtros de las columnas que le nombras y borra
-todos los demás. Suena a "total de la categoría", y lo es — pero también borra la selección
-que el usuario haya hecho en cualquier otra columna de esa tabla.
+`ALLEXCEPT(T, col)` keeps **only** the filters on the columns you name it and clears all the
+rest. It sounds like "category total", and it is — but it also clears whatever selection the user
+made on any other column of that table.
 
-Contexto: `CategoryName = "Electrónica"` **y** `Brand IN {Apple, Sony}`.
+Context: `CategoryName = "Electrónica"` **and** `Brand IN {Apple, Sony}`.
 
-| marca | unidades | `ALLEXCEPT(…, CategoryName)` | `ALLSELECTED(DimProduct)` |
+| brand | units | `ALLEXCEPT(…, CategoryName)` | `ALLSELECTED(DimProduct)` |
 |---|---|---|---|
-| Apple | 1.219 | **8.386** | 2.411 |
-| Sony | 1.192 | **8.386** | 2.411 |
+| Apple | 1,219 | **8,386** | 2,411 |
+| Sony | 1,192 | **8,386** | 2,411 |
 
-2.411 = 1.219 + 1.192: con `ALLSELECTED` los porcentajes suman 100 %. Con `ALLEXCEPT` el
-denominador es toda la categoría aunque el usuario solo mire dos marcas, así que suman 29 %
-y el informe parece roto.
+2,411 = 1,219 + 1,192: with `ALLSELECTED` the percentages add up to 100%. With `ALLEXCEPT` the
+denominator is the whole category even though the user is only looking at two brands, so they add
+up to 29% and the report looks broken.
 
-Ver la consulta completa en [`allselected`](./allselected.md).
+See the full query in [`allselected`](./allselected.md).
 
-## No confundir con
-`ALLSELECTED`, que es lo que casi siempre se quiere para un "% del total visible".
-`ALLEXCEPT` es correcto cuando el denominador debe ser la categoría **pase lo que pase**.
+## Not to be confused with
+`ALLSELECTED`, which is what you almost always want for a "% of visible total". `ALLEXCEPT` is
+correct when the denominator must be the category **no matter what**.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

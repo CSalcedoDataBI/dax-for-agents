@@ -1,9 +1,9 @@
-## Trampa: quita los filtros de SU tabla, no todos
+## Trap: it clears the filters on ITS table, not all of them
 
-`ALL(DimProduct)` borra los filtros que haya sobre `DimProduct` y **solo esos**. Los de las
-demás tablas siguen ahí. Es fácil leerlo como "el total de todo" y no lo es.
+`ALL(DimProduct)` clears whatever filters are on `DimProduct` and **only those**. The ones on the
+other tables are still there. It is easy to read it as "the total of everything", and it is not.
 
-Con el contexto en `CategoryName = "Electrónica"` **y** `Year = 2024`:
+With the context on `CategoryName = "Electrónica"` **and** `Year = 2024`:
 
 ```dax
 DEFINE
@@ -20,21 +20,21 @@ CALCULATETABLE(
 )
 ```
 
-| denominador | resultado |
+| denominator | result |
 |---|---|
-| contexto (Electrónica, 2024) | 4.301 |
-| `ALL(DimProduct)` | **91.795** ← sigue siendo solo 2024 |
-| `ALL(DimProduct), ALL(DimDate)` | **180.224** ← ahora sí, las dos tablas |
+| context (Electrónica, 2024) | 4,301 |
+| `ALL(DimProduct)` | **91,795** ← still 2024 only |
+| `ALL(DimProduct), ALL(DimDate)` | **180,224** ← now yes, both tables |
 
-91.795 es el total de 2024, no el del modelo. Si tu "% del total" usa `ALL` de una sola
-dimensión mientras hay un filtro de fecha vivo, el denominador es "todo dentro del año",
-que puede ser justo lo que querías — o no. Hay que decidirlo, no heredarlo.
+91,795 is the 2024 total, not the model's. If your "% of total" uses `ALL` on a single dimension
+while a date filter is live, the denominator is "everything within the year" — which may be
+exactly what you wanted, or not. That has to be decided, not inherited.
 
-## No confundir con
-- `ALLEXCEPT` — conserva las columnas que le nombres de esa tabla, borra el resto.
-- [`ALLSELECTED`](./allselected.md) — respeta lo que el usuario seleccionó.
+## Not to be confused with
+- `ALLEXCEPT` — keeps the columns you name from that table, clears the rest.
+- [`ALLSELECTED`](./allselected.md) — respects what the user selected.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

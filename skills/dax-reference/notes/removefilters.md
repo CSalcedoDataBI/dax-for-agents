@@ -1,7 +1,7 @@
-## Trampa: hace lo mismo que `ALL`, pero no se puede usar donde `ALL`
+## Trap: it does the same as `ALL`, but cannot be used where `ALL` can
 
-Como modificador de `CALCULATE`, `REMOVEFILTERS(X)` y `ALL(X)` dan **exactamente** el mismo
-resultado. La diferencia es que `ALL` además es una función de tabla y `REMOVEFILTERS` no:
+As a `CALCULATE` modifier, `REMOVEFILTERS(X)` and `ALL(X)` give **exactly** the same result. The
+difference is that `ALL` is also a table function and `REMOVEFILTERS` is not:
 
 ```dax
 EVALUATE ROW("filas", COUNTROWS(REMOVEFILTERS(DimProduct)))
@@ -12,19 +12,18 @@ REMOVEFILTERS function cannot be used as a table expression.
 It can appear only as a filter in CALCULATE.
 ```
 
-Cambiar un `ALL` por `REMOVEFILTERS` "porque se lee mejor" funciona dentro de `CALCULATE` y
-rompe en cuanto ese `ALL` estaba iterándose o pasándose a otra función.
+Swapping an `ALL` for `REMOVEFILTERS` "because it reads better" works inside `CALCULATE` and breaks
+the moment that `ALL` was being iterated or passed to another function.
 
-## Para qué existe entonces
+## What it exists for, then
 
-Para decir en el código lo que la expresión hace. `ALL` significa dos cosas —"dame toda la
-tabla" y "quita estos filtros"— y el lector tiene que deducir cuál por la posición.
-`REMOVEFILTERS` solo significa la segunda, así que un `CALCULATE` largo se entiende sin
-reconstruirlo.
+To say in the code what the expression does. `ALL` means two things — "give me the whole table" and
+"remove these filters" — and the reader has to work out which from its position. `REMOVEFILTERS`
+only means the second, so a long `CALCULATE` can be understood without reconstructing it.
 
-## La decisión que sí cambia el número: columna o tabla
+## The decision that does change the number: column or table
 
-Con el contexto filtrado a la categoría *Electrónica*:
+With the context filtered to the *Electrónica* category:
 
 ```dax
 DEFINE
@@ -43,24 +42,24 @@ TOPN(3,
 ORDER BY [Ventas] DESC
 ```
 
-| marca | ventas | `ALL(Brand)` | `REMOVEFILTERS(Brand)` | `ALL(DimProduct)` |
+| brand | sales | `ALL(Brand)` | `REMOVEFILTERS(Brand)` | `ALL(DimProduct)` |
 |---|---|---|---|---|
-| Apple | 744.415,28 | **11,14%** | **11,14%** ✅ idéntico | **3,74%** |
-| Sony | 692.829,80 | 10,37% | 10,37% | 3,48% |
-| Jabra | 489.943,26 | 7,33% | 7,33% | 2,46% |
+| Apple | 744,415.28 | **11.14%** | **11.14%** ✅ identical | **3.74%** |
+| Sony | 692,829.80 | 10.37% | 10.37% | 3.48% |
+| Jabra | 489,943.26 | 7.33% | 7.33% | 2.46% |
 
-Las dos primeras columnas coinciden hasta el último decimal. La tercera es otra pregunta: al
-quitar los filtros de **toda** la tabla se lleva también el de categoría, así que el
-denominador pasa de "Electrónica" a todo el catálogo y el porcentaje se divide por tres.
+The first two columns agree to the last decimal. The third is a different question: removing the
+filters from the **whole** table takes the category filter with it, so the denominator goes from
+"Electrónica" to the entire catalogue and the percentage is divided by three.
 
-Es la misma trampa que [`ALL`](./all.md), y no desaparece por escribirla con otro nombre.
+It is the same trap as [`ALL`](./all.md), and it does not go away by writing it under another name.
 
-## No confundir con
-- [`ALL`](./all.md) — mismo efecto como modificador, y además función de tabla.
-- [`ALLSELECTED`](./allselected.md) — respeta lo que el usuario seleccionó fuera del visual.
-- [`KEEPFILTERS`](./keepfilters.md) — el contrario: añade en vez de sustituir.
+## Not to be confused with
+- [`ALL`](./all.md) — same effect as a modifier, and also a table function.
+- [`ALLSELECTED`](./allselected.md) — respects what the user selected outside the visual.
+- [`KEEPFILTERS`](./keepfilters.md) — the opposite: it adds instead of replacing.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

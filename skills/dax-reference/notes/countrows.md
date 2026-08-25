@@ -1,10 +1,10 @@
-## Trampa: cuenta filas, no valores — y eso importa cuando hay blancos
+## Trap: it counts rows, not values — and that matters when there are blanks
 
-`COUNTROWS(T)` cuenta las filas de T tal como queda tras el contexto de filtro, sin mirar el
-contenido. Es lo que casi siempre se quiere para "cuántos hay", y es justo donde `COUNT` se
-comporta distinto.
+`COUNTROWS(T)` counts T's rows as they stand after the filter context, without looking at the
+content. It is what you almost always want for "how many are there", and it is exactly where
+`COUNT` behaves differently.
 
-`DimStore[CloseDate]` está vacía en las 25 tiendas:
+`DimStore[CloseDate]` is empty across all 25 stores:
 
 ```dax
 EVALUATE
@@ -14,41 +14,41 @@ ROW(
 )
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
 | `COUNTROWS(DimStore)` | **25** |
-| `COUNT(DimStore[CloseDate])` | **(en blanco)** |
+| `COUNT(DimStore[CloseDate])` | **(blank)** |
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura y no toca el modelo. Se ejecuta y se compara sola con `python
-> lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only and
+> does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
+> localhost:<port>`.
 
-## No confundir con
-[`COUNT`](./count.md), que descarta blancos y puede devolver blanco donde esperabas cero.
+## Not to be confused with
+[`COUNT`](./count.md), which discards blanks and can return blank where you expected zero.
 Microsoft
-[recomienda COUNTROWS sobre COUNT](https://learn.microsoft.com/en-us/dax/best-practices/dax-countrows),
-y esa página no está en la ficha de la función.
+[recommends COUNTROWS over COUNT](https://learn.microsoft.com/en-us/dax/best-practices/dax-countrows),
+and that page is not in the function card.
 
-## Trampa: la fila en blanco se ve desde el lado *uno*, no desde el hecho
+## Trap: the blank row shows on the *one* side, not on the fact
 
-Cuando la tabla de hechos referencia una clave que no existe en la dimensión, el motor añade
-una fila en blanco **a la dimensión**. Medido en
-[`lab/claves-huerfanas`](../../../lab/claves-huerfanas/), con una sola clave huérfana:
+When the fact table references a key that does not exist in the dimension, the engine adds a blank
+row **to the dimension**. Measured in
+[`lab/claves-huerfanas`](../../../lab/claves-huerfanas/), with a single orphan key:
 
-| expresión | resultado | |
+| expression | result | |
 |---|---|---|
-| `COUNTROWS(DimProducto)` | **3** | la tabla base no la tiene |
-| `COUNTROWS(VALUES(DimProducto[ProductoKey]))` | **4** | ← aquí aparece |
-| `COUNTROWS(VALUES(Ventas[ProductoKey]))` | **4** | pero son 1, 2, 3 y **99**: la clave real |
+| `COUNTROWS(DimProducto)` | **3** | the base table does not have it |
+| `COUNTROWS(VALUES(DimProducto[ProductoKey]))` | **4** | ← here it appears |
+| `COUNTROWS(VALUES(Ventas[ProductoKey]))` | **4** | but they are 1, 2, 3 and **99**: the real key |
 
-Los dos `VALUES` dan 4 y **no significan lo mismo**. Del lado *uno* el cuarto elemento es la
-fila inventada; del lado *muchos* es el valor huérfano de verdad. Confundirlos hace creer que
-la fila en blanco está en los hechos, y no lo está.
+The two `VALUES` give 4 and **do not mean the same thing**. On the *one* side the fourth element
+is the invented row; on the *many* side it is the genuine orphan value. Confusing them makes you
+believe the blank row is in the facts, and it is not.
 
-Y limpiar esa fila cuesta caro: `SUMX(ALLNOBLANKROW(...))` da **60** donde el total es
-**110**. Las 50 unidades huérfanas desaparecen sin aviso.
+And cleaning that row up is expensive: `SUMX(ALLNOBLANKROW(...))` gives **60** where the total is
+**110**. The 50 orphaned units disappear without warning.
 
-> Medido en [`lab/claves-huerfanas`](../../../lab/claves-huerfanas/) el 2026-08-12, **no** sobre
-> Contoso: Contoso tiene la integridad referencial intacta y por eso no puede demostrar nada
-> de esta sección. El modelo, los datos y las consultas están ahí para ejecutarlos.
+> Measured in [`lab/claves-huerfanas`](../../../lab/claves-huerfanas/) on 2026-08-12, **not**
+> against Contoso: Contoso's referential integrity is intact and so it cannot demonstrate anything
+> in this section. The model, the data and the queries are there to run.

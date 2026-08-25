@@ -1,21 +1,21 @@
-## Trampa: distingue mayúsculas, y lo que la rodea no
+## Trap: it is case-sensitive, and what surrounds it is not
 
-`FIND` distingue mayúsculas. El operador `=`, los filtros del modelo y
-[`SEARCH`](./search.md) —lo que tienes alrededor cuando escribes una— **no**. Así que la
-misma comparación cambia de respuesta según con qué la escribas.
+`FIND` is case-sensitive. The `=` operator, the model's filters and [`SEARCH`](./search.md) — what
+you have around you when you write one — are **not**. So the same comparison changes its answer
+depending on what you write it with.
 
-No es la única sensible: `CONTAINSSTRINGEXACT` y `EXACT` también lo son, y ese es justo el
-problema. La sensibilidad no sigue una regla que se pueda deducir del nombre; va función por
-función.
+It is not the only sensitive one: `CONTAINSSTRINGEXACT` and `EXACT` are too, and that is exactly
+the problem. Sensitivity follows no rule you can deduce from the name; it goes function by
+function.
 
-| función | ¿distingue mayúsculas? | medido con `sony` contra `Sony` |
+| function | case-sensitive? | measured with `sony` against `Sony` |
 |---|---|---|
-| `=` (operador) | no | `TRUE` |
-| [`SEARCH`](./search.md) | no | `1` (encontrado) |
+| `=` (operator) | no | `TRUE` |
+| [`SEARCH`](./search.md) | no | `1` (found) |
 | `CONTAINSSTRING` | no | `TRUE` |
-| **`FIND`** | **sí** | `-1` (no encontrado) |
-| **`CONTAINSSTRINGEXACT`** | **sí** | `FALSE` |
-| **`EXACT`** | **sí** | `FALSE` |
+| **`FIND`** | **yes** | `-1` (not found) |
+| **`CONTAINSSTRINGEXACT`** | **yes** | `FALSE` |
+| **`EXACT`** | **yes** | `FALSE` |
 
 ```dax
 EVALUATE
@@ -28,57 +28,58 @@ EVALUATE
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
 | `"sony" = "Sony"` | **TRUE** |
-| `FILTER(DimProduct, Brand = "sony")` | **9 filas** |
-| `FILTER(DimProduct, Brand = "Sony")` | **9 filas** |
-| `FIND("sony", "Sony Bravia")` | **-1** ← no encontrado |
-| [`SEARCH`](./search.md)`("sony", "Sony Bravia")` | **1** ← encontrado |
+| `FILTER(DimProduct, Brand = "sony")` | **9 rows** |
+| `FILTER(DimProduct, Brand = "Sony")` | **9 rows** |
+| `FIND("sony", "Sony Bravia")` | **-1** ← not found |
+| [`SEARCH`](./search.md)`("sony", "Sony Bravia")` | **1** ← found |
 
-Las etiquetas de la consulta dicen "minúscula" y "mayúscula" en vez de `= "sony"` y
-`= "Sony"` por lo mismo que estás leyendo. Con las etiquetas literales, esto:
+The query's labels say `minuscula` and `mayuscula` instead of `= "sony"` and `= "Sony"` for the
+very reason you are reading about. With the literal labels, this:
 
 ```dax
 EVALUATE { ("filas con Brand = sony", 9), ("filas con Brand = Sony", 9) }
 ```
 
-devuelve **las dos filas** —no las junta— pero las dos salen impresas como
-`filas con Brand = sony`: al ser iguales ignorando mayúsculas, el motor las devuelve con una
-sola grafía, la primera que vio. Dos etiquetas idénticas en pantalla para dos filas
-distintas, que es la trampa de esta nota enseñándose sola.
+returns **both rows** — it does not merge them — but both come out printed as
+`filas con Brand = sony`: being equal ignoring case, the engine returns them under a single
+spelling, the first one it saw. Two identical labels on screen for two different rows, which is
+this note's trap demonstrating itself.
 
-El filtro en minúscula devuelve las mismas 9 filas que en mayúscula: **el modelo no distingue
-mayúsculas.** Solo `FIND` lo hace, y por eso es la que sorprende.
+The lowercase filter returns the same 9 rows as the uppercase one: **the model is not
+case-sensitive.** Only `FIND` is, and that is why it is the one that surprises.
 
-## Sin el cuarto argumento, no encontrar es un error
+## Without the fourth argument, not finding is an error
 
-`FIND("sony", "Sony Bravia")` sin `<NotFoundValue>` no devuelve blanco: **falla la consulta.**
+`FIND("sony", "Sony Bravia")` without `<NotFoundValue>` does not return blank: **it fails the
+query.**
 
 ```
 The search Text provided to function 'FIND' could not be found in the given text.
 ```
 
-Un `-1` o un `BLANK()` como cuarto argumento convierte el error en un valor con el que se
-puede seguir trabajando. En una columna calculada sobre miles de filas, una sola que no
-coincida tumba el refresco entero.
+A `-1` or a `BLANK()` as the fourth argument turns the error into a value you can keep working
+with. In a calculated column over thousands of rows, a single non-matching one brings down the
+whole refresh.
 
-## Cuándo quieres FIND
+## When you do want FIND
 
-Casi nunca por su sensibilidad a mayúsculas, sino cuando esa sensibilidad **es** el requisito:
-códigos donde `AB` y `ab` significan cosas distintas. Para buscar texto que escribió una
-persona, [`SEARCH`](./search.md) es lo que esperas.
+Almost never for its case sensitivity, but when that sensitivity **is** the requirement: codes
+where `AB` and `ab` mean different things. To search text a person typed, [`SEARCH`](./search.md)
+is what you expect.
 
-Y si lo que necesitas es "¿aparece?" sin la posición, `CONTAINSSTRINGEXACT` dice lo mismo con
-menos ruido y sin el caso de error.
+And if what you need is "does it appear?" without the position, `CONTAINSSTRINGEXACT` says the same
+with less noise and without the error case.
 
-## No confundir con
-- [`SEARCH`](./search.md) — misma firma, insensible a mayúsculas, y admite comodines.
-- `CONTAINSSTRING` / `CONTAINSSTRINGEXACT` — devuelven booleano en vez de una posición; la
-  primera es insensible, la segunda no.
-- `EXACT` — compara dos cadenas enteras distinguiendo mayúsculas, no busca dentro de una.
+## Not to be confused with
+- [`SEARCH`](./search.md) — same signature, case-insensitive, and it accepts wildcards.
+- `CONTAINSSTRING` / `CONTAINSSTRINGEXACT` — return a boolean instead of a position; the first is
+  insensitive, the second is not.
+- `EXACT` — compares two whole strings case-sensitively, it does not search inside one.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura y no toca el modelo. Se ejecuta y se compara sola con `python
-> lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only and
+> does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
+> localhost:<port>`.

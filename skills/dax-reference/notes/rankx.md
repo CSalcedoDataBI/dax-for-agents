@@ -1,9 +1,9 @@
-## Trampa: `RANKX(VALUES(...))` devuelve 1 para todo
+## Trap: `RANKX(VALUES(...))` returns 1 for everything
 
-`RANKX(<tabla>, <expr>)` clasifica dentro de la tabla que le pasas, y esa tabla se evalúa
-**en el contexto de filtro de la fila que se está pintando**. En una matriz o un
-`SUMMARIZECOLUMNS`, ese contexto ya tiene una sola marca, así que `VALUES(DimProduct[Brand])`
-devuelve **una fila** y clasificar dentro de una lista de uno da siempre 1.
+`RANKX(<table>, <expr>)` ranks within the table you pass it, and that table is evaluated **in the
+filter context of the row being drawn**. In a matrix or a `SUMMARIZECOLUMNS`, that context already
+has a single brand, so `VALUES(DimProduct[Brand])` returns **one row**, and ranking within a list
+of one always gives 1.
 
 ```dax
 DEFINE
@@ -17,34 +17,34 @@ TOPN(5,
 ORDER BY [Ventas] DESC
 ```
 
-| marca | ventas | `RANKX(VALUES(...))` | `RANKX(ALL(...))` |
+| brand | sales | `RANKX(VALUES(...))` | `RANKX(ALL(...))` |
 |---|---|---|---|
-| Sony | 1.273.417,32 | **1** | 1 ✅ |
-| Microsoft | 1.164.898,94 | **1** ❌ | 2 ✅ |
-| Nintendo | 1.131.477,23 | **1** ❌ | 3 ✅ |
-| Lutron | 1.066.213,09 | **1** ❌ | 4 ✅ |
-| Apple | 744.415,28 | **1** ❌ | 5 ✅ |
+| Sony | 1,273,417.32 | **1** | 1 ✅ |
+| Microsoft | 1,164,898.94 | **1** ❌ | 2 ✅ |
+| Nintendo | 1,131,477.23 | **1** ❌ | 3 ✅ |
+| Lutron | 1,066,213.09 | **1** ❌ | 4 ✅ |
+| Apple | 744,415.28 | **1** ❌ | 5 ✅ |
 
-Es el fallo más silencioso de la función: no da error ni blanco, da un número plausible.
-Una columna entera de unos parece un ranking hasta que alguien la mira dos veces.
+It is the function's quietest failure: no error, no blank, just a plausible number. A whole column
+of ones looks like a ranking until somebody looks twice.
 
-La tabla que clasifica tiene que **ignorar** el filtro de la columna por la que clasificas:
-`ALL(DimProduct[Brand])` para rankear contra todo el catálogo, o
-[`ALLSELECTED`](./allselected.md) para rankear contra lo que el usuario dejó seleccionado —
-que casi siempre es lo que la gente quiere cuando pone un slicer.
+The table being ranked has to **ignore** the filter on the column you are ranking by:
+`ALL(DimProduct[Brand])` to rank against the whole catalogue, or
+[`ALLSELECTED`](./allselected.md) to rank against what the user left selected — which is almost
+always what people want when they put a slicer in.
 
-## Empates y huecos
+## Ties and gaps
 
-Por defecto `RANKX` usa `Skip`: dos empatados en 3 dejan el 4 vacío y el siguiente es 5. Con
-`Dense` no hay huecos. El argumento va en la quinta posición, detrás de `<order>`, así que se
-olvida con facilidad.
+By default `RANKX` uses `Skip`: two tied at 3 leave 4 empty and the next is 5. With `Dense` there
+are no gaps. The argument sits in fifth position, behind `<order>`, so it is easy to forget.
 
-## No confundir con
-- [`TOPN`](./topn.md) — se lleva las filas de cabeza, y **no devuelve N filas** si hay empates.
-- `RANK` — la función nueva de ventana, con `ORDERBY`/`PARTITIONBY` explícitos en vez de una
-  tabla. Más clara cuando ya estás en una consulta.
+## Not to be confused with
+- [`TOPN`](./topn.md) — it takes the leading rows, and **does not return N rows** when there are
+  ties.
+- `RANK` — the new window function, with explicit `ORDERBY`/`PARTITIONBY` instead of a table.
+  Clearer once you are already in a query.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

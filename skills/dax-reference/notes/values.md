@@ -1,23 +1,22 @@
-## Trampa: sobre una COLUMNA devuelve una columna; sobre una TABLA devuelve la tabla
+## Trap: over a COLUMN it returns a column; over a TABLE it returns the table
 
-`VALUES` tiene dos formas y solo una da algo convertible a escalar:
+`VALUES` has two forms and only one gives something convertible to a scalar:
 
-- `VALUES(tabla[columna])` → una tabla de **una** columna.
-- `VALUES(tabla)` → las filas de la tabla, con **todas** sus columnas.
+- `VALUES(table[column])` → a table of **one** column.
+- `VALUES(table)` → the table's rows, with **all** their columns.
 
 ```dax
 EVALUATE TOPN(2, VALUES(DimCurrency))
 ```
 
-devuelve 5 columnas (`CurrencyKey`, `CurrencyCode`, `CurrencyName`, `Symbol`, `Language`),
-no una.
+returns 5 columns (`CurrencyKey`, `CurrencyCode`, `CurrencyName`, `Symbol`, `Language`), not one.
 
-La conversión automática a escalar solo ocurre con una tabla de **una columna y una fila**.
-`VALUES(DimCurrency)` nunca la cumple porque la tabla tiene cinco columnas; una tabla de una
-sola columna sí podría. Con la forma de columna depende del contexto:
+The automatic conversion to a scalar only happens with a table of **one column and one row**.
+`VALUES(DimCurrency)` never satisfies that because the table has five columns; a single-column
+table could. With the column form it depends on the context:
 
-La medida fuerza la conversión concatenando, que es lo que hace cualquier expresión que
-espera un escalar. Son **dos consultas**, porque la segunda no llega a devolver tabla: aborta.
+The measure forces the conversion by concatenating, which is what any expression expecting a
+scalar does. They are **two queries**, because the second never gets to return a table: it aborts.
 
 ```dax
 -- 1. un solo color -> devuelve "Black"
@@ -35,19 +34,19 @@ CALCULATETABLE(ROW("caso", "dos colores", "forzado", [forzado]),
                DimProduct[Color] IN {"Black", "White"})
 ```
 
-| contexto | resultado |
+| context | result |
 |---|---|
-| un solo color | **`Black`** — la conversión funciona |
-| dos colores | **error**: *A table of multiple values was supplied where a single value was expected* |
+| one colour only | **`Black`** — the conversion works |
+| two colours | **error**: *A table of multiple values was supplied where a single value was expected* |
 
-El segundo caso no devuelve un valor raro: **aborta la consulta**. Y aparece solo cuando el
-usuario amplía la selección, así que pasa las pruebas con un color y falla en producción con
-dos.
+The second case does not return a strange value: it **aborts the query**. And it only shows up
+when the user widens the selection, so it passes testing with one colour and fails in production
+with two.
 
-## No confundir con
-[`SELECTEDVALUE`](./selectedvalue.md), que es este patrón ya resuelto y sin error.
+## Not to be confused with
+[`SELECTEDVALUE`](./selectedvalue.md), which is this pattern already solved and without the error.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

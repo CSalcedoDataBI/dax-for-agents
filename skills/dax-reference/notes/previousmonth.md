@@ -1,9 +1,9 @@
-## Trampa: devuelve el mes anterior **entero**, mires lo que mires
+## Trap: it returns the **whole** previous month, whatever you are looking at
 
-`PREVIOUSMONTH` no desplaza tu selección: la ignora, se ancla en la **primera** fecha del
-contexto y devuelve el mes natural completo anterior a esa. Con un mes completo seleccionado
-eso es lo que quieres. Con un mes a medias —el mes en curso, una quincena, un filtro de días
-laborables— estás comparando un trozo contra un mes entero.
+`PREVIOUSMONTH` does not shift your selection: it ignores it, anchors on the **first** date in the
+context, and returns the complete calendar month before that one. With a whole month selected that
+is what you want. With a partial month — the current month, half a month, a working-days filter —
+you are comparing a slice against a whole month.
 
 ```dax
 DEFINE
@@ -21,19 +21,19 @@ RETURN
 }
 ```
 
-| periodo comparado | días | ventas |
+| period compared | days | sales |
 |---|---|---|
-| actual (1-15 mar 2024) | 15 | 436.666,83 |
-| `PREVIOUSMONTH` | **29** ❌ | 802.337,00 |
-| [`DATEADD(-1, MONTH)`](./dateadd.md) | **15** ✅ | 421.591,51 |
+| current (1-15 Mar 2024) | 15 | 436,666.83 |
+| `PREVIOUSMONTH` | **29** ❌ | 802,337.00 |
+| [`DATEADD(-1, MONTH)`](./dateadd.md) | **15** ✅ | 421,591.51 |
 
-29 días, no 28: febrero de 2024 fue bisiesto. Ese detalle es la otra mitad del problema —
-los meses no miden lo mismo, así que "mes anterior" nunca es una comparación limpia salvo que
-los dos estén completos.
+29 days, not 28: February 2024 was a leap year. That detail is the other half of the problem —
+months do not measure the same, so "previous month" is never a clean comparison unless both are
+complete.
 
-## A caballo entre dos meses devuelve el anterior al **primero**
+## Straddling two months it returns the one before the **first**
 
-Con la selección del 15 de febrero al 10 de marzo, "el mes anterior" no es febrero:
+With a selection from 15 February to 10 March, "the previous month" is not February:
 
 ```dax
 EVALUATE
@@ -51,35 +51,33 @@ RETURN
 }
 ```
 
-| | fecha |
+| | date |
 |---|---|
-| contexto, primera | 2024-02-15 |
-| contexto, última | 2024-03-10 |
-| `PREVIOUSMONTH`, primera | **2024-01-01** |
-| `PREVIOUSMONTH`, última | **2024-01-31** |
-| días devueltos | **31** |
+| context, first | 2024-02-15 |
+| context, last | 2024-03-10 |
+| `PREVIOUSMONTH`, first | **2024-01-01** |
+| `PREVIOUSMONTH`, last | **2024-01-31** |
+| days returned | **31** |
 
-Enero. Ni febrero ni marzo, los dos meses que el usuario tiene delante. Un rango que cruza el
-cambio de mes —una selección de slicer, un "últimos 30 días"— convierte la comparación en algo
-que nadie pidió, y sigue devolviendo un número.
+January. Neither February nor March, the two months the user has in front of them. A range crossing
+a month boundary — a slicer selection, a "last 30 days" — turns the comparison into something
+nobody asked for, and still returns a number.
 
-## Dónde sí es la función correcta
+## Where it is the right function
 
-Cuando el periodo actual **está cerrado**: un informe mensual del mes pasado, un acumulado a
-cierre. Ahí `PREVIOUSMONTH` dice exactamente lo que quieres decir y se lee mejor que un
-`DATEADD` con parámetros.
+When the current period **is closed**: a monthly report on last month, a to-close running total.
+There `PREVIOUSMONTH` says exactly what you mean and reads better than a `DATEADD` with parameters.
 
-Para el mes en curso, la comparación honesta es mes-a-fecha contra mes-a-fecha, y eso lo da
-`DATEADD` sobre las fechas seleccionadas.
+For the current month, the honest comparison is month-to-date against month-to-date, and that is
+what `DATEADD` over the selected dates gives you.
 
-## No confundir con
-- [`DATEADD`](./dateadd.md) — desplaza la selección tal cual, sin completar el periodo.
-- `PREVIOUSYEAR` / `PREVIOUSQUARTER` / `PREVIOUSDAY` — misma familia, mismo comportamiento de
-  periodo completo.
-- `DATESMTD` — el mes hasta la fecha del contexto, que es lo que suele querer decirse con
-  "el mes en curso".
+## Not to be confused with
+- [`DATEADD`](./dateadd.md) — shifts the selection as it is, without completing the period.
+- `PREVIOUSYEAR` / `PREVIOUSQUARTER` / `PREVIOUSDAY` — same family, same whole-period behaviour.
+- `DATESMTD` — the month up to the context's date, which is usually what people mean by "the
+  current month".
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

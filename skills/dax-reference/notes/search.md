@@ -1,8 +1,8 @@
-## Trampa: no encontrar es un error, no un blanco
+## Trap: not finding is an error, not a blank
 
-`SEARCH` sin su cuarto argumento **falla la consulta** cuando el texto no aparece. Es el
-mismo comportamiento de [`FIND`](./find.md) y sorprende igual, porque la intuición dice que
-una búsqueda que no encuentra devuelve "nada".
+`SEARCH` without its fourth argument **fails the query** when the text does not appear. It is the
+same behaviour as [`FIND`](./find.md) and it surprises just as much, because intuition says a
+search that finds nothing returns "nothing".
 
 ```dax
 EVALUATE
@@ -12,36 +12,36 @@ EVALUATE
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| `SEARCH("sony", "Sony Bravia", 1, -1)` | **1** ← encontrado, insensible a mayúsculas |
-| [`FIND`](./find.md)`("sony", "Sony Bravia", 1, -1)` | **-1** ← no encontrado, sensible |
+| `SEARCH("sony", "Sony Bravia", 1, -1)` | **1** ← found, case-insensitive |
+| [`FIND`](./find.md)`("sony", "Sony Bravia", 1, -1)` | **-1** ← not found, case-sensitive |
 
-Misma firma, misma posición de argumentos, respuesta contraria. Eso es lo que hace fácil
-escribir una y pensar en la otra.
+Same signature, same argument positions, opposite answer. That is what makes it easy to write one
+while thinking of the other.
 
-En una columna calculada el fallo es peor que en una medida: una sola fila sin coincidencia
-tumba el refresco del modelo entero, y el mensaje apunta a la función, no a la fila.
+In a calculated column the failure is worse than in a measure: a single row with no match brings
+down the refresh of the whole model, and the message points at the function, not at the row.
 
-## El cuarto argumento y el tercero
+## The fourth argument, and the third
 
-- `<start>` (tercero) empieza en **1**, no en 0. Un 0 da error.
-- `<NotFoundValue>` (cuarto) es lo que convierte la búsqueda en algo utilizable:
-  `SEARCH(texto, donde, 1, BLANK())` para un blanco, o `, 0)` si vas a comparar con `> 0`.
+- `<start>` (third) begins at **1**, not 0. A 0 raises an error.
+- `<NotFoundValue>` (fourth) is what makes the search usable: `SEARCH(text, where, 1, BLANK())`
+  for a blank, or `, 0)` if you are going to compare with `> 0`.
 
-Para "¿aparece?" sin importar dónde, `CONTAINSSTRING` se lee mejor y no tiene el caso de
-error.
+For "does it appear?" regardless of where, `CONTAINSSTRING` reads better and has no error case.
 
-## Admite comodines, y eso también sorprende
+## It accepts wildcards, and that surprises too
 
-`SEARCH` interpreta `?` y `*`. Buscar literalmente esos caracteres exige escaparlos con `~`.
-[`FIND`](./find.md) no los interpreta, así que para una búsqueda literal es la segura.
+`SEARCH` interprets `?` and `*`. Searching for those characters literally requires escaping them
+with `~`. [`FIND`](./find.md) does not interpret them, so for a literal search it is the safe one.
 
-## No confundir con
-- [`FIND`](./find.md) — sensible a mayúsculas, sin comodines.
-- `CONTAINSSTRING` / `CONTAINSSTRINGEXACT` — devuelven booleano; la segunda es la sensible.
+## Not to be confused with
+- [`FIND`](./find.md) — case-sensitive, no wildcards.
+- `CONTAINSSTRING` / `CONTAINSSTRINGEXACT` — return a boolean; the second is the case-sensitive
+  one.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura y no toca el modelo. Se ejecuta y se compara sola con `python
-> lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only and
+> does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
+> localhost:<port>`.

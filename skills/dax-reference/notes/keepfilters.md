@@ -1,23 +1,23 @@
-## Trampa: intersecta, no suma
+## Trap: it intersects, it does not add
 
-`KEEPFILTERS` no "añade" el filtro nuevo al conjunto anterior: **intersecta** ambos. Si el
-contexto ya filtra la misma columna por otro valor, el resultado es vacío, no la unión.
+`KEEPFILTERS` does not "add" the new filter to the previous set: it **intersects** them. If the
+context already filters the same column by another value, the result is empty, not the union.
 
-Con el contexto en `Color = "White"`:
+With the context on `Color = "White"`:
 
-| forma | resultado |
+| form | result |
 |---|---|
-| `CALCULATE([Unidades], DimProduct[Color] = "Black")` | 11.102 |
-| `CALCULATE([Unidades], KEEPFILTERS(DimProduct[Color] = "Black"))` | **(en blanco)** |
+| `CALCULATE([Unidades], DimProduct[Color] = "Black")` | 11,102 |
+| `CALCULATE([Unidades], KEEPFILTERS(DimProduct[Color] = "Black"))` | **(blank)** |
 
-Ver la consulta completa en [`filter`](./filter.md). El blanco es correcto: ningún producto
-es blanco y negro a la vez.
+See the full query in [`filter`](./filter.md). The blank is correct: no product is white and
+black at the same time.
 
-## No confundir con
-El predicado suelto, que **reemplaza** el filtro de esa columna. `KEEPFILTERS` es lo que
-quieres cuando el usuario tiene un slicer puesto y no debes ignorarlo.
+## Not to be confused with
+The bare predicate, which **replaces** that column's filter. `KEEPFILTERS` is what you want when
+the user has a slicer set and you must not ignore it.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

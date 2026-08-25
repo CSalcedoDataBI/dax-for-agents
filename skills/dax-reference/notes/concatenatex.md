@@ -1,8 +1,8 @@
-## Trampa: sin `orderBy` el orden es arbitrario, no el de la tabla
+## Trap: without `orderBy` the order is arbitrary, not the table's
 
-`CONCATENATEX` recorre la tabla que le das en el orden que el motor decida. Pasarle un
-[`TOPN`](./topn.md) ordenado por ventas **no** conserva ese orden: el resultado sale
-plausible —una lista de marcas separadas por comas— y no está ordenado por nada.
+`CONCATENATEX` walks the table you give it in whatever order the engine decides. Passing it a
+[`TOPN`](./topn.md) ordered by sales does **not** preserve that order: the result comes out
+plausible — a list of brands separated by commas — and is ordered by nothing.
 
 ```dax
 DEFINE
@@ -17,32 +17,33 @@ RETURN
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| sin `orderBy` | `Apple, Nintendo, Lutron, Microsoft, Sony` ❌ |
-| `orderBy` ventas DESC | `Sony, Microsoft, Nintendo, Lutron, Apple` ✅ |
-| `orderBy` alfabético | `Apple, Lutron, Microsoft, Nintendo, Sony` ✅ |
+| no `orderBy` | `Apple, Nintendo, Lutron, Microsoft, Sony` ❌ |
+| `orderBy` sales DESC | `Sony, Microsoft, Nintendo, Lutron, Apple` ✅ |
+| `orderBy` alphabetical | `Apple, Lutron, Microsoft, Nintendo, Sony` ✅ |
 
-El primero no está ordenado por ventas ni por nombre. Es el peor tipo de fallo para un texto
-en un informe: **"Top 5: Apple, Nintendo, Lutron…" se lee como un ranking y no lo es.**
+The first is ordered neither by sales nor by name. It is the worst kind of failure for text in a
+report: **"Top 5: Apple, Nintendo, Lutron…" reads as a ranking and is not one.**
 
-El orden sin `orderBy` tampoco está garantizado entre ejecuciones ni entre versiones del
-motor. Que hoy salga uno concreto no es una promesa.
+The order without `orderBy` is also not guaranteed between runs or between engine versions. That
+a particular one comes out today is not a promise.
 
-## El separador va antes que el orden
+## The separator comes before the order
 
-La firma es `CONCATENATEX(<tabla>, <expr>, [<delimitador>], [<orderBy>], [<order>])`. El
-delimitador es opcional, así que es fácil escribir el `orderBy` en su hueco y acabar con las
-marcas pegadas sin separador — un error que no da error.
+The signature is `CONCATENATEX(<table>, <expr>, [<delimiter>], [<orderBy>], [<order>])`. The
+delimiter is optional, so it is easy to write the `orderBy` in its slot and end up with the brands
+glued together with no separator — a mistake that raises no error.
 
-Para el último elemento con "y" en vez de coma no hay argumento: se construye aparte.
+For the last item joined with "and" instead of a comma there is no argument: you build that
+separately.
 
-## No confundir con
-- `CONCATENATE` — junta **dos** cadenas, no una tabla. Para varias, el operador `&` encadena
-  mejor.
-- `COMBINEVALUES` — pensado para claves compuestas, no para texto legible.
+## Not to be confused with
+- `CONCATENATE` — joins **two** strings, not a table. For several, the `&` operator chains
+  better.
+- `COMBINEVALUES` — meant for composite keys, not for readable text.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

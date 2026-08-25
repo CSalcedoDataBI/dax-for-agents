@@ -1,11 +1,10 @@
-## Trampa: el argumento de "no encontrado" también se traga los valores en conflicto
+## Trap: the "not found" argument also swallows conflicting values
 
-`LOOKUPVALUE` falla cuando las filas que encuentra no coinciden **en el valor que le pides**.
-El cuarto argumento, `<alternateResult>`, existe para el caso de "no hay coincidencia" — pero
-**también** se devuelve en ese conflicto. Los dos casos salen por la misma puerta y no se
-distinguen.
+`LOOKUPVALUE` fails when the rows it finds do not agree **on the value you asked for**. The fourth
+argument, `<alternateResult>`, exists for the "no match" case — but it is **also** returned on that
+conflict. Both cases come out of the same door and cannot be told apart.
 
-Lo que decide no es cuántas filas coinciden, sino cuántos **valores distintos** devuelven:
+What decides is not how many rows match, but how many **distinct values** they return:
 
 ```dax
 EVALUATE
@@ -18,48 +17,48 @@ EVALUATE
 }
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| filas con `Brand = "Sony"` | **9** |
-| `ProductName` distintos entre ellas | **8** |
-| `LOOKUPVALUE(ProductName, Brand, "Sony", …)` | **`SIN RESULTADO`** ❌ 8 valores en conflicto |
-| `LOOKUPVALUE(Brand, Brand, "Sony", …)` | **`Sony`** ✅ 9 filas, un solo valor |
-| `LOOKUPVALUE(CategoryName, Brand, "Sony", …)` | **`SIN RESULTADO`** ❌ Sony está en varias categorías |
+| rows with `Brand = "Sony"` | **9** |
+| distinct `ProductName` among them | **8** |
+| `LOOKUPVALUE(ProductName, Brand, "Sony", …)` | **`SIN RESULTADO`** ❌ 8 conflicting values |
+| `LOOKUPVALUE(Brand, Brand, "Sony", …)` | **`Sony`** ✅ 9 rows, a single value |
+| `LOOKUPVALUE(CategoryName, Brand, "Sony", …)` | **`SIN RESULTADO`** ❌ Sony is in several categories |
 
-La cuarta fila es la que rompe la intuición: **nueve filas coinciden y aun así devuelve un
-valor**, porque las nueve dicen lo mismo. Y la tercera es la peligrosa: hay 9 productos Sony,
-la respuesta correcta no es "sin resultado" sino "la pregunta está mal planteada", y el
-informe enseña lo segundo como si fuera lo primero.
+The fourth row is the one that breaks the intuition: **nine rows match and it still returns a
+value**, because all nine say the same thing. And the third is the dangerous one: there are 9 Sony
+products, the correct answer is not "no result" but "the question is badly posed", and the report
+shows the second as if it were the first.
 
-(9 filas y 8 nombres: dos productos Sony comparten `ProductName`. En un modelo de verdad esas
-cosas están.)
+(9 rows and 8 names: two Sony products share a `ProductName`. In a real model those things are
+there.)
 
-Sin el cuarto argumento la misma expresión falla, y el mensaje es claro:
+Without the fourth argument the same expression fails, and the message is clear:
 
 ```
 A table of multiple values was supplied where a single value was expected.
 ```
 
-Que es más útil que un `SIN RESULTADO` silencioso. **Poner `alternateResult` sin estar seguro
-de que el valor es único convierte un error en un dato falso.**
+Which is more useful than a silent `SIN RESULTADO`. **Adding `alternateResult` without being sure
+the value is unique turns an error into false data.**
 
-## Cómo usarlo con red
+## How to use it with a safety net
 
-- Búsqueda por clave única → `LOOKUPVALUE` sin cuarto argumento, y que reviente si el modelo
-  cambia.
-- Búsqueda que puede no encontrar nada → cuarto argumento, pero **solo** si sabes que no puede
-  haber conflicto.
-- Búsqueda que puede devolver valores distintos → no es un lookup. Es una agregación:
-  [`MAXX`](./maxx.md) o `MINX`, [`CONCATENATEX`](./concatenatex.md) o
-  [`SELECTEDVALUE`](./selectedvalue.md), que dice qué hacer con el empate.
+- Lookup by unique key → `LOOKUPVALUE` with no fourth argument, and let it blow up if the model
+  changes.
+- Lookup that may find nothing → fourth argument, but **only** if you know there can be no
+  conflict.
+- Lookup that may return different values → that is not a lookup. It is an aggregation:
+  [`MAXX`](./maxx.md) or `MINX`, [`CONCATENATEX`](./concatenatex.md) or
+  [`SELECTEDVALUE`](./selectedvalue.md), which says what to do with the tie.
 
-## No confundir con
-- [`RELATED`](./related.md) — sigue una relación existente y es más barato. `LOOKUPVALUE` no
-  necesita relación, y por eso se usa donde debería haberla.
-- [`SELECTEDVALUE`](./selectedvalue.md) — un valor del contexto actual, con salida explícita
-  para el caso de varios.
+## Not to be confused with
+- [`RELATED`](./related.md) — follows an existing relationship and is cheaper. `LOOKUPVALUE` needs
+  no relationship, which is why it gets used where there should be one.
+- [`SELECTEDVALUE`](./selectedvalue.md) — a value from the current context, with an explicit exit
+  for the several case.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura y no toca el modelo. Se ejecuta y se compara sola con `python
-> lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only and
+> does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
+> localhost:<port>`.

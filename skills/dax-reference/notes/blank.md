@@ -1,7 +1,7 @@
-## Trampa: `BLANK() = 0` es verdadero, y `BLANK() = ""` también
+## Trap: `BLANK() = 0` is true, and so is `BLANK() = ""`
 
-En una comparación, el blanco se convierte al tipo del otro operando. Así que un filtro
-`[Importe] = 0` **también captura los blancos**, y `[Texto] = ""` captura los vacíos.
+In a comparison, the blank is coerced to the type of the other operand. So a filter
+`[Importe] = 0` **also captures the blanks**, and `[Texto] = ""` captures the empties.
 
 ```dax
 EVALUATE
@@ -14,7 +14,7 @@ ROW(
 )
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
 | `BLANK() + 20` | **20** |
 | `BLANK() = 0` | **TRUE** |
@@ -22,21 +22,21 @@ ROW(
 | `BLANK() = ""` | **TRUE** |
 | `BLANK() == ""` | **FALSE** |
 
-Para distinguir "no hay dato" de "el dato es cero" tienes dos herramientas, y la diferencia
-entre ellas es un solo carácter:
+To tell "there is no data" from "the data is zero" you have two tools, and the difference between
+them is a single character:
 
-- **`==`** es la igualdad **estricta**: no convierte el blanco, así que `[Importe] == 0`
-  deja fuera los blancos mientras que `[Importe] = 0` los mete.
-- **`ISBLANK`** pregunta directamente por el blanco, y es lo que se lee mejor cuando esa es
-  la pregunta.
+- **`==`** is **strict** equality: it does not coerce the blank, so `[Importe] == 0` leaves the
+  blanks out while `[Importe] = 0` pulls them in.
+- **`ISBLANK`** asks about the blank directly, and it is what reads best when that is the
+  question.
 
-Lo que no sirve es `= 0` a secas, que es justo lo que se escribe sin pensar.
+What does not work is a bare `= 0`, which is exactly what gets written without thinking.
 
-## No confundir con
-SQL. `NULL = 0` es desconocido en SQL; en DAX es verdadero. La analogía correcta es la
-celda vacía de Excel, no `NULL`.
+## Not to be confused with
+SQL. `NULL = 0` is unknown in SQL; in DAX it is true. The right analogy is Excel's empty cell, not
+`NULL`.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

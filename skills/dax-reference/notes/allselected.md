@@ -1,9 +1,9 @@
-## Trampa: depende de quién puso el filtro, no de la fórmula
+## Trap: it depends on who set the filter, not on the formula
 
-`ALLSELECTED` devuelve el total de lo que el usuario tiene seleccionado, no el de la tabla
-entera. Es el único de la familia `ALL*` cuyo resultado cambia según **de dónde venga** el
-filtro: respeta los externos (slicer, filtro de página, la consulta) y quita los que pone
-el propio visual fila a fila.
+`ALLSELECTED` returns the total of what the user has selected, not that of the whole table. It is
+the only one in the `ALL*` family whose result changes according to **where the filter came
+from**: it respects the external ones (slicer, page filter, the query) and removes the ones the
+visual itself sets row by row.
 
 ```dax
 DEFINE
@@ -23,21 +23,21 @@ CALCULATETABLE(
 )
 ```
 
-| marca | unidades | den_ALLEXCEPT | den_ALLSELECTED |
+| brand | unidades | den_ALLEXCEPT | den_ALLSELECTED |
 |---|---|---|---|
-| Apple | 1.219 | 8.386 | **2.411** |
-| Sony | 1.192 | 8.386 | **2.411** |
+| Apple | 1,219 | 8,386 | **2,411** |
+| Sony | 1,192 | 8,386 | **2,411** |
 
-Que esa misma medida dé otro número al moverla a otro visual **no es un bug**: es la
-definición. Por eso es la función más difícil de depurar de la familia — el código no
-cambia y el resultado sí.
+That the same measure gives a different number when moved to another visual **is not a bug**: it
+is the definition. That is why it is the hardest function in the family to debug — the code does
+not change and the result does.
 
-## No confundir con
-`ALL` (quita los filtros de **su** tabla, no los de las demás — ver [`all`](./all.md), donde
-está medido) y `ALLEXCEPT` (todo lo de esa tabla menos las columnas nombradas, ver
+## Not to be confused with
+`ALL` (clears the filters on **its** table, not those of the others — see [`all`](./all.md), where
+it is measured) and `ALLEXCEPT` (everything on that table except the named columns, see
 [`allexcept`](./allexcept.md)).
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

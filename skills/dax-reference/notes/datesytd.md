@@ -1,9 +1,9 @@
-## Trampa: un filtro de fecha en el MISMO `CALCULATE` sobrevive al acumulado
+## Trap: a date filter in the SAME `CALCULATE` survives the accumulation
 
-`DATESYTD` devuelve las fechas desde el 1 de enero hasta el final del periodo actual. Es un
-argumento de filtro más, así que convive con los otros argumentos del mismo `CALCULATE`: si
-añades ahí una condición sobre la tabla de fechas, se **intersecta** con el rango del
-acumulado y el resultado deja de acumular.
+`DATESYTD` returns the dates from 1 January to the end of the current period. It is just another
+filter argument, so it coexists with the other arguments of the same `CALCULATE`: if you add a
+condition on the date table there, it **intersects** with the accumulated range and the result
+stops accumulating.
 
 ```dax
 DEFINE
@@ -19,23 +19,23 @@ CALCULATETABLE(
 )
 ```
 
-| mes | unidades | YTD | YTD con filtro de mes |
+| month | units | YTD | YTD with month filter |
 |---|---|---|---|
-| 2024-01 | 7.483 | **7.483** | (en blanco) |
-| 2024-02 | 7.059 | **14.542** | 7.059 |
-| 2024-03 | 7.978 | **22.520** | 7.059 |
+| 2024-01 | 7,483 | **7,483** | (blank) |
+| 2024-02 | 7,059 | **14,542** | 7,059 |
+| 2024-03 | 7,978 | **22,520** | 7,059 |
 
-El YTD correcto crece; el otro se queda clavado en febrero.
+The correct YTD grows; the other is stuck on February.
 
-Lo medido aquí es el filtro escrito **dentro del mismo `CALCULATE`**. El filtro de fila del
-propio visual (la columna `YearMonth`) no estorba: es lo que define "hasta cuándo" acumular,
-y por eso la columna YTD sí avanza. La trampa está en añadir condiciones de fecha a mano
-junto a la función, no en que el visual filtre.
+What is measured here is the filter written **inside the same `CALCULATE`**. The visual's own row
+filter (the `YearMonth` column) does not get in the way: it is what defines "up to when" to
+accumulate, and that is why the YTD column does advance. The trap is adding date conditions by
+hand next to the function, not the visual filtering.
 
-## Trampa: con la fecha del hecho deja de acumular, sin avisar
+## Trap: with the fact's date it stops accumulating, without warning
 
-Pasarle la fecha de la tabla de hechos en lugar de la de la tabla de fechas no da error ni
-blanco: devuelve el valor del periodo **sin acumular**.
+Passing it the fact table's date instead of the date table's raises no error and no blank: it
+returns the period's value **without accumulating**.
 
 ```dax
 DEFINE
@@ -53,21 +53,20 @@ CALCULATETABLE(
 ORDER BY DimDate[YearMonth]
 ```
 
-| mes | unidades | `DATESYTD(DimDate[Date])` | `DATESYTD(FactSales[OrderDate])` |
+| month | units | `DATESYTD(DimDate[Date])` | `DATESYTD(FactSales[OrderDate])` |
 |---|---|---|---|
-| 2024-01 | 7.483 | 7.483 | 7.483 |
-| 2024-02 | 7.059 | **14.542** | **7.059** |
-| 2024-03 | 7.978 | **22.520** | **7.978** |
+| 2024-01 | 7,483 | 7,483 | 7,483 |
+| 2024-02 | 7,059 | **14,542** | **7,059** |
+| 2024-03 | 7,978 | **22,520** | **7,978** |
 
-En enero coinciden, que es lo peor que podía pasar: si compruebas el primer mes, parece
-correcto.
+In January they agree, which is the worst thing that could happen: if you check the first month, it
+looks right.
 
-## No confundir con
-Que la tabla de fechas esté incompleta. Ver también
-[`SAMEPERIODLASTYEAR`](./sameperiodlastyear.md), donde el mismo error sí produce blanco: la
-causa es la misma y el síntoma no.
+## Not to be confused with
+An incomplete date table. See also [`SAMEPERIODLASTYEAR`](./sameperiodlastyear.md), where the same
+mistake does produce a blank: the cause is the same and the symptom is not.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

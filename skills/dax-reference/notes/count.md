@@ -1,10 +1,9 @@
-## Trampa: sobre una columna entera en blanco devuelve blanco, no cero
+## Trap: over an all-blank column it returns blank, not zero
 
-`COUNT` cuenta valores, no filas: descarta los blancos. Si la columna está entera en blanco
-el resultado es **(en blanco)**, no `0` — y un blanco desaparece del visual mientras que un
-cero se dibuja.
+`COUNT` counts values, not rows: it discards blanks. If the column is entirely blank the result
+is **(blank)**, not `0` — and a blank disappears from the visual while a zero gets drawn.
 
-`DimStore[CloseDate]` está vacía en las 25 tiendas (ninguna ha cerrado):
+`DimStore[CloseDate]` is empty across all 25 stores (none has closed):
 
 ```dax
 EVALUATE
@@ -15,20 +14,21 @@ ROW(
 )
 ```
 
-| expresión | resultado |
+| expression | result |
 |---|---|
-| `COUNT(DimStore[CloseDate])` | **(en blanco)** |
+| `COUNT(DimStore[CloseDate])` | **(blank)** |
 | `COUNTROWS(DimStore)` | **25** |
 | `COUNTBLANK(DimStore[CloseDate])` | 25 |
 
-Si querías "cuántas tiendas hay", `COUNT` sobre una columna con blancos te da otra cosa.
+If what you wanted was "how many stores are there", `COUNT` over a column with blanks gives you
+something else.
 
-## No confundir con
-[`COUNTROWS`](./countrows.md), que cuenta filas y no mira el contenido. Microsoft
-[recomienda COUNTROWS sobre COUNT](https://learn.microsoft.com/en-us/dax/best-practices/dax-countrows)
-por este motivo, y esa página no está en la ficha de la función.
+## Not to be confused with
+[`COUNTROWS`](./countrows.md), which counts rows and does not look at the content. Microsoft
+[recommends COUNTROWS over COUNT](https://learn.microsoft.com/en-us/dax/best-practices/dax-countrows)
+for this reason, and that page is not in the function card.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

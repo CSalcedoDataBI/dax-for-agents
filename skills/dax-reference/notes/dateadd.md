@@ -1,11 +1,11 @@
-## Trampa: desplaza lo que hay seleccionado, no el periodo entero
+## Trap: it shifts what is selected, not the whole period
 
-`DATEADD` coge las fechas del contexto y las mueve. Si el contexto son 15 días, devuelve 15
-días. Eso es justo lo que quieres para comparar mes a mes **en curso** — y es justo lo que
-[`PREVIOUSMONTH`](./previousmonth.md) no hace, aunque en un mes completo los dos den lo mismo
-y parezcan intercambiables.
+`DATEADD` takes the dates from the context and moves them. If the context is 15 days, it returns
+15 days. That is exactly what you want to compare month against month **in progress** — and it is
+exactly what [`PREVIOUSMONTH`](./previousmonth.md) does not do, even though over a complete month
+both give the same thing and look interchangeable.
 
-Con la primera quincena de marzo de 2024 seleccionada:
+With the first half of March 2024 selected:
 
 ```dax
 DEFINE
@@ -23,32 +23,31 @@ RETURN
 }
 ```
 
-| periodo comparado | días | ventas |
+| period compared | days | sales |
 |---|---|---|
-| actual (1-15 mar 2024) | 15 | 436.666,83 |
-| `DATEADD(-1, MONTH)` | **15** | 421.591,51 ✅ comparable |
-| `PREVIOUSMONTH` | **29** | 802.337,00 ❌ mes entero |
+| current (1-15 Mar 2024) | 15 | 436,666.83 |
+| `DATEADD(-1, MONTH)` | **15** | 421,591.51 ✅ comparable |
+| `PREVIOUSMONTH` | **29** | 802,337.00 ❌ whole month |
 
-802.337 contra 436.666 no es una caída del 46%: es medio mes contra uno entero. El informe
-no avisa, porque los dos números son correctos — lo que está mal es compararlos.
+802,337 against 436,666 is not a 46% drop: it is half a month against a whole one. The report does
+not warn you, because both numbers are correct — what is wrong is comparing them.
 
-## Necesita una tabla de fechas de verdad
+## It needs a real date table
 
-`DATEADD` exige una columna de fechas **continua**: sin huecos y con años completos. Sobre
-una columna de fechas de la tabla de hechos devuelve resultados incompletos en los bordes, y
-en algunos modelos ni siquiera avisa.
+`DATEADD` requires a **continuous** date column: no gaps and whole years. Over a date column from
+the fact table it returns incomplete results at the edges, and in some models it does not even
+warn.
 
-El primer periodo siempre sale **en blanco**, porque no hay nada antes que desplazar. Un
-`Ventas YoY %` sobre el primer año del modelo es blanco, no cero, y eso es correcto: no hay
-comparación que hacer.
+The first period always comes out **blank**, because there is nothing before it to shift. A
+`Ventas YoY %` over the model's first year is blank, not zero, and that is correct: there is no
+comparison to make.
 
-## No confundir con
-- [`SAMEPERIODLASTYEAR`](./sameperiodlastyear.md) — es `DATEADD(-1, YEAR)` con nombre propio.
-- [`PREVIOUSMONTH`](./previousmonth.md) / `PREVIOUSYEAR` — periodo **completo** anterior.
-- Sumar días a mano (`Fecha - 365`): pierde los años bisiestos y no alinea los días de la
-  semana.
+## Not to be confused with
+- [`SAMEPERIODLASTYEAR`](./sameperiodlastyear.md) — it is `DATEADD(-1, YEAR)` with its own name.
+- [`PREVIOUSMONTH`](./previousmonth.md) / `PREVIOUSYEAR` — the **complete** previous period.
+- Subtracting days by hand (`Fecha - 365`): it loses leap years and does not line the weekdays up.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-13. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.

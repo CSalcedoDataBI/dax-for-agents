@@ -1,8 +1,8 @@
-## Trampa: la alternativa sale con CERO valores y con VARIOS, no solo con varios
+## Trap: the alternative comes out with ZERO values and with SEVERAL, not only with several
 
-`SELECTEDVALUE(col, alternativa)` devuelve el valor **solo si queda exactamente uno**. Con
-ninguno y con dos o más devuelve la alternativa, que por defecto es blanco — así que una
-tarjeta vacía no distingue "el usuario seleccionó varios" de "no hay nada seleccionado".
+`SELECTEDVALUE(col, alternative)` returns the value **only if exactly one is left**. With none and
+with two or more it returns the alternative, which defaults to blank — so an empty card does not
+distinguish "the user selected several" from "nothing is selected".
 
 ```dax
 DEFINE
@@ -16,15 +16,15 @@ UNION(
 )
 ```
 
-| caso | nº de valores | SELECTEDVALUE |
+| case | no. of values | SELECTEDVALUE |
 |---|---|---|
-| un valor | 1 | **Black** |
-| dos valores | 2 | **-- alternativa --** |
-| cero valores | 0 | **-- alternativa --** |
+| one value | 1 | **Black** |
+| two values | 2 | **-- alternativa --** |
+| zero values | 0 | **-- alternativa --** |
 
-Si necesitas separar los dos casos, `HASONEVALUE` **no** sirve: es falso en ambos, que es
-justo lo que hace que los dos devuelvan la alternativa. Y ojo al contar, porque `COUNTROWS`
-sobre una tabla vacía devuelve **blanco, no cero**:
+If you need to tell the two cases apart, `HASONEVALUE` does **not** help: it is false in both,
+which is exactly what makes both return the alternative. And be careful counting, because
+`COUNTROWS` over an empty table returns **blank, not zero**:
 
 ```dax
 EVALUATE
@@ -39,23 +39,23 @@ CALCULATETABLE(
 )
 ```
 
-| expresión, con cero valores en el contexto | resultado |
+| expression, with zero values in context | result |
 |---|---|
-| `COUNTROWS(VALUES(col))` | **(en blanco)** |
+| `COUNTROWS(VALUES(col))` | **(blank)** |
 | `ISBLANK(COUNTROWS(...))` | TRUE |
 | `COALESCE(COUNTROWS(...), 0)` | 0 |
 | `ISEMPTY(VALUES(col))` | TRUE |
 
-Por eso la consulta de arriba envuelve el conteo en `COALESCE`. Para preguntar "¿hay cero?",
-`ISEMPTY` es más directo que contar.
+That is why the query above wraps the count in `COALESCE`. To ask "is it zero?", `ISEMPTY` is more
+direct than counting.
 
-## No confundir con
-`VALUES`, que devuelve la tabla entera y da error al forzarla a escalar con más de una fila.
+## Not to be confused with
+`VALUES`, which returns the whole table and errors when forced to a scalar with more than one row.
 Microsoft
-[recomienda SELECTEDVALUE](https://learn.microsoft.com/en-us/dax/best-practices/dax-selectedvalue)
-para evitarlo; esa página no está en la ficha de la función.
+[recommends SELECTEDVALUE](https://learn.microsoft.com/en-us/dax/best-practices/dax-selectedvalue)
+to avoid that; that page is not in the function card.
 
-> Medido sobre [`lab/contoso`](../../../lab/contoso/) —Contoso Retail, FactSales 126.524
-> filas, 137 productos, DimDate 2023-01-01 a 2024-12-31— el 2026-08-12. La consulta es de
-> solo lectura: define sus medidas con `DEFINE` y no toca el modelo. Se ejecuta y se
-> compara sola con `python lab/check_lab.py contoso localhost:<puerto>`.
+> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
+> it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
+> with `python lab/check_lab.py contoso localhost:<port>`.
