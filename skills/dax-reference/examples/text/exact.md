@@ -3,12 +3,12 @@ function: EXACT
 model: ninguno
 ---
 
-# EXACT — ejemplos
+# EXACT — examples
 
-## 1. Es la comparación que SÍ distingue mayúsculas
+## 1. It is the comparison that DOES distinguish case
 
-El operador `=` de DAX no las distingue. `EXACT` es la única forma de preguntarlo sin
-inventar un truco con [`unicode`](./unicode.md).
+DAX's `=` operator does not. `EXACT` is the only way to ask without inventing a trick with
+[`unicode`](./unicode.md).
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ igual_operador | exact | exact_iguales | acentos
 True | False | True | False
 ```
 
-Que `"Sony" = "SONY"` sea verdadero explica por qué un `SUBSTITUTE` —que **sí** distingue—
-se comporta distinto que el filtro que lo precede.
+That `"Sony" = "SONY"` is true explains why a `SUBSTITUTE` — which **does** distinguish — behaves
+differently from the filter preceding it.
 
-## 2. Con blancos y cadenas vacías
+## 2. With blanks and empty strings
 
 ```dax
 EVALUATE
@@ -45,13 +45,13 @@ blanco_vs_vacia | blanco_vs_blanco | vacia_vs_vacia | blanco_vs_texto
 True | True | True | False
 ```
 
-`EXACT(BLANK(), "")` es **verdadero**: para `EXACT`, el blanco y la cadena vacía son el mismo
-texto. Distingue mayúsculas pero no distingue eso, así que no sirve para auditar un origen que
-mezcla nulos con cadenas vacías — para eso, `ISBLANK`.
+`EXACT(BLANK(), "")` is **true**: to `EXACT`, the blank and the empty string are the same text. It
+distinguishes case but not that, so it is no use for auditing a source that mixes nulls with empty
+strings — for that, `ISBLANK`.
 
-## 3. El espacio cuenta, y el invisible también
+## 3. The space counts, and the invisible one too
 
-Dos textos que se ven idénticos en el visual pueden no serlo. `EXACT` lo dice; el ojo no.
+Two texts that look identical in the visual may not be. `EXACT` says so; the eye does not.
 
 ```dax
 EVALUATE
@@ -68,5 +68,5 @@ espacio_final | espacio_duro | tras_trim | duro_tras_trim
 False | False | True | False
 ```
 
-El último es el que importa: [`trim`](./trim.md) no salva del espacio duro, y `EXACT` lo
-demuestra en una línea.
+The last one is what matters: [`trim`](./trim.md) does not save you from the non-breaking space,
+and `EXACT` demonstrates it in one line.

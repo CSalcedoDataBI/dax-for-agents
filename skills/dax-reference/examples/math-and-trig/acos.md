@@ -3,9 +3,9 @@ function: ACOS
 model: ninguno
 ---
 
-# ACOS — ejemplos
+# ACOS — examples
 
-## 1. Mismo dominio que ASIN, [-1, 1], y también aborta fuera
+## 1. Same domain as ASIN, [-1, 1], and it aborts outside it too
 
 ```dax
 EVALUATE ROW("fuera_de_rango", ACOS(2))
@@ -15,9 +15,9 @@ EVALUATE ROW("fuera_de_rango", ACOS(2))
 ERROR: An argument of function 'ACOS' has the wrong data type or the result is too large or too small.
 ```
 
-Es el error que aparece al calcular ángulos a partir de un producto escalar: la división da
-`1.0000000002` por acumulación de coma flotante y la consulta muere. La defensa es acotar el
-argumento con `MIN(1, MAX(-1, x))` antes de llamarla.
+It is the error that shows up when computing angles from a dot product: the division gives
+`1.0000000002` from floating-point accumulation and the query dies. The defence is to clamp the
+argument with `MIN(1, MAX(-1, x))` before calling it.
 
 ```dax
 EVALUATE
@@ -34,10 +34,10 @@ acos_1 | acos_0 | acos_m1 | pi
 0 | 1.570796 | 3.141593 | 3.141593
 ```
 
-## 2. Su rango de salida es [0, π] — distinto al de ASIN
+## 2. Its output range is [0, π] — different from ASIN's
 
-Ahí está la diferencia práctica entre las dos: `ASIN` devuelve ángulos con signo, `ACOS`
-nunca devuelve negativos. Para un ángulo entre vectores es lo que se quiere.
+That is the practical difference between the two: `ASIN` returns signed angles, `ACOS` never
+returns a negative. For an angle between vectors that is what you want.
 
 ```dax
 EVALUATE
@@ -54,10 +54,10 @@ acos_de_neg | asin_de_neg | acos_positivo_siempre | suma_constante
 2.094395 | -0.523599 | True | 1.570796
 ```
 
-`ACOS(x) + ASIN(x)` es siempre π/2. Es la comprobación rápida de que ninguna de las dos está
-mal usada.
+`ACOS(x) + ASIN(x)` is always π/2. It is the quick check that neither of the two is being
+misused.
 
-## 3. En radianes, como todo aquí
+## 3. In radians, like everything here
 
 ```dax
 EVALUATE
@@ -74,4 +74,4 @@ radianes | grados | vuelta | blanco
 1.047198 | 60 | 0.5 | 1.570796
 ```
 
-`ACOS(BLANK())` no es blanco: el blanco entra como 0 y el resultado es π/2.
+`ACOS(BLANK())` is not blank: the blank goes in as 0 and the result is π/2.

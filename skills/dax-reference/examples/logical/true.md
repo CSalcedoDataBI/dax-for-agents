@@ -3,12 +3,12 @@ function: TRUE
 model: ninguno
 ---
 
-# TRUE — ejemplos
+# TRUE — examples
 
-## 1. Es una función, y lleva paréntesis
+## 1. It is a function, and it takes parentheses
 
-`TRUE` no es una palabra reservada: es una función sin argumentos. Sin `()` DAX intenta
-resolverla como un nombre y falla.
+`TRUE` is not a reserved word: it is a function with no arguments. Without `()` DAX tries to
+resolve it as a name and fails.
 
 ```dax
 EVALUATE
@@ -24,11 +24,10 @@ con_parentesis | comparada | dentro_de_if
 True | True | rama SI
 ```
 
-## 2. Vale 1 en aritmética, pero NO se puede comparar con 1
+## 2. It is worth 1 in arithmetic, but it canNOT be compared to 1
 
-Esto es lo que se descubre ejecutándolo. `TRUE() + 0` da 1 sin problema, así que la intuición
-dice que `TRUE() = 1` también debería funcionar. No funciona: DAX se niega a comparar un
-booleano con un entero.
+This is what you discover by running it. `TRUE() + 0` gives 1 without trouble, so intuition says
+`TRUE() = 1` ought to work too. It does not: DAX refuses to compare a boolean with an integer.
 
 ```dax
 EVALUATE
@@ -44,8 +43,9 @@ true_mas_cero | false_mas_cero | suma_de_tres
 1 | 0 | 2
 ```
 
-`(1=1) + (2=2) + (3=4)` cuenta cuántas condiciones se cumplen sin escribir tres `IF`. La
-conversión ocurre porque el `+` la fuerza; la comparación no la fuerza y por eso aborta:
+`(1=1) + (2=2) + (3=4)` counts how many conditions hold without writing three `IF`s. The
+conversion happens because the `+` forces it; the comparison does not force it, and that is why it
+aborts:
 
 ```dax
 EVALUATE ROW("comparado_con_uno", TRUE() = 1)
@@ -55,7 +55,7 @@ EVALUATE ROW("comparado_con_uno", TRUE() = 1)
 ERROR: DAX comparison operations do not support comparing values of type True/False with values of type Integer. Consider using the VALUE or FORMAT function to convert one of the values.
 ```
 
-Si necesitas comparar, convierte tú primero:
+If you need to compare, convert first yourself:
 
 ```dax
 EVALUATE ROW("convertido_antes", TRUE() + 0 = 1)
@@ -66,7 +66,7 @@ convertido_antes
 True
 ```
 
-## 3. Comparar contra TRUE() con `=` o con `==` no es lo mismo
+## 3. Comparing against TRUE() with `=` or with `==` is not the same
 
 ```dax
 EVALUATE
@@ -83,5 +83,5 @@ sin_comparar | comparado_simple | blanco_simple | blanco_estricto
 sí | sí | no | no
 ```
 
-Ver [`false`](./false.md), y la nota de campo de [`blank`](../../notes/blank.md) para el
-mecanismo detrás de `=` frente a `==`.
+See [`false`](./false.md), and the [`blank`](../../notes/blank.md) field note for the mechanism
+behind `=` versus `==`.

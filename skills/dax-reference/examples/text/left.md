@@ -3,12 +3,12 @@ function: LEFT
 model: ninguno
 ---
 
-# LEFT — ejemplos
+# LEFT — examples
 
-## 1. Pedir más de lo que hay no da error
+## 1. Asking for more than there is gives no error
 
-Devuelve lo que haya. Suena cómodo y es justo lo que impide detectar que el dato venía corto:
-un código de 3 letras y uno de 8 salen los dos «bien».
+It returns whatever is there. It sounds convenient and it is exactly what stops you noticing the
+data came in short: a 3-letter code and an 8-letter one both come out "fine".
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ normal | mas_de_largo | cero | sin_segundo
 Con | ab | [] | C
 ```
 
-Sin el segundo argumento devuelve **un** carácter, no la cadena entera.
+Without the second argument it returns **one** character, not the whole string.
 
-## 2. Un número negativo sí aborta
+## 2. A negative number does abort
 
-Es la única forma de que avise, y llega por una variable calculada, no por una constante.
+It is the only way it warns you, and it arrives through a calculated variable, not a constant.
 
 ```dax
 EVALUATE ROW("negativo", LEFT("Contoso", -1))
@@ -39,7 +39,7 @@ EVALUATE ROW("negativo", LEFT("Contoso", -1))
 ERROR: An argument of function 'LEFT' has the wrong data type or has an invalid value.
 ```
 
-## 3. Sobre un blanco y sobre un número
+## 3. Over a blank and over a number
 
 ```dax
 EVALUATE
@@ -56,8 +56,8 @@ blanco | es_blanco | numero | decimal
 [] | True | 12 | 1,7
 ```
 
-Sobre un número convierte a texto primero, con la cultura del modelo — así que el corte
-depende de si el separador decimal es coma o punto.
+Over a number it converts to text first, with the model's culture — so the cut depends on whether
+the decimal separator is a comma or a dot.
 
-Ver [`right`](./right.md), [`mid`](./mid.md) y [`len`](./len.md), que cuenta unidades de
-código y no caracteres visibles: ahí es donde un emoji se parte por la mitad.
+See [`right`](./right.md), [`mid`](./mid.md) and [`len`](./len.md), which counts code units and
+not visible characters: that is where an emoji gets split in half.

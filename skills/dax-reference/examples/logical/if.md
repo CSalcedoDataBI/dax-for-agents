@@ -3,12 +3,13 @@ function: IF
 model: ninguno
 ---
 
-# IF — ejemplos
+# IF — examples
 
-## 1. Sin el tercer argumento el resultado es BLANCO, no cero
+## 1. Without the third argument the result is BLANK, not zero
 
-Omitir el `else` no significa «cero». Significa **blanco**, que es otra cosa: no aparece en el
-visual, no cuenta en un `COUNT`, y en cuanto alguien le suma cero deja de ser blanco.
+Leaving out the `else` does not mean "zero". It means **blank**, which is a different thing: it
+does not appear in the visual, it does not count in a `COUNT`, and the moment somebody adds zero
+to it, it stops being blank.
 
 ```dax
 EVALUATE
@@ -25,13 +26,13 @@ sin_else | es_blanco | sin_else_mas_0 | con_else_cero
 (blank) | True | 0 | 0
 ```
 
-`sin_else + 0` y `con_else_cero` dan lo mismo — y esa es justo la confusión. El primero
-convierte un blanco en cero sin decirlo; el segundo lo decide.
+`sin_else + 0` and `con_else_cero` give the same thing — and that is precisely the confusion. The
+first turns a blank into a zero without saying so; the second decides it.
 
-## 2. Una condición en blanco es FALSA
+## 2. A blank condition is FALSE
 
-`IF` no distingue entre «falso» y «no hay dato». Un blanco entra por la rama del `else` sin
-avisar, así que una columna con huecos se clasifica entera como si fuese `FALSE`.
+`IF` does not tell "false" from "no data". A blank takes the `else` branch without warning, so a
+column with gaps is classified wholesale as if it were `FALSE`.
 
 ```dax
 EVALUATE
@@ -48,14 +49,14 @@ condicion_blanca | condicion_cero | condicion_uno | cero_es_falso
 rama NO | rama NO | rama SI | True
 ```
 
-El cero también es falso, y por la misma razón: `IF` convierte a booleano, y en DAX el cero y
-el blanco se convierten los dos en `FALSE`.
+Zero is false too, and for the same reason: `IF` converts to boolean, and in DAX both zero and
+blank convert to `FALSE`.
 
-## 3. Las dos ramas no tienen por qué devolver el mismo tipo
+## 3. The two branches do not have to return the same type
 
-`IF` puede devolver texto por una rama y número por la otra. Lo que sale es un valor de tipo
-variante, y quien lo consuma después —una comparación, un `SUM`, un formato— es quien se
-lleva la sorpresa.
+`IF` can return text down one branch and a number down the other. What comes out is a variant
+value, and whoever consumes it afterwards — a comparison, a `SUM`, a format — is the one who gets
+the surprise.
 
 ```dax
 EVALUATE
@@ -71,5 +72,5 @@ rama_numero | rama_texto | suma_mixta
 42 | cuarenta y dos | 43
 ```
 
-Ver [`coalesce`](./coalesce.md) para el caso concreto de «si está en blanco, usa este otro»,
-que es donde casi siempre se acaba usando un `IF` de más.
+See [`coalesce`](./coalesce.md) for the specific "if it is blank, use this other one" case, which
+is where an unnecessary `IF` almost always ends up.

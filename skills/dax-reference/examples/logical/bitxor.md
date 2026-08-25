@@ -3,11 +3,11 @@ function: BITXOR
 model: ninguno
 ---
 
-# BITXOR — ejemplos
+# BITXOR — examples
 
-## 1. Cambia la bandera: la enciende si estaba apagada y al revés
+## 1. It toggles the flag: on if it was off and the other way round
 
-Es lo que distingue `BITXOR` de [`bitor`](./bitor.md), que solo enciende.
+That is what distinguishes `BITXOR` from [`bitor`](./bitor.md), which only turns on.
 
 ```dax
 EVALUATE
@@ -26,13 +26,13 @@ valor | cambia_el_1 | cambia_el_2 | cambia_dos_veces
 5 | 4 | 7 | 5
 ```
 
-Aplicarlo dos veces devuelve el valor original. Esa propiedad es la que lo hace útil para
-alternar un estado, y también la que lo hace peligroso si se ejecuta dos veces sin querer.
+Applying it twice returns the original value. That property is what makes it useful for toggling
+a state, and also what makes it dangerous if it runs twice by accident.
 
-## 2. Consigo mismo siempre da cero
+## 2. With itself it always gives zero
 
-De ahí el truco clásico de comparar dos números: si el `BITXOR` es cero, son idénticos bit a
-bit.
+Hence the classic trick for comparing two numbers: if the `BITXOR` is zero, they are identical bit
+for bit.
 
 ```dax
 EVALUATE
@@ -49,10 +49,10 @@ consigo_mismo | con_cero | difieren_en_uno | negativos
 0 | 12345 | 1 | 0
 ```
 
-## 3. Con signos distintos el resultado es negativo
+## 3. With different signs the result is negative
 
-El bit de signo también se opera, así que `BITXOR` de un positivo y un negativo sale negativo.
-Un cálculo que dé por hecho que el resultado es una máscara positiva se rompe aquí.
+The sign bit is operated on too, so `BITXOR` of a positive and a negative comes out negative. A
+calculation assuming the result is a positive mask breaks here.
 
 ```dax
 EVALUATE

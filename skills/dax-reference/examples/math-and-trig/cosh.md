@@ -3,13 +3,13 @@ function: COSH
 model: ninguno
 ---
 
-# COSH — ejemplos
+# COSH — examples
 
-## 1. Nunca baja de 1
+## 1. It never drops below 1
 
-Al contrario que [`cos`](./cos.md), que va de -1 a 1. `COSH` tiene su mínimo en `COSH(0) = 1` y
-crece desde ahí en las dos direcciones. Un `COSH` negativo es imposible, así que si tu cálculo
-lo produce, la función no es la que crees.
+Unlike [`cos`](./cos.md), which runs from -1 to 1. `COSH` has its minimum at `COSH(0) = 1` and
+grows from there in both directions. A negative `COSH` is impossible, so if your calculation
+produces one, the function is not the one you think.
 
 ```dax
 EVALUATE
@@ -26,11 +26,11 @@ cosh_0 | cosh_1 | cosh_m1 | minimo
 1 | 1.543081 | 1.543081 | True
 ```
 
-## 2. Es par: el signo se pierde
+## 2. It is even: the sign is lost
 
-`COSH(x) = COSH(-x)`. Es la diferencia estructural con [`sinh`](./sinh.md), que es impar, y la
-razón por la que `COSH` no se puede invertir sobre todo el eje — ver [`acosh`](./acosh.md),
-cuyo dominio empieza en 1 justamente por esto.
+`COSH(x) = COSH(-x)`. It is the structural difference from [`sinh`](./sinh.md), which is odd, and
+the reason `COSH` cannot be inverted over the whole axis — see [`acosh`](./acosh.md), whose
+domain starts at 1 for exactly this reason.
 
 ```dax
 EVALUATE
@@ -47,7 +47,7 @@ cosh_2 | cosh_m2 | coinciden | sinh_no
 3.762196 | 3.762196 | True | False
 ```
 
-## 3. El mismo techo que SINH, por la misma razón
+## 3. The same ceiling as SINH, for the same reason
 
 ```dax
 EVALUATE ROW("desbordado", COSH(710))
@@ -57,7 +57,7 @@ EVALUATE ROW("desbordado", COSH(710))
 ERROR: An argument of function 'COSH' has the wrong data type or the result is too large or too small.
 ```
 
-Y la definición, comprobada:
+And the definition, verified:
 
 ```dax
 EVALUATE
@@ -73,10 +73,10 @@ definicion | blanco | suma_con_sinh
 0 | 1 | 0
 ```
 
-`COSH(x) + SINH(x) = eˣ` — la comprobación en una línea de que las dos son las mitades par e
-impar de la exponencial.
+`COSH(x) + SINH(x) = eˣ` — the one-line check that the two are the even and odd halves of the
+exponential.
 
-Y `COSH(BLANK())` es **1**, no blanco: el blanco entra como cero y `COSH(0)` vale 1. Cuidado con
-generalizarlo, porque [`sinh`](./sinh.md) y [`tanh`](./tanh.md) **sí** devuelven blanco con la
-misma entrada — no porque el blanco entre distinto, sino porque su resultado en cero es cero, y
-un cero que sale de un blanco vuelve a salir como blanco.
+And `COSH(BLANK())` is **1**, not blank: the blank goes in as zero and `COSH(0)` is 1. Be careful
+about generalising that, because [`sinh`](./sinh.md) and [`tanh`](./tanh.md) **do** return blank
+on the same input — not because the blank goes in differently, but because their result at zero
+is zero, and a zero that comes out of a blank comes back out as blank.

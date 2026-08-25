@@ -3,12 +3,12 @@ function: SIN
 model: ninguno
 ---
 
-# SIN — ejemplos
+# SIN — examples
 
-## 1. El argumento va en RADIANES, y con grados no falla: miente
+## 1. The argument is in RADIANS, and with degrees it does not fail: it lies
 
-Es la trampa número uno de toda la familia. `SIN(90)` no da 1 — da el seno de 90 radianes, que
-es un número perfectamente creíble y completamente equivocado. No hay error que lo delate.
+It is the number-one trap of the whole family. `SIN(90)` does not give 1 — it gives the sine of
+90 radians, which is a perfectly believable and completely wrong number. No error gives it away.
 
 ```dax
 EVALUATE
@@ -25,13 +25,13 @@ sin_90_grados | sin_90_radianes | sin_0 | sin_30_bien
 0.893997 | 1 | 0 | 0.5
 ```
 
-Si el dato viene en grados —y casi siempre viene en grados— hay que pasarlo por
-[`radians`](./radians.md) **siempre**.
+If the data arrives in degrees — and it almost always arrives in degrees — it has to go through
+[`radians`](./radians.md) **every time**.
 
-## 2. No tiene dominio: acepta cualquier número
+## 2. It has no domain: it accepts any number
 
-A diferencia de su inversa [`asin`](./asin.md), que solo admite [-1, 1]. Aquí el resultado
-siempre cae en ese intervalo.
+Unlike its inverse [`asin`](./asin.md), which only takes [-1, 1]. Here the result always falls
+inside that interval.
 
 ```dax
 EVALUATE
@@ -48,14 +48,13 @@ muy_grande | negativo | impar | en_rango
 0.82688 | -0.841471 | 0 | True
 ```
 
-`SIN(-x) = -SIN(x)`: la suma da cero exacto, que es la comprobación de que es impar.
+`SIN(-x) = -SIN(x)`: the sum gives exact zero, which is the check that it is odd.
 
-## 3. SIN(PI()) se MUESTRA como cero y no es igual a cero
+## 3. SIN(PI()) DISPLAYS as zero and is not equal to zero
 
-Las dos cosas a la vez, y esa contradicción es el ejemplo. `PI()` es una aproximación, así que
-el seno sale del orden de 10⁻¹⁶: cualquier formato lo enseña como `0`, y la comparación `= 0`
-devuelve **falso**. Un `IF(SIN(x) = 0, …)` que se ve correcto en el visual nunca entra por esa
-rama.
+Both at once, and that contradiction is the example. `PI()` is an approximation, so the sine comes
+out around 10⁻¹⁶: any format shows it as `0`, and the `= 0` comparison returns **false**. An
+`IF(SIN(x) = 0, …)` that looks correct in the visual never takes that branch.
 
 ```dax
 EVALUATE
@@ -72,5 +71,5 @@ sin_pi | es_cero | sin_pi_medios | identidad
 0 | False | 1 | 1
 ```
 
-Con valores de coma flotante hay que comparar contra una tolerancia —`ABS(x) < 1e-9`— o
-redondear antes. Ver [`cos`](./cos.md), [`tan`](./tan.md) y [`asin`](./asin.md).
+With floating-point values you have to compare against a tolerance — `ABS(x) < 1e-9` — or round
+first. See [`cos`](./cos.md), [`tan`](./tan.md) and [`asin`](./asin.md).

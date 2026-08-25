@@ -3,12 +3,13 @@ function: SINH
 model: ninguno
 ---
 
-# SINH — ejemplos
+# SINH — examples
 
-## 1. No es trigonometría circular: no hay radianes ni período
+## 1. It is not circular trigonometry: no radians and no period
 
-Es la trampa de leerla por el nombre. `SINH` no oscila entre -1 y 1: **crece sin techo**, de
-forma exponencial. Pasarle grados convertidos con `RADIANS` no tiene sentido aquí.
+It is the trap of reading it by its name. `SINH` does not oscillate between -1 and 1: it **grows
+without a ceiling**, exponentially. Passing it degrees converted with `RADIANS` makes no sense
+here.
 
 ```dax
 EVALUATE
@@ -25,13 +26,13 @@ sinh_0 | sinh_1 | sinh_5 | sinh_10
 0 | 1.175201 | 74.203211 | 11013.232875
 ```
 
-De 1 a 10 el valor se multiplica por casi diez mil. Comparar eso con [`sin`](./sin.md), que
-nunca sale de [-1, 1], deja clara la diferencia.
+From 1 to 10 the value multiplies by nearly ten thousand. Comparing that with [`sin`](./sin.md),
+which never leaves [-1, 1], makes the difference plain.
 
-## 2. Ese crecimiento tiene un techo, y al pasarlo aborta
+## 2. That growth has a ceiling, and past it the function aborts
 
-Alrededor de 710 el resultado deja de caber en un número de coma flotante y la consulta muere.
-Es el mismo muro que [`exp`](./exp.md), porque `SINH` está hecha de exponenciales.
+Around 710 the result stops fitting in a floating-point number and the query dies. It is the same
+wall as [`exp`](./exp.md), because `SINH` is made of exponentials.
 
 ```dax
 EVALUATE ROW("desbordado", SINH(710))
@@ -41,7 +42,7 @@ EVALUATE ROW("desbordado", SINH(710))
 ERROR: An argument of function 'SINH' has the wrong data type or the result is too large or too small.
 ```
 
-Justo por debajo todavía funciona:
+Just below it still works:
 
 ```dax
 EVALUATE
@@ -57,9 +58,9 @@ sinh_700 | es_enorme | exp_equivale
 True | True | 0
 ```
 
-La última columna es la definición: `SINH(x) = (eˣ - e⁻ˣ) / 2`.
+The last column is the definition: `SINH(x) = (eˣ - e⁻ˣ) / 2`.
 
-## 3. Es impar, y no tiene dominio por abajo
+## 3. It is odd, and it has no lower domain
 
 ```dax
 EVALUATE
@@ -76,13 +77,13 @@ sinh_m1 | impar | blanco | identidad
 -1.175201 | 0 | (blank) | 1
 ```
 
-`COSH² - SINH² = 1` es la identidad hiperbólica fundamental, el equivalente de `sin² + cos² = 1`.
+`COSH² - SINH² = 1` is the fundamental hyperbolic identity, the equivalent of `sin² + cos² = 1`.
 
-La columna `blanco` merece un segundo: `SINH(BLANK())` sale **en blanco**, y sin embargo
-`SINH(BLANK()) = 0` devuelve **verdadero**. No son dos hechos en conflicto — el blanco entra
-como cero, `SINH(0)` es cero, y un cero que viene de un blanco vuelve a salir como blanco.
-`SINH(0)` escrito a mano, en cambio, devuelve un **0** que no está en blanco. Compara con
-[`cosh`](./cosh.md), donde `COSH(BLANK())` es **1** por esto mismo: su resultado en cero no es
-cero, así que no hay nada que colapsar.
+The `blanco` column deserves a second look: `SINH(BLANK())` comes out **blank**, and yet
+`SINH(BLANK()) = 0` returns **true**. They are not two facts in conflict — the blank goes in as
+zero, `SINH(0)` is zero, and a zero that came from a blank comes back out as blank. `SINH(0)`
+written by hand, on the other hand, returns a **0** that is not blank. Compare with
+[`cosh`](./cosh.md), where `COSH(BLANK())` is **1** for this very reason: its result at zero is
+not zero, so there is nothing to collapse.
 
-Ver [`cosh`](./cosh.md), [`tanh`](./tanh.md) y [`asinh`](./asinh.md), su inversa.
+See [`cosh`](./cosh.md), [`tanh`](./tanh.md) and [`asinh`](./asinh.md), its inverse.

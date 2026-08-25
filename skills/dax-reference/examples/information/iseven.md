@@ -3,12 +3,12 @@ function: ISEVEN
 model: ninguno
 ---
 
-# ISEVEN — ejemplos
+# ISEVEN — examples
 
-## 1. No confundir con `EVEN`, que devuelve un número
+## 1. Not to be confused with `EVEN`, which returns a number
 
-Dos funciones con casi el mismo nombre y tipos de retorno distintos. `ISEVEN` pregunta;
-[`even`](../math-and-trig/even.md) redondea.
+Two functions with almost the same name and different return types. `ISEVEN` asks;
+[`even`](../math-and-trig/even.md) rounds.
 
 ```dax
 EVALUATE
@@ -25,12 +25,13 @@ iseven_3 | even_3 | iseven_4 | even_4
 False | 4 | True | 4
 ```
 
-`EVEN(3)` y `EVEN(4)` dan lo mismo; `ISEVEN` los distingue. Si el objetivo es preguntar, esta
-es la buena.
+`EVEN(3)` and `EVEN(4)` give the same thing; `ISEVEN` tells them apart. If the goal is to ask,
+this is the right one.
 
-## 2. Con decimales REDONDEA, no trunca — y por eso 2,5 es impar
+## 2. With decimals it ROUNDS, it does not truncate — and that is why 2.5 is odd
 
-Aquí está lo que no dice la firma, y contradice lo que hace `FACT` en el mismo repertorio.
+Here is what the signature does not say, and it contradicts what `FACT` does in the same
+repertoire.
 
 ```dax
 EVALUATE
@@ -47,13 +48,13 @@ dos_coma_tres | dos_coma_cinco | tres_coma_cinco | impar_de_dos_coma_cinco
 True | False | True | True
 ```
 
-2,3 se comporta como 2 (par) y 2,5 como **3** (impar): redondea al entero más cercano, y el
-medio exacto **se aleja del cero**. 3,5 va a 4 y vuelve a ser par; `ISEVEN(-2.5)` mira -3, no
--2, así que también es impar. Decir «hacia arriba» acierta solo con positivos — es la misma
-distinción que separa a [`even`](../math-and-trig/even.md) de `CEILING`. Es la contraria de lo
-que hace [`fact`](../math-and-trig/fact.md).
+2.3 behaves like 2 (even) and 2.5 like **3** (odd): it rounds to the nearest integer, and the
+exact half **moves away from zero**. 3.5 goes to 4 and is even again; `ISEVEN(-2.5)` looks at -3,
+not -2, so it is odd too. Saying "upwards" is only right for positives — it is the same
+distinction that separates [`even`](../math-and-trig/even.md) from `CEILING`. It is the opposite
+of what [`fact`](../math-and-trig/fact.md) does.
 
-## 3. Un blanco cuenta como PAR
+## 3. A blank counts as EVEN
 
 ```dax
 EVALUATE
@@ -70,8 +71,8 @@ blanco_es_par | blanco_es_impar | cero_es_par | texto_numerico
 True | False | True | True
 ```
 
-El blanco entra como cero, y el cero es par. Si repartes filas en dos grupos con
-`IF(ISEVEN([x]), "par", "impar")`, todas las filas sin dato acaban en el grupo de los pares sin
-que nadie lo pida.
+The blank goes in as zero, and zero is even. If you split rows into two groups with
+`IF(ISEVEN([x]), "par", "impar")`, every row with no data ends up in the even group without
+anybody asking for it.
 
-Ver [`isodd`](./isodd.md) y [`even`](../math-and-trig/even.md).
+See [`isodd`](./isodd.md) and [`even`](../math-and-trig/even.md).

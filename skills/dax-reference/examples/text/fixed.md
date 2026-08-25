@@ -3,12 +3,12 @@ function: FIXED
 model: ninguno
 ---
 
-# FIXED — ejemplos
+# FIXED — examples
 
-## 1. Devuelve TEXTO, y ahí se acaba la aritmética
+## 1. It returns TEXT, and there the arithmetic ends
 
-Se parece a `ROUND` y no lo es: `ROUND` devuelve un número, `FIXED` devuelve una cadena. Lo
-que salga de aquí ya no se suma ni se ordena como número.
+It looks like `ROUND` and it is not: `ROUND` returns a number, `FIXED` returns a string. Whatever
+comes out of here no longer adds up or sorts as a number.
 
 ```dax
 EVALUATE
@@ -25,14 +25,14 @@ fixed | round | fixed_len | orden_texto
 1.234,57 | 1234.57 | 8 | False
 ```
 
-`"9" < "10"` es falso como texto y verdadero como número. Es la misma trampa que
-[`format`](./format.md), y la razón por la que estas funciones van en el visual, no dentro
-de la lógica.
+`"9" < "10"` is false as text and true as a number. It is the same trap as
+[`format`](./format.md), and the reason these functions belong in the visual, not inside the
+logic.
 
-## 2. Pone separador de miles salvo que le digas que no
+## 2. It adds a thousands separator unless you tell it not to
 
-El tercer argumento. Y el separador es el de la **cultura del modelo**, aquí `es-ES`: el
-punto para los miles y la coma para los decimales.
+The third argument. And the separator is the **model's culture**, here `es-ES`: the dot for
+thousands and the comma for decimals.
 
 ```dax
 EVALUATE
@@ -49,9 +49,9 @@ con_miles | sin_miles | cero_dec | un_dec
 1.234.567,89 | 1234567,89 | 1.235 | 1.234,6
 ```
 
-## 3. Un número negativo de decimales redondea a la IZQUIERDA de la coma
+## 3. A negative number of decimals rounds to the LEFT of the point
 
-Poco conocido y muy útil: `-3` redondea a millares. Y sigue devolviendo texto.
+Little known and very useful: `-3` rounds to thousands. And it still returns text.
 
 ```dax
 EVALUATE
@@ -68,4 +68,4 @@ menos_1 | menos_3 | menos_9 | blanco
 12.350 | 12.000 | 0 | 0,00
 ```
 
-Redondear más allá de la magnitud del número da cero, no error.
+Rounding beyond the number's own magnitude gives zero, not an error.

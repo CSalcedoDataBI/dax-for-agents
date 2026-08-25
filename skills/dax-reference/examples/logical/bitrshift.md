@@ -3,12 +3,12 @@ function: BITRSHIFT
 model: ninguno
 ---
 
-# BITRSHIFT — ejemplos
+# BITRSHIFT — examples
 
-## 1. Desplazar a la derecha es dividir por dos, y TRUNCA
+## 1. Shifting right is dividing by two, and it TRUNCATES
 
-No redondea. Los bits que salen por la derecha se pierden, así que la operación no es
-reversible: desplazar a la derecha y volver a la izquierda no devuelve el número original.
+It does not round. The bits falling off the right are lost, so the operation is not reversible:
+shifting right and back left does not return the original number.
 
 ```dax
 EVALUATE
@@ -25,12 +25,12 @@ diez_entre_2 | once_entre_2 | ida_y_vuelta | uno_entre_2
 5 | 5 | 10 | 0
 ```
 
-`11 >> 1` da 5, y volver a la izquierda da 10: el bit perdido no vuelve.
+`11 >> 1` gives 5, and shifting back left gives 10: the lost bit does not come back.
 
-## 2. Leer un campo empaquetado dentro de un número
+## 2. Reading a field packed inside a number
 
-El uso real: varios valores metidos en un solo entero. Se desplaza para traer el campo abajo
-y se enmascara con [`bitand`](./bitand.md) para quedarse solo con él.
+The real use: several values packed into a single integer. You shift to bring the field down and
+mask it with [`bitand`](./bitand.md) to keep only that one.
 
 ```dax
 EVALUATE
@@ -49,10 +49,10 @@ valor | campo_bajo | campo_medio | campo_alto
 1335 | 7 | 3 | 5
 ```
 
-## 3. Con negativos el signo se arrastra
+## 3. With negatives the sign is dragged along
 
-No entra un cero por la izquierda: entra el bit de signo. Un negativo desplazado a la derecha
-sigue siendo negativo, por mucho que se desplace, y tiende a `-1` en vez de a `0`.
+A zero does not come in from the left: the sign bit does. A negative shifted right stays negative
+however far it is shifted, and tends towards `-1` rather than `0`.
 
 ```dax
 EVALUATE

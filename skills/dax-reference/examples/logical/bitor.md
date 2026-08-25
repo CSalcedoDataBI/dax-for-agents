@@ -3,12 +3,12 @@ function: BITOR
 model: ninguno
 ---
 
-# BITOR — ejemplos
+# BITOR — examples
 
-## 1. Encender una bandera sin tocar las demás
+## 1. Turning a flag on without touching the others
 
-Es el complemento de [`bitand`](./bitand.md): aquel pregunta, este pone. Y es idempotente —
-encender dos veces la misma bandera deja el valor igual.
+It is the complement of [`bitand`](./bitand.md): that one asks, this one sets. And it is
+idempotent — turning the same flag on twice leaves the value unchanged.
 
 ```dax
 EVALUATE
@@ -27,13 +27,13 @@ valor | enciende_el_2 | enciende_el_1 | dos_veces_el_2
 5 | 7 | 5 | 7
 ```
 
-`enciende_el_1` devuelve 5 otra vez porque el bit ya estaba puesto. Sumar no valdría: `5 + 1`
-daría 6 y habría corrompido la máscara.
+`enciende_el_1` returns 5 again because the bit was already set. Adding would not do: `5 + 1`
+would give 6 and would have corrupted the mask.
 
-## 2. Por eso no se hace con una suma
+## 2. That is why it is not done with an addition
 
-La diferencia solo aparece cuando la bandera ya estaba encendida — es decir, en producción y
-no en la prueba.
+The difference only shows up when the flag was already on — that is, in production and not in
+testing.
 
 ```dax
 EVALUATE
@@ -52,11 +52,11 @@ bitor_con_4 | suma_con_4 | bitor_con_2 | suma_con_2
 5 | 9 | 7 | 7
 ```
 
-Con el bit 2 (que faltaba) los dos coinciden. Con el bit 4 (que ya estaba) no.
+With bit 2 (which was missing) the two agree. With bit 4 (which was already there) they do not.
 
-## 3. Con negativos, un solo cero manda
+## 3. With negatives, a single zero rules
 
-`-1` tiene todos los bits a uno, así que absorbe cualquier `BITOR`.
+`-1` has every bit set, so it absorbs any `BITOR`.
 
 ```dax
 EVALUATE

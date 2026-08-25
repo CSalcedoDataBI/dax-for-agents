@@ -3,11 +3,11 @@ function: ISERROR
 model: ninguno
 ---
 
-# ISERROR — ejemplos
+# ISERROR — examples
 
-## 1. Un blanco no es un error, y `DIVIDE` por cero tampoco
+## 1. A blank is not an error, and `DIVIDE` by zero is not one either
 
-Es la distinción que separa a las dos familias de «algo salió mal» en DAX.
+It is the distinction that separates the two families of "something went wrong" in DAX.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ division_con_operador | division_con_funcion | blanco | normal
 True | False | False | False
 ```
 
-`1 / 0` es un error; `DIVIDE(1, 0)` es un **blanco**, que no lo es. Esa es la razón entera de
-que [`divide`](../math-and-trig/divide.md) exista.
+`1 / 0` is an error; `DIVIDE(1, 0)` is a **blank**, which is not. That is the entire reason
+[`divide`](../math-and-trig/divide.md) exists.
 
-## 2. Sí atrapa lo que aborta la consulta — al contrario que `IFERROR` sobre un iterador
+## 2. It does catch what aborts the query — unlike `IFERROR` around an iterator
 
 ```dax
 EVALUATE
@@ -44,14 +44,14 @@ log_de_cero | raiz_negativa | cero_a_la_cero | texto_mas_numero
 True | True | True | True
 ```
 
-Las cuatro matarían la consulta escritas sueltas. `ISERROR` las evalúa y devuelve verdadero sin
-que la consulta caiga — ojo, eso vale para la **expresión** que envuelve, no para un `SUMX`
-entero, como está medido en [`ln`](../math-and-trig/ln.md).
+All four would kill the query written on their own. `ISERROR` evaluates them and returns true
+without the query falling over — mind you, that holds for the **expression** it wraps, not for a
+whole `SUMX`, as measured in [`ln`](../math-and-trig/ln.md).
 
-## 3. Sirve para clasificar, no para reemplazar
+## 3. It is for classifying, not for replacing
 
-Si lo único que quieres es un valor alternativo, `IFERROR` lo dice en una línea. `ISERROR`
-gana cuando necesitas **contar** o **etiquetar** los errores en vez de taparlos.
+If all you want is an alternative value, `IFERROR` says so in one line. `ISERROR` wins when you
+need to **count** or **label** the errors rather than cover them up.
 
 ```dax
 EVALUATE
@@ -69,7 +69,7 @@ cuantas_fallan | cuantas_valen | suma_de_las_buenas
 1 | 2 | 2
 ```
 
-Una de las tres entradas es imposible. `IFERROR` la habría convertido en cero y el informe
-diría que hay tres medidas correctas; así dice que hay dos y una rota.
+One of the three inputs is impossible. `IFERROR` would have turned it into zero and the report
+would say there are three correct measurements; this way it says there are two and one broken.
 
-Ver [`isblank`](./isblank.md) y [`divide`](../math-and-trig/divide.md).
+See [`isblank`](./isblank.md) and [`divide`](../math-and-trig/divide.md).

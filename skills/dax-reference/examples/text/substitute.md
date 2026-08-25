@@ -3,12 +3,12 @@ function: SUBSTITUTE
 model: ninguno
 ---
 
-# SUBSTITUTE — ejemplos
+# SUBSTITUTE — examples
 
-## 1. Distingue mayúsculas de minúsculas
+## 1. It distinguishes upper from lower case
 
-Al contrario que [`search`](./search.md), que no las distingue. Es la asimetría que hace que
-una limpieza «funcione» en la prueba y deje la mitad de las filas sin tocar en producción.
+Unlike [`search`](./search.md), which does not. It is the asymmetry that makes a clean-up "work"
+in testing and leave half the rows untouched in production.
 
 ```dax
 EVALUATE
@@ -25,12 +25,12 @@ coincide | no_coincide | todas | sin_encontrar
 SONY Bravia | Sony Bravia | bbb | hola
 ```
 
-Cuando no encuentra nada **no da error**: devuelve el texto igual. El fallo es silencioso.
+When it finds nothing it **gives no error**: it returns the text unchanged. The failure is silent.
 
-## 2. Reemplaza TODAS las apariciones, salvo que digas cuál
+## 2. It replaces ALL occurrences, unless you say which
 
-El cuarto argumento elige la ocurrencia. Sin él, cambia todas — que casi nunca es lo que se
-quiere al limpiar un separador.
+The fourth argument picks the occurrence. Without it, it changes them all — which is almost never
+what you want when cleaning a separator.
 
 ```dax
 EVALUATE
@@ -47,11 +47,11 @@ todas | solo_la_1 | solo_la_3 | la_9
 a/b/c/d | a/b-c-d | a-b-c/d | a-b-c-d
 ```
 
-Pedir una ocurrencia que no existe tampoco falla: devuelve el texto sin tocar.
+Asking for an occurrence that does not exist does not fail either: it returns the text untouched.
 
-## 3. Es la herramienta para el espacio duro que TRIM no quita
+## 3. It is the tool for the non-breaking space TRIM does not remove
 
-El caso real por el que se usa. Hay que **nombrar** el carácter, porque no se ve.
+The real case it gets used for. You have to **name** the character, because you cannot see it.
 
 ```dax
 EVALUATE
@@ -70,5 +70,5 @@ solo_trim | substitute_y_trim | resultado | borrar_del_todo
 10 | 10 | hola mundo | abc
 ```
 
-Ver [`trim`](./trim.md) para por qué no basta con él, y [`replace`](./replace.md) para
-sustituir **por posición** en vez de por contenido.
+See [`trim`](./trim.md) for why it is not enough on its own, and [`replace`](./replace.md) for
+substituting **by position** instead of by content.

@@ -3,9 +3,9 @@ function: OR
 model: ninguno
 ---
 
-# OR — ejemplos
+# OR — examples
 
-## 1. Dos argumentos, igual que AND
+## 1. Two arguments, just like AND
 
 ```dax
 EVALUATE
@@ -21,7 +21,7 @@ dos_condiciones | anidada | operador
 True | True | True
 ```
 
-Y con tres, aborta:
+And with three, it aborts:
 
 ```dax
 EVALUATE ROW("tres_argumentos", OR(1 = 2, 2 = 3, 3 = 3))
@@ -31,13 +31,13 @@ EVALUATE ROW("tres_argumentos", OR(1 = 2, 2 = 3, 3 = 3))
 ERROR: Too many arguments were passed to the OR function. The maximum argument count for the function is 2.
 ```
 
-Con más de dos condiciones, `||` se lee mejor que un `OR` anidado tres niveles.
+With more than two conditions, `||` reads better than an `OR` nested three levels deep.
 
-## 2. El blanco no rescata: cuenta como falso
+## 2. The blank does not rescue: it counts as false
 
-Un `OR` entre un blanco y un falso da falso. Donde suele doler es al revés de lo que se
-espera: se escribe `OR(columna, otra)` pensando «si alguna tiene dato», y lo que se pregunta
-en realidad es si alguna es distinta de cero.
+An `OR` between a blank and a false gives false. Where it usually hurts is the opposite of what
+you expect: you write `OR(column, other)` thinking "if either has data", and what you are actually
+asking is whether either is different from zero.
 
 ```dax
 EVALUATE
@@ -54,11 +54,11 @@ blanco_o_falso | blanco_o_cierto | cero_o_cero | cero_o_uno
 False | True | False | True
 ```
 
-## 3. No te apoyes en el cortocircuito
+## 3. Do not lean on short-circuiting
 
-No conviene dar por hecho que `OR` deja de evaluar el segundo argumento cuando el primero ya
-es cierto. Si el segundo puede fallar, protégelo tú — aquí con `DIVIDE`, que no lanza error,
-en vez de con una división cruda.
+It is unwise to assume `OR` stops evaluating the second argument once the first is already true.
+If the second can fail, guard it yourself — here with `DIVIDE`, which raises no error, rather than
+with a raw division.
 
 ```dax
 EVALUATE
@@ -74,4 +74,4 @@ primera_cierta | con_divide | con_iserror
 True | True | True
 ```
 
-Ver [`and`](./and.md) y [`if-eager`](./if-eager.md), donde esto mismo es el tema central.
+See [`and`](./and.md) and [`if-eager`](./if-eager.md), where this is the central subject.

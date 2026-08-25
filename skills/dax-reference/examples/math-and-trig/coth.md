@@ -3,12 +3,12 @@ function: COTH
 model: ninguno
 ---
 
-# COTH — ejemplos
+# COTH — examples
 
-## 1. Es 1/TANH, y se aplana en ±1 enseguida
+## 1. It is 1/TANH, and it flattens at ±1 straight away
 
-Nada que ver con la cotangente circular de [`cot`](./cot.md): esta no oscila. Tiende a 1 por
-arriba y a -1 por abajo, y llega rápido.
+Nothing like the circular cotangent of [`cot`](./cot.md): this one does not oscillate. It tends
+to 1 from above and to -1 from below, and it gets there fast.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ coth_1 | uno_entre_tanh | coth_3 | coth_20
 1.313035 | 1.313035 | 1.00497 | 1
 ```
 
-En 3 ya está a cinco milésimas de 1, y en 20 es indistinguible de 1 con la precisión que
-imprime este informe. Para valores grandes, `COTH(x)` es 1 a efectos prácticos.
+At 3 it is already within five thousandths of 1, and at 20 it is indistinguishable from 1 at the
+precision this report prints. For large values, `COTH(x)` is 1 for practical purposes.
 
-## 2. Solo hay un punto prohibido, y es el cero
+## 2. There is only one forbidden point, and it is zero
 
 ```dax
 EVALUATE ROW("coth_de_cero", COTH(0))
@@ -38,8 +38,8 @@ EVALUATE ROW("coth_de_cero", COTH(0))
 ERROR: Division by zero has occurred when evaluating function 'COTH'.
 ```
 
-A diferencia de [`cot`](./cot.md), que aborta en cada múltiplo de π, aquí el único agujero es
-el cero — porque `TANH` solo vale cero ahí. Y el blanco cae en el agujero:
+Unlike [`cot`](./cot.md), which aborts at every multiple of π, here the only hole is zero —
+because `TANH` is zero only there. And the blank falls into the hole:
 
 ```dax
 EVALUATE
@@ -56,10 +56,10 @@ blanco | cero | casi_cero | casi_cero_neg
 aborta | aborta | 1000.0003 | -1000.0003
 ```
 
-El salto en el cero va de -1000 a +1000. Cualquier hueco en los datos tumba la consulta, y ese
-es el caso que llega de verdad.
+The jump at zero runs from -1000 to +1000. Any gap in the data brings the query down, and that is
+the case that actually arrives.
 
-## 3. Es impar, y nunca vale entre -1 y 1
+## 3. It is odd, and it never sits between -1 and 1
 
 ```dax
 EVALUATE
@@ -76,7 +76,7 @@ impar | coth_2 | fuera_del_intervalo | tanh_dentro
 0 | 1.037315 | True | True
 ```
 
-`TANH` vive dentro de (-1, 1) y `COTH`, su inverso, vive fuera. Las dos últimas columnas son la
-misma afirmación vista desde los dos lados.
+`TANH` lives inside (-1, 1) and `COTH`, its reciprocal, lives outside. The last two columns are
+the same claim seen from both sides.
 
-Ver [`cot`](./cot.md), [`acoth`](./acoth.md) y [`tanh`](./tanh.md).
+See [`cot`](./cot.md), [`acoth`](./acoth.md) and [`tanh`](./tanh.md).

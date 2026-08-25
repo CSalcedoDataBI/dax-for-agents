@@ -3,15 +3,15 @@ function: SEARCH
 model: ninguno
 ---
 
-# SEARCH — ejemplos
+# SEARCH — examples
 
-> La nota de campo [`search`](../../notes/search.md) cubre la diferencia con `FIND`. Aquí van
-> los comodines y el borde de «no encontrado».
+> The [`search`](../../notes/search.md) field note covers the difference from `FIND`. Here are the
+> wildcards and the "not found" edge.
 
-## 1. Acepta comodines, y eso la vuelve peligrosa con datos reales
+## 1. It accepts wildcards, and that makes it dangerous with real data
 
-`?` es un carácter cualquiera y `*` es cualquier cosa. Está bien hasta que el texto que
-buscas **contiene** uno de los dos: entonces deja de buscarlo literalmente.
+`?` is any single character and `*` is anything. That is fine until the text you are looking for
+**contains** one of the two: then it stops being searched for literally.
 
 ```dax
 EVALUATE
@@ -28,12 +28,12 @@ interrogante | asterisco | literal_asterisco | escapado
 1 | 1 | 1 | 2
 ```
 
-Buscar un asterisco literal exige escaparlo con `~`. Un filtro «contiene» construido sobre
-`SEARCH` con texto que viene del usuario es, en la práctica, una inyección de comodines.
+Searching for a literal asterisk requires escaping it with `~`. A "contains" filter built on
+`SEARCH` with text coming from the user is, in practice, a wildcard injection.
 
-## 2. Si no encuentra, aborta igual que FIND
+## 2. If it does not find, it aborts just like FIND
 
-El comodín no salva de eso.
+The wildcard does not save you from that.
 
 ```dax
 EVALUATE ROW("sin_encontrar", SEARCH("z", "Contoso"))
@@ -58,12 +58,11 @@ encontrado | no_encontrado | mayusculas | acento
 5 | -1 | 1 | -1
 ```
 
-`SEARCH("cafe", "café")` no encuentra: ignora las mayúsculas, **no** los acentos.
+`SEARCH("cafe", "café")` does not find: it ignores case, **not** accents.
 
-## 3. El uso real: un «contiene» que no tumbe el informe
+## 3. The real use: a "contains" that does not bring the report down
 
-El cuarto argumento convierte la búsqueda en una condición, que es como debería escribirse
-siempre.
+The fourth argument turns the search into a condition, which is how it should always be written.
 
 ```dax
 EVALUATE

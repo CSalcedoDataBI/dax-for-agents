@@ -3,9 +3,9 @@ function: ISODD
 model: ninguno
 ---
 
-# ISODD — ejemplos
+# ISODD — examples
 
-## 1. Es el complemento exacto de `ISEVEN`, también con decimales
+## 1. It is the exact complement of `ISEVEN`, decimals included
 
 ```dax
 EVALUATE
@@ -23,10 +23,10 @@ siete | ocho | complementarios_7 | complementarios_2_5 | complementarios_blanco
 True | False | True | True | True
 ```
 
-Nunca hay un valor que sea las dos cosas ni ninguna de las dos. Eso no es obvio: en
-[`sign`](../math-and-trig/sign.md), por ejemplo, sí hay un cuarto caso.
+There is never a value that is both or neither. That is not obvious: in
+[`sign`](../math-and-trig/sign.md), for instance, there is a fourth case.
 
-## 2. Redondea los decimales, y por eso 2,5 es impar y 3,5 no
+## 2. It rounds decimals, and that is why 2.5 is odd and 3.5 is not
 
 ```dax
 EVALUATE
@@ -43,13 +43,13 @@ dos_coma_cinco | tres_coma_cinco | dos_coma_tres | tres_coma_siete
 True | False | False | False
 ```
 
-2,5 se comporta como 3 y 3,5 como 4; 3,7 sube a 4 y también sale par. El medio no «sube»: **se
-aleja del cero**, y con negativos eso es bajar. Medido, `ISODD(-2.5)` es verdadero porque mira
--3, no -2; `ISODD(-1.5)` es falso porque mira -2, no -1. Con positivos las dos reglas coinciden
-y por eso la confusión no se nota hasta que aparece un negativo. Misma regla que
-[`iseven`](./iseven.md).
+2.5 behaves like 3 and 3.5 like 4; 3.7 goes up to 4 and also comes out even. The half does not
+"go up": it **moves away from zero**, and with negatives that means down. Measured,
+`ISODD(-2.5)` is true because it looks at -3, not -2; `ISODD(-1.5)` is false because it looks at
+-2, not -1. With positives the two rules coincide, and that is why the confusion goes unnoticed
+until a negative appears. Same rule as [`iseven`](./iseven.md).
 
-## 3. Un blanco NO es impar, y ese es el hueco que deja
+## 3. A blank is NOT odd, and that is the gap it leaves
 
 ```dax
 EVALUATE
@@ -66,8 +66,8 @@ blanco | blanco_es_par | cero | menos_tres
 False | True | False | True
 ```
 
-Filtrar con `ISODD` descarta las filas sin dato; filtrar con `ISEVEN` se las queda. Dos filtros
-que parecen partir la tabla en dos mitades y no lo hacen — reparten los huecos siempre al mismo
-lado.
+Filtering with `ISODD` discards the rows with no data; filtering with `ISEVEN` keeps them. Two
+filters that look like they split the table in half and do not — they always send the gaps to the
+same side.
 
-Ver [`iseven`](./iseven.md) y [`odd`](../math-and-trig/odd.md).
+See [`iseven`](./iseven.md) and [`odd`](../math-and-trig/odd.md).

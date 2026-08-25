@@ -3,9 +3,9 @@ function: COT
 model: ninguno
 ---
 
-# COT — ejemplos
+# COT — examples
 
-## 1. Es 1/TAN, y por eso explota donde `TAN` vale cero
+## 1. It is 1/TAN, and that is why it blows up where `TAN` is zero
 
 ```dax
 EVALUATE
@@ -22,13 +22,13 @@ cot_1 | uno_entre_tan_1 | identicos | cot_pi_4
 0.642093 | 0.642093 | 0 | 1
 ```
 
-`COT(π/4)` es exactamente 1, que es el ángulo de 45 grados. El argumento va en **radianes**:
-`COT(45)` no es eso — ver [`radians`](./radians.md).
+`COT(π/4)` is exactly 1, which is the 45-degree angle. The argument is in **radians**: `COT(45)`
+is not that — see [`radians`](./radians.md).
 
-## 2. El cero aborta la consulta, y el blanco también
+## 2. Zero aborts the query, and so does the blank
 
-`TAN(0)` es cero, así que su inverso no existe. DAX no devuelve infinito ni blanco: mata la
-consulta.
+`TAN(0)` is zero, so its reciprocal does not exist. DAX returns neither infinity nor blank: it
+kills the query.
 
 ```dax
 EVALUATE ROW("cot_de_cero", COT(0))
@@ -38,8 +38,8 @@ EVALUATE ROW("cot_de_cero", COT(0))
 ERROR: Division by zero has occurred when evaluating function 'COT'.
 ```
 
-El mensaje dice **división por cero** y no el error genérico de argumento: internamente `COT`
-es `1 / TAN`, y ahí se ve. Y el blanco entra como cero, así que hace lo mismo:
+The message says **division by zero** and not the generic argument error: internally `COT` is
+`1 / TAN`, and there it shows. And the blank goes in as zero, so it does the same:
 
 ```dax
 EVALUATE
@@ -57,15 +57,15 @@ blanco | cero | en_pi | tan_de_pi_x1e16 | casi_cero
 aborta | aborta | -8162276138809536 | -1.225148 | 999.9997
 ```
 
-La tercera columna es lo interesante y no es lo que uno espera: **`COT(PI())` no aborta.** π
-también es un cero de la tangente, pero `PI()` no es π — es el `double` más cercano, y
-`TAN(PI())` vale -1,2 × 10⁻¹⁶ en vez de cero. Dividir uno entre eso da ocho mil billones en
-negativo, un número perfectamente formado y perfectamente inútil.
+The third column is the interesting one and it is not what you would expect: **`COT(PI())` does
+not abort.** π is also a zero of the tangent, but `PI()` is not π — it is the nearest `double`,
+and `TAN(PI())` is -1.2 × 10⁻¹⁶ rather than zero. Dividing one by that gives eight quadrillion
+negative, a perfectly well-formed and perfectly useless number.
 
-O sea que el único punto donde `COT` protesta es el cero **exacto**. En los demás polos
-devuelve basura enorme sin decir nada, que es bastante peor que abortar.
+So the only point where `COT` complains is the **exact** zero. At the other poles it returns huge
+garbage and says nothing, which is a good deal worse than aborting.
 
-## 3. Es impar y periódica con período π, no 2π
+## 3. It is odd and periodic with period π, not 2π
 
 ```dax
 EVALUATE
@@ -82,7 +82,7 @@ cot_1 | cot_1_mas_pi | impar | periodo_2pi_tambien
 0.642093 | 0.642093 | 0 | 0.642093
 ```
 
-Se repite cada π, la mitad que el seno y el coseno. Si estás modelando algo cíclico con `COT`,
-el ciclo dura la mitad de lo que crees.
+It repeats every π, half of what the sine and cosine do. If you are modelling something cyclical
+with `COT`, the cycle lasts half as long as you think.
 
-Ver [`coth`](./coth.md), [`acot`](./acot.md) y [`radians`](./radians.md).
+See [`coth`](./coth.md), [`acot`](./acot.md) and [`radians`](./radians.md).

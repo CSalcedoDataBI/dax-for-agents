@@ -3,13 +3,13 @@ function: LEN
 model: ninguno
 ---
 
-# LEN — ejemplos
+# LEN — examples
 
-## 1. LEN de un blanco es BLANCO, pero compara igual que 0
+## 1. LEN of a blank is BLANK, but it compares like 0
 
-Lo escribí al revés y lo corrigió el motor: `LEN(BLANK())` **no** devuelve 0, devuelve blanco.
-Y aun así `LEN(BLANK()) = 0` es verdadero, porque `=` iguala el blanco a su valor neutro. Las
-dos cosas a la vez son la trampa.
+I wrote it the other way round and the engine corrected it: `LEN(BLANK())` does **not** return 0,
+it returns blank. And even so `LEN(BLANK()) = 0` is true, because `=` equates the blank to its
+neutral value. Both facts at once are the trap.
 
 ```dax
 EVALUATE
@@ -27,13 +27,13 @@ len_blanco | es_blanco | len_cadena_vacia | compara_con_cero | estricto
 (blank) | True | 0 | True | False
 ```
 
-Así que `LEN(columna) = 0` **no distingue** «vacío» de «sin dato»: los dos pasan. Para
-distinguirlos hace falta `ISBLANK`, o el `==` estricto.
+So `LEN(column) = 0` does **not distinguish** "empty" from "no data": both pass. To tell them
+apart you need `ISBLANK`, or the strict `==`.
 
-## 2. Sobre un número, cuenta los caracteres de su representación
+## 2. Over a number, it counts the characters of its representation
 
-`LEN` convierte a texto antes de contar, y esa conversión usa la **cultura del modelo**, no
-el formato de la medida. Este modelo es `es-ES`, así que el separador decimal es la coma.
+`LEN` converts to text before counting, and that conversion uses the **model's culture**, not the
+measure's format. This model is `es-ES`, so the decimal separator is the comma.
 
 ```dax
 EVALUATE
@@ -50,12 +50,13 @@ entero | decimal | negativo | cero_coma
 5 | 3 | 3 | 3
 ```
 
-`0.50` mide 3 y no 4: el cero final no existe en el número, solo en cómo se escribió.
+`0.50` measures 3 and not 4: the trailing zero does not exist in the number, only in how it was
+written.
 
-## 3. Cuenta unidades de código, no caracteres visibles
+## 3. It counts code units, not visible characters
 
-Con emoji la cuenta deja de coincidir con lo que se ve: uno fuera del plano básico ocupa
-**dos**. Los acentos y la eñe, en cambio, ocupan uno.
+With emoji the count stops matching what you see: one outside the basic plane takes **two**.
+Accents and the ñ, on the other hand, take one.
 
 ```dax
 EVALUATE
@@ -72,5 +73,5 @@ con_acento | con_enye | emoji | texto_emoji
 4 | 3 | 2 | 4
 ```
 
-Si cortas con [`left`](./left.md) o [`mid`](./mid.md) contando a ojo, ahí es donde se parte
-un carácter por la mitad.
+If you cut with [`left`](./left.md) or [`mid`](./mid.md) counting by eye, that is where a
+character gets split in half.

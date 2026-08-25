@@ -3,15 +3,15 @@ function: FORMAT
 model: ninguno
 ---
 
-# FORMAT — ejemplos
+# FORMAT — examples
 
-> La nota de campo [`format`](../../notes/format.md) cubre lo importante: devuelve **texto**,
-> y con eso se pierde el orden numérico. Aquí van las cadenas de formato y sus bordes.
+> The [`format`](../../notes/format.md) field note covers what matters: it returns **text**, and
+> with that the numeric ordering is lost. Here are the format strings and their edges.
 
-## 1. Los formatos con nombre son los que hay que usar
+## 1. The named formats are the ones to use
 
-Son estables y se traducen con la cultura del modelo. Los personalizados se escriben a mano y
-son donde aparecen las sorpresas.
+They are stable and they translate with the model's culture. The custom ones are written by hand
+and are where the surprises show up.
 
 ```dax
 EVALUATE
@@ -28,13 +28,13 @@ general | fijo | estandar | porcentaje
 1234,567 | 1234,57 | 1.234,57 | 12,34%
 ```
 
-`Percent` **multiplica por 100**: al valor ya convertido a porcentaje se le va otra vez la
-coma, y sale un número cien veces mayor que nadie revisa.
+`Percent` **multiplies by 100**: a value already converted to a percentage gets the point moved
+again, and comes out a hundred times larger with nobody checking.
 
-## 2. Un formato personalizado con secciones cambia según el signo
+## 2. A custom format with sections changes according to the sign
 
-Separadas por `;` van el positivo, el negativo y el cero. Es potente y es donde se cuelan los
-errores, porque solo se ven con datos de los tres tipos.
+Separated by `;` come the positive, the negative and the zero. It is powerful and it is where the
+mistakes creep in, because they only show up with data of all three kinds.
 
 ```dax
 EVALUATE
@@ -51,15 +51,15 @@ positivo | negativo | cero | blanco
 1.234 | (1.234) | cero | (blank)
 ```
 
-El blanco **no** entra por la sección del cero: sigue siendo blanco. Es la buena noticia — «sin
-dato» y «cero» no acaban escritos igual — y a la vez el motivo por el que una tercera sección
-escrita para cubrir los huecos no los cubre. Para eso hace falta `COALESCE` antes del
-`FORMAT`, no una sección más.
+The blank does **not** take the zero section: it stays blank. That is the good news — "no data"
+and "zero" do not end up written the same — and at the same time the reason a third section
+written to cover the gaps does not cover them. For that you need `COALESCE` before the `FORMAT`,
+not another section.
 
-## 3. Una cadena de formato que no existe no da error
+## 3. A format string that does not exist gives no error
 
-Devuelve el texto de la cadena tal cual, o algo parecido. No hay validación, así que una
-errata sobrevive hasta que alguien mira el visual.
+It returns the string's text as it stands, or something like it. There is no validation, so a
+typo survives until somebody looks at the visual.
 
 ```dax
 EVALUATE
@@ -76,5 +76,5 @@ valido | errata | inventado | fecha_sobre_numero
 1.234,50 | 1.235O,OO | 0o 0o138 u0 for5ato | 1903-05-18
 ```
 
-El último es el más traicionero: un número interpretado como fecha da una fecha creíble, no
-un error.
+The last is the most treacherous: a number interpreted as a date gives a believable date, not an
+error.

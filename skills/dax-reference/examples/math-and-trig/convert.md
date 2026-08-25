@@ -3,12 +3,12 @@ function: CONVERT
 model: ninguno
 ---
 
-# CONVERT — ejemplos
+# CONVERT — examples
 
-## 1. Al convertir texto a número manda la CULTURA del modelo, no la sintaxis de DAX
+## 1. Converting text to a number is governed by the model's CULTURE, not by DAX syntax
 
-Este es el que muerde. Un literal `1.5` escrito en DAX siempre es uno y medio; la **cadena**
-`"1.5"` depende del idioma del modelo. Estos resultados son de un modelo en **es-ES**.
+This is the one that bites. A literal `1.5` written in DAX is always one and a half; the
+**string** `"1.5"` depends on the model's language. These results are from an **es-ES** model.
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ literal_dax | cadena_con_punto | cadena_con_coma | con_separador_de_miles
 1.5 | 15 | 1.5 | 1234.5
 ```
 
-`CONVERT("1.5", DOUBLE)` devuelve **15**, no 1,5: el punto se lee como separador de millares.
-No hay error, no hay aviso — solo un número diez veces mayor. Ese mismo modelo, con la cultura
-en inglés, daría 1,5, así que la fórmula es correcta o incorrecta según dónde se abra.
+`CONVERT("1.5", DOUBLE)` returns **15**, not 1.5: the dot is read as a thousands separator. No
+error, no warning — just a number ten times bigger. That same model, with an English culture,
+would give 1.5, so the formula is correct or incorrect depending on where it is opened.
 
-## 2. A entero REDONDEA, no trunca — al revés que `INT`
+## 2. To an integer it ROUNDS, it does not truncate — the opposite of `INT`
 
 ```dax
 EVALUATE
@@ -47,11 +47,11 @@ convert_1_9 | int_1_9 | convert_menos_1_9 | int_menos_1_9 | trunc_menos_1_9
 2 | 1 | -2 | -2 | -1
 ```
 
-Tres funciones y tres resultados distintos para -1,9. `CONVERT` redondea, [`int`](./int.md)
-baja siempre, y `TRUNC` va hacia el cero. Elegir por costumbre es elegir mal dos de cada tres
-veces.
+Three functions and three different results for -1.9. `CONVERT` rounds, [`int`](./int.md) always
+goes down, and `TRUNC` goes towards zero. Choosing out of habit means choosing wrong two times
+out of three.
 
-## 3. Los tipos que acepta, y lo que hace con un blanco
+## 3. The types it accepts, and what it does with a blank
 
 ```dax
 EVALUATE
@@ -70,8 +70,8 @@ a_double | a_entero | a_booleano | cero_a_booleano | blanco_a_entero | sigue_en_
 123 | 123 | True | False | (blank) | True
 ```
 
-El blanco **sigue en blanco**: `CONVERT` fuerza el tipo pero no inventa un valor. Conviene
-saberlo porque la intuición dice lo contrario —un entero «no puede estar vacío»— y porque
-[`randbetween`](./randbetween.md), con dos blancos, sí devuelve un 0.
+The blank **stays blank**: `CONVERT` forces the type but does not invent a value. Worth knowing
+because intuition says otherwise — an integer "cannot be empty" — and because
+[`randbetween`](./randbetween.md), given two blanks, does return a 0.
 
-Ver [`currency`](./currency.md), [`int`](./int.md) y [`value`](../text/value.md).
+See [`currency`](./currency.md), [`int`](./int.md) and [`value`](../text/value.md).

@@ -56,7 +56,7 @@ In order, and deliberately not all at once:
 | | What | Status |
 |---|---|---|
 | 1 | `INDEX.md` | done with this record |
-| 2 | Every new example from the epic, English from the first one | decided; the ~380 files are still to write |
+| 2 | The 99 example files, plus every new one from the epic | **done** — see below |
 | 3 | The 31 field notes | **done** — see below |
 | 4 | The five `lab/` READMEs | **done** |
 
@@ -66,8 +66,23 @@ only the risk did. The risk was handled by hashing all 39 `dax` blocks in the no
 first edit and checking them after the last — `check_lab.py` reads those blocks out of the `.md`
 by position, so a single changed character would have altered what runs while CI stayed green.
 
-What is left in Spanish is `examples/`, and it is the one place where leaving it costs nothing:
-the epic that grows it is the reason this decision exists, and every file it adds is English.
+Step 2 was decided here as "new files only, the existing 99 migrate when touched". They were
+translated in full instead, the same day. The argument that had held them back was cost — 99
+files carrying queries and measured results — and the notes had just shown that cost was
+affordable: hashing the blocks before the first edit makes the risk checkable rather than
+hoped for. Here it was 348 `dax` blocks, 348 `result` blocks and 99 frontmatter headers, all
+verified identical after the last edit.
+
+The Spanish originals are kept, frozen, in [`docs/examples-es/`](../examples-es/). Not as a
+second copy to maintain — nothing reads it and it is never updated — but because translating
+prose is the one step in this migration where meaning could drift with no gate noticing. The
+queries could not drift; the sentences around them are what a reader has to take on trust, and
+that directory is what they can check it against.
+
+One value stayed Spanish on purpose: `model: ninguno` in the frontmatter. It is the sentinel
+`examples_io.py` compares against, sitting beside the real `lab/` directory names — a value in
+a data contract, not prose. Moving it would touch 98 files, a constant and three test files for
+no reader benefit. The examples README says so where someone would ask.
 
 ## What "in English" does not reach: identifiers
 

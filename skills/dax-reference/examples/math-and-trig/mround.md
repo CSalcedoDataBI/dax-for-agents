@@ -3,11 +3,11 @@ function: MROUND
 model: ninguno
 ---
 
-# MROUND — ejemplos
+# MROUND — examples
 
-## 1. Redondea al múltiplo más cercano
+## 1. It rounds to the nearest multiple
 
-Es como se agrupan importes en tramos, o se ajustan tiempos a bloques de 15 minutos.
+It is how amounts get bucketed, or times snapped to 15-minute blocks.
 
 ```dax
 EVALUATE
@@ -24,10 +24,11 @@ siete_a_tres | medio_sube | a_medios | a_veinticincos
 6 | 3 | 2.5 | 0.25
 ```
 
-## 2. Si el número y el múltiplo tienen signos DISTINTOS, aborta
+## 2. If the number and the multiple have DIFFERENT signs, it aborts
 
-Esto no está en la firma y es la trampa de verdad: no devuelve un valor raro ni un blanco,
-tumba la consulta. Y llega cuando aparece el primer importe negativo, no cuando se escribe.
+This is not in the signature and it is the real trap: it returns neither a strange value nor a
+blank, it brings the query down. And it arrives when the first negative amount appears, not when
+the formula is written.
 
 ```dax
 EVALUATE ROW("signos_distintos", MROUND(-2.5, 1))
@@ -37,7 +38,7 @@ EVALUATE ROW("signos_distintos", MROUND(-2.5, 1))
 ERROR: An argument of function 'MROUND' has the wrong data type or the result is too large or too small.
 ```
 
-Con los dos negativos funciona:
+With both negative it works:
 
 ```dax
 EVALUATE
@@ -53,13 +54,13 @@ ambos_negativos | negativo_medio | positivo_normal
 -6 | -3 | 6
 ```
 
-Así que un `MROUND(columna, 100)` sobre una columna que puede traer negativos es una consulta
-que funciona hasta que no.
+So a `MROUND(column, 100)` over a column that can carry negatives is a query that works until it
+does not.
 
-## 3. Múltiplo cero da cero, no error
+## 3. A zero multiple gives zero, not an error
 
-Es la excepción a lo anterior, y conviene saberla porque un múltiplo calculado que salga cero
-no avisa: devuelve cero y el tramo entero desaparece.
+It is the exception to the above, and worth knowing because a calculated multiple that comes out
+zero gives no warning: it returns zero and the whole bucket disappears.
 
 ```dax
 EVALUATE
@@ -76,5 +77,5 @@ multiplo_cero | ceiling_cero | blanco | es_blanco
 0 | 0 | (blank) | True
 ```
 
-Ver [`ceiling`](./ceiling.md) y [`floor`](./floor.md), que hacen lo mismo pero siempre en una
-dirección.
+See [`ceiling`](./ceiling.md) and [`floor`](./floor.md), which do the same but always in one
+direction.

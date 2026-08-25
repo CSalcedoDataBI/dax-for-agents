@@ -3,11 +3,11 @@ function: CONTAINS
 model: ninguno
 ---
 
-# CONTAINS — ejemplos
+# CONTAINS — examples
 
-## 1. Pregunta por la COMBINACIÓN, no por cada valor suelto
+## 1. It asks about the COMBINATION, not about each value on its own
 
-Es el malentendido que produce filtros que parecen correctos y devuelven de menos.
+It is the misunderstanding that produces filters that look right and return too little.
 
 ```dax
 EVALUATE
@@ -27,12 +27,12 @@ pareja_que_existe | cada_uno_existe_por_separado | solo_una_columna | ignora_may
 True | False | True | True
 ```
 
-La segunda columna es la lección entera. `"Bici"` está en la tabla y `2` está en la tabla, y
-sin embargo la respuesta es **falso**: no hay ninguna fila donde estén *los dos a la vez*.
-`CONTAINS` recorre filas, no columnas. Si lo que querías era «¿existe Bici? ¿y existe el 2?»,
-son dos preguntas y hacen falta dos llamadas.
+The second column is the whole lesson. `"Bici"` is in the table and `2` is in the table, and yet
+the answer is **false**: there is no row where *both* appear together. `CONTAINS` walks rows, not
+columns. If what you wanted was "does Bici exist? and does 2 exist?", those are two questions and
+they need two calls.
 
-## 2. El orden de los pares da igual, porque cada columna va con nombre
+## 2. The order of the pairs does not matter, because each column comes by name
 
 ```dax
 EVALUATE
@@ -51,18 +51,17 @@ como_estan_declaradas | pares_al_reves | valores_cruzados
 True | True | False
 ```
 
-Las dos primeras son la misma pregunta escrita en distinto orden y dan lo mismo: cada valor
-viaja pegado a **su** columna, así que reordenar los pares es inofensivo. La tercera es falsa y
-debe serlo — nadie viaja de Lisboa a Madrid en esta tabla.
+The first two are the same question written in a different order and give the same answer: each
+value travels attached to **its** column, so reordering the pairs is harmless. The third is false
+and should be — nobody travels from Lisboa to Madrid in this table.
 
-Esa inmunidad al orden es justo lo que **no** tiene
-[`containsrow`](./containsrow.md), que identifica las columnas por posición. Es la razón para
-preferir `CONTAINS` cuando la tabla tiene varias columnas del mismo tipo, donde una inversión
-no da error: da un resultado equivocado.
+That immunity to ordering is exactly what [`containsrow`](./containsrow.md) does **not** have, as
+it identifies columns by position. It is the reason to prefer `CONTAINS` when the table has
+several columns of the same type, where an inversion gives no error: it gives a wrong result.
 
-## 3. Si los tipos no casan, tumba la consulta
+## 3. If the types do not match, it brings the query down
 
-No devuelve falso ni blanco. Aborta.
+It returns neither false nor blank. It aborts.
 
 ```dax
 EVALUATE
@@ -75,7 +74,7 @@ RETURN ROW("numero_buscado_como_texto", CONTAINS(T, [N], "1"))
 ERROR: Function 'CONTAINS' does not support comparing values of type Integer with values of type Text. Consider using the VALUE or FORMAT function to convert one of the values.
 ```
 
-El mensaje trae la solución dentro, y funciona:
+The message carries the solution inside it, and it works:
 
 ```dax
 EVALUATE
@@ -94,16 +93,16 @@ convertido_con_value | convertido_y_no_existe
 True | False
 ```
 
-La segunda columna está para que la primera signifique algo: convertir no hace que todo
-coincida, solo permite comparar.
+The second column is there so the first means something: converting does not make everything
+match, it only makes comparison possible.
 
-Importa porque en un modelo real el valor buscado suele venir de un parámetro, de una tabla
-desconectada o de `SELECTEDVALUE`, y su tipo no se ve leyendo la fórmula: se ve el día que la
-consulta muere en producción. Conviértelo de forma explícita en vez de confiar en que llegue
-con el tipo correcto.
+It matters because in a real model the value being searched for usually comes from a parameter,
+from a disconnected table or from `SELECTEDVALUE`, and its type is not visible from reading the
+formula: it becomes visible the day the query dies in production. Convert it explicitly instead
+of trusting that it arrives with the right type.
 
-Ojo: esto es lo contrario de lo que hace [`containsstring`](./containsstring.md), que convierte
-números a texto sin quejarse. Dos funciones de la misma familia con criterios opuestos.
+Note: this is the opposite of what [`containsstring`](./containsstring.md) does, which converts
+numbers to text without complaint. Two functions in the same family with opposite criteria.
 
-Ver [`containsrow`](./containsrow.md), su versión posicional, y
-[`containsstring`](./containsstring.md) para buscar dentro de un texto.
+See [`containsrow`](./containsrow.md), its positional version, and
+[`containsstring`](./containsstring.md) for searching inside text.

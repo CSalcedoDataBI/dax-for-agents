@@ -3,12 +3,12 @@ function: LOG10
 model: ninguno
 ---
 
-# LOG10 — ejemplos
+# LOG10 — examples
 
-## 1. Cuenta dígitos, que es para lo que sirve en un informe
+## 1. It counts digits, which is what it is for in a report
 
-`LOG10` de un número es aproximadamente cuántos dígitos tiene menos uno. Es la forma corta de
-agrupar por órdenes de magnitud sin escribir una escalera de `IF`.
+`LOG10` of a number is roughly how many digits it has, minus one. It is the short way to group by
+orders of magnitude without writing a staircase of `IF`s.
 
 ```dax
 EVALUATE
@@ -26,10 +26,10 @@ cien | mil | mil_y_pico | orden | digitos
 2 | 3 | 3.091315 | 3 | 4
 ```
 
-`INT(LOG10(n)) + 1` da el número de dígitos de un entero positivo. Para agrupar en escalas
-—decenas, centenas, miles— `INT(LOG10(n))` es el cubo directamente.
+`INT(LOG10(n)) + 1` gives the digit count of a positive integer. To bucket into scales — tens,
+hundreds, thousands — `INT(LOG10(n))` is the bucket directly.
 
-## 2. Es `LOG` sin segundo argumento, y no es `LN`
+## 2. It is `LOG` with no second argument, and it is not `LN`
 
 ```dax
 EVALUATE
@@ -47,11 +47,11 @@ log10 | log_sin_base | log_base_10 | ln | cociente
 3 | 3 | 3 | 6.907755 | 2.302585
 ```
 
-Las tres primeras son idénticas. La cuarta es otra función, y ese 2,302585 —`LN(10)`— es el
-factor constante que las separa. Un informe con la función equivocada no falla: publica cifras
-2,3 veces más grandes.
+The first three are identical. The fourth is another function, and that 2.302585 — `LN(10)` — is
+the constant factor between them. A report with the wrong function does not fail: it publishes
+figures 2.3 times too large.
 
-## 3. Cero, negativos y blanco abortan la consulta
+## 3. Zero, negatives and blank abort the query
 
 ```dax
 EVALUATE
@@ -68,7 +68,7 @@ cero | negativo | blanco | uno
 aborta | aborta | aborta | 0
 ```
 
-El blanco aborta porque entra como cero. Ese es el caso que llega desde una columna con huecos
-y no desde una constante escrita a mano.
+The blank aborts because it goes in as zero. That is the case that arrives from a column with
+gaps and not from a constant written by hand.
 
-Ver [`log`](./log.md), [`ln`](./ln.md) y [`power`](./power.md).
+See [`log`](./log.md), [`ln`](./ln.md) and [`power`](./power.md).

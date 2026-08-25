@@ -3,12 +3,12 @@ function: COALESCE
 model: ninguno
 ---
 
-# COALESCE — ejemplos
+# COALESCE — examples
 
-## 1. Devuelve el primero que NO esté en blanco, y el cero sí cuenta
+## 1. It returns the first one that is NOT blank, and zero does count
 
-Cero no es blanco. Es la confusión que hace que un `COALESCE` puesto «por seguridad» devuelva
-el cero que venía del dato en vez del valor por defecto que se quería.
+Zero is not blank. It is the confusion that makes a `COALESCE` added "to be safe" return the zero
+that came from the data instead of the default that was wanted.
 
 ```dax
 EVALUATE
@@ -25,13 +25,13 @@ blanco_luego_diez | cero_luego_diez | vacio_luego_diez | todos_blancos
 10 | 0 | (empty) | True
 ```
 
-La cadena vacía tampoco es blanco: `COALESCE("", 10)` devuelve la cadena vacía. Si el origen
-trae `""` en vez de nulos, `COALESCE` no hará nada y el problema seguirá ahí.
+The empty string is not blank either: `COALESCE("", 10)` returns the empty string. If the source
+brings `""` instead of nulls, `COALESCE` will do nothing and the problem will still be there.
 
-## 2. Acepta muchos argumentos, pero nunca uno solo
+## 2. It takes many arguments, but never just one
 
-Al contrario que `AND` y `OR`, que están limitadas a dos, `COALESCE` encadena los que hagan
-falta. El límite está en el otro extremo:
+Unlike `AND` and `OR`, which are limited to two, `COALESCE` chains as many as needed. The limit is
+at the other end:
 
 ```dax
 EVALUATE
@@ -46,7 +46,7 @@ tres_argumentos | cinco_argumentos
 tercero | 5
 ```
 
-Con uno solo aborta, y el mensaje lo dice sin rodeos:
+With only one it aborts, and the message says so plainly:
 
 ```dax
 EVALUATE ROW("uno_solo", COALESCE(BLANK()))
@@ -56,10 +56,10 @@ EVALUATE ROW("uno_solo", COALESCE(BLANK()))
 ERROR: Too few arguments were passed to the COALESCE function. The minimum argument count for the function is 2.
 ```
 
-## 3. Mezcla tipos sin protestar
+## 3. It mixes types without complaining
 
-Se puede dar un número por defecto a una expresión de texto. Corre, y el problema aparece
-más tarde, cuando algo intenta formatear o sumar lo que salga.
+You can give a numeric default to a text expression. It runs, and the problem shows up later,
+when something tries to format or add up whatever came out.
 
 ```dax
 EVALUATE
@@ -75,5 +75,5 @@ texto_o_numero | numero_o_texto | suma_despues
 42 | sin dato | 43
 ```
 
-Es el reemplazo directo de `IF(ISBLANK(x), y, x)` — más corto y sin evaluar `x` dos veces.
-Ver [`if`](./if.md).
+It is the direct replacement for `IF(ISBLANK(x), y, x)` — shorter and without evaluating `x`
+twice. See [`if`](./if.md).

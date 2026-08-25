@@ -3,12 +3,12 @@ function: UNICHAR
 model: ninguno
 ---
 
-# UNICHAR — ejemplos
+# UNICHAR — examples
 
-## 1. Es como se escriben los caracteres que no se pueden teclear
+## 1. It is how you write the characters you cannot type
 
-El uso real: nombrar un carácter invisible para poder limpiarlo, o meter un salto de línea en
-una etiqueta.
+The real use: naming an invisible character so it can be cleaned out, or putting a line break in a
+label.
 
 ```dax
 EVALUATE
@@ -25,13 +25,13 @@ espacio_duro | salto_linea | tabulador | letra_normal
 160 | 3 | 3 | A
 ```
 
-Ver [`substitute`](./substitute.md), donde `UNICHAR(160)` es lo que hace posible la limpieza
-que [`trim`](./trim.md) no puede.
+See [`substitute`](./substitute.md), where `UNICHAR(160)` is what makes possible the clean-up
+[`trim`](./trim.md) cannot do.
 
-## 2. Los emoji ocupan dos posiciones, y cortarlos produce texto inválido
+## 2. Emoji take two positions, and cutting them produces invalid text
 
-Un carácter por encima de 65535 se guarda como un par. `LEN` dice 2, y quedarse con la mitad
-no da un carácter raro: da algo que el motor **ya no puede procesar**.
+A character above 65535 is stored as a pair. `LEN` says 2, and keeping half of it does not give a
+strange character: it gives something the engine **can no longer process**.
 
 ```dax
 EVALUATE
@@ -47,7 +47,7 @@ emoji | longitud | vuelta_entera
 😀 | 2 | 128512
 ```
 
-Al pedir el código de esa mitad, aborta:
+Asking for that half's code aborts:
 
 ```dax
 EVALUATE ROW("medio_emoji", UNICODE(LEFT(UNICHAR(128512), 1)))
@@ -57,12 +57,12 @@ EVALUATE ROW("medio_emoji", UNICODE(LEFT(UNICHAR(128512), 1)))
 ERROR: An argument of function 'UNICODE' has the wrong data type or has an invalid value.
 ```
 
-Así que un `LEFT` sobre una columna con emoji no recorta: rompe la consulta más adelante, en
-un sitio que no se parece a la causa.
+So a `LEFT` over a column with emoji does not trim: it breaks the query further along, at a place
+that looks nothing like the cause.
 
-## 3. El rango real es más corto que el de Unicode
+## 3. The real range is shorter than Unicode's
 
-Por debajo de 65536 ocupa uno; a partir de ahí, dos. Esa es la frontera del par sustituto.
+Below 65536 it takes one; from there on, two. That is the surrogate-pair frontier.
 
 ```dax
 EVALUATE
@@ -78,11 +78,11 @@ tabulador | ultimo_simple | primero_doble
 9 | 1 | 2
 ```
 
-Se enseña con **65533** y no con 65535 porque el motor devuelve los resultados en **XML**, y
-lo que XML no admite queda fuera. Son tres grupos, y conviene conocerlos antes de elegir un
-carácter «que el dato nunca traiga».
+It is shown with **65533** and not 65535 because the engine returns results in **XML**, and what
+XML does not allow is out. There are three groups, and they are worth knowing before picking a
+character "the data will never carry".
 
-Los controles por debajo de 32 —salvo tabulador, salto y retorno—:
+The controls below 32 — except tab, line feed and carriage return:
 
 ```dax
 EVALUATE ROW("control", UNICHAR(1))
@@ -92,7 +92,7 @@ EVALUATE ROW("control", UNICHAR(1))
 ERROR: Function 'UNICHAR' does not return invalid XML characters.
 ```
 
-Los dos últimos puntos del plano básico, que Unicode marca como «no caracteres»:
+The last two code points of the basic plane, which Unicode marks as "non-characters":
 
 ```dax
 EVALUATE ROW("no_caracter", UNICHAR(65535))
@@ -102,7 +102,7 @@ EVALUATE ROW("no_caracter", UNICHAR(65535))
 ERROR: The code point does not correspond to a valid character.
 ```
 
-Y los extremos: el cero, por quedar fuera de rango, y el máximo teórico del estándar.
+And the extremes: zero, for being out of range, and the standard's theoretical maximum.
 
 ```dax
 EVALUATE ROW("cero", UNICHAR(0))
@@ -120,5 +120,5 @@ EVALUATE ROW("maximo_unicode", UNICHAR(1114111))
 ERROR: The code point does not correspond to a valid character.
 ```
 
-Eso deja sin salida el truco de usar un carácter de control como delimitador — ver
-[`combinevalues`](./combinevalues.md), donde además tiene que ser literal.
+That closes off the trick of using a control character as a delimiter — see
+[`combinevalues`](./combinevalues.md), where it also has to be a literal.

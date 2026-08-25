@@ -3,9 +3,9 @@ function: FALSE
 model: ninguno
 ---
 
-# FALSE — ejemplos
+# FALSE — examples
 
-## 1. Un blanco y un FALSE son iguales con `=`, distintos con `==`
+## 1. A blank and a FALSE are equal with `=`, different with `==`
 
 ```dax
 EVALUATE
@@ -22,11 +22,11 @@ false_mas_cero | blanco_igual | blanco_estricto | es_blanco_false
 0 | True | False | False
 ```
 
-Es la misma distinción que arrastra media biblioteca: `=` iguala el blanco a su valor
-neutro, `==` no.
+It is the same distinction half this library carries: `=` equates the blank to its neutral value,
+`==` does not.
 
-Lo que **no** se puede es compararlo con el número que representa, aunque en aritmética
-valga cero:
+What you **cannot** do is compare it with the number it represents, even though in arithmetic it
+is worth zero:
 
 ```dax
 EVALUATE ROW("comparado_con_cero", FALSE() = 0)
@@ -36,10 +36,10 @@ EVALUATE ROW("comparado_con_cero", FALSE() = 0)
 ERROR: DAX comparison operations do not support comparing values of type True/False with values of type Integer. Consider using the VALUE or FORMAT function to convert one of the values.
 ```
 
-## 2. Devolver FALSE no es lo mismo que devolver blanco
+## 2. Returning FALSE is not the same as returning blank
 
-Una medida que devuelve `FALSE()` ocupa sitio en el visual; una que devuelve blanco
-desaparece. La diferencia decide si una fila se ve o no.
+A measure returning `FALSE()` takes up space in the visual; one returning blank disappears. The
+difference decides whether a row is seen at all.
 
 ```dax
 EVALUATE
@@ -56,11 +56,11 @@ es_blanco_false | es_blanco_blanco | if_sin_else | cuenta_vacia
 False | True | True | (blank)
 ```
 
-`COUNTROWS` de una tabla vacía devuelve blanco, no cero — otra vez lo mismo.
+`COUNTROWS` of an empty table returns blank, not zero — the same thing again.
 
-## 3. Como filtro constante, apaga la expresión entera
+## 3. As a constant filter, it switches the whole expression off
 
-Útil para aislar un problema: sustituir una condición por `FALSE()` y ver qué queda.
+Useful for isolating a problem: replace a condition with `FALSE()` and see what is left.
 
 ```dax
 EVALUATE

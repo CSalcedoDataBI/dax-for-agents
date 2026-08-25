@@ -3,12 +3,12 @@ function: DEGREES
 model: ninguno
 ---
 
-# DEGREES — ejemplos
+# DEGREES — examples
 
-## 1. Convierte la SALIDA de las funciones trigonométricas, que devuelven radianes
+## 1. It converts the OUTPUT of the trigonometric functions, which return radians
 
-Ese es su uso real. `ATAN`, `ACOS` y compañía no devuelven grados, y un informe que enseñe
-ángulos los necesita.
+That is its real use. `ATAN`, `ACOS` and company do not return degrees, and a report showing
+angles needs them.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ atan_1_radianes | atan_1_grados | acos_0_grados | pendiente_100pc
 0.785398 | 45 | 90 | 45
 ```
 
-Una pendiente del 100 % son 45 grados, no 90. Es el tipo de cifra que se publica mal cuando se
-olvida la conversión.
+A 100% gradient is 45 degrees, not 90. It is the kind of figure that gets published wrong when
+the conversion is forgotten.
 
-## 2. Un radián son 57,3 grados, y el ida y vuelta cuadra exacto
+## 2. One radian is 57.3 degrees, and the round trip closes exactly
 
 ```dax
 EVALUATE
@@ -45,10 +45,11 @@ un_radian | pi_radianes | ida_y_vuelta | vuelta_e_ida
 57.29578 | 180 | 37 | 1.234
 ```
 
-Las dos últimas columnas cierran el círculo sin residuo visible, que no es lo habitual en coma
-flotante — compara con [`sqrt`](./sqrt.md), donde `SQRT(2) * SQRT(2)` **no** vuelve a 2.
+The last two columns close the circle with no visible remainder, which is not the norm in
+floating point — compare with [`sqrt`](./sqrt.md), where `SQRT(2) * SQRT(2)` does **not** come
+back to 2.
 
-## 3. El blanco sale en blanco, y el negativo pasa sin quejarse
+## 3. The blank comes out blank, and a negative goes through without complaint
 
 ```dax
 EVALUATE
@@ -66,8 +67,8 @@ blanco | es_blanco | cero | negativo | mas_de_una_vuelta
 (blank) | True | 0 | -180 | 572.9578
 ```
 
-No hay dominio: cualquier número vale, y el resultado puede pasarse de 360 sin que nadie lo
-normalice. Si necesitas el ángulo dentro de una vuelta, el `MOD(x, 360)` lo escribes tú — con
-el cuidado que pide [`mod`](./mod.md) si el valor puede ser negativo.
+There is no domain: any number is fine, and the result can exceed 360 with nobody normalising it.
+If you need the angle within one turn, you write the `MOD(x, 360)` yourself — with the care
+[`mod`](./mod.md) calls for if the value can be negative.
 
-Ver [`radians`](./radians.md), su inversa, y [`pi`](./pi.md).
+See [`radians`](./radians.md), its inverse, and [`pi`](./pi.md).

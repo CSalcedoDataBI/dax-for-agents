@@ -3,12 +3,12 @@ function: SQRTPI
 model: ninguno
 ---
 
-# SQRTPI — ejemplos
+# SQRTPI — examples
 
-## 1. Es `SQRT(n × π)`, no `SQRT(n) × π` ni `SQRT(π)`
+## 1. It is `SQRT(n × π)`, not `SQRT(n) × π` nor `SQRT(π)`
 
-El nombre admite tres lecturas y solo una es la correcta. La multiplicación va **dentro** de la
-raíz.
+The name allows three readings and only one is right. The multiplication goes **inside** the
+root.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ sqrtpi_4 | raiz_de_4_por_pi | raiz_de_4_por_pi_fuera | sqrtpi_1
 3.544908 | 3.544908 | 6.283185 | 1.772454
 ```
 
-Las columnas 1 y 2 coinciden; la 3 es casi el doble. Y `SQRTPI(1)` es `SQRT(π)` = 1,772454, que
-es de donde sale la confusión del nombre.
+Columns 1 and 2 agree; column 3 is almost double. And `SQRTPI(1)` is `SQRT(π)` = 1.772454, which
+is where the confusion over the name comes from.
 
-## 2. Hereda el dominio de `SQRT`: un negativo aborta
+## 2. It inherits `SQRT`'s domain: a negative aborts
 
 ```dax
 EVALUATE ROW("negativo", SQRTPI(-1))
@@ -38,7 +38,7 @@ EVALUATE ROW("negativo", SQRTPI(-1))
 ERROR: An argument of function 'SQRTPI' has the wrong data type or the result is too large or too small.
 ```
 
-Y el cero y el blanco se comportan como en [`sqrt`](./sqrt.md):
+And zero and the blank behave as in [`sqrt`](./sqrt.md):
 
 ```dax
 EVALUATE
@@ -54,12 +54,12 @@ cero | blanco | es_blanco
 0 | (blank) | True
 ```
 
-El blanco entra como cero, `SQRTPI(0)` es cero, y ese cero vuelve a salir blanco.
+The blank goes in as zero, `SQRTPI(0)` is zero, and that zero comes back out blank.
 
-## 3. Para qué existe: la constante de la distribución normal
+## 3. What it exists for: the normal distribution's constant
 
-Prácticamente su único uso es la fórmula de la densidad normal, donde `√(2π)` aparece como
-denominador. Escribirla con `SQRTPI(2)` ahorra un paréntesis y poco más.
+Practically its only use is the normal density formula, where `√(2π)` appears as a denominator.
+Writing it as `SQRTPI(2)` saves one bracket and little else.
 
 ```dax
 EVALUATE
@@ -75,7 +75,7 @@ raiz_2pi | escrita_larga | densidad_en_cero
 2.506628 | 2.506628 | 0.398942
 ```
 
-0,398942 es la altura de la campana en su centro. Si no estás escribiendo estadística a mano,
-`SQRT(n * PI())` se lee mejor y hace lo mismo.
+0.398942 is the height of the bell at its centre. If you are not writing statistics by hand,
+`SQRT(n * PI())` reads better and does the same.
 
-Ver [`sqrt`](./sqrt.md) y [`pi`](./pi.md).
+See [`sqrt`](./sqrt.md) and [`pi`](./pi.md).

@@ -3,11 +3,11 @@ function: ACOTH
 model: ninguno
 ---
 
-# ACOTH — ejemplos
+# ACOTH — examples
 
-## 1. Su dominio es lo de FUERA de [-1, 1], al revés que `ATANH`
+## 1. Its domain is what lies OUTSIDE [-1, 1], the opposite of `ATANH`
 
-Es lo contrario de lo que sugiere la costumbre: aquí los valores pequeños son los prohibidos.
+It is the opposite of what habit suggests: here the small values are the forbidden ones.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ acoth_2 | acoth_menos_2 | acoth_1_01 | dentro_del_intervalo
 0.549306 | -0.549306 | 2.651652 | aborta
 ```
 
-`ACOTH(0.5)` aborta. Y en 1,01 —justo fuera del intervalo— el valor ya es 2,65 y sigue
-creciendo: la función se dispara al acercarse a ±1 desde fuera.
+`ACOTH(0.5)` aborts. And at 1.01 — just outside the interval — the value is already 2.65 and
+still climbing: the function blows up as it approaches ±1 from outside.
 
-## 2. El 1, el -1, el cero y el blanco abortan todos
+## 2. 1, -1, zero and the blank all abort
 
 ```dax
 EVALUATE ROW("acoth_de_uno", ACOTH(1))
@@ -52,11 +52,11 @@ uno | menos_uno | cero | blanco
 aborta | aborta | aborta | aborta
 ```
 
-El blanco entra como cero y el cero está dentro del intervalo prohibido. Cualquier hueco en la
-columna tumba la consulta entera, así que la protección hay que escribirla — y dentro del
-iterador, no alrededor, como está medido en [`ln`](./ln.md).
+The blank goes in as zero and zero is inside the forbidden interval. Any gap in the column brings
+the whole query down, so the protection has to be written — and inside the iterator, not around
+it, as measured in [`ln`](./ln.md).
 
-## 3. Es `ATANH` del inverso, y esa es la forma práctica de recordarla
+## 3. It is `ATANH` of the reciprocal, and that is the practical way to remember it
 
 ```dax
 EVALUATE
@@ -73,7 +73,7 @@ acoth_2 | atanh_de_un_medio | identicos | coth_ida_vuelta
 0.549306 | 0.549306 | 0 | 3
 ```
 
-`ACOTH(x) = ATANH(1/x)`, y el dominio sale solo de ahí: para que `1/x` caiga dentro de (-1, 1),
-`x` tiene que estar fuera.
+`ACOTH(x) = ATANH(1/x)`, and the domain follows from that alone: for `1/x` to fall inside
+(-1, 1), `x` has to be outside.
 
-Ver [`coth`](./coth.md), [`atanh`](./atanh.md) y [`acot`](./acot.md).
+See [`coth`](./coth.md), [`atanh`](./atanh.md) and [`acot`](./acot.md).

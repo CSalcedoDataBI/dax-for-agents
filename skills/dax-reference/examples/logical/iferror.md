@@ -3,13 +3,13 @@ function: IFERROR
 model: ninguno
 ---
 
-# IFERROR — ejemplos
+# IFERROR — examples
 
-## 1. Se traga el error que querías ver
+## 1. It swallows the error you wanted to see
 
-Es su función y también su peligro. Un `IFERROR` puesto alrededor de una expresión grande
-oculta cualquier fallo que ocurra dentro, incluidos los que no tenían nada que ver con el
-caso que se quería cubrir.
+That is its job and also its danger. An `IFERROR` placed around a large expression hides any
+failure occurring inside, including the ones that had nothing to do with the case you meant to
+cover.
 
 ```dax
 EVALUATE
@@ -25,13 +25,14 @@ division_por_cero | texto_a_numero | sin_error
 capturado | capturado | 5
 ```
 
-Los dos primeros devuelven lo mismo, y son problemas distintos: uno es aritmética, el otro un
-dato con la forma equivocada. Con `IFERROR` alrededor de los dos, el informe no distingue.
+The first two return the same thing, and they are different problems: one is arithmetic, the
+other is data of the wrong shape. With an `IFERROR` around both, the report cannot tell them
+apart.
 
-## 2. Para dividir, DIVIDE es mejor
+## 2. For division, DIVIDE is better
 
-`DIVIDE` resuelve el caso concreto sin desactivar el resto de errores, y el motor lo entiende
-mejor que un `IFERROR` envolviendo una división.
+`DIVIDE` solves the specific case without switching off every other error, and the engine
+understands it better than an `IFERROR` wrapped around a division.
 
 ```dax
 EVALUATE
@@ -48,12 +49,11 @@ iferror | divide | divide_sin_alt | cero_entre_cero
 0 | 0 | True | -1
 ```
 
-`DIVIDE` sin tercer argumento devuelve blanco, no cero. Otra vez la misma decisión.
+`DIVIDE` without a third argument returns blank, not zero. The same decision again.
 
-## 3. El valor alternativo no tiene que ser del mismo tipo
+## 3. The alternative value does not have to be of the same type
 
-Y ahí empieza el problema siguiente: lo que devuelve puede no servir para lo que venía
-después.
+And there the next problem starts: what it returns may not serve whatever came after.
 
 ```dax
 EVALUATE
@@ -69,5 +69,5 @@ numero_o_texto | suma_despues | anidado
 sin dato | 100 | los dos fallaron
 ```
 
-Ver [`coalesce`](./coalesce.md), que es lo que suele querer quien escribe un `IFERROR`: no
-capturar un error, sino sustituir un blanco.
+See [`coalesce`](./coalesce.md), which is usually what whoever writes an `IFERROR` actually
+wants: not to catch an error, but to substitute a blank.

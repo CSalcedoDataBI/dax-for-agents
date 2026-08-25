@@ -3,12 +3,12 @@ function: MID
 model: ninguno
 ---
 
-# MID — ejemplos
+# MID — examples
 
-## 1. La posición empieza en 1, y el 0 no es «desde el principio»: aborta
+## 1. The position starts at 1, and 0 is not "from the beginning": it aborts
 
-Es el error de traducción más común desde cualquier lenguaje de programación, donde el índice
-empieza en cero. Aquí no devuelve la cadena entera ni una vacía — tumba la consulta.
+It is the most common translation error from any programming language, where the index starts at
+zero. Here it returns neither the whole string nor an empty one — it brings the query down.
 
 ```dax
 EVALUATE ROW("desde_0", MID("Contoso", 0, 3))
@@ -18,7 +18,7 @@ EVALUATE ROW("desde_0", MID("Contoso", 0, 3))
 ERROR: An argument of function 'MID' has the wrong data type or has an invalid value.
 ```
 
-Lo que sí es válido:
+What is valid:
 
 ```dax
 EVALUATE
@@ -35,13 +35,13 @@ desde_1 | desde_3 | mas_alla | pide_de_mas
 Con | nto | [] | oso
 ```
 
-Empezar más allá del final **no** da error: devuelve vacío. Así que el fallo silencioso y el
-ruidoso están a un carácter de distancia.
+Starting past the end does **not** give an error: it returns empty. So the silent failure and the
+noisy one are one character apart.
 
-## 2. Combinada con FIND, para partir por un separador
+## 2. Combined with FIND, to split on a separator
 
-El patrón real. Y su punto débil: si el separador no está, `FIND` aborta y se lleva la
-consulta entera.
+The real pattern. And its weak point: if the separator is not there, `FIND` aborts and takes the
+whole query with it.
 
 ```dax
 EVALUATE
@@ -60,7 +60,7 @@ primer_guion | segundo_guion | el_ano | el_pais
 3 | 8 | 2024 | ES
 ```
 
-## 3. Sobre blanco, con longitud cero y con longitud negativa
+## 3. Over a blank, with zero length and with negative length
 
 ```dax
 EVALUATE
@@ -75,8 +75,8 @@ blanco | longitud_cero
 [] | []
 ```
 
-La longitud negativa sí aborta, con el mismo mensaje genérico que la posición 0 — así que el
-error no dice cuál de los dos argumentos estaba mal:
+A negative length does abort, with the same generic message as position 0 — so the error does not
+say which of the two arguments was wrong:
 
 ```dax
 EVALUATE ROW("longitud_negativa", MID("Contoso", 2, -1))
@@ -86,4 +86,4 @@ EVALUATE ROW("longitud_negativa", MID("Contoso", 2, -1))
 ERROR: An argument of function 'MID' has the wrong data type or has an invalid value.
 ```
 
-Ver [`left`](./left.md), [`right`](./right.md) y [`find`](./find.md).
+See [`left`](./left.md), [`right`](./right.md) and [`find`](./find.md).

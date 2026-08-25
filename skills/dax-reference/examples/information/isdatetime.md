@@ -3,11 +3,11 @@ function: ISDATETIME
 model: ninguno
 ---
 
-# ISDATETIME — ejemplos
+# ISDATETIME — examples
 
-## 1. Una fecha es fecha Y es número al mismo tiempo
+## 1. A date is a date AND a number at the same time
 
-Ese solapamiento es lo que rompe las clasificaciones por tipo escritas en el orden equivocado.
+That overlap is what breaks type classifications written in the wrong order.
 
 ```dax
 EVALUATE
@@ -24,11 +24,11 @@ fecha_es_fecha | fecha_es_numero | numero_es_fecha | numero_es_numero
 True | True | False | True
 ```
 
-La asimetría es la clave: una fecha pasa por número, pero un número **no** pasa por fecha
-aunque sea un número de serie válido. El tipo lo lleva el valor, no su magnitud. En una
-escalera de `IF`, `ISDATETIME` tiene que ir **antes** que [`isnumber`](./isnumber.md).
+The asymmetry is the key: a date passes as a number, but a number does **not** pass as a date
+even when it is a valid serial number. The type belongs to the value, not to its magnitude. In a
+ladder of `IF`s, `ISDATETIME` has to come **before** [`isnumber`](./isnumber.md).
 
-## 2. Una fecha escrita como texto no es una fecha
+## 2. A date written as text is not a date
 
 ```dax
 EVALUATE
@@ -45,10 +45,10 @@ fecha | texto_con_pinta_de_fecha | es_texto | hora_tambien_cuenta
 True | False | True | True
 ```
 
-Es el mismo patrón que `ISNUMBER("42")`. Y una hora sin fecha también entra: el tipo es
-`datetime`, no «fecha».
+It is the same pattern as `ISNUMBER("42")`. And a time with no date counts too: the type is
+`datetime`, not "date".
 
-## 3. El blanco no tiene tipo, tampoco aquí
+## 3. The blank has no type, here either
 
 ```dax
 EVALUATE
@@ -65,8 +65,7 @@ blanco | blanco_es_blanco | fecha_cero | booleano
 False | True | True | False
 ```
 
-30/12/1899 es el origen del calendario en DAX y sigue siendo una fecha perfectamente válida —
-lo que no es fecha es el blanco. Para las columnas de fecha con huecos, la pregunta va con
-[`isblank`](./isblank.md).
+1899-12-30 is DAX's calendar origin and is still a perfectly valid date — what is not a date is
+the blank. For date columns with gaps, the question goes to [`isblank`](./isblank.md).
 
-Ver [`isnumber`](./isnumber.md) y [`isblank`](./isblank.md).
+See [`isnumber`](./isnumber.md) and [`isblank`](./isblank.md).

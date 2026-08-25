@@ -3,12 +3,12 @@ function: UNICODE
 model: ninguno
 ---
 
-# UNICODE — ejemplos
+# UNICODE — examples
 
-## 1. Solo mira el PRIMER carácter
+## 1. It only looks at the FIRST character
 
-No es «el código del texto»: es el del primero y nada más. Sirve para auditar qué hay al
-principio de una cadena, no para comparar cadenas.
+It is not "the text's code": it is the first one's and nothing more. It is for auditing what sits
+at the start of a string, not for comparing strings.
 
 ```dax
 EVALUATE
@@ -25,9 +25,9 @@ una_letra | una_palabra | otra_palabra | iguales
 65 | 65 | 65 | True
 ```
 
-## 2. Para lo que sirve de verdad: ver el carácter invisible
+## 2. What it is really for: seeing the invisible character
 
-Cuando dos textos se ven iguales y no cruzan, esto lo dice en una línea.
+When two texts look the same and do not join, this says so in one line.
 
 ```dax
 EVALUATE
@@ -46,14 +46,15 @@ ultimo_de_sucio | ultimo_de_limpio | tras_trim | esperado_a
 160 | 32 | 160 | 97
 ```
 
-160 frente a 32: el primero es el espacio duro que [`trim`](./trim.md) no quita, el segundo
-el espacio normal. Y `tras_trim` sigue siendo 160, que es la demostración en una celda.
+160 against 32: the first is the non-breaking space [`trim`](./trim.md) does not remove, the
+second the ordinary space. And `tras_trim` is still 160, which is the demonstration in a single
+cell.
 
-## 3. Con blanco y con cadena vacía devuelve BLANCO, no error
+## 3. With a blank and with an empty string it returns BLANK, not an error
 
-Es lo contrario de lo que hace [`value`](./value.md), que aborta con la cadena vacía. Aquí no
-hay que proteger nada — pero tampoco se puede distinguir «no había texto» de «el primer
-carácter es raro» sin mirar antes.
+It is the opposite of [`value`](./value.md), which aborts on the empty string. Here there is
+nothing to guard — but neither can you tell "there was no text" from "the first character is odd"
+without looking first.
 
 ```dax
 EVALUATE
@@ -71,5 +72,5 @@ numero | acentuada | enye | cadena_vacia | blanco
 53 | 233 | 241 | (blank) | (blank)
 ```
 
-Donde sí aborta es con medio par sustituto — la mitad de un emoji cortado con `LEFT`. Ver
-[`unichar`](./unichar.md), que es el camino de vuelta y donde está ese caso.
+Where it does abort is on half a surrogate pair — the half of an emoji cut with `LEFT`. See
+[`unichar`](./unichar.md), which is the way back and where that case lives.

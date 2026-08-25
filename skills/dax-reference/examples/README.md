@@ -1,30 +1,30 @@
-# examples — el contrato
+# examples — the contract
 
-Un fichero por función, con **al menos tres ejemplos**, y cada ejemplo trae **la consulta y el
-número que devolvió el motor**.
+One file per function, with **at least three examples**, and every example carries **the query and
+the number the engine returned**.
 
-Un *ejemplo* es exactamente eso: **una consulta con su resultado medido**. Es la unidad que
-cuenta el gate y la que anuncia la ficha, así que una sección de prosa que enseñe dos
-consultas cuenta como dos. La numeración `## 1.`, `## 2.` organiza la lectura, no el conteo.
+An *example* is exactly that: **a query with its measured result**. It is the unit the gate counts
+and the one the card advertises, so a prose section showing two queries counts as two. The `## 1.`,
+`## 2.` numbering organises the reading, not the count.
 
-Esto existe porque las fichas ya traen ejemplos —los de Microsoft, medidos sobre *Adventure
-Works DW 2020*— y ese modelo no está en este repositorio. Sus cifras nadie de aquí las ha
-ejecutado. Lo que se escribe en este árbol es lo contrario: **ejemplos que se ejecutan**.
+This exists because the cards already carry examples — Microsoft's, measured against *Adventure
+Works DW 2020* — and that model is not in this repository. Nobody here has run its figures. What
+is written in this tree is the opposite: **examples that run**.
 
-## Dónde va cada cosa
+## Where everything goes
 
 ```
 dax-reference/examples/<primaryCategory>/<stem>.md
 ```
 
-El `<stem>` es el mismo que el de la ficha en `generated/library/` — `if.md`, `if-eager.md`,
-`bitlshift.md`. No es el nombre de la función: `IF.EAGER` vive en `if-eager.md`.
+The `<stem>` is the same as the card's in `generated/library/` — `if.md`, `if-eager.md`,
+`bitlshift.md`. It is not the function's name: `IF.EAGER` lives in `if-eager.md`.
 
-**Este árbol es escrito a mano y el sync nunca lo toca**, igual que `notes/`. Los ejemplos no
-pueden vivir dentro de la ficha porque la ficha se regenera entera cada vez que `query-docs`
-se mueve, y se los llevaría por delante.
+**This tree is hand-written and the sync never touches it**, just like `notes/`. The examples
+cannot live inside the card because the card is regenerated whole every time `query-docs` moves,
+and it would take them with it.
 
-## El fichero
+## The file
 
 ```markdown
 ---
@@ -32,11 +32,11 @@ function: IF
 model: ninguno
 ---
 
-# IF — ejemplos
+# IF — examples
 
-## 1. Sin el tercer argumento el resultado es BLANCO, no cero
+## 1. Without the third argument the result is BLANK, not zero
 
-Una frase que diga qué se está enseñando. No repitas la sintaxis: para eso está la ficha.
+A sentence saying what is being shown. Do not repeat the syntax: that is what the card is for.
 
 ​```dax
 EVALUATE ROW("sin_else", IF(1 = 2, "sí"))
@@ -47,76 +47,79 @@ sin_else
 (blank)
 ​```
 
-Y debajo, si hace falta, por qué eso importa.
+And below it, if needed, why that matters.
 ```
 
-### El frontmatter
+### The frontmatter
 
-| clave | qué es |
+| key | what it is |
 |---|---|
-| `function` | el nombre tal cual lo escribe DAX — `IF`, `IF.EAGER`, `BITLSHIFT` |
-| `model` | contra qué escenario de `lab/` corre |
+| `function` | the name exactly as DAX writes it — `IF`, `IF.EAGER`, `BITLSHIFT` |
+| `model` | which `lab/` scenario it runs against |
 
-`model: ninguno` significa **no lee datos del modelo**: aritmética pura, texto, lógica. Se
-ejecuta contra `contoso` porque hace falta un motor, no porque haga falta ese modelo. La
-distinción importa para saber qué se rompe cuando un modelo cambia.
+`model: ninguno` means **it reads no model data**: pure arithmetic, text, logic. It runs against
+`contoso` because an engine is needed, not because that model is. The distinction matters for
+knowing what breaks when a model changes.
 
-Cualquier otro valor tiene que ser un directorio real de `lab/`: `contoso`, `blancos`,
-`claves-huerfanas`, `rendimiento`.
+The value stays in Spanish because it is not prose: it is the sentinel `examples_io.py` compares
+against, alongside the real directory names under `lab/`. Any other value has to be a genuine
+`lab/` directory: `contoso`, `blancos`, `claves-huerfanas`, `rendimiento`.
 
-### El bloque `result`
+### The `result` block
 
-Es lo que hace ejecutable al ejemplo. La primera línea son los nombres de columna; las
-siguientes, las filas, con las celdas separadas por ` | `.
+It is what makes the example executable. The first line holds the column names; the following
+ones, the rows, with cells separated by ` | `.
 
 ```
 sin_else | con_else
 (blank) | 0
 ```
 
-| valor | se escribe |
+| value | is written |
 |---|---|
-| blanco | `(blank)` |
-| verdadero / falso | `True` / `False` |
-| número | tal cual, redondeado a **6 decimales** |
-| texto | tal cual, sin comillas |
+| blank | `(blank)` |
+| true / false | `True` / `False` |
+| number | as it comes, rounded to **6 decimals** |
+| text | as it comes, without quotes |
 
-Si la consulta **aborta a propósito** —hay funciones que solo se entienden viendo el error—
-el bloque lleva el mensaje:
+If the query **aborts on purpose** — some functions can only be understood by seeing the error —
+the block carries the message:
 
 ```
 ERROR: The value for column X cannot be determined
 ```
 
-Cada bloque ` ```dax ` tiene que ir seguido de su ` ```result `. Un ejemplo sin resultado
-medido no es un ejemplo: es una afirmación, y de esas ya viene el catálogo lleno.
+Every ` ```dax ` block has to be followed by its ` ```result `. An example with no measured result
+is not an example: it is an assertion, and the catalogue is already full of those.
 
-## Cómo se comprueba
-
-```bash
-python scripts/check_examples.py                      # estructura: 3 por función, modelo real, todo con result
-python lab/check_lab.py examples localhost:<puerto>   # ejecuta cada consulta y compara con su result
-```
-
-El primero corre en CI. El segundo **no**, y es deliberado: necesita un motor tabular con
-datos y CI no tiene Power BI Desktop.
-
-Para registrar el resultado de un ejemplo nuevo sin copiarlo a mano:
+## How it is checked
 
 ```bash
-python lab/dump_examples.py localhost:<puerto> dax-reference/examples/logical/if.md
+python scripts/check_examples.py                    # structure: 3 per function, real model, all with a result
+python lab/check_lab.py examples localhost:<port>   # runs each query and compares against its result
 ```
 
-Escribe el bloque `result` de cada consulta que no lo tenga. Lo que escriba hay que
-**mirarlo**: traslada lo que devolvió el motor, no decide si el ejemplo era buena idea.
+The first runs in CI. The second does **not**, and that is deliberate: it needs a tabular engine
+with data and CI has no Power BI Desktop.
 
-## Qué es un buen ejemplo
+To record a new example's result without copying it by hand:
 
-Tres es el **suelo**, no el objetivo. `BITLSHIFT` con tres ya está servida; `CALCULATE` con
-tres se queda corta.
+```bash
+python lab/dump_examples.py localhost:<port> dax-reference/examples/logical/if.md
+```
 
-- **Enseña algo que la sintaxis no dice.** Si el ejemplo se deduce leyendo la firma, sobra.
-- **El número sorprende, o no hace falta el ejemplo.** El valor está en el caso donde la
-  intuición falla.
-- **Se lee entero de un vistazo.** Una consulta de cuarenta líneas no es un ejemplo.
-- **No repite al de al lado.** Tres variantes del mismo caso son un ejemplo, no tres.
+It writes the `result` block of every query that lacks one. Whatever it writes has to be **looked
+at**: it moves across what the engine returned, it does not decide whether the example was a good
+idea.
+
+## What makes a good example
+
+Three is the **floor**, not the target. `BITLSHIFT` is well served by three; `CALCULATE` with three
+falls short.
+
+- **Show something the syntax does not say.** If the example can be deduced from reading the
+  signature, it is surplus.
+- **The number surprises, or the example is not needed.** The value is in the case where intuition
+  fails.
+- **It reads in one glance.** A forty-line query is not an example.
+- **It does not repeat its neighbour.** Three variants of the same case are one example, not three.

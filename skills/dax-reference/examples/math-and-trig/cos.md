@@ -3,11 +3,11 @@ function: COS
 model: ninguno
 ---
 
-# COS — ejemplos
+# COS — examples
 
-## 1. Radianes, como toda la familia
+## 1. Radians, like the whole family
 
-`COS(60)` no es 0,5. El coseno de 60 **grados** sí lo es, y para eso hay que decirlo con
+`COS(60)` is not 0.5. The cosine of 60 **degrees** is, and to say so you need
 [`radians`](./radians.md).
 
 ```dax
@@ -25,10 +25,10 @@ cos_60_grados | cos_60_radianes | cos_0 | cos_pi
 -0.952413 | 0.5 | 1 | -1
 ```
 
-## 2. Es par: el signo del argumento no importa
+## 2. It is even: the argument's sign does not matter
 
-Lo contrario que [`sin`](./sin.md), que es impar. Útil para comprobar de un vistazo que estás
-usando la función que crees.
+The opposite of [`sin`](./sin.md), which is odd. Useful for checking at a glance that you are
+using the function you think you are.
 
 ```dax
 EVALUATE
@@ -45,7 +45,7 @@ cos_1 | cos_menos_1 | coinciden | sin_no
 0.540302 | 0.540302 | True | False
 ```
 
-## 3. Sin dominio, y siempre entre -1 y 1
+## 3. No domain, and always between -1 and 1
 
 ```dax
 EVALUATE
@@ -62,7 +62,7 @@ muy_grande | en_rango | identidad | blanco
 0.562379 | True | 1 | False
 ```
 
-`COS(BLANK())` **no** es blanco: el blanco se convierte en 0 y el coseno de 0 es 1. Es la
-excepción a la regla de que el blanco se propaga, y conviene verla antes de fiarse.
+`COS(BLANK())` is **not** blank: the blank converts to 0 and the cosine of 0 is 1. It is the
+exception to the rule that blanks propagate, and it is worth seeing before trusting it.
 
-Ver [`acos`](./acos.md), que sí tiene dominio.
+See [`acos`](./acos.md), which does have a domain.

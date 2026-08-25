@@ -3,11 +3,11 @@ function: RIGHT
 model: ninguno
 ---
 
-# RIGHT — ejemplos
+# RIGHT — examples
 
-## 1. El patrón de «los últimos N» que se rompe con datos cortos
+## 1. The "last N" pattern that breaks on short data
 
-Igual que [`left`](./left.md): pedir de más devuelve lo que haya, sin avisar.
+Just like [`left`](./left.md): asking for too much returns whatever is there, without warning.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ normal | mas_de_largo | cero | sin_segundo
 oso | ab | [] | o
 ```
 
-## 2. Para quedarse con la extensión o el sufijo, es frágil
+## 2. For keeping the extension or the suffix, it is fragile
 
-El patrón habitual —`RIGHT(texto, LEN(texto) - FIND(".", texto))`— depende de que el
-separador exista. Cuando no está, la cuenta se descuadra.
+The usual pattern — `RIGHT(text, LEN(text) - FIND(".", text))` — depends on the separator
+existing. When it is not there, the count goes wrong.
 
 ```dax
 EVALUATE
@@ -46,13 +46,13 @@ posicion | extension | dos_puntos | ultimo_punto_no
 8 | pbix | b.c | c
 ```
 
-Con dos puntos corta por el **primero**, no por el último: `FIND` busca de izquierda a
-derecha. Ver [`find`](./find.md).
+With two dots it cuts at the **first**, not the last: `FIND` searches left to right. See
+[`find`](./find.md).
 
-## 3. Rellenar por la izquierda: el uso que sí aguanta
+## 3. Padding on the left: the use that does hold up
 
-`RIGHT` sobre un texto ya rellenado es la forma corta de forzar un ancho fijo, y funciona
-tanto si el original era corto como si era largo.
+`RIGHT` over already-padded text is the short way to force a fixed width, and it works whether the
+original was short or long.
 
 ```dax
 EVALUATE
@@ -69,5 +69,5 @@ corto | justo | largo | blanco
 0042 | 1234 | 3456 | 0000
 ```
 
-El caso `largo` es el aviso: recorta por delante y se lleva las cifras significativas sin
-decir nada.
+The `largo` case is the warning: it trims from the front and takes the significant digits with it
+without saying anything.

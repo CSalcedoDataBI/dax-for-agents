@@ -3,12 +3,12 @@ function: ISNUMBER
 model: ninguno
 ---
 
-# ISNUMBER — ejemplos
+# ISNUMBER — examples
 
-## 1. Una FECHA también es un número
+## 1. A DATE is also a number
 
-Es el resultado que rompe la clasificación por tipos escrita a la ligera. Internamente una
-fecha es un número de serie, y `ISNUMBER` lo ve.
+It is the result that breaks type classifications written carelessly. Internally a date is a
+serial number, and `ISNUMBER` sees it.
 
 ```dax
 EVALUATE
@@ -26,10 +26,10 @@ entero | decimal | moneda | fecha | fecha_tambien_es_fecha
 True | True | True | True | True
 ```
 
-Si ordenas una escalera de `IF(ISNUMBER(x), ..., IF(ISDATETIME(x), ...))`, las fechas nunca
-llegan a la segunda rama. Pregunta primero por [`isdatetime`](./isdatetime.md).
+If you order a ladder of `IF(ISNUMBER(x), ..., IF(ISDATETIME(x), ...))`, dates never reach the
+second branch. Ask [`isdatetime`](./isdatetime.md) first.
 
-## 2. Un número escrito como texto NO es un número
+## 2. A number written as text is NOT a number
 
 ```dax
 EVALUATE
@@ -46,11 +46,11 @@ numero | texto_que_parece_numero | booleano | blanco
 True | False | False | False
 ```
 
-`ISNUMBER("42")` es **falso** aunque `ABS("42")` funcione: la conversión implícita ocurre al
-operar, no al preguntar por el tipo. Y un booleano tampoco cuenta como número, aunque se sume
-como 0 y 1.
+`ISNUMBER("42")` is **false** even though `ABS("42")` works: the implicit conversion happens when
+operating, not when asking about the type. And a boolean does not count as a number either, even
+though it adds up as 0 and 1.
 
-## 3. `ISNUMERIC` está documentada como su alias y NO lo es
+## 3. `ISNUMERIC` is documented as its alias and is NOT one
 
 ```dax
 EVALUATE
@@ -68,9 +68,9 @@ entero | texto | moneda | fecha | fecha_con_isnumeric
 True | True | True | False | False
 ```
 
-Las tres primeras columnas comparan las dos funciones y coinciden. La cuarta dice que en una
-**fecha no coinciden**: `ISNUMBER` la acepta y [`isnumeric`](./isnumeric.md) la rechaza. El
-desacuerdo está acotado a los valores `datetime`, y cambiar una por otra en un modelo con
-fechas cambia el resultado.
+The first three columns compare the two functions and they agree. The fourth says that on a
+**date they do not**: `ISNUMBER` accepts it and [`isnumeric`](./isnumeric.md) rejects it. The
+disagreement is confined to `datetime` values, and swapping one for the other in a model with
+dates changes the result.
 
-Ver [`isnumeric`](./isnumeric.md), [`isdatetime`](./isdatetime.md) y [`istext`](./istext.md).
+See [`isnumeric`](./isnumeric.md), [`isdatetime`](./isdatetime.md) and [`istext`](./istext.md).

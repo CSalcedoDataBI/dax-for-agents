@@ -3,12 +3,12 @@ function: TANH
 model: ninguno
 ---
 
-# TANH — ejemplos
+# TANH — examples
 
-## 1. Se satura entre -1 y 1, y por eso no desborda
+## 1. It saturates between -1 and 1, and that is why it does not overflow
 
-Es la única de las tres hiperbólicas básicas que **no** tiene techo de desbordamiento:
-[`sinh`](./sinh.md) y [`cosh`](./cosh.md) mueren cerca de 710, y `TANH` simplemente se aplana.
+It is the only one of the three basic hyperbolics that has **no** overflow ceiling:
+[`sinh`](./sinh.md) and [`cosh`](./cosh.md) die near 710, and `TANH` simply flattens out.
 
 ```dax
 EVALUATE
@@ -25,13 +25,13 @@ tanh_0 | tanh_1 | tanh_100 | tanh_1000
 0 | 0.761594 | 1 | 1
 ```
 
-A partir de un valor moderado devuelve **exactamente 1**. La saturación no es aproximada: el
-resultado deja de distinguir entradas distintas, y eso importa si lo usas para normalizar.
+Past a moderate value it returns **exactly 1**. The saturation is not approximate: the result
+stops telling different inputs apart, and that matters if you are using it to normalise.
 
-## 2. Esa saturación borra información
+## 2. That saturation erases information
 
-Dos valores muy separados dan el mismo resultado. Como normalizador es cómodo hasta que las
-entradas grandes dejan de ordenarse entre sí.
+Two widely separated values give the same result. As a normaliser it is convenient until the
+large inputs stop ordering among themselves.
 
 ```dax
 EVALUATE
@@ -48,10 +48,10 @@ tanh_20 | tanh_50 | son_iguales | tanh_3
 1 | 1 | True | 0.995055
 ```
 
-Si necesitas que los extremos sigan distinguiéndose, la escala tiene que ir antes: `TANH(x/k)`
-con `k` grande.
+If you need the extremes to stay distinguishable, the scaling has to come first: `TANH(x/k)` with
+a large `k`.
 
-## 3. Es impar, y es el cociente de las otras dos
+## 3. It is odd, and it is the ratio of the other two
 
 ```dax
 EVALUATE
@@ -68,8 +68,8 @@ impar | cociente | blanco | en_rango
 0 | 0 | (blank) | True
 ```
 
-`TANH(BLANK())` sale **en blanco**, igual que [`sinh`](./sinh.md) y por la misma razón: el
-blanco entra como cero, `TANH(0)` es cero, y ese cero vuelve a salir como blanco. `TANH(0)`
-escrito a mano devuelve un **0** normal.
+`TANH(BLANK())` comes out **blank**, just like [`sinh`](./sinh.md) and for the same reason: the
+blank goes in as zero, `TANH(0)` is zero, and that zero comes back out as blank. `TANH(0)` written
+by hand returns an ordinary **0**.
 
-Ver [`sinh`](./sinh.md) y [`cosh`](./cosh.md), de cuyo cociente sale.
+See [`sinh`](./sinh.md) and [`cosh`](./cosh.md), whose ratio it is.

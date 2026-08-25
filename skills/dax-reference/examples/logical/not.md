@@ -3,12 +3,12 @@ function: NOT
 model: ninguno
 ---
 
-# NOT — ejemplos
+# NOT — examples
 
-## 1. NOT de un blanco es VERDADERO
+## 1. NOT of a blank is TRUE
 
-Es la trampa que convierte un filtro «lo que no sea X» en «lo que no sea X, más todo lo que
-no tenga dato». El blanco se convierte en `FALSE`, y su negación es `TRUE`.
+It is the trap that turns a "anything that is not X" filter into "anything that is not X, plus
+everything with no data". The blank converts to `FALSE`, and its negation is `TRUE`.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ not_blanco | not_falso | not_cierto | not_cero
 True | True | False | True
 ```
 
-Una fila sin dato pasa el filtro. Si eso no es lo que quieres, hace falta
+A row with no data passes the filter. If that is not what you want, you need
 `NOT(...) && NOT(ISBLANK(...))`.
 
-## 2. Con números, cualquier cosa distinta de cero es verdadera
+## 2. With numbers, anything different from zero is true
 
 ```dax
 EVALUATE
@@ -45,12 +45,12 @@ not_uno | not_cien | not_negativo | not_decimal
 False | False | False | False
 ```
 
-El signo no importa: solo si es cero.
+The sign does not matter: only whether it is zero.
 
-## 3. Negar una comparación no es invertirla
+## 3. Negating a comparison is not inverting it
 
-Con blancos de por medio, `NOT(a > b)` y `a <= b` dejan de comportarse como el álgebra
-sugiere, porque la comparación con blanco no es la que uno tiene en la cabeza.
+With blanks in play, `NOT(a > b)` and `a <= b` stop behaving the way algebra suggests, because
+comparison against a blank is not the one you have in mind.
 
 ```dax
 EVALUATE

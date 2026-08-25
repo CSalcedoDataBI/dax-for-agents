@@ -3,11 +3,11 @@ function: CONCATENATE
 model: ninguno
 ---
 
-# CONCATENATE — ejemplos
+# CONCATENATE — examples
 
-## 1. Solo dos argumentos, como AND y OR
+## 1. Only two arguments, like AND and OR
 
-Con tres aborta. Para encadenar está el operador `&`, que además se lee mejor.
+With three it aborts. For chaining there is the `&` operator, which also reads better.
 
 ```dax
 EVALUATE
@@ -31,11 +31,11 @@ EVALUATE ROW("tres", CONCATENATE("a", "b", "c"))
 ERROR: Too many arguments were passed to the CONCATENATE function. The maximum argument count for the function is 2.
 ```
 
-## 2. Un blanco junto a texto desaparece; dos blancos siguen siendo blanco
+## 2. A blank next to text disappears; two blanks are still blank
 
-Es la mitad de la regla que uno espera. Al lado de texto, el blanco se comporta como cadena
-vacía: desaparece sin dejar rastro, y con él la señal de que faltaba un dato. Pero
-`CONCATENATE(BLANK(), BLANK())` **no** devuelve cadena vacía: devuelve blanco.
+It is half the rule you expect. Next to text, the blank behaves as an empty string: it disappears
+without a trace, and with it the signal that a value was missing. But
+`CONCATENATE(BLANK(), BLANK())` does **not** return an empty string: it returns blank.
 
 ```dax
 EVALUATE
@@ -52,12 +52,12 @@ blanco_delante | blanco_detras | los_dos | es_blanco
 [hola] | [hola] | [] | True
 ```
 
-Un nombre completo montado con `&` sobre un apellido ausente sale con el espacio de más y
-nadie se entera. Y la fila entera solo desaparece del visual si **todo** venía en blanco.
+A full name assembled with `&` over a missing surname comes out with the extra space and nobody
+notices. And the whole row only disappears from the visual if **everything** came in blank.
 
-## 3. Convierte los números a texto usando la cultura del modelo
+## 3. It converts numbers to text using the model's culture
 
-Lo que sale no es lo que muestra el informe: el formato de la medida no interviene.
+What comes out is not what the report shows: the measure's format plays no part.
 
 ```dax
 EVALUATE
@@ -74,7 +74,7 @@ entero | decimal | negativo | booleano
 n=1234 | x=1,5 | t=-3 | b=TRUE
 ```
 
-Para controlar cómo se escribe el número hay que decirlo con [`format`](./format.md) — y
-entonces el resultado deja de ordenarse como número, que es la trampa de esa ficha.
+To control how the number is written you have to say so with [`format`](./format.md) — and then
+the result stops sorting as a number, which is that card's trap.
 
-Ver [`concatenatex`](./concatenatex.md) para unir los valores de una **columna**.
+See [`concatenatex`](./concatenatex.md) for joining the values of a **column**.

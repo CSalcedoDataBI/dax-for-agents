@@ -3,12 +3,12 @@ function: SWITCH
 model: ninguno
 ---
 
-# SWITCH — ejemplos
+# SWITCH — examples
 
-## 1. Sin `else` y sin coincidencia, devuelve blanco
+## 1. With no `else` and no match, it returns blank
 
-Igual que `IF`. Un `SWITCH` que cubre cinco casos y se encuentra el sexto no da error ni cero:
-desaparece del visual.
+Just like `IF`. A `SWITCH` covering five cases that meets the sixth gives neither an error nor a
+zero: it disappears from the visual.
 
 ```dax
 EVALUATE
@@ -25,11 +25,10 @@ coincide | no_coincide | es_blanco | con_else
 dos | (blank) | True | ninguno
 ```
 
-## 2. `SWITCH(TRUE(), ...)` es el patrón de rangos
+## 2. `SWITCH(TRUE(), ...)` is the range pattern
 
-Es la forma de escribir una escalera de condiciones sin anidar cinco `IF`. La primera que se
-cumple gana, así que **el orden importa**: una condición amplia colocada arriba tapa a las de
-abajo.
+It is how to write a ladder of conditions without nesting five `IF`s. The first one that holds
+wins, so **the order matters**: a broad condition placed at the top hides the ones below.
 
 ```dax
 EVALUATE
@@ -48,16 +47,17 @@ valor | bien_ordenado | mal_ordenado | primera_gana
 95 | alto | medio | primera
 ```
 
-Con 95, `mal_ordenado` devuelve «medio»: la rama de `>= 50` está antes y se lleva todo lo que
-supera 50, así que la de `>= 90` no llega a evaluarse nunca. No da error — da una respuesta
-plausible y equivocada, que es peor. Con un valor entre 50 y 90 las dos formas coinciden, y
-por eso este fallo pasa las pruebas.
+With 95, `mal_ordenado` returns "medio": the `>= 50` branch comes first and takes everything above
+50, so the `>= 90` one is never evaluated. It gives no error — it gives a plausible and wrong
+answer, which is worse. With a value between 50 and 90 both forms agree, and that is why this
+fault passes testing.
 
-## 3. El blanco NO encaja con la rama del cero
+## 3. The blank does NOT match the zero branch
 
-Es lo contrario de lo que hace un `IF`, y por eso sorprende: en un `IF` el blanco se convierte
-en `FALSE` y sigue la rama del `else`, pero `SWITCH` compara valores y un blanco no es igual a
-`0` ni a `""` a efectos de coincidencia. Se va al `else` sin tocar ninguna rama.
+It is the opposite of what an `IF` does, and that is why it surprises: in an `IF` the blank
+converts to `FALSE` and follows the `else` branch, but `SWITCH` compares values, and a blank is
+not equal to `0` or to `""` for matching purposes. It goes to the `else` without touching any
+branch.
 
 ```dax
 EVALUATE
@@ -73,8 +73,8 @@ cero_con_blanco | texto_con_blanco | cero_con_cero
 no coincidió | no coincidió | encontró el cero
 ```
 
-Así que una rama escrita para el cero **no** captura las filas sin dato: se van todas al
-`else`, y si no hay `else`, desaparecen. Para tratarlas hace falta una rama propia con
-`ISBLANK`, o un `SWITCH(TRUE(), ...)` donde la condición se escribe entera.
+So a branch written for zero does **not** capture the rows with no data: they all go to the
+`else`, and if there is no `else`, they disappear. Handling them needs a branch of their own with
+`ISBLANK`, or a `SWITCH(TRUE(), ...)` where the condition is written out in full.
 
-Ver [`if`](./if.md) para las mismas conversiones con dos ramas.
+See [`if`](./if.md) for the same conversions with two branches.

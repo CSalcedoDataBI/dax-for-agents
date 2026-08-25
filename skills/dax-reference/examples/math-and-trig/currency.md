@@ -3,12 +3,12 @@ function: CURRENCY
 model: ninguno
 ---
 
-# CURRENCY — ejemplos
+# CURRENCY — examples
 
-## 1. Existe para que las sumas de dinero cuadren, y esa diferencia se puede ver
+## 1. It exists so that sums of money reconcile, and that difference can be seen
 
-Un `double` no representa 0,1 exactamente. `CURRENCY` usa punto fijo con cuatro decimales, y
-ahí la aritmética del dinero se comporta como uno espera.
+A `double` does not represent 0.1 exactly. `CURRENCY` uses fixed point with four decimals, and
+there money arithmetic behaves the way you expect.
 
 ```dax
 EVALUATE
@@ -24,12 +24,12 @@ en_coma_flotante | en_currency | residuo_flotante_x1e17
 False | True | 5.5511
 ```
 
-La primera columna es falsa. La tercera enseña por qué: sobran 5,55 × 10⁻¹⁷, que el formato de
-salida no muestra pero la comparación sí ve. Con `CURRENCY` la igualdad se cumple.
+The first column is false. The third shows why: there is 5.55 × 10⁻¹⁷ left over, which the output
+format does not show but the comparison does see. With `CURRENCY` the equality holds.
 
-## 2. Cuatro decimales, redondeando al alejarse del cero
+## 2. Four decimals, rounding away from zero
 
-No es un formato de presentación: **recorta el valor**.
+It is not a display format: **it clips the value**.
 
 ```dax
 EVALUATE
@@ -46,10 +46,10 @@ hacia_arriba | hacia_abajo | negativo | un_tercio
 0.3334 | 0.3333 | -0.3334 | 0.3333
 ```
 
-El quinto decimal decide y se pierde. En un precio unitario con más de cuatro decimales —tipos
-de cambio, costes por millar— eso es una pérdida real que se multiplica por la cantidad.
+The fifth decimal decides and is then lost. On a unit price with more than four decimals —
+exchange rates, cost per thousand — that is a real loss multiplied by the quantity.
 
-## 3. Con texto hereda la trampa de la cultura
+## 3. With text it inherits the culture trap
 
 ```dax
 EVALUATE
@@ -65,11 +65,11 @@ cadena_con_coma | cadena_con_punto | numero_directo
 12.3456 | 123456 | 12.3456
 ```
 
-En este modelo, que está en **es-ES**, `CURRENCY("12.3456")` devuelve **123456**: el punto se
-lee como separador de millares y los cuatro decimales se convierten en cuatro cifras enteras.
-Es el mismo agujero que [`convert`](./convert.md), y multiplicado por diez mil.
+In this model, which is **es-ES**, `CURRENCY("12.3456")` returns **123456**: the dot is read as a
+thousands separator and the four decimals become four whole digits. It is the same hole as
+[`convert`](./convert.md), multiplied by ten thousand.
 
-La regla práctica: no conviertas texto a dinero. Convierte a número en el origen, donde la
-cultura la controlas tú.
+The practical rule: do not convert text to money. Convert to a number at the source, where the
+culture is yours to control.
 
-Ver [`convert`](./convert.md) y [`round`](./round.md).
+See [`convert`](./convert.md) and [`round`](./round.md).

@@ -3,14 +3,14 @@ function: ISNONTEXT
 model: ninguno
 ---
 
-# ISNONTEXT — ejemplos
+# ISNONTEXT — examples
 
-## 1. Dice verdadero para un blanco — y `NOT ISTEXT` también
+## 1. It says true for a blank — and so does `NOT ISTEXT`
 
-Conviene decirlo antes que nada, porque el nombre invita a suponer lo contrario: `ISNONTEXT` no
-se comporta distinto de `NOT ISTEXT` en ningún caso probado, ni siquiera en el blanco (la
-sección 3 lo mide). Existe por compatibilidad con Excel, donde la pregunta se formula así:
-«¿esta celda tiene algo que no sea texto?», y una celda vacía cuenta que sí.
+Worth saying before anything else, because the name invites the opposite assumption: `ISNONTEXT`
+does not behave differently from `NOT ISTEXT` in any tested case, not even on the blank (section 3
+measures it). It exists for compatibility with Excel, where the question is phrased as "does this
+cell hold something that is not text?", and an empty cell counts as yes.
 
 ```dax
 EVALUATE
@@ -27,10 +27,10 @@ blanco | istext_del_blanco | cadena | numero
 True | False | False | True
 ```
 
-El blanco no es texto, así que es «no texto». Suena a perogrullada hasta que lo usas para
-filtrar: `FILTER(T, ISNONTEXT(T[x]))` se queda **también con las filas vacías**.
+The blank is not text, so it is "non-text". It sounds like a truism until you use it to filter:
+`FILTER(T, ISNONTEXT(T[x]))` also **keeps the empty rows**.
 
-## 2. La cadena vacía va al otro lado
+## 2. The empty string goes to the other side
 
 ```dax
 EVALUATE
@@ -47,10 +47,10 @@ cadena_vacia | blanco | cero | booleano
 False | True | True | True
 ```
 
-`""` es texto, así que `ISNONTEXT("")` es falso — mientras que el blanco da verdadero. Dos
-valores que un visual pinta igual y que este predicado separa en dos grupos opuestos.
+`""` is text, so `ISNONTEXT("")` is false — while the blank gives true. Two values a visual paints
+identically, split by this predicate into opposite groups.
 
-## 3. Coincide con `NOT ISTEXT` en todos los casos probados
+## 3. It agrees with `NOT ISTEXT` in every tested case
 
 ```dax
 EVALUATE
@@ -68,7 +68,7 @@ blanco | cadena | cadena_vacia | numero | fecha
 True | True | True | True | True
 ```
 
-Son equivalentes, así que la elección es de legibilidad: `ISNONTEXT` se lee mejor cuando la
-intención es «cualquier cosa menos texto, incluido nada».
+They are equivalent, so the choice is about readability: `ISNONTEXT` reads better when the
+intention is "anything but text, nothing included".
 
-Ver [`istext`](./istext.md) y [`isblank`](./isblank.md).
+See [`istext`](./istext.md) and [`isblank`](./isblank.md).

@@ -3,9 +3,9 @@ function: ISTEXT
 model: ninguno
 ---
 
-# ISTEXT — ejemplos
+# ISTEXT — examples
 
-## 1. La cadena vacía SÍ es texto; el blanco no
+## 1. The empty string IS text; the blank is not
 
 ```dax
 EVALUATE
@@ -22,11 +22,11 @@ cadena | cadena_vacia | blanco | cadena_vacia_es_blanco
 True | True | False | False
 ```
 
-`""` y `BLANK()` se ven igual en un visual y aquí se separan. Una columna importada de un CSV
-suele traer cadenas vacías donde uno espera blancos, y todas las reglas escritas con `ISBLANK`
-se caen en silencio.
+`""` and `BLANK()` look the same in a visual and here they part. A column imported from a CSV
+usually brings empty strings where you expect blanks, and every rule written with `ISBLANK` falls
+over in silence.
 
-## 2. Un número escrito como texto es texto, y ahí está el uso real
+## 2. A number written as text is text, and there is the real use
 
 ```dax
 EVALUATE
@@ -43,11 +43,11 @@ texto_numerico | numero | es_numero | pero_suma
 True | False | False | 43
 ```
 
-La última columna es la trampa completa: `"42" + 1` da **43** porque DAX convierte al operar,
-pero `ISTEXT("42")` sigue diciendo que es texto. El tipo y lo que se puede hacer con el valor
-son dos preguntas distintas.
+The last column is the whole trap: `"42" + 1` gives **43** because DAX converts when operating,
+but `ISTEXT("42")` still says it is text. The type and what can be done with the value are two
+different questions.
 
-## 3. `ISSTRING` es su alias exacto, y `ISNONTEXT` sí es su negación en todo lo probado
+## 3. `ISSTRING` is its exact alias, and `ISNONTEXT` is its negation in everything tested
 
 ```dax
 EVALUATE
@@ -65,9 +65,8 @@ alias_cadena | alias_numero | alias_blanco | negacion_en_blanco | negacion_en_nu
 True | True | True | True | True
 ```
 
-[`isstring`](./isstring.md) da lo mismo siempre. Y [`isnontext`](./isnontext.md) coincide con
-`NOT ISTEXT` en los cinco casos de arriba, y también en booleano, moneda y texto numérico. No
-se encontró ningún valor donde difieran: **la elección entre las dos es de legibilidad, no de
-comportamiento.**
+[`isstring`](./isstring.md) always gives the same. And [`isnontext`](./isnontext.md) agrees with
+`NOT ISTEXT` in the five cases above, and also on booleans, currency and numeric text. No value
+was found where they differ: **the choice between the two is about readability, not behaviour.**
 
-Ver [`isstring`](./isstring.md), [`isnontext`](./isnontext.md) y [`isnumber`](./isnumber.md).
+See [`isstring`](./isstring.md), [`isnontext`](./isnontext.md) and [`isnumber`](./isnumber.md).

@@ -3,12 +3,12 @@ function: LN
 model: ninguno
 ---
 
-# LN — ejemplos
+# LN — examples
 
-## 1. Es logaritmo natural: la base es *e*, no 10
+## 1. It is the natural logarithm: the base is *e*, not 10
 
-Confundirla con [`log10`](./log10.md) es el error que no da error — devuelve un número
-perfectamente creíble, solo que 2,3 veces el que querías.
+Confusing it with [`log10`](./log10.md) is the mistake that raises no error — it returns a
+perfectly believable number, only 2.3 times the one you wanted.
 
 ```dax
 EVALUATE
@@ -25,11 +25,12 @@ ln_1000 | log10_1000 | factor | ln_de_e
 6.907755 | 3 | 2.302585 | 1
 ```
 
-Ese 2,302585 es `LN(10)`, el factor fijo entre las dos bases. `LN(EXP(1)) = 1` es la definición.
+That 2.302585 is `LN(10)`, the fixed factor between the two bases. `LN(EXP(1)) = 1` is the
+definition.
 
-## 2. El cero y los negativos abortan la consulta, no devuelven blanco
+## 2. Zero and negatives abort the query, they do not return blank
 
-El logaritmo no está definido ahí, y DAX no lo disimula.
+The logarithm is not defined there, and DAX does not paper over it.
 
 ```dax
 EVALUATE ROW("ln_cero", LN(0))
@@ -39,8 +40,8 @@ EVALUATE ROW("ln_cero", LN(0))
 ERROR: An argument of function 'LN' has the wrong data type or the result is too large or too small.
 ```
 
-En un modelo real esto llega desde una columna, no desde una constante. Y aquí está lo que no
-es evidente: **envolver el iterador en `IFERROR` no sirve.**
+In a real model this arrives from a column, not from a constant. And here is the part that is not
+obvious: **wrapping the iterator in `IFERROR` does not help.**
 
 ```dax
 EVALUATE
@@ -52,9 +53,9 @@ RETURN ROW("por_fuera", IFERROR(SUMX(Valores, LN([Value])), -1))
 ERROR: An argument of function 'LN' has the wrong data type or the result is too large or too small.
 ```
 
-El `IFERROR` está ahí y la consulta muere igual. No es que `IFERROR` no funcione con `LN` —
-`IFERROR(LN(0), -1)` devuelve -1 sin problema. Es que **alrededor de un iterador no alcanza al
-error que se levanta dentro**. La protección tiene que ir en la expresión iterada:
+The `IFERROR` is there and the query dies anyway. It is not that `IFERROR` does not work with
+`LN` — `IFERROR(LN(0), -1)` returns -1 without trouble. It is that **around an iterator it does
+not reach the error raised inside**. The protection has to go in the iterated expression:
 
 ```dax
 EVALUATE
@@ -73,13 +74,13 @@ iferror_dentro | con_if | filtrando_antes | iferror_suelto
 4.60517 | 4.60517 | 4.60517 | -1
 ```
 
-Las tres primeras funcionan. Una sola fila con cero tumba la agregación entera si la protección
-está en el sitio equivocado, y el sitio equivocado es justo el que parece más natural.
+The first three work. A single row with a zero brings the whole aggregation down if the
+protection is in the wrong place, and the wrong place is exactly the one that looks most natural.
 
-## 3. Convierte crecimiento multiplicativo en algo que se puede sumar
+## 3. It turns multiplicative growth into something you can add up
 
-Es la razón de usarla en un informe: la suma de logaritmos es el logaritmo del producto, así
-que un crecimiento compuesto se vuelve aditivo.
+That is the reason to use it in a report: the sum of logarithms is the logarithm of the product,
+so compound growth becomes additive.
 
 ```dax
 EVALUATE
@@ -97,8 +98,8 @@ producto | exp_de_suma_ln | media_geometrica
 1.386 | 1.386 | 1.114947
 ```
 
-Las dos primeras columnas coinciden porque es la misma cuenta por dos caminos. La tercera es la
-media **geométrica** —el crecimiento medio real, 11,49 %— que no es la media aritmética de
-1,10, 1,05 y 1,20.
+The first two columns agree because it is the same sum by two routes. The third is the
+**geometric** mean — the real average growth, 11.49% — which is not the arithmetic mean of 1.10,
+1.05 and 1.20.
 
-Ver [`exp`](./exp.md), su inversa, y [`log`](./log.md) para otras bases.
+See [`exp`](./exp.md), its inverse, and [`log`](./log.md) for other bases.

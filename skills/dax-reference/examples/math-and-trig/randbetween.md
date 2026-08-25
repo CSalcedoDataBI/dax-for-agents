@@ -3,12 +3,11 @@ function: RANDBETWEEN
 model: ninguno
 ---
 
-# RANDBETWEEN — ejemplos
+# RANDBETWEEN — examples
 
-> Igual que [`rand`](./rand.md), los bloques `result` afirman **propiedades** y no valores
-> concretos.
+> As with [`rand`](./rand.md), the `result` blocks assert **properties** and not specific values.
 
-## 1. Los dos extremos entran, y el resultado siempre es entero
+## 1. Both endpoints are included, and the result is always an integer
 
 ```dax
 EVALUATE
@@ -28,16 +27,15 @@ dentro_del_rango | es_entero | sin_variable_no | extremos_iguales | negativos_va
 True | True | False | 5 | -3
 ```
 
-A diferencia de [`rand`](./rand.md), que excluye el 1, aquí el intervalo es **cerrado por los
-dos lados**. Con los extremos iguales el resultado es constante, que es la forma de comprobarlo
-sin depender del azar.
+Unlike [`rand`](./rand.md), which excludes 1, here the interval is **closed on both sides**. With
+equal endpoints the result is constant, which is how to check it without depending on chance.
 
-La tercera columna es la trampa de [`rand`](./rand.md) otra vez, y sale **falsa**: no está
-comparando una tirada consigo misma, está comparando **dos tiradas distintas**. Con el `VAR`
-la segunda columna sí dice lo que quiere decir. Escribir esa línea sin variable y leer el
-`False` como «no devuelve enteros» es la conclusión equivocada del experimento equivocado.
+The third column is [`rand`](./rand.md)'s trap again, and it comes out **false**: it is not
+comparing one draw with itself, it is comparing **two different draws**. With the `VAR` the second
+column does say what it means to. Writing that line without a variable and reading the `False` as
+"it does not return integers" is the wrong conclusion from the wrong experiment.
 
-## 2. Con los extremos al revés aborta la consulta
+## 2. With the endpoints the wrong way round it aborts the query
 
 ```dax
 EVALUATE ROW("del_seis_al_uno", RANDBETWEEN(6, 1))
@@ -47,14 +45,14 @@ EVALUATE ROW("del_seis_al_uno", RANDBETWEEN(6, 1))
 ERROR: An argument of function 'RANDBETWEEN' has the wrong data type or the result is too large or too small.
 ```
 
-Si los límites vienen de medidas, el orden no está garantizado. `RANDBETWEEN(MIN(a, b), MAX(a, b))`
-es la forma que no se cae.
+If the bounds come from measures, the order is not guaranteed.
+`RANDBETWEEN(MIN(a, b), MAX(a, b))` is the form that does not fall over.
 
-## 3. Sube el mínimo y baja el máximo — y así un intervalo decimal se puede quedar vacío
+## 3. It raises the minimum and lowers the maximum — so a decimal interval can end up empty
 
-Esta es la parte que no dice la firma. Con decimales, el límite inferior se redondea **hacia
-arriba** y el superior **hacia abajo**, así que el intervalo se encoge a los enteros que caen
-estrictamente dentro. Si no queda ninguno, la consulta muere.
+This is the part the signature does not tell you. With decimals, the lower bound rounds **up** and
+the upper one rounds **down**, so the interval shrinks to the integers falling strictly inside. If
+none is left, the query dies.
 
 ```dax
 EVALUATE
@@ -72,8 +70,8 @@ de_1_2_a_2_9 | de_1_5_a_2_5 | de_2_2_a_2_8 | de_1_2_a_1_2 | blancos
 True | True | aborta | aborta | 0
 ```
 
-`RANDBETWEEN(1.2, 2.9)` devuelve **siempre 2**: es el único entero dentro. Y `(2.2, 2.8)` se
-convierte en `[3, 2]`, que está invertido, así que aborta — el mismo error del punto 2, con
-unos límites que a la vista parecían perfectamente ordenados.
+`RANDBETWEEN(1.2, 2.9)` always returns **2**: it is the only integer inside. And `(2.2, 2.8)`
+becomes `[3, 2]`, which is inverted, so it aborts — the same error as point 2, with bounds that
+looked perfectly well ordered.
 
-Ver [`rand`](./rand.md) y [`int`](./int.md).
+See [`rand`](./rand.md) and [`int`](./int.md).

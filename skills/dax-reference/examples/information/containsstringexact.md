@@ -3,9 +3,9 @@ function: CONTAINSSTRINGEXACT
 model: ninguno
 ---
 
-# CONTAINSSTRINGEXACT — ejemplos
+# CONTAINSSTRINGEXACT — examples
 
-## 1. Distingue mayúsculas, que es lo que promete el nombre
+## 1. It distinguishes case, which is what the name promises
 
 ```dax
 EVALUATE
@@ -22,14 +22,14 @@ minusculas | capitalizado | lo_mismo_con_containsstring | acento
 False | True | True | False
 ```
 
-Las dos primeras columnas son la diferencia anunciada. La tercera la pone al lado de
-[`containsstring`](./containsstring.md), que sí encuentra `"bici"`. La cuarta recuerda que el
-acento **también** cuenta aquí — igual que en la otra, que tampoco los ignora.
+The first two columns are the advertised difference. The third puts it next to
+[`containsstring`](./containsstring.md), which does find `"bici"`. The fourth is a reminder that
+the accent counts here **too** — as it does in the other one, which does not ignore them either.
 
-## 2. La diferencia que no anuncia: aquí `*` y `?` NO son comodines
+## 2. The difference it does not advertise: here `*` and `?` are NOT wildcards
 
-Las dos funciones están documentadas como si solo cambiara la sensibilidad a mayúsculas. Son
-dos diferencias, no una, y esta segunda cambia el resultado de una búsqueda entera.
+The two functions are documented as if only case-sensitivity changed. There are two differences,
+not one, and this second one changes the result of an entire search.
 
 ```dax
 EVALUATE
@@ -47,24 +47,25 @@ exacto_con_asterisco | containsstring_con_asterisco | exacto_asterisco_literal |
 False | True | True | False | True
 ```
 
-Las dos primeras columnas son la misma llamada con la misma aguja sobre el mismo pajar, y
-devuelven lo contrario. En `CONTAINSSTRINGEXACT` el `*` es un asterisco y nada más: encuentra
-`"a*b"` porque ahí hay un asterisco de verdad, y no encuentra `"aXXXb"` porque ahí no lo hay.
+The first two columns are the same call with the same needle over the same haystack, and they
+return opposites. In `CONTAINSSTRINGEXACT` the `*` is an asterisk and nothing more: it finds
+`"a*b"` because there is a real asterisk there, and it does not find `"aXXXb"` because there is
+not.
 
-Eso la hace cómoda para **buscar caracteres que son comodines**: referencias con `*`, códigos
-con `?`, cualquier campo donde esos símbolos sean datos.
+That makes it convenient for **searching for characters that are wildcards**: references with
+`*`, codes with `?`, any field where those symbols are data.
 
-Lo que **no** es cierto es que sea la única forma de hacerlo. `CONTAINSSTRING` acepta el escape
-`~`, y con él busca el carácter literal sin renunciar a ignorar mayúsculas — está medido en
-[`containsstring`](./containsstring.md), sección 4. La elección real es esta:
+What is **not** true is that it is the only way to do it. `CONTAINSSTRING` accepts the `~` escape,
+and with it searches for the literal character without giving up case-insensitivity — it is
+measured in [`containsstring`](./containsstring.md), section 4. The real choice is this:
 
-| quieres | usa |
+| what you want | use |
 |---|---|
-| comodín literal, **ignorando** mayúsculas | `CONTAINSSTRING` con `~*` / `~?` |
-| comodín literal, **distinguiendo** mayúsculas | `CONTAINSSTRINGEXACT`, sin escapar nada |
+| literal wildcard, **ignoring** case | `CONTAINSSTRING` with `~*` / `~?` |
+| literal wildcard, **distinguishing** case | `CONTAINSSTRINGEXACT`, escaping nothing |
 
-Y el `~` **no** es un escape aquí. Lo siguiente lo mide, junto al truco de normalizar con
-[`upper`](../text/upper.md):
+And the `~` is **not** an escape here. The following measures it, alongside the trick of
+normalising with [`upper`](../text/upper.md):
 
 ```dax
 EVALUATE
@@ -80,12 +81,12 @@ tilde_no_escapa_aqui | upper_en_los_dos_lados | pero_upper_no_arregla_el_acento
 False | True | False
 ```
 
-La primera columna es falsa porque aquí `"a~*b"` se busca tal cual, tilde incluida, y en
-`"a*b"` no está. La segunda confirma que normalizar con `UPPER` a ambos lados sí devuelve la
-insensibilidad a mayúsculas. La tercera avisa de hasta dónde llega ese arreglo: **el acento
-sigue sin perdonarse**, porque `UPPER` cambia la caja, no los diacríticos.
+The first column is false because here `"a~*b"` is searched for as it stands, tilde included, and
+that is not in `"a*b"`. The second confirms that normalising with `UPPER` on both sides does
+restore case-insensitivity. The third warns how far that fix goes: **the accent is still not
+forgiven**, because `UPPER` changes the case, not the diacritics.
 
-## 3. Una aguja en blanco también encuentra siempre
+## 3. A blank needle also always finds
 
 ```dax
 EVALUATE
@@ -102,13 +103,13 @@ aguja_vacia | aguja_blanca | acento_igual | trozo_en_medio
 True | True | True | True
 ```
 
-Hereda el mismo agujero que [`containsstring`](./containsstring.md): un término de búsqueda
-vacío o en blanco devuelve verdadero para todo, así que el filtro deja de filtrar sin decirlo.
+It inherits the same hole as [`containsstring`](./containsstring.md): an empty or blank search
+term returns true for everything, so the filter stops filtering without saying so.
 
-Y hereda también su matiz: **`ISBLANK` no sirve de guardia aquí**, porque `ISBLANK("")` es
-falso y la cadena vacía se cuela igual. Usa `IF(LEN([Buscado]) > 0, ...)`, que cubre los dos
-casos — está medido en [`containsstring`](./containsstring.md), sección 3.
+And it inherits the nuance too: **`ISBLANK` is no guard here**, because `ISBLANK("")` is false and
+the empty string slips through anyway. Use `IF(LEN([Buscado]) > 0, ...)`, which covers both cases
+— it is measured in [`containsstring`](./containsstring.md), section 3.
 
-Las dos últimas confirman lo esperado: encuentra en cualquier posición, no solo al principio.
+The last two confirm the expected: it finds at any position, not only at the start.
 
-Ver [`containsstring`](./containsstring.md) y [`contains`](./contains.md).
+See [`containsstring`](./containsstring.md) and [`contains`](./contains.md).

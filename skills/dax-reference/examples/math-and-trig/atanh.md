@@ -3,11 +3,11 @@ function: ATANH
 model: ninguno
 ---
 
-# ATANH — ejemplos
+# ATANH — examples
 
-## 1. Solo entre -1 y 1, y los extremos NO valen
+## 1. Only between -1 and 1, and the endpoints do NOT count
 
-`TANH` vive dentro de (-1, 1) sin llegar nunca a los bordes, así que su inversa se dispara ahí.
+`TANH` lives inside (-1, 1) without ever reaching the edges, so its inverse blows up there.
 
 ```dax
 EVALUATE ROW("en_el_borde", ATANH(1))
@@ -32,10 +32,11 @@ medio | casi_uno | uno | mas_de_uno
 0.549306 | 3.800201 | aborta | aborta
 ```
 
-En 0,999 el valor todavía es 3,8: se dispara solo en el último tramo. Es el intervalo abierto,
-no el cerrado — y un dato normalizado que llegue justo a 1 tumba la consulta.
+At 0.999 the value is still 3.8: it blows up only in the very last stretch. It is the open
+interval, not the closed one — and a normalised figure that lands exactly on 1 brings the query
+down.
 
-## 2. El blanco pasa y sale en blanco
+## 2. The blank gets through and comes out blank
 
 ```dax
 EVALUATE
@@ -52,11 +53,10 @@ blanco | es_blanco | cero | acoth_blanco
 (blank) | True | 0 | aborta
 ```
 
-El cero está **dentro** de su dominio, así que el blanco entra, sale cero y vuelve a salir
-blanco. [`acoth`](./acoth.md), cuyo dominio es justo el complementario, aborta con el mismo
-blanco.
+Zero is **inside** its domain, so the blank goes in, comes out zero and comes back out blank.
+[`acoth`](./acoth.md), whose domain is exactly the complement, aborts on the same blank.
 
-## 3. Es impar, es un logaritmo, y por eso se usa para correlaciones
+## 3. It is odd, it is a logarithm, and that is why it is used for correlations
 
 ```dax
 EVALUATE
@@ -73,8 +73,8 @@ impar | ida_y_vuelta | formula_cerrada | fisher_de_0_9
 0 | 2 | 0 | 1.472219
 ```
 
-`ATANH(x) = ½ · LN((1+x)/(1-x))`. Es la transformación *z* de Fisher: convierte un coeficiente
-de correlación —que vive acotado en (-1, 1) y no se puede promediar sin sesgo— en una escala
-sin techo donde sí se puede.
+`ATANH(x) = ½ · LN((1+x)/(1-x))`. It is Fisher's *z* transform: it turns a correlation
+coefficient — which lives bounded in (-1, 1) and cannot be averaged without bias — into an
+unbounded scale where it can.
 
-Ver [`tanh`](./tanh.md), [`acoth`](./acoth.md) y [`ln`](./ln.md).
+See [`tanh`](./tanh.md), [`acoth`](./acoth.md) and [`ln`](./ln.md).

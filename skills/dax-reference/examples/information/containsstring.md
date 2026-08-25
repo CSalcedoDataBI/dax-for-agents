@@ -3,13 +3,12 @@ function: CONTAINSSTRING
 model: ninguno
 ---
 
-# CONTAINSSTRING — ejemplos
+# CONTAINSSTRING — examples
 
-## 1. Ignora las mayúsculas pero NO los acentos
+## 1. It ignores case but NOT accents
 
-Media verdad es peor que ninguna, y aquí la media verdad es «no distingue mayúsculas». Cierto.
-Lo que nadie dice es que los acentos sí los distingue, y en español eso es la mitad del
-catálogo.
+A half-truth is worse than none, and here the half-truth is "it does not distinguish case". True.
+What nobody says is that it does distinguish accents, and in Spanish that is half the catalogue.
 
 ```dax
 EVALUATE
@@ -26,13 +25,14 @@ minusculas | acento_perdido | acento_puesto | enie
 True | False | True | False
 ```
 
-`"bici"` encuentra `"Bicicleta"` y `"MACÉN"` encuentra `"Almacén"` — la caja da igual. Pero
-`"almacen"` **no** encuentra `"Almacén"`, y `"ano"` no encuentra `"Año"`. Un buscador de un
-informe donde el usuario teclea sin tildes devuelve cero resultados y parece roto.
+`"bici"` finds `"Bicicleta"` and `"MACÉN"` finds `"Almacén"` — case makes no difference. But
+`"almacen"` does **not** find `"Almacén"`, and `"ano"` does not find `"Año"`. A report search box
+where the user types without accents returns zero results and looks broken.
 
-## 2. `*` y `?` son comodines, no caracteres
+## 2. `*` and `?` are wildcards, not characters
 
-Esto no está en el nombre de la función ni se espera de algo llamado «contiene cadena».
+This is not in the function's name and is not what you expect from something called "contains
+string".
 
 ```dax
 EVALUATE
@@ -49,15 +49,15 @@ asterisco | interrogante | interrogante_exige_uno | asterisco_sobre_si_mismo
 True | True | False | True
 ```
 
-`"a*b"` encuentra `"aXXXb"`: el `*` se traga cualquier cosa. El `?` sustituye **exactamente
-un** carácter, así que `"a?b"` no encuentra `"ab"` — donde no hay carácter, no hay coincidencia.
+`"a*b"` finds `"aXXXb"`: the `*` swallows anything. The `?` stands for **exactly one** character,
+so `"a?b"` does not find `"ab"` — where there is no character, there is no match.
 
-La cuarta columna es la trampa fina: `CONTAINSSTRING("a*b", "a*b")` es verdadero, pero **no
-porque haya encontrado el asterisco**. Es verdadero porque `a`, cualquier cosa, `b` describe a
-`"a*b"` igual que describe a `"aXXXb"`. Tal cual, esta llamada no distingue un asterisco real de
-uno imaginario. Para eso está el escape de la sección siguiente.
+The fourth column is the fine trap: `CONTAINSSTRING("a*b", "a*b")` is true, but **not because it
+found the asterisk**. It is true because `a`, anything, `b` describes `"a*b"` just as it describes
+`"aXXXb"`. As written, this call cannot tell a real asterisk from an imaginary one. That is what
+the escape in the next section is for.
 
-## 3. Una aguja en blanco encuentra siempre
+## 3. A blank needle always finds
 
 ```dax
 EVALUATE
@@ -74,16 +74,17 @@ aguja_vacia | aguja_blanca | pajar_blanco | numeros
 True | True | False | True
 ```
 
-Las dos primeras columnas son la razón de leer esto. Un cuadro de búsqueda vacío se traduce en
-`CONTAINSSTRING([Producto], [TextoBuscado])` con el segundo argumento en blanco, y **eso
-devuelve verdadero para todas las filas**: el filtro no filtra nada. No es un fallo, es que la
-cadena vacía está contenida en cualquier cadena. Pero pasa desapercibido porque el informe
-enseña justo lo que enseñaría sin filtro.
+The first two columns are the reason to read this. An empty search box translates into
+`CONTAINSSTRING([Producto], [TextoBuscado])` with the second argument blank, and **that returns
+true for every row**: the filter filters nothing. It is not a bug, it is that the empty string is
+contained in any string. But it goes unnoticed because the report shows exactly what it would show
+with no filter.
 
-La defensa es no llamar a la función cuando no hay término. Pero **`ISBLANK` no basta**, y es un
-error fácil de cometer porque las dos columnas de arriba parecen el mismo caso y no lo son:
-`ISBLANK("")` es falso —la cadena vacía es texto, medido en [`isblank`](./isblank.md)—, así que
-un guardia con `ISBLANK` deja pasar justo la mitad del problema. El que cubre las dos es `LEN`:
+The defence is not to call the function when there is no term. But **`ISBLANK` is not enough**,
+and it is an easy mistake to make because the two columns above look like the same case and are
+not: `ISBLANK("")` is false — the empty string is text, measured in [`isblank`](./isblank.md) —
+so a guard using `ISBLANK` lets exactly half the problem through. The one that covers both is
+`LEN`:
 
 ```dax
 EVALUATE
@@ -102,8 +103,8 @@ len_de_blanco | len_de_cadena_vacia | guardia_con_blanco | guardia_con_vacia | g
 (blank) | 0 | False | False | True | False
 ```
 
-Fíjate en la primera columna: `LEN(BLANK())` **no es 0, es blanco**. El guardia funciona
-igualmente, y la razón merece medirse aparte porque es fácil contarla mal:
+Look at the first column: `LEN(BLANK())` is **not 0, it is blank**. The guard works anyway, and
+the reason is worth measuring separately because it is easy to tell it wrong:
 
 ```dax
 EVALUATE
@@ -121,18 +122,18 @@ blanco_igual_a_cero | blanco_mayor_que_cero | blanco_menor_que_cero | blanco_may
 True | False | False | True | True
 ```
 
-No es que comparar un blanco con un número dé falso —`BLANK() = 0` es **verdadero**, y
-`BLANK() > -1` también—. Es que en una comparación numérica **el blanco se comporta como un
-cero**. Por eso `LEN(BLANK()) > 0` es falso: no porque la comparación falle, sino porque cero
-no es mayor que cero.
+It is not that comparing a blank with a number gives false — `BLANK() = 0` is **true**, and so is
+`BLANK() > -1`. It is that in a numeric comparison **the blank behaves as a zero**. That is why
+`LEN(BLANK()) > 0` is false: not because the comparison fails, but because zero is not greater
+than zero.
 
-Así que la forma correcta es `IF(LEN([Buscado]) > 0, CONTAINSSTRING(...))`, y funciona por la
-misma razón para el blanco y para la cadena vacía.
+So the correct form is `IF(LEN([Buscado]) > 0, CONTAINSSTRING(...))`, and it works for the same
+reason on the blank and on the empty string.
 
-Y la última columna: los números entran convertidos a texto, así que `234` se encuentra dentro
-de `12345` aunque ninguno de los dos sea una cadena.
+And the last column: numbers go in converted to text, so `234` is found inside `12345` even though
+neither is a string.
 
-## 4. `~` desactiva el comodín, y ahí sí busca el carácter de verdad
+## 4. `~` switches the wildcard off, and then it really does search for the character
 
 ```dax
 EVALUATE
@@ -150,19 +151,19 @@ escapado_encuentra_el_literal | escapado_ya_no_es_comodin | sin_escapar_encuentr
 True | False | True | True | False
 ```
 
-Con `~` delante, el asterisco vuelve a ser un asterisco: encuentra `"a*b"` y **deja de
-encontrar** `"aXXXb"`. Las dos primeras columnas son exactamente la distinción que la sección
-anterior no podía hacer.
+With a `~` in front, the asterisk goes back to being an asterisk: it finds `"a*b"` and **stops
+finding** `"aXXXb"`. The first two columns are exactly the distinction the previous section could
+not make.
 
-Esto cambia la recomendación práctica: para buscar un comodín literal **sin** perder la
-insensibilidad a mayúsculas, la respuesta es `CONTAINSSTRING` con `~`, no
-[`containsstringexact`](./containsstringexact.md) — que sí trata `*` como literal, pero a cambio
-obliga a acertar la caja. Y ojo: el `~` es un escape **solo aquí**; en
-`CONTAINSSTRINGEXACT` es un carácter más, medido en su ficha.
+That changes the practical recommendation: to search for a literal wildcard **without** losing
+case-insensitivity, the answer is `CONTAINSSTRING` with `~`, not
+[`containsstringexact`](./containsstringexact.md) — which does treat `*` as a literal, but in
+exchange forces you to get the case right. And note: the `~` is an escape **only here**; in
+`CONTAINSSTRINGEXACT` it is just another character, measured on its card.
 
-Consecuencia menos obvia: si el término lo teclea un usuario, un `*` suelto en su búsqueda **no
-se comporta como texto**. Si quieres que lo sea, escápalo tú —`SUBSTITUTE([Buscado], "*",
-"~*")`— antes de pasarlo.
+Less obvious consequence: if the term is typed by a user, a stray `*` in their search does **not
+behave as text**. If you want it to, escape it yourself — `SUBSTITUTE([Buscado], "*", "~*")` —
+before passing it on.
 
-Ver [`containsstringexact`](./containsstringexact.md) y [`contains`](./contains.md) para buscar
-en tablas en vez de en texto.
+See [`containsstringexact`](./containsstringexact.md) and [`contains`](./contains.md) for
+searching in tables rather than in text.

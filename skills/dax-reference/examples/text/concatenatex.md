@@ -3,16 +3,16 @@ function: CONCATENATEX
 model: contoso
 ---
 
-# CONCATENATEX — ejemplos
+# CONCATENATEX — examples
 
-> La nota de campo [`concatenatex`](../../notes/concatenatex.md) cubre el orden. Aquí van el
-> tamaño del resultado y qué hace con los duplicados y los blancos.
+> The [`concatenatex`](../../notes/concatenatex.md) field note covers the ordering. Here are the
+> size of the result and what it does with duplicates and blanks.
 
-## 1. Recorre la tabla que le des, con sus duplicados
+## 1. It walks the table you give it, duplicates included
 
-Si la tabla tiene una fila por valor —una dimensión limpia— dan lo mismo. En cuanto la columna
-se repite dentro de la tabla, `CONCATENATEX` la repite también, y lo que se quería era
-`VALUES` de la columna.
+If the table has one row per value — a clean dimension — they give the same thing. As soon as the
+column repeats within the table, `CONCATENATEX` repeats it too, and what you wanted was `VALUES`
+of the column.
 
 ```dax
 EVALUATE
@@ -29,12 +29,12 @@ marcas_distintas | productos | por_valores | por_la_tabla
 58 | 137 | 494 | 1193
 ```
 
-La longitud del segundo es varias veces la del primero: una entrada por producto en vez de
-una por marca.
+The second length is several times the first: one entry per product instead of one per brand.
 
-## 2. No tiene tope corto: sobre una columna grande devuelve un texto enorme
+## 2. It has no short cap: over a large column it returns an enormous text
 
-Nada avisa. La medida no falla, el visual se queda pensando y el tooltip es ilegible.
+Nothing warns you. The measure does not fail, the visual sits thinking, and the tooltip is
+unreadable.
 
 ```dax
 EVALUATE
@@ -50,14 +50,14 @@ cuantos_productos | longitud_total | primeros_60
 128 | 3006 | Dell Desktop M3 Pro/36GB, Microsoft Workstation i7/32GB/1TB,
 ```
 
-El patrón sano es acotar con [`topn`](../../notes/topn.md) y decir cuántos faltan, no volcar
-la columna entera.
+The healthy pattern is to cap with [`topn`](../../notes/topn.md) and say how many are missing, not
+to dump the whole column.
 
-## 3. Los blancos NO se saltan: dejan el separador doblado
+## 3. Blanks are NOT skipped: they leave the separator doubled
 
-Lo escribí al revés y lo corrigió el motor. Un hueco no desaparece de la lista — ocupa su
-sitio como elemento vacío, así que salen dos separadores seguidos. Es feo en el visual, y a
-la vez es lo único que avisa de que faltaba un valor.
+I wrote it the other way round and the engine corrected it. A gap does not disappear from the list
+— it takes its place as an empty element, so two separators come out in a row. It is ugly in the
+visual, and at the same time it is the only thing warning that a value was missing.
 
 ```dax
 EVALUATE
@@ -76,4 +76,4 @@ filas | unidos | longitud | vacia
 3 | a--c | 4 | True
 ```
 
-Sobre una tabla vacía sí devuelve blanco, no cadena vacía — la misma distinción de siempre.
+Over an empty table it does return blank, not an empty string — the same distinction as always.

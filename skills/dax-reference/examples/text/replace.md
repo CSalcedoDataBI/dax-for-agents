@@ -3,12 +3,12 @@ function: REPLACE
 model: ninguno
 ---
 
-# REPLACE — ejemplos
+# REPLACE — examples
 
-## 1. Sustituye por POSICIÓN, no por contenido
+## 1. It substitutes by POSITION, not by content
 
-Es la diferencia con [`substitute`](./substitute.md), y la que hace que se elija mal. `REPLACE`
-no busca nada: le dices dónde empezar y cuántos caracteres tapar.
+It is the difference from [`substitute`](./substitute.md), and the one that gets it picked wrong.
+`REPLACE` searches for nothing: you tell it where to start and how many characters to cover.
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ por_posicion | por_contenido | en_medio | hasta_el_final
 XXXtoso | XXXtoso | Con--so | Con!
 ```
 
-Pedir más caracteres de los que quedan no da error: tapa hasta el final.
+Asking for more characters than are left gives no error: it covers up to the end.
 
-## 2. Con longitud 0, inserta en vez de sustituir
+## 2. With length 0, it inserts instead of substituting
 
-El uso menos obvio y el más útil: es la forma de meter algo en mitad de una cadena.
+The least obvious use and the most useful: it is how you put something in the middle of a string.
 
 ```dax
 EVALUATE
@@ -46,9 +46,9 @@ inserta | al_principio | mas_alla | vacia
 2024-01 | AÑO 2024 | 2024! | toso
 ```
 
-Insertar más allá del final **añade al final**, en vez de fallar o dejar hueco.
+Inserting past the end **appends to the end**, rather than failing or leaving a gap.
 
-## 3. La posición 0 aborta, igual que en MID
+## 3. Position 0 aborts, just as in MID
 
 ```dax
 EVALUATE ROW("posicion_0", REPLACE("Contoso", 0, 3, "X"))
@@ -58,9 +58,9 @@ EVALUATE ROW("posicion_0", REPLACE("Contoso", 0, 3, "X"))
 ERROR: An argument of function 'REPLACE' has the wrong data type or has an invalid value.
 ```
 
-Y sobre blanco pasa algo que conviene ver: `REPLACE(BLANK(), 1, 3, "X")` **no** devuelve
-blanco, devuelve `"X"`. El blanco se trata como cadena vacía y el texto nuevo se inserta
-igual, así que una columna con huecos se rellena sola con el reemplazo.
+And over a blank something happens that is worth seeing: `REPLACE(BLANK(), 1, 3, "X")` does
+**not** return blank, it returns `"X"`. The blank is treated as an empty string and the new text
+is inserted anyway, so a column with gaps fills itself with the replacement.
 
 ```dax
 EVALUATE
@@ -76,5 +76,5 @@ blanco | es_blanco | numero
 [X] | False | 1--45
 ```
 
-Sobre un número convierte a texto primero — con la cultura del modelo, así que la posición
-depende de si el separador decimal es coma o punto.
+Over a number it converts to text first — with the model's culture, so the position depends on
+whether the decimal separator is a comma or a dot.

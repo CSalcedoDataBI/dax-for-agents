@@ -3,12 +3,12 @@ function: ISO.CEILING
 model: ninguno
 ---
 
-# ISO.CEILING — ejemplos
+# ISO.CEILING — examples
 
-## 1. Siempre hacia más infinito, pase lo que pase con el signo
+## 1. Always towards plus infinity, whatever happens to the sign
 
-Es toda su razón de existir. [`ceiling`](./ceiling.md) cambia de dirección cuando la
-significancia es negativa; esta no.
+That is its whole reason for existing. [`ceiling`](./ceiling.md) changes direction when the
+significance is negative; this one does not.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ iso_sig_neg | ceiling_sig_neg | iso_sig_pos | ceiling_sig_pos
 -2 | -3 | -2 | -2
 ```
 
-Las dos primeras columnas son la diferencia entera entre ambas funciones. Con significancia
-positiva coinciden siempre, y por eso el problema no aparece en las pruebas.
+The first two columns are the entire difference between the two functions. With a positive
+significance they always agree, and that is why the problem does not show up in testing.
 
-## 2. Con significancia positiva se comporta como CEILING
+## 2. With a positive significance it behaves like CEILING
 
 ```dax
 EVALUATE
@@ -45,9 +45,9 @@ positivo | negativo | a_medios | ya_multiplo
 3 | -2 | 2.5 | 6
 ```
 
-## 3. El segundo argumento es opcional
+## 3. The second argument is optional
 
-Sin él, significancia 1 — que es el caso que se quiere el 90% de las veces.
+Without it, significance 1 — which is the case you want 90% of the time.
 
 ```dax
 EVALUATE
@@ -64,5 +64,5 @@ sin_segundo | con_uno | negativo_sin | blanco
 3 | 3 | -2 | True
 ```
 
-El nombre lleva punto (`ISO.CEILING`), así que el fichero de su ficha es `iso-ceiling.md` y
-no `iso.ceiling.md`.
+The name carries a dot (`ISO.CEILING`), so its card's file is `iso-ceiling.md` and not
+`iso.ceiling.md`.

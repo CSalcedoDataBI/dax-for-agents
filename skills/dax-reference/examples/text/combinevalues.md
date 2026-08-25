@@ -3,13 +3,13 @@ function: COMBINEVALUES
 model: ninguno
 ---
 
-# COMBINEVALUES — ejemplos
+# COMBINEVALUES — examples
 
-## 1. Existe para claves compuestas, y no comprueba colisiones
+## 1. It exists for composite keys, and it does not check for collisions
 
-Une valores con un delimitador para poder relacionar dos tablas por más de una columna. Lo
-que **no** hace es asegurarse de que el delimitador no aparezca dentro de los valores — y ahí
-dos filas distintas producen la misma clave.
+It joins values with a delimiter so two tables can be related on more than one column. What it
+does **not** do is make sure the delimiter does not appear inside the values — and there two
+different rows produce the same key.
 
 ```dax
 EVALUATE
@@ -26,13 +26,12 @@ normal | colision_a | colision_b | iguales
 ES-2024 | ES-2-024 | ES-2-024 | True
 ```
 
-Dos pares de valores **distintos** dan la misma clave. La relación los cruza como si fueran
-el mismo, y no hay error: hay filas de más.
+Two **different** pairs of values give the same key. The relationship joins them as if they were
+the same, and there is no error: there are extra rows.
 
-Por eso el delimitador debe ser un carácter que el dato no pueda contener. Y aquí llega la
-restricción que no está en la firma: **tiene que ser una constante literal**. No se puede
-calcular, así que la vía obvia —`UNICHAR(31)`, un carácter de control que ningún dato trae—
-está cerrada:
+That is why the delimiter has to be a character the data cannot contain. And here comes the
+restriction that is not in the signature: **it has to be a literal constant**. It cannot be
+computed, so the obvious route — `UNICHAR(31)`, a control character no data carries — is closed:
 
 ```dax
 EVALUATE ROW("delimitador_calculado", COMBINEVALUES(UNICHAR(31), "a", "b"))
@@ -42,8 +41,8 @@ EVALUATE ROW("delimitador_calculado", COMBINEVALUES(UNICHAR(31), "a", "b"))
 ERROR: The delimiter value in the 'COMBINEVALUES' function can only be a constant non empty string.
 ```
 
-Queda escribirlo literal, con una secuencia lo bastante rara. `raro` sale **falso**: con
-`||#||` los dos pares de valores dejan de producir la misma clave, que era el problema.
+That leaves writing it literally, with a sequence odd enough. `raro` comes out **false**: with
+`||#||` the two pairs of values stop producing the same key, which was the problem.
 
 ```dax
 EVALUATE
@@ -58,7 +57,7 @@ raro | resultado
 False | ES||#||2024
 ```
 
-## 2. Acepta más de dos valores, y convierte lo que no sea texto
+## 2. It accepts more than two values, and converts anything that is not text
 
 ```dax
 EVALUATE
@@ -75,10 +74,10 @@ tres | con_numero | decimal | booleano
 a|b|c | ES|2024 | x|1,5 | x|TRUE
 ```
 
-La conversión usa la cultura del modelo, así que una clave construida con un decimal **no es
-portable** entre modelos con distinta configuración regional.
+The conversion uses the model's culture, so a key built with a decimal **is not portable** between
+models with different regional settings.
 
-## 3. Con blancos
+## 3. With blanks
 
 ```dax
 EVALUATE
@@ -95,5 +94,5 @@ blanco_en_medio | blanco_al_final | todos_blancos | es_blanco
 a--c | a- | - | False
 ```
 
-El delimitador se escribe igualmente, así que un blanco deja un hueco visible en la clave —
-lo cual, para variar, es bueno: la colisión con un valor vacío de verdad se ve.
+The delimiter is written anyway, so a blank leaves a visible gap in the key — which, for once, is
+good: a collision with a genuinely empty value is visible.

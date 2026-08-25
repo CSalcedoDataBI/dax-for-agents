@@ -3,13 +3,13 @@ function: ATAN
 model: ninguno
 ---
 
-# ATAN — ejemplos
+# ATAN — examples
 
-## 1. No tiene dominio: acepta cualquier número sin abortar
+## 1. It has no domain: it accepts any number without aborting
 
-Es la excepción de la familia inversa. [`asin`](./asin.md) y [`acos`](./acos.md) mueren fuera
-de [-1, 1]; `ATAN` no muere nunca. Por eso es la que se usa cuando el argumento sale de una
-división que puede desbocarse.
+It is the exception of the inverse family. [`asin`](./asin.md) and [`acos`](./acos.md) die
+outside [-1, 1]; `ATAN` never dies. That is why it is the one used when the argument comes out of
+a division that can run away.
 
 ```dax
 EVALUATE
@@ -26,13 +26,13 @@ atan_1 | atan_1000 | atan_m1000 | pi_medios
 0.785398 | 1.569796 | -1.569796 | 1.570796
 ```
 
-Se acerca a ±π/2 pero no llega: el rango abierto es **(-π/2, π/2)**.
+It approaches ±π/2 without reaching it: the open range is **(-π/2, π/2)**.
 
-## 2. Ese rango es media vuelta, no una entera
+## 2. That range is half a turn, not a whole one
 
-Consecuencia práctica: `ATAN(y/x)` **no** distingue un ángulo del tercer cuadrante de uno del
-primero, porque `y/x` es el mismo número en los dos. Es el motivo por el que en otros
-lenguajes existe `atan2`, que en DAX no está.
+Practical consequence: `ATAN(y/x)` does **not** tell a third-quadrant angle from a first-quadrant
+one, because `y/x` is the same number in both. It is why other languages have `atan2`, which DAX
+does not.
 
 ```dax
 EVALUATE
@@ -49,9 +49,9 @@ primer_cuadrante | tercer_cuadrante | son_iguales | division_igual
 45 | 45 | True | True
 ```
 
-Hay que reconstruir el cuadrante a mano con el signo de cada componente.
+The quadrant has to be reconstructed by hand from the sign of each component.
 
-## 3. Es impar, y devuelve radianes
+## 3. It is odd, and it returns radians
 
 ```dax
 EVALUATE
@@ -68,4 +68,4 @@ atan_2 | atan_m2 | impar | en_grados
 1.107149 | -1.107149 | 0 | 45
 ```
 
-`ATAN(1)` en grados son 45. Ver [`acot`](./acot.md), su complementaria, que tiene otro rango.
+`ATAN(1)` in degrees is 45. See [`acot`](./acot.md), its complement, which has a different range.

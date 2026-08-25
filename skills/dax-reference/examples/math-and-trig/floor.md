@@ -3,12 +3,12 @@ function: FLOOR
 model: ninguno
 ---
 
-# FLOOR — ejemplos
+# FLOOR — examples
 
-## 1. Va hacia menos infinito, así que con negativos se ALEJA del cero
+## 1. It goes towards minus infinity, so with negatives it moves AWAY from zero
 
-El espejo de [`ceiling`](./ceiling.md). Con un negativo, `FLOOR` baja — al contrario que
-[`rounddown`](./rounddown.md), que corta hacia cero.
+The mirror of [`ceiling`](./ceiling.md). With a negative, `FLOOR` goes down — unlike
+[`rounddown`](./rounddown.md), which cuts towards zero.
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ positivo | negativo | rounddown | int
 2 | -3 | -2 | -3
 ```
 
-`FLOOR(x, 1)` e `INT(x)` coinciden; `ROUNDDOWN` no. Tres funciones, dos comportamientos.
+`FLOOR(x, 1)` and `INT(x)` agree; `ROUNDDOWN` does not. Three functions, two behaviours.
 
-## 2. Con significancia, agrupa en tramos por abajo
+## 2. With a significance, it buckets downwards
 
-El uso real: meter un valor en su escalón.
+The real use: putting a value on its step.
 
 ```dax
 EVALUATE
@@ -46,12 +46,11 @@ a_medios | a_centenas | a_cuartos | ya_en_tramo
 2 | 1200 | 0.25 | 6
 ```
 
-## 3. Significancia cero: aquí SÍ aborta, y sus hermanas no
+## 3. A zero significance: here it DOES abort, and its siblings do not
 
-Es la asimetría que no está documentada en ningún sitio. Con múltiplo cero,
-[`ceiling`](./ceiling.md) y [`mround`](./mround.md) devuelven 0; `FLOOR` lanza división por
-cero. Tres funciones de la misma familia, dos comportamientos distintos ante el mismo dato
-malo.
+It is the asymmetry documented nowhere. With a zero multiple, [`ceiling`](./ceiling.md) and
+[`mround`](./mround.md) return 0; `FLOOR` throws division by zero. Three functions in the same
+family, two different behaviours faced with the same bad data.
 
 ```dax
 EVALUATE ROW("sig_cero", FLOOR(5, 0))
@@ -61,7 +60,7 @@ EVALUATE ROW("sig_cero", FLOOR(5, 0))
 ERROR: Division by zero has occurred when evaluating function 'FLOOR'.
 ```
 
-Lo demás se comporta como el resto de la familia:
+Everything else behaves like the rest of the family:
 
 ```dax
 EVALUATE
@@ -77,5 +76,5 @@ blanco | es_blanco | cero
 (blank) | True | 0
 ```
 
-Ver [`mround`](./mround.md), que redondea al múltiplo **más cercano** en vez de siempre hacia
-un lado — y que aborta cuando los signos no coinciden.
+See [`mround`](./mround.md), which rounds to the **nearest** multiple instead of always to one
+side — and which aborts when the signs do not match.

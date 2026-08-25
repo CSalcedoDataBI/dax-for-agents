@@ -3,12 +3,12 @@ function: VALUE
 model: ninguno
 ---
 
-# VALUE — ejemplos
+# VALUE — examples
 
-## 1. Lo que no es un número ABORTA la consulta
+## 1. Anything that is not a number ABORTS the query
 
-No devuelve blanco: lanza un error que se lleva por delante la medida entera. Una columna de
-texto con una sola fila sucia tumba el visual completo, no solo esa fila.
+It does not return blank: it throws an error that takes the whole measure with it. A text column
+with a single dirty row brings the entire visual down, not just that row.
 
 ```dax
 EVALUATE
@@ -25,7 +25,7 @@ entero | con_espacios | negativo | notacion_e
 42 | 42 | -7 | 1000
 ```
 
-Con basura dentro:
+With rubbish inside:
 
 ```dax
 EVALUATE ROW("texto", VALUE("cuarenta y dos"))
@@ -35,12 +35,12 @@ EVALUATE ROW("texto", VALUE("cuarenta y dos"))
 ERROR: Cannot convert value 'cuarenta y dos' of type Text to type Number.
 ```
 
-Para sobrevivir a eso hay que envolverlo, y ahí empieza el problema de
-[`iferror`](../logical/iferror.md): captura ese error y también los que no esperabas.
+To survive that you have to wrap it, and there [`iferror`](../logical/iferror.md)'s problem
+begins: it catches that error and also the ones you were not expecting.
 
-## 2. La cadena vacía aborta; el blanco no
+## 2. The empty string aborts; the blank does not
 
-Dos formas de «no hay dato» que se comportan al revés la una de la otra.
+Two forms of "no data" that behave in opposite ways.
 
 ```dax
 EVALUATE
@@ -64,13 +64,13 @@ EVALUATE ROW("cadena_vacia", VALUE(""))
 ERROR: Cannot convert value '' of type Text to type Number.
 ```
 
-Si el origen mezcla nulos y cadenas vacías —cosa habitual— la mitad de las filas pasa y la
-otra mitad tumba la consulta.
+If the source mixes nulls and empty strings — which is common — half the rows pass and the other
+half bring the query down.
 
-## 3. El separador decimal es el de la CULTURA, y aquí es la coma
+## 3. The decimal separator is the CULTURE's, and here it is the comma
 
-Este modelo es `es-ES`. `"3.5"` no se lee como tres y medio: el punto es separador de miles,
-así que sale **35**. Los mismos literales en un modelo `en-US` dan otros números.
+This model is `es-ES`. `"3.5"` is not read as three and a half: the dot is a thousands separator,
+so it comes out as **35**. The same literals in an `en-US` model give different numbers.
 
 ```dax
 EVALUATE
@@ -87,6 +87,6 @@ con_coma | con_punto | miles_punto | miles_coma
 3.5 | 35 | 1234 | 1.234
 ```
 
-Es la razón por la que convertir texto a número al vuelo es frágil: el mismo informe abierto
-con otra configuración regional devuelve cifras distintas sin avisar. Se resuelve en el
-origen, tipando la columna.
+It is why converting text to a number on the fly is fragile: the same report opened under another
+regional setting returns different figures with no warning. It is solved at the source, by typing
+the column.

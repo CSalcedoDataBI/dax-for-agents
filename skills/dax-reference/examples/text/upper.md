@@ -3,12 +3,12 @@ function: UPPER
 model: ninguno
 ---
 
-# UPPER — ejemplos
+# UPPER — examples
 
-## 1. No sirve para comparar, porque `=` ya ignora mayúsculas
+## 1. It is no use for comparing, because `=` already ignores case
 
-El patrón `UPPER(a) = UPPER(b)` viene de lenguajes donde la comparación distingue. En DAX no
-hace falta — y peor, **oculta** que la comparación nunca distinguió.
+The `UPPER(a) = UPPER(b)` pattern comes from languages where comparison is case-sensitive. In DAX
+it is not needed — and worse, it **hides** the fact that the comparison never was.
 
 ```dax
 EVALUATE
@@ -25,13 +25,14 @@ sin_upper | con_upper | exact | exact_upper
 True | True | False | True
 ```
 
-Si de verdad quieres distinguir, la función es [`exact`](./exact.md). Si no, sobra el `UPPER`.
+If you really do want to distinguish, the function is [`exact`](./exact.md). If not, the `UPPER`
+is redundant.
 
-## 2. Números y signos pasan tal cual — y alguna letra, también
+## 2. Numbers and signs pass straight through — and so does one letter
 
-Que no toque números ni signos era lo esperado. Lo que no lo era: la **ß** alemana sale sin
-convertir, porque su mayúscula son dos letras (`SS`) y `UPPER` no cambia la longitud del
-texto. Un normalizador que dé por hecho «todo a mayúsculas» deja esa fila fuera del grupo.
+That it leaves numbers and signs alone was expected. What was not: the German **ß** comes out
+unconverted, because its uppercase is two letters (`SS`) and `UPPER` does not change the text's
+length. A normaliser assuming "everything to uppercase" leaves that row out of the group.
 
 ```dax
 EVALUATE
@@ -48,7 +49,7 @@ con_numeros | con_acentos | ya_mayuscula | eszett
 ABC-123 | CAFÉ AÑO | YA ESTÁ | STRAßE
 ```
 
-## 3. Con blanco y con números
+## 3. With a blank and with numbers
 
 ```dax
 EVALUATE
@@ -65,7 +66,7 @@ blanco | es_blanco | numero | longitud
 [] | True | 1,5 | True
 ```
 
-Que la longitud se conserve **no está garantizado en general** —hay letras cuya mayúscula
-ocupa dos— y por eso conviene comprobarlo antes de cortar por posición sobre el resultado.
+That the length is preserved is **not guaranteed in general** — there are letters whose uppercase
+takes two — which is why it is worth checking before cutting by position over the result.
 
-Ver [`lower`](./lower.md), que tiene las mismas tres.
+See [`lower`](./lower.md), which has the same three.

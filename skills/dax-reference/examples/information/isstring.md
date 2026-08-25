@@ -3,9 +3,9 @@ function: ISSTRING
 model: ninguno
 ---
 
-# ISSTRING — ejemplos
+# ISSTRING — examples
 
-## 1. Es un alias exacto de `ISTEXT`
+## 1. It is an exact alias of `ISTEXT`
 
 ```dax
 EVALUATE
@@ -23,10 +23,10 @@ cadena | cadena_vacia | numero | texto_numerico | blanco
 True | True | True | True | True
 ```
 
-Cada columna compara las dos funciones sobre el mismo valor. Todas verdaderas: no hay ningún
-caso probado en el que difieran.
+Each column compares the two functions on the same value. All true: there is no tested case in
+which they differ.
 
-## 2. Los valores, por si no quieres saltar a la otra ficha
+## 2. The values, in case you would rather not jump to the other card
 
 ```dax
 EVALUATE
@@ -44,10 +44,10 @@ cadena | cadena_vacia | numero | texto_numerico | blanco
 True | True | False | True | False
 ```
 
-La cadena vacía **sí** es texto y el blanco **no**. Es lo que más confunde de este predicado, y
-está desarrollado en [`istext`](./istext.md).
+The empty string **is** text and the blank is **not**. It is the most confusing thing about this
+predicate, and it is worked through in [`istext`](./istext.md).
 
-## 3. Cuál de los dos nombres usar
+## 3. Which of the two names to use
 
 ```dax
 EVALUATE
@@ -63,8 +63,8 @@ misma_respuesta | isstring | istext
 True | False | False
 ```
 
-`ISTEXT` es el nombre que comparte con Excel, así que es el que reconoce más gente. `ISSTRING`
-es el que encaja con el vocabulario de tipos del motor. Lo que no conviene es mezclarlos en un
-mismo modelo — igual que con [`isnumber`](./isnumber.md)/[`isnumeric`](./isnumeric.md).
+`ISTEXT` is the name it shares with Excel, so it is the one more people recognise. `ISSTRING` is
+the one that fits the engine's type vocabulary. What is unwise is mixing them in the same model —
+just as with [`isnumber`](./isnumber.md)/[`isnumeric`](./isnumeric.md).
 
-Ver [`istext`](./istext.md).
+See [`istext`](./istext.md).

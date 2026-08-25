@@ -3,12 +3,12 @@ function: LOWER
 model: ninguno
 ---
 
-# LOWER — ejemplos
+# LOWER — examples
 
-## 1. Como en UPPER, comparar con ella no aporta nada
+## 1. As with UPPER, comparing with it adds nothing
 
-`=` ya ignora las mayúsculas. Un `LOWER` a los dos lados es ruido que además esconde esa
-propiedad al siguiente que lea el código.
+`=` already ignores case. A `LOWER` on both sides is noise that also hides that property from the
+next person who reads the code.
 
 ```dax
 EVALUATE
@@ -24,9 +24,9 @@ sin_lower | con_lower | exact
 True | True | False
 ```
 
-## 2. Donde sí sirve: normalizar antes de agrupar o de construir una clave
+## 2. Where it does help: normalising before grouping or building a key
 
-Aquí el objetivo no es comparar, es que dos escrituras distintas produzcan **el mismo texto**.
+Here the goal is not to compare, it is to make two different spellings produce **the same text**.
 
 ```dax
 EVALUATE
@@ -43,10 +43,11 @@ clave_1 | clave_2 | coinciden | con_duro
 sony | sony | True | False
 ```
 
-El último recuerda que `TRIM` no quita el espacio duro: la clave sale distinta y el grupo se
-parte en dos. Ver [`trim`](./trim.md) y [`substitute`](./substitute.md).
+The last one is a reminder that `TRIM` does not remove the non-breaking space: the key comes out
+different and the group splits in two. See [`trim`](./trim.md) and
+[`substitute`](./substitute.md).
 
-## 3. Con blanco, números y signos
+## 3. With a blank, numbers and signs
 
 ```dax
 EVALUATE

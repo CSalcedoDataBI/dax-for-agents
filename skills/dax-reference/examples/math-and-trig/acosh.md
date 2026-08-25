@@ -3,11 +3,11 @@ function: ACOSH
 model: ninguno
 ---
 
-# ACOSH — ejemplos
+# ACOSH — examples
 
-## 1. Solo acepta 1 o más, y el blanco cae fuera
+## 1. It only accepts 1 or more, and the blank falls outside
 
-`COSH` nunca baja de 1, así que su inversa no tiene nada que devolver por debajo de ahí.
+`COSH` never drops below 1, so its inverse has nothing to return below there.
 
 ```dax
 EVALUATE ROW("por_debajo_de_uno", ACOSH(0.5))
@@ -32,11 +32,11 @@ uno | medio | cero | blanco
 0 | aborta | aborta | aborta
 ```
 
-`ACOSH(1)` es exactamente **0** — es el suelo del dominio y el cero de la función. El blanco
-entra como cero y el cero está prohibido, así que un hueco en los datos tumba la consulta.
-Compara con [`asinh`](./asinh.md), que acepta cualquier número.
+`ACOSH(1)` is exactly **0** — it is the floor of the domain and the function's zero. The blank
+goes in as zero and zero is forbidden, so a gap in the data brings the query down. Compare with
+[`asinh`](./asinh.md), which accepts any number.
 
-## 2. No es simétrica: pierde el signo que `COSH` ya había perdido
+## 2. It is not symmetric: it loses the sign `COSH` had already lost
 
 ```dax
 EVALUATE
@@ -53,11 +53,10 @@ cosh_2 | cosh_menos_2 | acosh_de_eso | no_recupera_el_signo
 3.762196 | 3.762196 | 2 | False
 ```
 
-`COSH(-2)` y `COSH(2)` son el mismo número, así que `ACOSH` devuelve **2** y no -2. El ida y
-vuelta solo cierra para valores no negativos, que es lo que significa que `COSH` no sea
-inyectiva.
+`COSH(-2)` and `COSH(2)` are the same number, so `ACOSH` returns **2** and not -2. The round trip
+only closes for non-negative values, which is what it means for `COSH` not to be injective.
 
-## 3. Es un logaritmo disfrazado
+## 3. It is a logarithm in disguise
 
 ```dax
 EVALUATE
@@ -74,7 +73,7 @@ acosh_2 | formula_cerrada | identicos | crece_despacio
 1.316958 | 1.316958 | 0 | 7.600902
 ```
 
-`ACOSH(x) = LN(x + √(x² - 1))`. Como todo logaritmo, crece muy despacio: para x = 1000 apenas
-llega a 7,6.
+`ACOSH(x) = LN(x + √(x² - 1))`. Like every logarithm, it grows very slowly: at x = 1000 it barely
+reaches 7.6.
 
-Ver [`cosh`](./cosh.md), [`asinh`](./asinh.md) y [`ln`](./ln.md).
+See [`cosh`](./cosh.md), [`asinh`](./asinh.md) and [`ln`](./ln.md).

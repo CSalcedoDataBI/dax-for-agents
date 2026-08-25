@@ -3,11 +3,11 @@ function: BITLSHIFT
 model: ninguno
 ---
 
-# BITLSHIFT — ejemplos
+# BITLSHIFT — examples
 
-## 1. Desplazar a la izquierda es multiplicar por potencias de dos
+## 1. Shifting left is multiplying by powers of two
 
-Mientras quepa. Ese «mientras quepa» es todo el contenido de esta ficha.
+As long as it fits. That "as long as it fits" is this card's entire content.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ uno_por_1 | uno_por_8 | cinco_por_4 | por_cero
 2 | 256 | 80 | 5
 ```
 
-## 2. Cerca de los 64 bits deja de ser una multiplicación
+## 2. Near 64 bits it stops being a multiplication
 
-El entero de DAX tiene 64 bits con signo. Al llegar arriba, el bit que sale por el borde no
-se pierde en silencio de la forma que uno espera: cambia el signo o desborda.
+The DAX integer is 64-bit signed. On reaching the top, the bit falling off the edge is not lost
+silently in the way you would expect: it flips the sign or overflows.
 
 ```dax
 EVALUATE
@@ -44,14 +44,14 @@ bit_30 | bit_40 | bit_62 | bit_63
 1073741824 | 1099511627776 | 4611686018427387904 | -9223372036854775808
 ```
 
-Si tu máscara de banderas puede crecer, este es el techo real, y conviene conocerlo antes de
-que un informe empiece a dar negativos.
+If your flag mask can grow, this is the real ceiling, and it is worth knowing before a report
+starts returning negatives.
 
-## 3. Un corrimiento negativo desplaza al otro lado
+## 3. A negative shift moves the other way
 
-No da error: `BITLSHIFT(x, -n)` hace lo mismo que `BITRSHIFT(x, n)`. Está bien saberlo, porque
-significa que un signo equivocado en una variable no se detecta — el cálculo sigue y devuelve
-un número perfectamente creíble en la dirección contraria.
+It gives no error: `BITLSHIFT(x, -n)` does the same as `BITRSHIFT(x, n)`. Worth knowing, because
+it means a wrong sign in a variable goes undetected — the calculation carries on and returns a
+perfectly believable number in the opposite direction.
 
 ```dax
 EVALUATE
@@ -68,4 +68,4 @@ negativo_1 | negativo_4 | corrimiento_neg | cero_desplazado
 -2 | -16 | 4 | 0
 ```
 
-Ver [`bitrshift`](./bitrshift.md) para el sentido contrario.
+See [`bitrshift`](./bitrshift.md) for the other direction.

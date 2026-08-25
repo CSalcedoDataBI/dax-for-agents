@@ -3,15 +3,15 @@ function: RAND
 model: ninguno
 ---
 
-# RAND — ejemplos
+# RAND — examples
 
-> Los bloques `result` de esta ficha afirman **propiedades** y no valores: `RAND` no devuelve
-> dos veces lo mismo, así que un número concreto no se podría volver a comprobar.
+> The `result` blocks on this card assert **properties** and not values: `RAND` never returns the
+> same thing twice, so a specific number could not be checked again.
 
-## 1. Cada llamada devuelve un valor distinto, incluso en la misma fila
+## 1. Every call returns a different value, even on the same row
 
-Esto es lo que rompe las medidas que llaman a `RAND` más de una vez creyendo que hablan del
-mismo número.
+This is what breaks measures that call `RAND` more than once believing they are talking about the
+same number.
 
 ```dax
 EVALUATE
@@ -27,13 +27,13 @@ dentro_del_rango | dos_llamadas_difieren | nunca_es_blanco
 True | True | False
 ```
 
-El intervalo es **[0, 1)**: el cero puede salir y el uno no. Y `RAND()` nunca devuelve blanco,
-a diferencia de casi todo lo demás en esta categoría.
+The interval is **[0, 1)**: zero can come out and one cannot. And `RAND()` never returns blank,
+unlike almost everything else in this category.
 
-## 2. Una variable lo congela; repetir la llamada no
+## 2. A variable freezes it; repeating the call does not
 
-Si necesitas usar el mismo número aleatorio dos veces —comparar contra un umbral y además
-mostrarlo—, tiene que pasar por un `VAR`.
+If you need to use the same random number twice — compare it against a threshold and also show it
+— it has to go through a `VAR`.
 
 ```dax
 EVALUATE
@@ -51,14 +51,14 @@ la_variable_es_estable | la_funcion_no | umbral_coherente
 True | True | True
 ```
 
-Sin el `VAR`, `IF(RAND() < 0.5, RAND(), 0)` sortea **dos veces**: una para decidir y otra para
-el valor que devuelve.
+Without the `VAR`, `IF(RAND() < 0.5, RAND(), 0)` draws **twice**: once to decide and once for the
+value it returns.
 
-## 3. Se recalcula, así que no sirve para una columna estable
+## 3. It recalculates, so it is no good for a stable column
 
-`RAND` es no determinista. En una medida se reevalúa cada vez que se refresca el visual; en una
-columna calculada se fija en el refresco, pero cambia en el siguiente. Para un identificador
-estable no vale.
+`RAND` is non-deterministic. In a measure it is re-evaluated every time the visual refreshes; in
+a calculated column it is fixed at refresh, but changes at the next one. For a stable identifier
+it will not do.
 
 ```dax
 EVALUATE
@@ -77,8 +77,8 @@ todos_en_rango | hay_variedad | cuantos
 (blank) | True | 200
 ```
 
-Ninguna de las 200 filas se sale del intervalo —la primera columna cuenta las que sí y da
-blanco— y casi todas son distintas. Si quieres reproducibilidad, la semilla tiene que venir de
-los datos: algo como `MOD(HASH_de_la_clave, n)` escrito a mano.
+None of the 200 rows falls outside the interval — the first column counts the ones that do and
+gives blank — and nearly all are distinct. If you want reproducibility, the seed has to come from
+the data: something like `MOD(hash_of_the_key, n)` written by hand.
 
-Ver [`randbetween`](./randbetween.md).
+See [`randbetween`](./randbetween.md).

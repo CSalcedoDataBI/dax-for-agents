@@ -3,11 +3,11 @@ function: RADIANS
 model: ninguno
 ---
 
-# RADIANS — ejemplos
+# RADIANS — examples
 
-## 1. Sin ella, las funciones trigonométricas leen los grados como radianes
+## 1. Without it, the trigonometric functions read degrees as radians
 
-Y no fallan: devuelven un número perfectamente creíble que está mal.
+And they do not fail: they return a perfectly believable number that is wrong.
 
 ```dax
 EVALUATE
@@ -24,10 +24,10 @@ sen_90_bien | sen_90_mal | cos_180_bien | cos_180_mal
 1 | 0.893997 | -1 | -0.59846
 ```
 
-`SIN(90)` devuelve 0,894 porque 90 **radianes** son catorce vueltas y pico. Ningún error, ningún
-aviso: solo la cifra equivocada en el informe.
+`SIN(90)` returns 0.894 because 90 **radians** is fourteen turns and change. No error, no
+warning: just the wrong figure in the report.
 
-## 2. Es `x × π / 180`, y el ida y vuelta cierra
+## 2. It is `x × π / 180`, and the round trip closes
 
 ```dax
 EVALUATE
@@ -45,10 +45,10 @@ rad_180 | pi | rad_90 | escrita_a_mano | ida_y_vuelta
 3.141593 | 3.141593 | 1.570796 | 1.570796 | 37
 ```
 
-Escribirla a mano da lo mismo; `RADIANS` solo deja claro qué estás haciendo, que en una medida
-larga vale más que ahorrar caracteres.
+Writing it by hand gives the same thing; `RADIANS` only makes clear what you are doing, which in
+a long measure is worth more than saving characters.
 
-## 3. No tiene dominio, y el blanco sale en blanco
+## 3. It has no domain, and the blank comes out blank
 
 ```dax
 EVALUATE
@@ -66,7 +66,7 @@ blanco | es_blanco | cero | negativo | mil_grados
 (blank) | True | 0 | -1.570796 | 17.453293
 ```
 
-Acepta cualquier número. Mil grados son casi tres vueltas, y `RADIANS` no las normaliza — las
-funciones trigonométricas tampoco lo necesitan, porque son periódicas.
+It accepts any number. A thousand degrees is nearly three turns, and `RADIANS` does not normalise
+them — the trigonometric functions do not need it either, because they are periodic.
 
-Ver [`degrees`](./degrees.md), su inversa, y [`pi`](./pi.md).
+See [`degrees`](./degrees.md), its inverse, and [`pi`](./pi.md).

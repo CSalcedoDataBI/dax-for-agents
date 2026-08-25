@@ -3,12 +3,12 @@ function: TRIM
 model: ninguno
 ---
 
-# TRIM — ejemplos
+# TRIM — examples
 
-## 1. Quita los espacios de sobra, no todos
+## 1. It removes the surplus spaces, not all of them
 
-Deja **un** espacio entre palabras y elimina los de los extremos. No es «quitar espacios»:
-es «normalizar el espaciado».
+It leaves **one** space between words and removes the ones at the ends. It is not "remove
+spaces": it is "normalise the spacing".
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ extremos | en_medio | mezcla | solo_espacios
 [hola] | hola mundo | hola mundo | []
 ```
 
-## 2. NO quita el espacio duro, y eso es lo que rompe los cruces
+## 2. It does NOT remove the non-breaking space, and that is what breaks joins
 
-`TRIM` solo trata el espacio ASCII (código 32). El **espacio de no separación** (código 160)
-sobrevive intacto — y es exactamente el que llega pegado a los datos que vienen de una web,
-de Excel o de un copiar-pegar.
+`TRIM` only handles the ASCII space (code 32). The **non-breaking space** (code 160) survives
+intact — and it is exactly the one that arrives stuck to data coming from a web page, from Excel
+or from a copy-paste.
 
 ```dax
 EVALUATE
@@ -48,12 +48,12 @@ longitud_original | longitud_tras_trim | igual_a_hola | codigo_del_sobrante
 5 | 5 | False | 160
 ```
 
-El texto **parece** limpio en el visual y no cruza con `"hola"`. Para quitarlo hace falta
-nombrarlo: `SUBSTITUTE(texto, UNICHAR(160), " ")` antes del `TRIM`.
+The text **looks** clean in the visual and does not join with `"hola"`. To remove it you have to
+name it: `SUBSTITUTE(text, UNICHAR(160), " ")` before the `TRIM`.
 
-## 3. Tampoco quita tabuladores ni saltos de línea
+## 3. It does not remove tabs or line breaks either
 
-Mismo problema, otros códigos. Un `TRIM` no deja el texto en una sola línea.
+Same problem, other codes. A `TRIM` does not put the text on a single line.
 
 ```dax
 EVALUATE
@@ -73,4 +73,4 @@ tab_longitud | salto_longitud | tab_sigue | salto_sigue
 10 | 10 | 9 | 10
 ```
 
-Ver [`substitute`](./substitute.md), que es con lo que se limpian de verdad.
+See [`substitute`](./substitute.md), which is what actually cleans them out.

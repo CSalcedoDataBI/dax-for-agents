@@ -3,12 +3,12 @@ function: LOG
 model: ninguno
 ---
 
-# LOG — ejemplos
+# LOG — examples
 
-## 1. Sin segundo argumento la base es 10, no *e*
+## 1. With no second argument the base is 10, not *e*
 
-Viniendo de C, Python o R —donde `log` es el natural— esto se lee al revés. En DAX, como en
-Excel, `LOG` sin base es base 10.
+Coming from C, Python or R — where `log` is the natural one — this reads backwards. In DAX, as in
+Excel, `LOG` with no base is base 10.
 
 ```dax
 EVALUATE
@@ -25,10 +25,10 @@ log_100 | log10_100 | ln_100 | log_100_base_e
 2 | 2 | 4.60517 | 4.60517
 ```
 
-Las columnas 1 y 2 son la misma función; las 3 y 4 también. Confundir las dos parejas da un
-número creíble multiplicado por 2,302585.
+Columns 1 and 2 are the same function; so are 3 and 4. Confusing the two pairs gives a believable
+number multiplied by 2.302585.
 
-## 2. La base 1 aborta, y la base 2 es la que de verdad se usa
+## 2. Base 1 aborts, and base 2 is the one actually used
 
 ```dax
 EVALUATE ROW("base_uno", LOG(8, 1))
@@ -38,11 +38,10 @@ EVALUATE ROW("base_uno", LOG(8, 1))
 ERROR: Division by zero has occurred when evaluating function 'LOG'.
 ```
 
-No hay logaritmo en base 1: `1ˣ` es siempre 1, así que no existe exponente que dé 8. El
-mensaje es literalmente **una división por cero**, y no el error genérico de argumento que
-sueltan el resto de funciones de esta familia: internamente `LOG(n, b)` es `LN(n) / LN(b)`, y
-`LN(1)` es cero. El caso
-útil de verdad es la base 2, para contar duplicaciones:
+There is no logarithm in base 1: `1ˣ` is always 1, so no exponent gives 8. The message is
+literally a **division by zero**, and not the generic argument error the rest of this family
+throws: internally `LOG(n, b)` is `LN(n) / LN(b)`, and `LN(1)` is zero. The genuinely useful case
+is base 2, for counting doublings:
 
 ```dax
 EVALUATE
@@ -59,10 +58,10 @@ log2_8 | log2_1024 | duplicaciones | log2_1
 3 | 10 | 9.965784 | 0
 ```
 
-Mil son casi diez duplicaciones. `LOG(1, base)` es 0 en cualquier base, que es lo que dice la
-definición.
+A thousand is nearly ten doublings. `LOG(1, base)` is 0 in any base, which is what the definition
+says.
 
-## 3. Cero y negativos abortan, y el blanco entra como cero
+## 3. Zero and negatives abort, and the blank goes in as zero
 
 ```dax
 EVALUATE
@@ -79,8 +78,8 @@ cero | negativo | blanco | base_negativa
 aborta | aborta | aborta | aborta
 ```
 
-Cuatro formas de tumbar la misma consulta. Y ojo con dónde pones la protección: envolver un
-iterador en `IFERROR` **no** atrapa el error que se levanta dentro — está medido en
+Four ways to bring the same query down. And mind where you put the protection: wrapping an
+iterator in `IFERROR` does **not** catch the error raised inside — it is measured in
 [`ln`](./ln.md).
 
-Ver [`ln`](./ln.md), [`log10`](./log10.md) y [`power`](./power.md), su inversa.
+See [`ln`](./ln.md), [`log10`](./log10.md) and [`power`](./power.md), its inverse.

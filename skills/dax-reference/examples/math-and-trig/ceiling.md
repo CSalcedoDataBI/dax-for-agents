@@ -3,12 +3,12 @@ function: CEILING
 model: ninguno
 ---
 
-# CEILING — ejemplos
+# CEILING — examples
 
-## 1. Con significancia positiva va hacia MÁS infinito
+## 1. With a positive significance it goes towards PLUS infinity
 
-Así que con un negativo se acerca al cero — al revés que [`roundup`](./roundup.md), que se
-aleja. Las dos suenan a «hacia arriba» y no coinciden.
+So with a negative it moves towards zero — the opposite of [`roundup`](./roundup.md), which moves
+away. Both sound like "upwards" and they do not agree.
 
 ```dax
 EVALUATE
@@ -25,9 +25,9 @@ positivo | negativo | roundup | a_medios
 3 | -2 | -3 | 2.5
 ```
 
-## 2. Con significancia NEGATIVA cambia de dirección, y ahí se separa de ISO.CEILING
+## 2. With a NEGATIVE significance it changes direction, and there it parts from ISO.CEILING
 
-Es la única diferencia real entre las dos, y solo aparece con el signo cruzado.
+It is the only real difference between the two, and it only shows up when the signs cross.
 
 ```dax
 EVALUATE
@@ -44,14 +44,14 @@ ceiling_sig_neg | iso_sig_neg | ceiling_sig_pos | iso_sig_pos
 -3 | -2 | -2 | -2
 ```
 
-`ISO.CEILING` **siempre** va hacia más infinito, pase lo que pase con el signo de la
-significancia. `CEILING` no. Si el múltiplo sale de un cálculo y puede ser negativo, esa
-diferencia es un descuadre silencioso.
+`ISO.CEILING` **always** goes towards plus infinity, whatever happens to the significance's sign.
+`CEILING` does not. If the multiple comes out of a calculation and can be negative, that
+difference is a silent mismatch.
 
-## 3. Significancia cero da cero, no error
+## 3. A zero significance gives zero, not an error
 
-Igual que [`mround`](./mround.md), y con el mismo riesgo: un múltiplo calculado que salga
-cero se lleva el valor por delante sin avisar.
+Just like [`mround`](./mround.md), and with the same risk: a calculated multiple that comes out
+zero takes the value with it without warning.
 
 ```dax
 EVALUATE

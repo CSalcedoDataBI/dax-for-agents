@@ -3,11 +3,11 @@ function: ISBLANK
 model: ninguno
 ---
 
-# ISBLANK — ejemplos
+# ISBLANK — examples
 
-## 1. Blanco no es cero, y tampoco es la cadena vacía
+## 1. Blank is not zero, and it is not the empty string either
 
-Tres cosas que se ven igual en un visual y son distintas para el motor.
+Three things that look the same in a visual and are different to the engine.
 
 ```dax
 EVALUATE
@@ -24,11 +24,10 @@ blanco | cero | cadena_vacia | cadena_vacia_es_texto
 True | False | False | True
 ```
 
-`""` **no** está en blanco: es un texto de longitud cero. Un `ISBLANK` sobre una columna que
-llega de un CSV con celdas vacías puede devolver falso en todas las filas y parecer que no hay
-huecos.
+`""` is **not** blank: it is text of length zero. An `ISBLANK` over a column arriving from a CSV
+with empty cells can return false on every row and look as though there are no gaps.
 
-## 2. `= 0` y `ISBLANK` no clasifican igual, y esa es la diferencia que importa
+## 2. `= 0` and `ISBLANK` do not classify the same, and that is the difference that matters
 
 ```dax
 EVALUATE
@@ -45,14 +44,14 @@ blanco_es_blanco | blanco_igual_cero | cero_es_blanco | cero_igual_cero
 True | True | False | True
 ```
 
-La comparación `= 0` es **verdadera para los dos**: el blanco se compara como cero. `ISBLANK`
-es la única de las dos que los separa. Un `IF([m] = 0, "sin ventas")` etiqueta también las
-categorías donde no se midió nada.
+The `= 0` comparison is **true for both**: the blank compares as zero. `ISBLANK` is the only one
+of the two that separates them. An `IF([m] = 0, "sin ventas")` also labels the categories where
+nothing was measured.
 
-## 3. Es el único predicado de tipo que dice sí a un blanco
+## 3. It is the only type predicate that says yes to a blank
 
-Todos los demás lo rechazan — salvo [`isnontext`](./isnontext.md), que lo acepta por otra
-razón.
+All the others reject it — except [`isnontext`](./isnontext.md), which accepts it for another
+reason.
 
 ```dax
 EVALUATE
@@ -70,7 +69,8 @@ isblank | isnumber | istext | isnontext | isdatetime
 True | False | False | True | False
 ```
 
-Un blanco **no tiene tipo**. Si estás clasificando una columna con una escalera de `ISNUMBER`,
-`ISTEXT` y demás, los huecos se caen por todas las ramas y hay que preguntar por ellos primero.
+A blank **has no type**. If you are classifying a column with a ladder of `ISNUMBER`, `ISTEXT` and
+the rest, the gaps fall through every branch and have to be asked about first.
 
-Ver [`isnontext`](./isnontext.md), [`iserror`](./iserror.md) y [`divide`](../math-and-trig/divide.md).
+See [`isnontext`](./isnontext.md), [`iserror`](./iserror.md) and
+[`divide`](../math-and-trig/divide.md).

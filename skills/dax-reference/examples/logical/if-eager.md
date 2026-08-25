@@ -3,12 +3,12 @@ function: IF.EAGER
 model: ninguno
 ---
 
-# IF.EAGER — ejemplos
+# IF.EAGER — examples
 
-## 1. Devuelve exactamente lo mismo que IF
+## 1. It returns exactly the same as IF
 
-Y eso es lo primero que hay que entender: **no existe para cambiar el resultado**. Si alguna
-vez devuelve algo distinto de `IF`, es un error, no una función.
+And that is the first thing to understand: **it does not exist to change the result**. If it ever
+returns something different from `IF`, that is a bug, not a function.
 
 ```dax
 EVALUATE
@@ -25,15 +25,15 @@ if_verdadero | if_eager_verdadero | if_falso | if_eager_falso
 sí | sí | no | no
 ```
 
-## 2. La diferencia es CUÁNDO se evalúan las ramas
+## 2. The difference is WHEN the branches are evaluated
 
-`IF` puede saltarse la rama que no se toma. `IF.EAGER` evalúa las dos siempre. La razón de
-existir es el plan de consulta: a veces evaluar las dos de golpe sale más barato que ramificar.
+`IF` may skip the branch that is not taken. `IF.EAGER` always evaluates both. The reason it
+exists is the query plan: sometimes evaluating both at once is cheaper than branching.
 
-**Esa diferencia no se ve en el resultado**, y este ejemplo lo enseña precisamente así: las
-dos formas devuelven lo mismo aunque la rama descartada contenga una división por cero
-protegida con `DIVIDE`. Quien busque una diferencia de valor no la va a encontrar, y eso es
-lo que hay que saber antes de cambiar una por otra.
+**That difference does not show in the result**, and this example demonstrates it that way on
+purpose: both forms return the same thing even though the discarded branch contains a division by
+zero guarded with `DIVIDE`. Anyone looking for a difference in value will not find one, and that
+is what has to be known before swapping one for the other.
 
 ```dax
 EVALUATE
@@ -49,11 +49,11 @@ if_rama_muerta | if_eager_rama_muerta | ambas_validas
 tomada | tomada | 10
 ```
 
-## 3. La rama no tomada sí puede costarte
+## 3. The branch not taken can still cost you
 
-Si la rama descartada es cara, `IF.EAGER` la paga igual. Aquí las dos ramas devuelven lo
-mismo y la diferencia está en el trabajo, no en el número — por eso este ejemplo enseña
-valores idénticos: **es la prueba de que lo único que cambia es el coste**.
+If the discarded branch is expensive, `IF.EAGER` pays for it anyway. Here both branches return
+the same thing and the difference is in the work, not the number — which is why this example
+shows identical values: **it is the proof that the only thing that changes is the cost**.
 
 ```dax
 EVALUATE
@@ -69,5 +69,5 @@ if_barato | if_eager_caro | lo_que_costaba
 1 | 1 | 5000050000
 ```
 
-Para medir esa diferencia hace falta volumen y el motor en frío: eso está en
-[`lab/rendimiento`](../../../../lab/rendimiento/), no aquí.
+Measuring that difference needs volume and a cold engine: that lives in
+[`lab/rendimiento`](../../../../lab/rendimiento/), not here.

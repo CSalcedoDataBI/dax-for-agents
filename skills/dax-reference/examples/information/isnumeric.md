@@ -3,12 +3,12 @@ function: ISNUMERIC
 model: ninguno
 ---
 
-# ISNUMERIC — ejemplos
+# ISNUMERIC — examples
 
-## 1. NO es un alias exacto de `ISNUMBER`: difieren en las fechas
+## 1. It is NOT an exact alias of `ISNUMBER`: they differ on dates
 
-La documentación las declara alias. Medido, no lo son. Una fecha es número para `ISNUMBER` y
-**no** lo es para `ISNUMERIC`.
+The documentation declares them aliases. Measured, they are not. A date is a number to `ISNUMBER`
+and **is not** one to `ISNUMERIC`.
 
 ```dax
 EVALUATE
@@ -25,12 +25,12 @@ fecha_isnumber | fecha_isnumeric | hora_isnumber | hora_isnumeric
 True | False | True | False
 ```
 
-Cambiar una por otra en un modelo que maneje fechas cambia el resultado. No es una preferencia
-de estilo.
+Swapping one for the other in a model that handles dates changes the result. It is not a matter
+of style.
 
-## 2. En todo lo demás sí coinciden
+## 2. On everything else they do agree
 
-El desacuerdo está acotado a los valores `datetime`, y solo a esos.
+The disagreement is confined to `datetime` values, and only to those.
 
 ```dax
 EVALUATE
@@ -49,10 +49,10 @@ entero | decimal | moneda | texto | blanco | fecha
 True | True | True | True | True | False
 ```
 
-Cada columna compara las dos funciones sobre el mismo valor. Las cinco primeras coinciden; la
-sexta es la única que no.
+Each column compares the two functions on the same value. The first five agree; the sixth is the
+only one that does not.
 
-## 3. Cuál usar, ahora que se sabe que no da igual
+## 3. Which to use, now that it is known to matter
 
 ```dax
 EVALUATE
@@ -70,16 +70,15 @@ numero | texto_numerico | fecha | booleano | blanco
 True | False | False | False | False
 ```
 
-`ISNUMERIC` es la que responde «número, y no una fecha disfrazada». Si lo que quieres es
-separar fechas de cantidades, es la correcta y `ISNUMBER` te las mezcla. Si quieres que las
-fechas entren, la buena es [`isnumber`](./isnumber.md).
+`ISNUMERIC` is the one that answers "a number, and not a date in disguise". If what you want is
+to separate dates from quantities, it is the right one and `ISNUMBER` mixes them. If you want the
+dates to count, the right one is [`isnumber`](./isnumber.md).
 
-Lo que **ninguna de las dos** responde es «¿puede el motor operar aritméticamente con esto?».
-`ISNUMBER("42")` es falso y sin embargo `"42" + 1` da 43: DAX convierte al operar, y el
-predicado de tipo no lo sabe. Para esa pregunta no hay predicado — hay que intentar la
-operación y protegerla.
+What **neither** answers is "can the engine do arithmetic with this?". `ISNUMBER("42")` is false
+and yet `"42" + 1` gives 43: DAX converts when operating, and the type predicate does not know it.
+For that question there is no predicate — you have to attempt the operation and guard it.
 
-El par [`istext`](./istext.md)/[`isstring`](./isstring.md) sí resultó idéntico en todos los
-casos probados. Que dos funciones estén documentadas como alias no significa que lo sean.
+The [`istext`](./istext.md)/[`isstring`](./isstring.md) pair did turn out identical in every
+tested case. Two functions being documented as aliases does not make them so.
 
-Ver [`isnumber`](./isnumber.md) y [`isdatetime`](./isdatetime.md).
+See [`isnumber`](./isnumber.md) and [`isdatetime`](./isdatetime.md).

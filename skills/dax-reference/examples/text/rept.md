@@ -3,12 +3,12 @@ function: REPT
 model: ninguno
 ---
 
-# REPT — ejemplos
+# REPT — examples
 
-## 1. Cero repeticiones da cadena vacía, no blanco
+## 1. Zero repetitions gives an empty string, not blank
 
-Importa porque el uso típico de `REPT` es dibujar una barra en una tabla, y la fila con valor
-cero tiene que quedar vacía sin desaparecer.
+It matters because the typical use of `REPT` is drawing a bar in a table, and the row with a zero
+value has to come out empty without disappearing.
 
 ```dax
 EVALUATE
@@ -25,9 +25,9 @@ tres | cero | es_blanco | uno
 *** | [] | False | ab
 ```
 
-## 2. El número se REDONDEA, no se trunca
+## 2. The number is ROUNDED, not truncated
 
-Lo que importa cuando el conteo sale de una división: `2.5` no dibuja 2 barras.
+What matters when the count comes out of a division: `2.5` does not draw 2 bars.
 
 ```dax
 EVALUATE
@@ -44,9 +44,9 @@ dos_coma_cuatro | dos_coma_cinco | dos_coma_seis | casi_uno
 2 | 3 | 3 | 1
 ```
 
-## 3. El caso real: una barra proporcional dentro de una tabla
+## 3. The real case: a proportional bar inside a table
 
-Con la trampa de siempre — si el valor puede ser negativo, aborta.
+With the usual trap — if the value can be negative, it aborts.
 
 ```dax
 EVALUATE
@@ -72,4 +72,4 @@ EVALUATE ROW("negativo", REPT("*", -1))
 ERROR: An argument of function 'REPT' has the wrong data type or has an invalid value.
 ```
 
-Por eso el conteo va envuelto en `MAX(0, ...)` cuando el dato puede venir por debajo de cero.
+That is why the count goes wrapped in `MAX(0, ...)` when the data can come in below zero.

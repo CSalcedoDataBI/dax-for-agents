@@ -3,12 +3,12 @@ function: TAN
 model: ninguno
 ---
 
-# TAN — ejemplos
+# TAN — examples
 
-## 1. Radianes otra vez, y aquí el error es más grande
+## 1. Radians again, and here the error is larger
 
-`TAN(45)` da 1,62 en vez de 1. No es un desvío pequeño: la tangente crece rápido, así que
-confundir grados con radianes puede dar un número de otro orden de magnitud.
+`TAN(45)` gives 1.62 instead of 1. It is not a small drift: the tangent grows fast, so confusing
+degrees with radians can give a number of a different order of magnitude.
 
 ```dax
 EVALUATE
@@ -25,11 +25,11 @@ tan_45_grados | tan_45_radianes | tan_0 | tan_30_bien
 1.619775 | 1 | 0 | 0.57735
 ```
 
-## 2. En π/2 no da infinito ni error: da un número enorme
+## 2. At π/2 it gives neither infinity nor an error: it gives a huge number
 
-Matemáticamente la tangente no existe ahí. Numéricamente, `PI()/2` es una aproximación, así
-que el motor devuelve un número gigantesco y sigue como si nada. Una división por ese valor
-da casi cero y nadie se entera.
+Mathematically the tangent does not exist there. Numerically, `PI()/2` is an approximation, so
+the engine returns a gigantic number and carries on as if nothing happened. A division by that
+value gives almost zero and nobody notices.
 
 ```dax
 EVALUATE
@@ -46,10 +46,10 @@ cerca_del_polo | es_muy_grande | hay_error | justo_despues
 16324552277619100 | True | False | -9.966644
 ```
 
-Si el ángulo sale de un cálculo y puede acercarse a 90°, hay que acotarlo a mano: no hay
-error que avise.
+If the angle comes out of a calculation and can approach 90°, it has to be clamped by hand: there
+is no error to warn you.
 
-## 3. Es impar, y periódica con período π
+## 3. It is odd, and periodic with period π
 
 ```dax
 EVALUATE
@@ -66,6 +66,6 @@ tan_1 | tan_menos_1 | impar | periodo
 1.557408 | -1.557408 | 0 | 0
 ```
 
-El período es **π**, no 2π como en [`sin`](./sin.md) y [`cos`](./cos.md).
+The period is **π**, not 2π as in [`sin`](./sin.md) and [`cos`](./cos.md).
 
-Ver [`atan`](./atan.md), su inversa, que no tiene dominio.
+See [`atan`](./atan.md), its inverse, which has no domain.
