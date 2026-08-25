@@ -80,7 +80,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'24 meses, sin filtro: WINDOW + AVERAGEX funciona como una medida cualquiera'"
+                  "Value": "'24 months, no filter: WINDOW + AVERAGEX works like any other measure'"
                 }
               }
             }

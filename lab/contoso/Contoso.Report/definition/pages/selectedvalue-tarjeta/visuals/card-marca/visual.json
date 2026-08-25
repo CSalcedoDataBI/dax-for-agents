@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Marca seleccionada'"
+                  "Value": "'Selected brand'"
                 }
               }
             }

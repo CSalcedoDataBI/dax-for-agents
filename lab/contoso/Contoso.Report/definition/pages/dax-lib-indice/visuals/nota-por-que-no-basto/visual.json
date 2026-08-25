@@ -19,14 +19,14 @@
               {
                 "textRuns": [
                   {
-                    "value": "El codigo vive en el registro, no en este indice -- por diseno: publicarlo aqui lo dejaria sin control de version ni licencia. Para este escenario hacia falta codigo en la mano para medirlo contra Contoso, asi que la ruta fue escribir la funcion propia (Contoso.Lab.MediaMovil3M) con la guia de dax-window-functions y dax-udf-authoring -- ver las dos paginas siguientes."
+                    "value": "The code lives in the registry, not in this index -- by design: publishing it here would leave it with no version control and no licence. This scenario needed code in hand to measure it against Contoso, so the route was to write our own function (Contoso.Lab.MediaMovil3M) guided by dax-window-functions and dax-udf-authoring -- see the next two pages."
                   }
                 ]
               },
               {
                 "textRuns": [
                   {
-                    "value": "El hallazgo real de dax-lib no es \"no hay nada\": es \"ya hay algo, decide si te sirve sin verlo primero\"."
+                    "value": "The real finding of dax-lib is not \"there is nothing\": it is \"there is already something, decide whether it serves you without seeing it first\"."
                   }
                 ]
               }

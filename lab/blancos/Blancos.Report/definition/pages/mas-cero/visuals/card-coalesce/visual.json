@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'AVERAGEX con COALESCE(_, 0)'"
+                  "Value": "'AVERAGEX with COALESCE(_, 0)'"
                 }
               }
             }

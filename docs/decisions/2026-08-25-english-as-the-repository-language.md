@@ -89,12 +89,23 @@ no reader benefit. The examples README says so where someone would ask.
 Prose translates. The things around it often cannot, and the line is not a matter of taste — it
 is what the reader sees on screen and what the runner compares literally.
 
-**Report page names.** The lab READMEs quote pages by name: «2. El + 0 que mueve el
-denominador». That string is a `displayName` inside the report definition, and it is what a
-reader sees in the Power BI page tab. Translating the quote and not the report would send them
-looking for a page that does not exist; translating both means editing seventeen page
-definitions in four `.pbip` projects. The quotes stay verbatim, in Spanish, because they are UI
-strings and not prose.
+**The reports are prose too, and they were translated.** This section first drew the line at the
+report boundary: page names are `displayName` strings a reader sees in the Power BI page tab, the
+lab READMEs quote them verbatim — «2. El + 0 que mueve el denominador» — and translating the
+quote without the report would send someone looking for a page that does not exist. That
+reasoning was right about the tabs and then wrongly swallowed everything inside them. A report
+page here is a note textbox on top of a data visual: **eighteen textboxes and thirty-five visual
+titles of plain prose**, which by this ADR's own rule belong in English. Leaving them Spanish was
+not a decision about identifiers; it was not looking.
+
+So the whole report moved: seventeen `displayName`s, thirty-five titles, nineteen textbox
+paragraphs, the quotes in the READMEs, and the screenshots retaken. Two strings inside that sweep
+stayed Spanish because they are not prose — `(sin un valor unico)`, the literal a `SELECTEDVALUE`
+measure returns and the card displays, and `Alto con medida`, a measure name.
+
+Screenshot filenames moved to `<scenario>-<page-id>.webp` in the same pass. Five of them were
+slugs of the Spanish `displayName`, which is what made a rename break links; the page **id** is
+stable and never translated, so the next rename cannot.
 
 **Model identifiers.** `Ventas[Importe]`, `Tiendas[Metros]`, `DimProducto[Nombre]` are bound to
 Parquet files published in another repository. Renaming them means regenerating the data, editing

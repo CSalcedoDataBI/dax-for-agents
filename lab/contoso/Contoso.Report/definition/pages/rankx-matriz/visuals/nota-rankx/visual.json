@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "La matriz ya trae UNA sola marca al contexto de cada fila, asi que VALUES(DimProduct[Brand]) dentro de RANKX es una tabla de una fila y todo el mundo queda primero. La tercera columna usa ALL, que abre la tabla entera antes de ordenar, y esa si rankea."
+                    "value": "The matrix already brings ONE single brand into the context of each row, so VALUES(DimProduct[Brand]) inside RANKX is a one-row table and everybody comes first. The third column uses ALL, which opens the whole table before ordering, and that one does rank."
                   }
                 ]
               }

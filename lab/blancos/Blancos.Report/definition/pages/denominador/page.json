@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
   "name": "denominador",
-  "displayName": "1. Quien cuenta y quien no",
+  "displayName": "1. Who counts and who does not",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280

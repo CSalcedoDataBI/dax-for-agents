@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "FORMAT no cambia como se ve un numero: lo convierte en una CADENA. Ordena la segunda tabla por su columna de ventas y mira el orden que sale: alfabetico, donde \"9\" va despues de \"10\" porque \"9\" > \"1\". A partir de FORMAT tampoco se suma ni se compara como numero."
+                    "value": "FORMAT does not change how a number looks: it turns it into a STRING. Sort the second table by its sales column and look at the order that comes out: alphabetical, where \"9\" comes after \"10\" because \"9\" > \"1\". From FORMAT onwards it no longer adds up or compares as a number either."
                   }
                 ]
               }

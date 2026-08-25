@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "La primera barra no tiene nombre de producto y vale 50. Son ventas con una clave que no existe en la tabla de productos: el motor las agrupa en una fila en blanco que se anade sola. No falta ningun dato — falta la fila que lo explica."
+                    "value": "The first bar has no product name and is worth 50. They are sales with a key that does not exist in the product table: the engine groups them into a blank row that adds itself. No data is missing -- what is missing is the row that explains it."
                   }
                 ]
               }

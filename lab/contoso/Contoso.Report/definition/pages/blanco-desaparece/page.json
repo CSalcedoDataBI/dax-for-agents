@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
   "name": "blanco-desaparece",
-  "displayName": "El blanco borra la categoria; el cero la dibuja",
+  "displayName": "Blank erases the category; zero draws it",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280

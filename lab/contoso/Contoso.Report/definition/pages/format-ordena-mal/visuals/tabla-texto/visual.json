@@ -61,7 +61,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cadena - se ordena alfabeticamente'"
+                  "Value": "'String - sorts alphabetically'"
                 }
               }
             }

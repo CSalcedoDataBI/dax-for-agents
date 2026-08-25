@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'AVERAGEX sobre la columna'"
+                  "Value": "'AVERAGEX over the column'"
                 }
               }
             }

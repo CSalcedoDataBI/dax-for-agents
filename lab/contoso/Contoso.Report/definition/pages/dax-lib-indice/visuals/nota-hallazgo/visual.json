@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "TimeSeries.MovingAverage ya existe publicado en daxlib.org (Tate Bowman, v0.1.1) -- funciones Simple, Weighted, LinearWeighted, Exponential, DoubleExponential, Triangular, Geometric, todas sobre WINDOW nativo. dax-lib es un indice: sabe que existe, quien lo escribio y donde esta -- no trae el codigo."
+                    "value": "TimeSeries.MovingAverage is already published on daxlib.org (Tate Bowman, v0.1.1) -- Simple, Weighted, LinearWeighted, Exponential, DoubleExponential, Triangular and Geometric functions, all over native WINDOW. dax-lib is an index: it knows what exists, who wrote it and where it is -- it does not bring the code."
                   }
                 ]
               }

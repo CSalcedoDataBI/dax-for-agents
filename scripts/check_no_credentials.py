@@ -25,6 +25,7 @@ que copia el secreto a la consola y al log de CI lo ha filtrado una vez mas.
 import hashlib
 import os
 import re
+import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -39,6 +40,28 @@ ACCEPTED_PATH = os.path.join(ROOT, "scripts", "accepted-history.txt")
 ETIQUETA_HUELLA = "valor vigilado por huella"
 
 SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules"}
+
+
+def _ignored_dirs(root):
+    """Directorios que git ya ignora, preguntandoselo a git en vez de listarlos aqui.
+
+    `SKIP_DIRS` es una segunda lista de exclusiones que se desincroniza de `.gitignore`:
+    un directorio del arnes que el repositorio ya ignora — `.agentic-board/`, `.claude/` —
+    no se publica nunca, pero paraba este barrido con cientos de hallazgos de una
+    transcripcion de sesion. Lo que no llega al repositorio no es asunto de este guardia.
+    Fuera de un repositorio git no hay nada que preguntar y queda solo `SKIP_DIRS`.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "-C", root, "ls-files", "-o", "-i", "--exclude-standard",
+             "--directory", "--no-empty-directory"],
+            capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return frozenset()
+    return frozenset(
+        os.path.normpath(os.path.join(root, line.rstrip("/")))
+        for line in out.splitlines() if line.strip())
+
 
 # Los patrones se escriben para que su propio texto fuente no encaje con ellos: asi el
 # guardia no necesita excluirse a si mismo, que es la excepcion que luego tapa una fuga.
@@ -211,8 +234,11 @@ def find_in_text(text, digests=frozenset()):
 def scan_tree(root, digests, skip=frozenset()):
     """Hallazgos del arbol de trabajo. `skip` son rutas absolutas."""
     hits = []
+    ignored = _ignored_dirs(root)
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
+        dirnames[:] = [d for d in dirnames
+                       if d not in SKIP_DIRS
+                       and os.path.normpath(os.path.join(dirpath, d)) not in ignored]
         for name in sorted(filenames):
             path = os.path.join(dirpath, name)
             if path in skip:

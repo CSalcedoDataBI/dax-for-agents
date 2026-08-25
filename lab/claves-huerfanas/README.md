@@ -49,9 +49,9 @@ The two `VALUES` give 4 and **do not mean the same thing**. On the *one* side th
 is the blank row the engine invented; on the *many* side it is the real key 99, which is still
 there. Confusing the two was exactly the mistake the note's review caught.
 
-> This trap is also **drawn**: page «1. De que lado se ve la fila en blanco» of the report
-> ([screenshot](../screenshots/claves-huerfanas-1-de-que-lado-se-ve-la-fila-en-blanco.webp)). Open it with the
-> `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «1. Which side the blank row shows up on» of the report
+> ([screenshot](../screenshots/claves-huerfanas-de-que-lado.webp)). Open it with the `.pbip` and
+> look, because that is where you see what the query result does not show.
 
 ## 2. Where the orphaned units end up
 
@@ -75,9 +75,9 @@ A row with no name holding 50 units. In a real report this is the empty category
 in the chart and that nobody can account for: they are the sales whose product is not in the
 dimension.
 
-> This trap is also **drawn**: page «2. Donde caen las unidades huerfanas» of the report
-> ([screenshot](../screenshots/claves-huerfanas-2-donde-caen-las-unidades-huerfanas.webp)). Open it with the
-> `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «2. Where the orphaned units end up» of the report
+> ([screenshot](../screenshots/claves-huerfanas-donde-caen.webp)). Open it with the `.pbip` and
+> look, because that is where you see what the query result does not show.
 
 ## 3. The total does count them, and "cleaning up" the blank row loses them
 
@@ -100,9 +100,9 @@ This is the part that hurts. `ALLNOBLANKROW` sounds like "remove the noise", and
 **lose 50 units without warning**: the detail stops adding up to the total, and the difference is
 exactly the orphans.
 
-> This trap is also **drawn**: page «3. Limpiar la fila en blanco pierde 50» of the report
-> ([screenshot](../screenshots/claves-huerfanas-3-limpiar-la-fila-en-blanco-pierde-50.webp)). Open it with the
-> `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «3. Cleaning up the blank row loses 50» of the report
+> ([screenshot](../screenshots/claves-huerfanas-limpiar-pierde.webp)). Open it with the `.pbip`
+> and look, because that is where you see what the query result does not show.
 
 ## Where the data comes from
 

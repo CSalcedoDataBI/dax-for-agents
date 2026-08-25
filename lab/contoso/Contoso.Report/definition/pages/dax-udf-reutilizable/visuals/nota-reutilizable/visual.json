@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Las dos medidas de la pagina anterior son envoltorios delgados sobre UNA funcion persistida en el modelo (Contoso.Lab.MediaMovil3M_Corregida: parametros ANYREF EXPR, mas un opcional \"months\" con default 3) -- no logica repetida dos veces. Esta matriz llama a la MISMA funcion dos veces, con distinto months: la reutilizacion es el punto, no la trampa."
+                    "value": "The two measures on the previous page are thin wrappers over ONE function persisted in the model (Contoso.Lab.MediaMovil3M_Corregida: ANYREF EXPR parameters, plus an optional \"months\" defaulting to 3) -- not logic repeated twice. This matrix calls the SAME function twice, with a different months: reuse is the point here, not the trap."
                   }
                 ]
               }

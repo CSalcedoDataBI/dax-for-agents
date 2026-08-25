@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "MOVINGAVERAGE nativo es appliesTo: [visual-calculation] -- solo se puede usar dentro de un calculo visual de un informe, nunca en una medida ni en una consulta DAX. WINDOW es appliesTo: [measure, column, table, visual-calculation] -- funciona en los cuatro. Por eso la media movil de esta biblioteca se construye con WINDOW + AVERAGEX: es la unica forma de que funcione como medida reutilizable."
+                    "value": "Native MOVINGAVERAGE is appliesTo: [visual-calculation] -- it can only be used inside a report visual calculation, never in a measure or in a DAX query. WINDOW is appliesTo: [measure, column, table, visual-calculation] -- it works in all four. That is why the moving average in this library is built with WINDOW + AVERAGEX: it is the only way for it to work as a reusable measure."
                   }
                 ]
               }

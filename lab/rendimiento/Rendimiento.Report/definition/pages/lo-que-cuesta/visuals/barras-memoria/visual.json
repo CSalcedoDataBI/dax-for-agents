@@ -71,7 +71,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Pico de memoria, KB - de cero a ~193 MB'"
+                  "Value": "'Peak memory, KB - from zero to ~193 MB'"
                 }
               }
             }

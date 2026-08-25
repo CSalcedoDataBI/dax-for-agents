@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Prueba las tres cosas: no selecciones nada, selecciona UNA marca, y selecciona DOS. La tarjeta da el mismo \"(sin un valor unico)\" en el primer caso y en el tercero. No distingue \"el usuario no eligio\" de \"el usuario eligio varias\", y esa ambiguedad es la trampa."
+                    "value": "Try all three things: select nothing, select ONE brand, and select TWO. The card gives the same \"(sin un valor unico)\" in the first case and in the third. It does not tell \"the user did not choose\" apart from \"the user chose several\", and that ambiguity is the trap."
                   }
                 ]
               }

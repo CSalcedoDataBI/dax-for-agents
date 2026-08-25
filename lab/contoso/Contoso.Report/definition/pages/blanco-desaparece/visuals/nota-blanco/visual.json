@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Los dos graficos usan los mismos datos y la misma division, acotada a la semana del 26 de agosto de 2024. El de la izquierda devuelve BLANCO donde no hay ventas y el de la derecha devuelve cero: catorce de las 58 marcas desaparecen del primero y se dibujan a ras de suelo en el segundo. En una tabla los dos ocupan una celda y se leen igual. Ninguno esta mal: el blanco dice \"no lo medi\" y el cero dice \"lo medi y dio cero\". Lo que esta mal es no saber cual publicas."
+                    "value": "Both charts use the same data and the same division, bounded to the week of 26 August 2024. The left one returns BLANK where there are no sales and the right one returns zero: fourteen of the 58 brands disappear from the first and are drawn flat on the floor in the second. In a table both take up one cell and read the same. Neither is wrong: blank says \"I did not measure it\" and zero says \"I measured it and it came out zero\". What is wrong is not knowing which one you are publishing."
                   }
                 ]
               }

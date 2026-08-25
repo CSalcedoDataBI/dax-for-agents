@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'AVERAGEX con  + 0'"
+                  "Value": "'AVERAGEX with  + 0'"
                 }
               }
             }

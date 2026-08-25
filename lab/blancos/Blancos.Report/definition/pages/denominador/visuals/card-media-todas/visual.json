@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'SUM / COUNTROWS - entre 5'"
+                  "Value": "'SUM / COUNTROWS - over 5'"
                 }
               }
             }

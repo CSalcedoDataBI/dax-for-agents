@@ -71,7 +71,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Metros por tienda - Este y Oeste ni siquiera aparecen en el eje'"
+                  "Value": "'Square metres per store - Este and Oeste do not even appear on the axis'"
                 }
               }
             }

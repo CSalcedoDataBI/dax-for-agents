@@ -159,7 +159,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Cada par devuelve el mismo numero - sin eso, comparar sus tiempos no diria nada'"
+                  "Value": "'Each pair returns the same number - without that, comparing their times would say nothing'"
                 }
               }
             }

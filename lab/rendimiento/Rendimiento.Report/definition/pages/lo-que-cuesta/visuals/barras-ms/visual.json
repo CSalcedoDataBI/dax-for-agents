@@ -71,7 +71,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Mediana en frio, milisegundos - medido el 2026-08-12, NO calculado ahora'"
+                  "Value": "'Cold median, milliseconds - measured on 2026-08-12, NOT calculated now'"
                 }
               }
             }

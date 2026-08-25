@@ -80,7 +80,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Misma funcion, distinto parametro months -- 3 vs 6'"
+                  "Value": "'Same function, different months parameter -- 3 vs 6'"
                 }
               }
             }

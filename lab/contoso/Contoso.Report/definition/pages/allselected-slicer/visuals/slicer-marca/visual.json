@@ -48,7 +48,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Selecciona marcas aqui'"
+                  "Value": "'Pick brands here'"
                 }
               }
             }

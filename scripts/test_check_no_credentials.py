@@ -155,6 +155,32 @@ class Ficheros(unittest.TestCase):
         self.assertEqual(h[0]["line"], 2)
         self.assertTrue(h[0]["file"].endswith("deploy.sh"))
 
+    def test_un_directorio_ignorado_por_git_no_se_barre(self):
+        # Un directorio del arnes (`.agentic-board/`, `.claude/`) no llega nunca al
+        # repositorio, pero guarda transcripciones enteras de sesion: barrerlo daba
+        # cientos de hallazgos de algo que no se publica. La lista de exclusiones se
+        # le pregunta a git para que no se desincronice de `.gitignore`.
+        for a in (("init", "-q"), ("config", "user.email", "t@e.com"),
+                  ("config", "user.name", "T")):
+            self.git(*a)
+        self.write(".gitignore", ".arnes/\n")
+        self.write(".arnes/session.jsonl", f"transcripcion con {PAT_CLASICO}\n")
+        self.assertEqual(scan_tree(self.dir, frozenset()), [])
+
+    def test_un_directorio_no_ignorado_sigue_barriendose(self):
+        # El complemento del anterior: excluir de mas es como este guardia deja de servir.
+        for a in (("init", "-q"), ("config", "user.email", "t@e.com"),
+                  ("config", "user.name", "T")):
+            self.git(*a)
+        self.write(".gitignore", ".arnes/\n")
+        self.write("ci/deploy.sh", f"export TOKEN={PAT_CLASICO}\n")
+        self.assertEqual(len(scan_tree(self.dir, frozenset())), 1)
+
+    def test_fuera_de_un_repositorio_git_el_barrido_sigue_funcionando(self):
+        # `git ls-files` falla si no hay repositorio; eso no puede dejar el arbol sin barrer.
+        self.write("ci/deploy.sh", f"export TOKEN={PAT_CLASICO}\n")
+        self.assertEqual(len(scan_tree(self.dir, frozenset())), 1)
+
     def test_los_binarios_no_rompen_el_barrido(self):
         with open(os.path.join(self.dir, "icon.png"), "wb") as f:
             f.write(b"\x89PNG\r\n\x1a\n\xff\xfe\x00\x01")

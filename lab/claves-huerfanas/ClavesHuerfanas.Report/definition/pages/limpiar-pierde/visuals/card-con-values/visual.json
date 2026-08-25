@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Suma por producto (VALUES)'"
+                  "Value": "'Sum per product (VALUES)'"
                 }
               }
             }

@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Corregir la relation de WINDOW con ALL(DimDate) no basta: la ventana ve las filas correctas, pero AVERAGEX evalua la metrica de cada fila por transicion de contexto, que se COMBINA con cualquier filtro externo en vez de reemplazarlo. Fija el ano en 2024 y mira enero-febrero: Media 3M (rota) se separa de Media 3M (corregida) sin que aparezca ningun error. Medido en dax-reference/notes/window.md."
+                    "value": "Fixing the relation of WINDOW with ALL(DimDate) is not enough: the window sees the right rows, but AVERAGEX evaluates the metric of each row by context transition, which COMBINES with any outer filter instead of replacing it. Pin the year to 2024 and look at January-February: Media 3M (rota) separates from Media 3M (corregida) with no error appearing anywhere. Measured in dax-reference/notes/window.md."
                   }
                 ]
               }

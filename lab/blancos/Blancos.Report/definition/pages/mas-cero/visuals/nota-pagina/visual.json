@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Las cuatro tarjetas calculan la media de la misma columna. Las dos primeras dan 200 porque saltan los blancos; las dos ultimas dan 120 porque los convierten en cero y el denominador pasa de 3 a 5. Fijate en la cuarta: lo unico que hace de mas es sumar un cero, que no altera ningun valor existente. Ninguna de las cuatro esta mal. Lo que esta mal es publicar una sin saber cual."
+                    "value": "All four cards work out the average of the same column. The first two give 200 because they skip the blanks; the last two give 120 because they turn them into zero and the denominator goes from 3 to 5. Look at the fourth one: the only thing it does extra is add a zero, which alters no existing value. None of the four is wrong. What is wrong is publishing one without knowing which."
                   }
                 ]
               }

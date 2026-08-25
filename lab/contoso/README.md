@@ -42,12 +42,12 @@ captured, and only the `.pbip` proves it still looks that way.
 
 | page | what you see, and cannot be told |
 |---|---|
-| [ALLSELECTED - respeta el slicer, ignora el interno](../screenshots/contoso-allselected-slicer.webp) | Select 2-3 brands: one column changes and the other does not move. A DAX query has no slicer |
-| [SELECTEDVALUE - la tarjeta que no distingue dos casos](../screenshots/contoso-selectedvalue-tarjeta.webp) | With no selection and with two brands the card says the same thing. It does not distinguish "did not choose" from "chose several" |
-| [RANKX - 1 en todas las filas de la matriz](../screenshots/contoso-rankx-matriz.webp) | The middle column is 1 on all 58 rows, because the matrix already brought a single brand into context |
-| [SUMX - el Total que no cuadra con sus filas](../screenshots/contoso-sumx-total.webp) | The first column's Total is not the sum of the column. It is evaluated again, without the row filters |
-| [El blanco borra la categoria; el cero la dibuja](../screenshots/contoso-blanco-desaparece.webp) | Two charts with the same division: the left one is missing fourteen bars |
-| [FORMAT - el 9 va despues del 10](../screenshots/contoso-format-ordena-mal.webp) | The same figure as a number and as a string. It sorts the second one by sales |
+| [ALLSELECTED - respects the slicer, ignores the inner one](../screenshots/contoso-allselected-slicer.webp) | Select 2-3 brands: one column changes and the other does not move. A DAX query has no slicer |
+| [SELECTEDVALUE - the card that cannot tell two cases apart](../screenshots/contoso-selectedvalue-tarjeta.webp) | With no selection and with two brands the card says the same thing. It does not distinguish "did not choose" from "chose several" |
+| [RANKX - 1 on every row of the matrix](../screenshots/contoso-rankx-matriz.webp) | The middle column is 1 on all 58 rows, because the matrix already brought a single brand into context |
+| [SUMX - the Total that does not match its rows](../screenshots/contoso-sumx-total.webp) | The first column's Total is not the sum of the column. It is evaluated again, without the row filters |
+| [Blank erases the category; zero draws it](../screenshots/contoso-blanco-desaparece.webp) | Two charts with the same division: the left one is missing fourteen bars |
+| [FORMAT - the 9 comes after the 10](../screenshots/contoso-format-ordena-mal.webp) | The same figure as a number and as a string. It sorts the second one by sales |
 
 Open them with the `.pbip`. **No test checks the drawing**, and the first two also need you to
 move the slicer with the mouse.
@@ -56,10 +56,10 @@ move the slicer with the mouse.
 
 | page | what it shows |
 |---|---|
-| [dax-lib - ya existe, pero solo el indice](../screenshots/contoso-dax-lib-indice.webp) | `TimeSeries.MovingAverage` is already published on daxlib.org; the index says what exists, it does not bring the code |
-| [dax-reference - MOVINGAVERAGE no aplica aqui](../screenshots/contoso-dax-reference-appliesto.webp) | Native `MOVINGAVERAGE` is `appliesTo: [visual-calculation]` only; a matrix without a filter proves the `WINDOW` alternative does work as a measure |
-| [dax-window-functions - la trampa medida, en vivo](../screenshots/contoso-dax-window-media-movil.webp) | Pin the `Year` slicer to 2024: `Media 3M (rota)` separates from `Media 3M (corregida)` around January-February, with no visible error. The interactive demonstration of `window.md`'s finding |
-| [dax-udf-authoring - reutilizable, no un one-off](../screenshots/contoso-dax-udf-reutilizable.webp) | The two measures on the previous page are wrappers over a single persisted function (`Contoso.Lab.MediaMovil3M_Corregida`); this matrix calls it twice with a different `months` parameter |
+| [dax-lib - it already exists, but only the index](../screenshots/contoso-dax-lib-indice.webp) | `TimeSeries.MovingAverage` is already published on daxlib.org; the index says what exists, it does not bring the code |
+| [dax-reference - MOVINGAVERAGE does not apply here](../screenshots/contoso-dax-reference-appliesto.webp) | Native `MOVINGAVERAGE` is `appliesTo: [visual-calculation]` only; a matrix without a filter proves the `WINDOW` alternative does work as a measure |
+| [dax-window-functions - the trap measured, live](../screenshots/contoso-dax-window-media-movil.webp) | Pin the `Year` slicer to 2024: `Media 3M (rota)` separates from `Media 3M (corregida)` around January-February, with no visible error. The interactive demonstration of `window.md`'s finding |
+| [dax-udf-authoring - reusable, not a one-off](../screenshots/contoso-dax-udf-reutilizable.webp) | The two measures on the previous page are wrappers over a single persisted function (`Contoso.Lab.MediaMovil3M_Corregida`); this matrix calls it twice with a different `months` parameter |
 
 `Contoso.Lab.MediaMovil3M` and `Contoso.Lab.MediaMovil3M_Corregida` live in
 [`functions.tmdl`](./Contoso.SemanticModel/definition/functions.tmdl) — new with these four

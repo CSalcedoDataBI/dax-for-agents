@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Filas de la tabla'"
+                  "Value": "'Rows in the table'"
                 }
               }
             }

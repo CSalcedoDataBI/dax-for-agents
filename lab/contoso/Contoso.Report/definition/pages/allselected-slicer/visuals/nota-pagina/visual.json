@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Selecciona dos o tres marcas y mira las dos ultimas columnas: ALLSELECTED se recalcula con lo que elegiste, ALL no se mueve. Una consulta lo demuestra igual, fijando el filtro por escrito (notes/allselected.md). Lo que solo se ve aqui es el numero cambiando sin que cambie la formula."
+                    "value": "Select two or three brands and look at the last two columns: ALLSELECTED recalculates with what you picked, ALL does not move. A query demonstrates it just as well, pinning the filter in writing (notes/allselected.md). What can only be seen here is the number changing without the formula changing."
                   }
                 ]
               }

@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'AVERAGE - entre 3'"
+                  "Value": "'AVERAGE - over 3'"
                 }
               }
             }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
   "name": "limpiar-pierde",
-  "displayName": "3. Limpiar la fila en blanco pierde 50",
+  "displayName": "3. Cleaning up the blank row loses 50",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280

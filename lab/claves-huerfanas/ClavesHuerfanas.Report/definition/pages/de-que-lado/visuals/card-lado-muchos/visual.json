@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'VALUES del lado MUCHOS'"
+                  "Value": "'VALUES on the MANY side'"
                 }
               }
             }

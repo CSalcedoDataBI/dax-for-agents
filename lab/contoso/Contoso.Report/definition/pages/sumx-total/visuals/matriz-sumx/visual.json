@@ -80,7 +80,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Mira la fila de Total: la primera columna no suma sus propias filas, la segunda si'"
+                  "Value": "'Look at the Total row: the first column does not sum its own rows, the second does'"
                 }
               }
             }

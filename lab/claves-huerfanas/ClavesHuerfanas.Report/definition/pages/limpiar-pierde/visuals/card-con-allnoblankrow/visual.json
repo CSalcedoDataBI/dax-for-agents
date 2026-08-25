@@ -47,7 +47,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Suma con ALLNOBLANKROW'"
+                  "Value": "'Sum with ALLNOBLANKROW'"
                 }
               }
             }

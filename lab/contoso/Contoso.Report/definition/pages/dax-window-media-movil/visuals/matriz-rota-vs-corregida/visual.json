@@ -80,7 +80,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sin filtro coinciden. Fija Year=2024 y mira enero-febrero'"
+                  "Value": "'With no filter they match. Pin Year=2024 and look at January-February'"
                 }
               }
             }

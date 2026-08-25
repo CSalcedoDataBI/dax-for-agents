@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'La columna del medio vale 1 en TODAS las filas'"
+                  "Value": "'The middle column is 1 on EVERY row'"
                 }
               }
             }

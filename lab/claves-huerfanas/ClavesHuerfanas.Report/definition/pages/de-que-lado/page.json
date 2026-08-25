@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
   "name": "de-que-lado",
-  "displayName": "1. De que lado se ve la fila en blanco",
+  "displayName": "1. Which side the blank row shows up on",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280

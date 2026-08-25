@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "La tabla de productos tiene TRES filas, y las dos tarjetas del medio dicen CUATRO. No dicen lo mismo: la de la izquierda cuenta la fila en blanco que el motor anadio por su cuenta para las ventas huerfanas, y la de la derecha cuenta la clave 99, que existe de verdad en Ventas. Confundir esos dos cuatros fue un error real que detecto una review."
+                    "value": "The product table has THREE rows, and the two middle cards say FOUR. They are not saying the same thing: the left one counts the blank row the engine added on its own for the orphaned sales, and the right one counts key 99, which genuinely exists in Ventas. Confusing those two fours was a real mistake, and a review caught it."
                   }
                 ]
               }

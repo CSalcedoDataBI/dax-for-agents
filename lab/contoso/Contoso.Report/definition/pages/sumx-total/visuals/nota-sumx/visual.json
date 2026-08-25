@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "La fila de Total no suma las filas que tienes encima: evalua la medida otra vez, con los filtros de fila quitados. La primera columna es la venta media por producto, y su Total (145.282,32) es la media sobre TODOS los productos, no la suma de la columna (8.406.341,92). La segunda es aditiva y su Total si cuadra. Ojo con la explicacion facil: se midio que SUMX(DimProduct, [Total Sales]) SI cuadra, porque cada venta pertenece a un producto y solo a uno. La transicion de contexto no basta para romper el total; lo que lo rompe es que la medida no sea aditiva."
+                    "value": "The Total row does not sum the rows you have above it: it evaluates the measure again, with the row filters removed. The first column is the average sale per product, and its Total (145.282,32) is the average over ALL products, not the sum of the column (8.406.341,92). The second is additive and its Total does match. Careful with the easy explanation: it was measured that SUMX(DimProduct, [Total Sales]) DOES match, because each sale belongs to one product and only one. Context transition is not enough to break the total; what breaks it is the measure not being additive."
                   }
                 ]
               }

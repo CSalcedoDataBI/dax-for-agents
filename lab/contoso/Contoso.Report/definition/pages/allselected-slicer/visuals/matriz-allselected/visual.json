@@ -94,7 +94,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Selecciona 2-3 marcas: ALLSELECTED cambia con el slicer y ALL no'"
+                  "Value": "'Select 2-3 brands: ALLSELECTED changes with the slicer and ALL does not'"
                 }
               }
             }
