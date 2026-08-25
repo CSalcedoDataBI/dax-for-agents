@@ -85,9 +85,9 @@ Lo contrario rinde más: **publicar los UDFs propios *en* daxlib**, con namespac
 a SQLBI y Kurt Buhler. Distribución gratis, cero infraestructura, y posiciona como parte del
 ecosistema en vez de como quien hizo su propia versión.
 
-Materia prima ya existente en el repo privado: `dax-fp-udf-patterns`. Hoy atado al contexto
-de un cliente, pero el patrón (rolling/trailing sobre un eje arbitrario, double-REMOVEFILTERS,
-evitar dependencia circular) es generalizable y publicable una vez desatado.
+Materia prima ya escrita, pendiente de desatar de su contexto de origen: el patrón
+`dax-fp-udf-patterns` (rolling/trailing sobre un eje arbitrario, double-REMOVEFILTERS, evitar
+dependencia circular) es generalizable y publicable, pero no como está.
 
 ## Consecuencias
 
@@ -95,4 +95,4 @@ evitar dependencia circular) es generalizable y publicable una vez desatado.
   script de espejo, o el script se reorienta a regenerar solo el catálogo.
 - `dax-lib/SKILL.md` deja de prometer TMDL instalable local y pasa a enrutar a daxlib.org.
 - Sigue pendiente por #18: quitar de `dax-lib/SKILL.md` la recomendación dirigida a una medida
-  concreta de un modelo de cliente. La guarda `scripts/check_no_client_leaks.py` la detecta.
+  concreta de un modelo de cliente, que no puede entrar aqui.

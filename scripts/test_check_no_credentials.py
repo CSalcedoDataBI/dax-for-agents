@@ -126,7 +126,7 @@ class Ficheros(unittest.TestCase):
         self.assertEqual(scan_tree(self.dir, frozenset()), [])
 
     def test_un_secreto_en_el_mensaje_del_commit_se_encuentra(self):
-        # Mismo agujero que tenia el guardia de nombres, y aqui pesa mas: un token pegado
+        # Mismo agujero que tenian las rutas, y aqui pesa mas: un token pegado
         # en un mensaje no se arregla borrandolo, se ROTA. Un mensaje no es un blob ni
         # tiene ruta, asi que recorrer blobs no lo veia.
         for a in (("init", "-q"), ("config", "user.email", "t@e.com"),

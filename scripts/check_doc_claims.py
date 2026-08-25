@@ -14,7 +14,7 @@ thing, with no list to keep up to date.
 What is in scope, and what is not
 --------------------------------
 Only quantities the repository can count about ITSELF, exactly: skills, cards, concepts,
-notes, workflows, lab scenarios, forbidden terms, tests, plugins. Each has an entry in
+notes, workflows, lab scenarios, tests, plugins. Each has an entry in
 `_counts` and a noun in `NOUNS`, and a claim about one of them must be right.
 
 Deliberately out of scope, and this is the boundary that stops the list growing forever:
@@ -121,12 +121,6 @@ def _counts(root=ROOT):
     scenarios = len([d for d in glob.glob(os.path.join(root, "lab", "*"))
                      if os.path.isdir(d) and not os.path.basename(d).startswith("__")])
 
-    terms_path = os.path.join(root, "scripts", "forbidden-terms.txt")
-    terms = 0
-    if os.path.isfile(terms_path):
-        with open(terms_path, encoding="utf-8") as f:
-            terms = len([l for l in f if l.strip() and not l.startswith("#")])
-
     # Counted as test METHODS, not by running anything: a gate that runs the suites from
     # inside one of them is a loop. Verified equal to what `unittest discover` reports
     # across the three directories, which is what makes the proxy honest.
@@ -152,7 +146,6 @@ def _counts(root=ROOT):
         "skills": skills,
         "workflows": workflows,
         "scenarios": scenarios,
-        "terms": terms,
         "tests": tests,
         "plugins": plugins,
     }
@@ -173,7 +166,6 @@ NOUNS = {
     "skills": [r"skills?\b"],
     "workflows": [r"workflows?\b"],
     "scenarios": [r"lab scenarios?\b", r"escenarios? de laboratorio\b"],
-    "terms": [r"forbidden terms?\b", r"t[ée]rminos? prohibidos?\b"],
     "tests": [r"tests?\b"],
     "plugins": [r"plugins?\b"],
 }
@@ -210,9 +202,9 @@ def claims_in(text):
     found = []
     for quantity, nouns in NOUNS.items():
         for noun in nouns:
-            # A space inside a multi-word noun becomes \s+, because prose wraps. REVIEW.md
-            # writes "11 términos\n   prohibidos" across a line break, and with a literal
-            # space that claim was invisible while the same phrase on one line matched.
+            # A space inside a multi-word noun becomes \s+, because prose wraps. A doc
+            # writing "4 escenarios de\n   laboratorio" across a line break was invisible
+            # with a literal space, while the same phrase on one line matched.
             pattern = _NUMBER + _GAP + noun.replace(" ", r"\s+")
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 found.append((quantity, _as_int(m.group(1)),

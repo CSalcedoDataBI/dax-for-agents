@@ -54,7 +54,7 @@ El repo ya tomó esta decisión una vez y salió bien: `claves-huerfanas`, `blan
 
 Siete, no dieciséis. Cada uno nuevo se justifica por funciones que **hoy es imposible
 demostrar** — la misma regla que produjo los tres primeros. `relaciones` además cierra el
-hueco que `docs/REVIEW.md` ya confiesa: «`USERELATIONSHIP` no tiene nota».
+hueco ya conocido y anotado en su momento: «`USERELATIONSHIP` no tiene nota».
 
 ## Decisión 2 — un tercio del catálogo no necesita modelo
 

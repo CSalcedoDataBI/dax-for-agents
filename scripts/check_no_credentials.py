@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Falla si algo con forma de credencial aparece en el arbol o en la historia.
 
-Hermano de `check_no_client_leaks.py` y con el mismo motivo: publicar un repositorio
+El motivo es el de siempre: publicar un repositorio
 publica todos sus commits. Un nombre de cliente filtrado es un problema de confidencialidad
 y se arregla reescribiendo la historia; una credencial filtrada es un problema de seguridad
 y hay que **rotarla**, porque desde el segundo en que se publica hay que darla por conocida.
@@ -150,7 +150,7 @@ def scan_tree(root, digests, skip=frozenset()):
 def scan_history(root, digests, skip=frozenset()):
     """Hallazgos de todos los blobs alcanzables Y de todos los mensajes de commit.
 
-    Los mensajes se anadieron por el mismo motivo que en el guardia de nombres, y el motivo
+    Los mensajes se anadieron por el mismo motivo que las rutas, y el motivo
     es peor aqui: un token pegado por descuido en un mensaje de commit se publica igual que
     uno en un fichero, y ademas no se puede arreglar borrandolo — se rota. Un mensaje no es
     un blob ni tiene ruta, asi que recorrer blobs no lo veia. `skip` no le aplica: no hay

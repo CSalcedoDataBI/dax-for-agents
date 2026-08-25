@@ -1,18 +1,28 @@
 # Contributing
 
-## This repository is private and stays private
+## This repository is public, and that is one-way
 
-**Nobody makes this repository public, publishes it, or ships it to any registry or
-marketplace without the owner asking for it in that instruction.** Not a contributor, not an
-automated run, not a "the checklist looked complete" judgement call.
+This repo is public and stands on its own: what is here is the whole thing, and it is the
+source of truth for itself. It is not assembled from anywhere else and does not sync from
+anywhere else.
 
-The repo is assembled partly from a private repo of client work, so going public is a
-one-way door: once a commit is visible it is visible, and the git history goes with it. The
-owner reviews first and decides.
+Being public is a one-way door, which is why it is worth saying out loud rather than
+assuming everyone remembers. **A commit that is visible stays visible**, and the git history
+goes with it — a file deleted three months ago is one `git log -p` away, and the services
+that index GitHub read all of it. So nothing private goes in: no client name, no model from
+a real engagement, no credential, not even in a commit that "will be fixed in the next one".
 
-This is not a soft preference. `publish` is in the autonomous runs' irreversible list, so the
-tool layer refuses it; this line is here so the intent is written down where a human reads it
-too.
+Two gates hold the line, and they are not optional:
+
+```bash
+python scripts/check_no_credentials.py            # el arbol de trabajo. Corre en cada PR
+python scripts/check_no_credentials.py --history  # + todos los blobs alcanzables
+```
+
+The short mode is the cheap one and guards the daily work. The long one walks every object
+any reference can reach; run it after any history rewrite. The lab scenarios under `lab/`
+are **synthetic on purpose** — generated data, Microsoft's fictional "Contoso" — so that a
+claim about DAX can be reproduced without anyone's real numbers.
 
 ## The one rule that matters
 

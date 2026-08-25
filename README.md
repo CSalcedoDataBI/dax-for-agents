@@ -144,7 +144,7 @@ python -m unittest discover -s scripts -t scripts
 
 `check_doc_claims.py` is the one worth knowing about: it reads a number written next to a
 noun this repository counts — cards, concepts, notes, skills, workflows, lab scenarios,
-forbidden terms, tests, plugins — and fails if the tree disagrees. **That list is the whole
+tests, plugins — and fails if the tree disagrees. **That list is the whole
 scope, and example coverage is not in it** (see
 [issue #70](https://github.com/CSalcedoDataBI/dax-for-agents/issues/70)) — which is why this
 README sends you to run `check_examples.py` instead of printing that number. The counts at the

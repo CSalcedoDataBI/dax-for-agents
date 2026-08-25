@@ -16,9 +16,9 @@
 - **Lienzo 1280×720**, el que ya tienen las cuatro páginas vacías.
 - **Ninguna cifra sin medir.** Un número que aparece en una página sale de una medida que `check_lab.py` comprueba, o de la tabla `Tiempos`, que lleva escrito en el TMDL cuándo y cómo se midió.
 - **Prosa en español, código y commits en inglés**, como el resto del repositorio.
-- **Sin nombres de cliente ni marca personal** en ningún fichero. La lista viva está en
-  `scripts/forbidden-terms.txt` y la comprueba `scripts/check_no_client_leaks.py`; nombrar
-  un término aquí lo metería en el repositorio, que es justo lo que el gate impide.
+- **Sin nombres de cliente ni marca personal** en ningún fichero, y sin nombrarlos aquí
+  tampoco: escribir un término para prohibirlo lo mete en el repositorio, que es justo
+  lo que se quiere evitar.
 - Cada tarea termina con **commit**.
 
 ## Plantilla PBIR confirmada

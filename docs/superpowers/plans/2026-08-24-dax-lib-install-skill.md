@@ -15,7 +15,7 @@
 - Every skill folder's name must appear as plain text somewhere in `INDEX.md` — enforced by `scripts/validate_skills.py`.
 - Any prose sentence with a number immediately next to `skills?\b` (or its Spanish word forms, e.g. `cuatro`/`cinco`) is checked against the real skill count by `scripts/check_doc_claims.py`. A **historical** sentence describing a past, dated observation must be reworded to avoid the adjacency pattern rather than have its number changed — changing it would misstate what was actually true then.
 - Attribution for an installed third-party function lives on the function itself (TMDL `///` doc comment + `annotation` key/values), never in a separate notices file — per the approved spec.
-- All six gates (`check_no_client_leaks`, `check_no_credentials`, `check_doc_claims`, `check_examples`, `check_plugin_manifest`, `check_workflow_cost`) and the full `pytest`/`unittest` suite must be green before this is done.
+- All the gates (`check_no_credentials`, `check_doc_claims`, `check_examples`, `check_plugin_manifest`, `check_workflow_cost`, `validate_skills`) and the full `pytest`/`unittest` suite must be green before this is done.
 
 ---
 
@@ -398,7 +398,6 @@ git commit -m "docs: reconcile skill count to 5 across README and REVIEW"
 - [ ] **Step 1: Run all six gates**
 
 ```bash
-python scripts/check_no_client_leaks.py
 python scripts/check_no_credentials.py
 python scripts/check_doc_claims.py
 python scripts/check_examples.py

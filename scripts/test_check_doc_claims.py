@@ -108,10 +108,9 @@ class Disagreeing(unittest.TestCase):
 class MoreThanTheLibrarySize(unittest.TestCase):
     """El paquete de revision afirma mas que fichas y notas, y todo eso se pudre igual."""
 
-    def test_workflows_scenarios_terms_tests_and_plugins_are_counted(self):
+    def test_workflows_scenarios_tests_and_plugins_are_counted(self):
         for phrase, quantity in [("6 workflows", "workflows"),
                                  ("2 lab scenarios", "scenarios"),
-                                 ("11 forbidden terms", "terms"),
                                  ("383 tests", "tests"),
                                  ("1 plugin", "plugins")]:
             self.assertEqual([q for q, _, _ in claims_in(phrase)], [quantity], phrase)
@@ -134,16 +133,16 @@ class MoreThanTheLibrarySize(unittest.TestCase):
                 _re.compile(pattern)
 
     def test_a_multi_word_noun_survives_a_line_break(self):
-        # REVIEW.md escribe "11 términos\n   prohibidos" partido. Con el espacio literal
-        # del patron, esa afirmacion era invisible mientras la misma frase en una linea si
-        # casaba — el peor tipo de cobertura, la que depende de donde cae el margen.
-        self.assertEqual([n for _, n, _ in claims_in("sobre 11 términos\n   prohibidos y")],
-                         [11])
+        # Un doc que escribe "4 escenarios\n   de laboratorio" partido: con el
+        # espacio literal del patron esa afirmacion era invisible mientras la misma frase
+        # en una linea si casaba: el peor tipo de cobertura, la que depende del margen.
+        self.assertEqual([n for _, n, _ in claims_in("sobre 4 escenarios\n   de laboratorio y")],
+                         [4])
         self.assertEqual([n for _, n, _ in claims_in("las 30 field\nnotes de aqui")], [30])
 
     def test_the_reported_phrase_is_readable_after_a_wrap(self):
-        self.assertEqual([p for _, _, p in claims_in("11 términos\n   prohibidos")],
-                         ["11 términos prohibidos"])
+        self.assertEqual([p for _, _, p in claims_in("4 escenarios\n   de laboratorio")],
+                         ["4 escenarios de laboratorio"])
 
 
 class NumbersWrittenAsWords(unittest.TestCase):

@@ -31,8 +31,8 @@ jobs:
 
       # Solo el arbol. El modo --history necesita el historial completo, y el checkout de
       # Actions viene con profundidad 1: pedirlo entero en cada PR es pagar el clon del
-      # repositorio por un barrido que solo hace falta antes de publicar. Ese se corre a
-      # mano y esta escrito en docs/publishing.md.
+      # repositorio por un barrido que no cambia entre PRs. Ese se corre a mano, y hace
+      # falta despues de cualquier reescritura de la historia -- ver CONTRIBUTING.md.
       - name: No credentials
         run: python scripts/check_no_credentials.py
 
