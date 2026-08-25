@@ -65,7 +65,6 @@ HISTORICAL = [
     "CHANGELOG.md",                                   # release-please, past releases
     os.path.join("docs", "decisions"),                # what was true when decided
     os.path.join("docs", "superpowers"),              # specs and plans, dated
-    "evidence",                                       # one record per issue, as it was
     "HANDOFF.md",                                     # a session snapshot, true when written
     ".handoffs",                                      # the archived ones, same reason
 ]
