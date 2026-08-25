@@ -61,6 +61,9 @@ Qué le pasa al rendimiento y bajo qué volumen.
 
 Rules:
 
+- **Write it in English.** The notes and examples are migrating to English; a new one in
+  Spanish will come back as a review comment. The reasoning, and what stays in Spanish on
+  purpose, is in [the decision record](docs/decisions/2026-08-25-english-as-the-repository-language.md).
 - **Only write a note when you have something the docs don't say.** A note that paraphrases the
   official description is noise and makes the ★ flag meaningless.
 - **Show it, don't claim it.** The 31 notes already here each carry the query that
@@ -68,8 +71,8 @@ Rules:
   is the one place in this repo where the content is an assertion rather than derived from
   a source — so it has to bring its own evidence. If you cannot reproduce the behaviour,
   do not write the note.
-- Be concrete. "Puede ser lento" is useless; "1M de transiciones de contexto en un iterador
-  sobre 1M de filas" is a note.
+- Be concrete. "It can be slow" is useless; "1M context transitions in an iterator over 1M
+  rows" is a note.
 - A note without its matching `generated/library/<function>.md` **fails CI** — check the spelling.
 - Notes attach to **functions**, not to concepts. A conceptual page is Microsoft's prose;
   if you have field knowledge about `EVALUATE`, it belongs in a note on the function it
