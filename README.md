@@ -28,7 +28,8 @@ python scripts/check_examples.py
 It prints the current coverage, and it also enforces a floor (`MIN_COVERED`) that refuses to go
 backwards, so a deleted example fails the build instead of quietly shrinking the library. The
 remaining cards carry only Microsoft's own examples, marked as what they are — written against
-a model that is not here. Growing that floor is ongoing work.
+a model that is not here. Growing that floor is
+[epic #6](https://github.com/CSalcedoDataBI/dax-for-agents/issues/6).
 
 **It does not replace DAX experts.** It stops your agent from inventing functions that don't
 exist.
@@ -144,7 +145,8 @@ python -m unittest discover -s scripts -t scripts
 `check_doc_claims.py` is the one worth knowing about: it reads a number written next to a
 noun this repository counts — cards, concepts, notes, skills, workflows, lab scenarios,
 tests, plugins — and fails if the tree disagrees. **That list is the whole
-scope, and example coverage is not in it** — which is why this
+scope, and example coverage is not in it** (see
+[issue #5](https://github.com/CSalcedoDataBI/dax-for-agents/issues/5)) — which is why this
 README sends you to run `check_examples.py` instead of printing that number. The counts at the
 top of this file are kept honest by it, not by anyone
 remembering to update them.
