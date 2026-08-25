@@ -96,6 +96,13 @@ What is **not** checked automatically: **the drawing**. No test knows whether th
 painted. That is verified by opening the `.pbip`, and on the two pages with a slicer you also
 have to move the slicer — a DAX query has no slicer, which is exactly why those pages exist.
 
+`screenshots/` holds one image per page, linked from each scenario's README, so a reader can
+see the trap without installing Power BI. **They are not tests and they do not close that
+gap.** A screenshot is what a page looked like the day it was captured; only opening the
+`.pbip` proves it still looks that way. They were captured on 2026-08-25 through the Power BI
+Desktop bridge, against models refreshed from the published Parquet, on the same run in which
+`check_lab.py` reported green for all four scenarios.
+
 Those thirteen are the **visual-only trap** pages. `contoso` carries four more, of a different
 kind: one per skill in the library, showing what each contributed to the real scenario in
 [`window.md`](../skills/dax-reference/notes/window.md). See
@@ -116,6 +123,7 @@ lab/
   notes_expected.py         what each note's query returns against contoso
   dump_notes.py             regenerates notes_expected.py against an open model
   build_datasets.py         produces the Parquet for the three synthetic scenarios
+  screenshots/              one image per report page, linked from each README
   <scenario>/
     README.md               what it demonstrates, the queries, and the measured results
     <Name>.pbip             the project you open

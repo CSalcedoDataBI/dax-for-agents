@@ -96,8 +96,8 @@ to become a filter, two million times.
 version: 1,001,000,000 and 190,100,000.
 
 > This trap is also **drawn**: page «2. Lo que cuesta cada forma (medido, no calculado)» of the
-> report. Open it with the `.pbip` and look, because that is where you see what the query result
-> does not show.
+> report ([screenshot](../screenshots/rendimiento-2-lo-que-cuesta-cada-forma-medido-no-calculado.webp)). Open
+> it with the `.pbip` and look, because that is where you see what the query result does not show.
 
 ## What this means
 
@@ -144,8 +144,9 @@ checked automatically**: they depend on the machine, and a threshold in a test w
 promise. What the runner guarantees is that the pairs still return the same thing, which is the
 condition without which comparing times means nothing.
 
-> This trap is also **drawn**: page «1. Los pares devuelven el mismo numero» of the report. Open
-> it with the `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «1. Los pares devuelven el mismo numero» of the report
+> ([screenshot](../screenshots/rendimiento-1-los-pares-devuelven-el-mismo-numero.webp)). Open it with the
+> `.pbip` and look, because that is where you see what the query result does not show.
 
 ## Limits, stated
 

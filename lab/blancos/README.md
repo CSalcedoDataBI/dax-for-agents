@@ -54,8 +54,9 @@ ROW(
 iterator "walks every row and therefore counts the empty ones": it does not, it skips the blank
 exactly like `AVERAGE`. The one that departs is `SUM / COUNTROWS`, which divides by 5.
 
-> This trap is also **drawn**: page «1. Quien cuenta y quien no» of the report. Open it with the
-> `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «1. Quien cuenta y quien no» of the report
+> ([screenshot](../screenshots/blancos-denominador.webp)). Open it with the `.pbip` and look, because that is
+> where you see what the query result does not show.
 
 ## 2. How it breaks by accident
 
@@ -86,8 +87,9 @@ they are preventing an error; what they are doing is changing the definition of 
 Neither result is wrong — they depend on whether "no data" means "not applicable" or "zero".
 What is wrong is that the difference is hidden inside a `+ 0`.
 
-> This trap is also **drawn**: page «2. El + 0 que mueve el denominador» of the report. Open it
-> with the `.pbip` and look, because that is where you see what the query result does not show.
+> This trap is also **drawn**: page «2. El + 0 que mueve el denominador» of the report
+> ([screenshot](../screenshots/blancos-mas-cero.webp)). Open it with the `.pbip` and look, because that is
+> where you see what the query result does not show.
 
 ## Where the data comes from
 

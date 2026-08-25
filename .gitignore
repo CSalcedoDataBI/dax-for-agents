@@ -24,3 +24,10 @@ __pycache__/
 skills/dax-reference/.publish-*/
 /HANDOFF.md
 /.handoffs/
+
+# Session scratch: one-off scripts, unoptimised captures.
+/tmp/
+
+# Agent harness notes. They record what is true of the MACHINE a session ran on —
+# assembly paths, which refresh path leaves a banner — not of this repository.
+/.claude/

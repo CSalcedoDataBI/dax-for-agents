@@ -12,7 +12,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from check_doc_claims import (  # noqa: E402
-    check, claims_in, main, stale_stamps, unlisted_documents,
+    _counts, check, claims_in, main, stale_stamps, unlisted_documents,
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -107,6 +107,21 @@ class Disagreeing(unittest.TestCase):
 
 class MoreThanTheLibrarySize(unittest.TestCase):
     """El paquete de revision afirma mas que fichas y notas, y todo eso se pudre igual."""
+
+    def test_only_a_folder_with_a_pbip_counts_as_a_scenario(self):
+        # `lab/screenshots/` se anadio y paso a ser el quinto escenario, porque el conteo
+        # miraba carpetas. Lo que define un escenario es el proyecto que se abre.
+        d = tempfile.mkdtemp()
+        try:
+            for sub, ficheros in [("contoso", ["Contoso.pbip"]),
+                                  ("blancos", ["Blancos.pbip"]),
+                                  ("screenshots", ["una.webp", "otra.webp"])]:
+                os.makedirs(os.path.join(d, "lab", sub))
+                for f in ficheros:
+                    open(os.path.join(d, "lab", sub, f), "w", encoding="utf-8").close()
+            self.assertEqual(_counts(d)["scenarios"], 2)
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
 
     def test_workflows_scenarios_tests_and_plugins_are_counted(self):
         for phrase, quantity in [("6 workflows", "workflows"),

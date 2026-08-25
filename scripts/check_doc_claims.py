@@ -117,8 +117,11 @@ def _counts(root=ROOT):
                   if os.path.isfile(os.path.join(skills_dir, d, "SKILL.md"))])
 
     workflows = len(glob.glob(os.path.join(root, ".github", "workflows", "*.yml")))
-    scenarios = len([d for d in glob.glob(os.path.join(root, "lab", "*"))
-                     if os.path.isdir(d) and not os.path.basename(d).startswith("__")])
+    # A scenario is a folder holding a .pbip, not merely a folder under lab/. Counting
+    # directories made `lab/screenshots/` the fifth scenario the day it was added; the
+    # exclusion list would then have had to grow with every non-scenario folder, and each
+    # entry is a chance to forget one. What defines a scenario is the project you open.
+    scenarios = len(glob.glob(os.path.join(root, "lab", "*", "*.pbip")))
 
     # Counted as test METHODS, not by running anything: a gate that runs the suites from
     # inside one of them is a loop. Verified equal to what `unittest discover` reports
