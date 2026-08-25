@@ -16,12 +16,12 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-NOTES_DIR = os.path.join(os.path.dirname(HERE), "dax-reference", "notes")
+NOTES_DIR = os.path.join(os.path.dirname(HERE), "skills", "dax-reference", "notes")
 
 # Notas que se miden en OTRO escenario del laboratorio y no sobre Contoso. Su pie lo dice.
 OTHER_SCENARIO = {"averagex"}
 
-CABECERA = '''"""Lo que devuelve cada consulta publicada en `dax-reference/notes/` sobre `lab/contoso`.
+CABECERA = '''"""Lo que devuelve cada consulta publicada en `skills/dax-reference/notes/` sobre `lab/contoso`.
 
 Este fichero no repite las consultas: las lee `check_lab.py` del propio .md de la nota, que
 es su unica fuente. Aqui solo viven los RESULTADOS, y por eso una nota deja de ser una

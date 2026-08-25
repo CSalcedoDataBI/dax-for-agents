@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLUGIN = {
     "name": "dax",
     "version": "0.1.0",
-    "skills": ["./alpha-skill", "./beta-skill"],
+    "skills": ["./skills/alpha-skill", "./skills/beta-skill"],
 }
 MARKET = {
     "name": "dax-for-agents",
@@ -33,9 +33,11 @@ class Fixture:
     def __init__(self, plugin=None, market=None, skills=("alpha-skill", "beta-skill")):
         self.dir = tempfile.mkdtemp()
         os.mkdir(os.path.join(self.dir, ".claude-plugin"))
+        os.mkdir(os.path.join(self.dir, "skills"))
         for name in skills:
-            os.mkdir(os.path.join(self.dir, name))
-            with open(os.path.join(self.dir, name, "SKILL.md"), "w", encoding="utf-8") as f:
+            os.mkdir(os.path.join(self.dir, "skills", name))
+            with open(os.path.join(self.dir, "skills", name, "SKILL.md"),
+                      "w", encoding="utf-8") as f:
                 f.write(f"---\nname: {name}\ndescription: Use when testing.\n---\n")
         self.write("plugin.json", PLUGIN if plugin is None else plugin)
         self.write("marketplace.json", MARKET if market is None else market)
@@ -66,16 +68,18 @@ class SkillsList(unittest.TestCase):
     def test_a_skill_missing_from_the_manifest_fails(self):
         # El fallo que motiva todo esto: la skill existe, el plugin la ignora, y nadie
         # se entera porque instalar sigue diciendo exito.
-        with Fixture(plugin=deep(PLUGIN, skills=["./alpha-skill"])) as f:
+        with Fixture(plugin=deep(PLUGIN, skills=["./skills/alpha-skill"])) as f:
             errors = check(f.dir)
         self.assertEqual(len(errors), 1)
         self.assertIn("beta-skill", errors[0])
 
     def test_a_listed_path_that_does_not_exist_fails(self):
         # Claude Code no falla aqui: si NINGUNA ruta existe vuelve al escaneo por
-        # defecto, que sin skills/ no encuentra nada. Cero skills, instalacion en verde.
-        with Fixture(plugin=deep(PLUGIN, skills=["./alpha-skill", "./beta-skill",
-                                                 "./ghost-skill"])) as f:
+        # defecto. Ahora ese escaneo SI encuentra skills/, asi que una entrada muerta
+        # ya no vacia el plugin -- pero sigue siendo una mentira en el manifiesto.
+        with Fixture(plugin=deep(PLUGIN, skills=["./skills/alpha-skill",
+                                                 "./skills/beta-skill",
+                                                 "./skills/ghost-skill"])) as f:
             errors = check(f.dir)
         self.assertEqual(len(errors), 1)
         self.assertIn("ghost-skill", errors[0])
@@ -84,7 +88,8 @@ class SkillsList(unittest.TestCase):
         # Ojo con afirmar solo que el mensaje contiene './': sin la comprobacion del
         # prefijo, 'alpha-skill' se recorta a 'pha-skill' y el error de ruta inexistente
         # tambien lleva './'. El test pasaba con el arreglo quitado.
-        with Fixture(plugin=deep(PLUGIN, skills=["alpha-skill", "./beta-skill"])) as f:
+        with Fixture(plugin=deep(PLUGIN, skills=["skills/alpha-skill",
+                                                 "./skills/beta-skill"])) as f:
             errors = check(f.dir)
         prefix = [e for e in errors if "must be a path starting" in e]
         self.assertEqual(len(prefix), 1, errors)
@@ -95,7 +100,7 @@ class SkillsList(unittest.TestCase):
         del plugin["skills"]
         with Fixture(plugin=plugin) as f:
             errors = check(f.dir)
-        self.assertTrue(any("zero skills" in e for e in errors), errors)
+        self.assertTrue(any("reviewable" in e for e in errors), errors)
 
     def test_an_empty_skills_array_fails(self):
         # `assertTrue(check(...))` pasaria con la comprobacion quitada: el array vacio
@@ -103,10 +108,11 @@ class SkillsList(unittest.TestCase):
         # mensaje concreto, no que la lista no este vacia.
         with Fixture(plugin=deep(PLUGIN, skills=[])) as f:
             errors = check(f.dir)
-        self.assertTrue(any("zero skills" in e for e in errors), errors)
+        self.assertTrue(any("reviewable" in e for e in errors), errors)
 
     def test_a_trailing_slash_is_the_same_path(self):
-        with Fixture(plugin=deep(PLUGIN, skills=["./alpha-skill/", "./beta-skill"])) as f:
+        with Fixture(plugin=deep(PLUGIN, skills=["./skills/alpha-skill/",
+                                                 "./skills/beta-skill"])) as f:
             self.assertEqual(check(f.dir), [])
 
 
@@ -127,7 +133,7 @@ class TheTwoNames(unittest.TestCase):
 
     def test_skills_declared_twice_fails(self):
         market = deep(MARKET)
-        market["plugins"][0]["skills"] = ["./alpha-skill"]
+        market["plugins"][0]["skills"] = ["./skills/alpha-skill"]
         with Fixture(market=market) as f:
             errors = check(f.dir)
         self.assertTrue(any("two sources of truth" in e for e in errors), errors)
@@ -176,8 +182,11 @@ class TheRealRepo(unittest.TestCase):
         self.assertEqual(errors, [], "\n".join(errors or []))
 
     def test_the_five_skills_are_the_ones_shipped(self):
-        self.assertEqual(skill_dirs(ROOT), ["dax-lib", "dax-lib-install", "dax-reference",
-                                            "dax-udf-authoring", "dax-window-functions"])
+        self.assertEqual(skill_dirs(ROOT), ["skills/dax-lib",
+                                            "skills/dax-lib-install",
+                                            "skills/dax-reference",
+                                            "skills/dax-udf-authoring",
+                                            "skills/dax-window-functions"])
 
 
 if __name__ == "__main__":

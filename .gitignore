@@ -21,6 +21,6 @@ __pycache__/
 
 # Scratch left behind by a crashed sync. The prefix moved from .library.staging- to
 # .publish-; an ignore rule guarding a path the code no longer uses guards nothing.
-dax-reference/.publish-*/
+skills/dax-reference/.publish-*/
 /HANDOFF.md
 /.handoffs/

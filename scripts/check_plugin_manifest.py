@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Fail if the plugin manifest and the skills on disk disagree.
 
-The skills sit flat at the repo root, not under `skills/`, so nothing is discovered
-automatically: `.claude-plugin/plugin.json` names each one by path and that list IS the
-plugin. A skill missing from it ships invisible, and Claude Code does not complain --
-the docs are explicit that when none of the listed paths exist the default scan runs
-instead, which here finds nothing at all. That is a plugin that installs, reports
-success, and loads zero skills. It was reproduced before this check existed.
+The skills sit under `skills/`, which is also where the default scan looks, so a wrong
+list is no longer the difference between five skills and none. It is still worth
+checking: `.claude-plugin/plugin.json` names each one by path, and a skill missing from
+that list ships invisible without Claude Code complaining -- the docs are explicit that
+when none of the listed paths exist the default scan runs instead. Before the move to
+`skills/` that fallback found nothing at all, and the resulting plugin installed,
+reported success, and loaded zero skills. It was reproduced before this check existed.
 
 Run: python scripts/check_plugin_manifest.py
 """
@@ -23,9 +24,14 @@ MIN_CLAUDE_CODE = "2.1.142"
 
 
 def skill_dirs(root):
-    """Every top-level directory holding a SKILL.md -- the same rule validate_skills uses."""
-    return sorted(d for d in os.listdir(root)
-                  if os.path.isfile(os.path.join(root, d, "SKILL.md")))
+    """Every skills/ directory holding a SKILL.md, as a repo-relative posix path.
+
+    Same rule validate_skills uses, and the same shape plugin.json spells: comparing
+    a bare folder name against a "./skills/x" entry would report every skill missing.
+    """
+    base = os.path.join(root, "skills")
+    return sorted("skills/" + d for d in (os.listdir(base) if os.path.isdir(base) else [])
+                  if os.path.isfile(os.path.join(base, d, "SKILL.md")))
 
 
 def check(root):
@@ -56,8 +62,9 @@ def check(root):
     if not isinstance(declared, list) or not declared:
         # A string form would load too, but only the array can be checked entry by entry
         # against the tree, and being checkable is the point.
-        errors.append("plugin.json has no 'skills' array. Nothing sits under skills/, so "
-                      "without it the plugin installs and loads zero skills.")
+        errors.append("plugin.json has no 'skills' array. The default scan of skills/ "
+                      "would cover for it, but silently -- the list is what makes the "
+                      "set of shipped skills reviewable.")
         declared = []
 
     on_disk = skill_dirs(root)
@@ -92,7 +99,7 @@ def check(root):
         if isinstance(entry, dict) and entry.get("name") == plugin.get("name"):
             if entry.get("source") != "./":
                 errors.append(f"marketplace entry '{entry.get('name')}' has source "
-                              f"{entry.get('source')!r}; the skills live at the repo "
+                              f"{entry.get('source')!r}; the plugin root is the repo "
                               f"root, so it has to be './'")
             if "skills" in entry:
                 errors.append("the marketplace entry also declares 'skills'. Keep the "

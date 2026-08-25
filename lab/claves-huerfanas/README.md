@@ -7,7 +7,7 @@ descarta esas filas ni da error: añade una **fila en blanco** a la dimensión y
 todo lo huérfano. Esa fila no está en los datos, aparece sola.
 
 Contoso no sirve para enseñarlo porque tiene la integridad referencial intacta. Por eso la
-nota de [`countrows`](../../dax-reference/notes/countrows.md) tuvo que **retirar** esa
+nota de [`countrows`](../../skills/dax-reference/notes/countrows.md) tuvo que **retirar** esa
 afirmación tras una review: no se podía demostrar, y una nota sin demostrar no se escribe.
 Este modelo existe para poder escribirla.
 

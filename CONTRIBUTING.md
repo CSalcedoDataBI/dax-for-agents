@@ -16,7 +16,7 @@ too.
 
 ## The one rule that matters
 
-**Everything under `dax-reference/generated/` is generated. Never edit it by hand.** Your
+**Everything under `skills/dax-reference/generated/` is generated. Never edit it by hand.** Your
 change would be silently erased by the next sync, which replaces that whole directory in one
 move. Everything beside it — `SKILL.md`, `NOTICE`, `overrides.json`, `notes/` — is yours to
 edit and the sync never touches it. CI fails if anything generated turns up outside
@@ -27,15 +27,15 @@ If a generated card is wrong, the fix is one of:
 - **Wrong upstream** → fix it in
   [`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs) and let the weekly
   sync pick it up.
-- **Wrong parse** → fix `dax-reference/scripts/sync_query_docs.py`.
-- **Right but incomplete** → that is what `dax-reference/notes/` is for. Write a note.
+- **Wrong parse** → fix `skills/dax-reference/scripts/sync_query_docs.py`.
+- **Right but incomplete** → that is what `skills/dax-reference/notes/` is for. Write a note.
 
 ## Writing a note
 
 Notes are the reason this repo exists. They hold what Microsoft's docs do not say: the trap,
 the "you meant the other function", the performance cost.
 
-Create `dax-reference/notes/<function>.md` (lowercase, matching the card filename). Use the
+Create `skills/dax-reference/notes/<function>.md` (lowercase, matching the card filename). Use the
 headings that apply — skip the ones that don't:
 
 ```markdown
@@ -101,7 +101,7 @@ Contributions are MIT. Do **not** paste content from GPL-licensed sources — no
 which is GPL-3.0. Link to it instead.
 
 Content derived from `query-docs` is CC BY 4.0 and confined to the generated folders covered by
-[`dax-reference/NOTICE`](dax-reference/NOTICE). Keep it that way.
+[`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE). Keep it that way.
 
 ## Commits
 

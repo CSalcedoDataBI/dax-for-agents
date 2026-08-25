@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Leer y escribir los ficheros de `dax-reference/examples/`.
+"""Leer y escribir los ficheros de `skills/dax-reference/examples/`.
 
 Un ejemplo es un par: un bloque ```dax y el bloque ```result que trajo el motor. Este modulo
 es la unica definicion de ese formato — lo usan el gate (`check_examples.py`), el runner
@@ -14,7 +14,7 @@ import os
 import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXAMPLES_DIR = os.path.join(ROOT, "dax-reference", "examples")
+EXAMPLES_DIR = os.path.join(ROOT, "skills", "dax-reference", "examples")
 
 BLANK = "(blank)"
 # La cadena vacia NO es un blanco, y en DAX esa diferencia decide resultados. Sin marcarla

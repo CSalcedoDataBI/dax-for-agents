@@ -23,16 +23,16 @@ class Fixture:
 
     def __init__(self, doc=""):
         self.dir = tempfile.mkdtemp()
-        gen = os.path.join(self.dir, "dax-reference", "generated")
+        gen = os.path.join(self.dir, "skills", "dax-reference", "generated")
         for sub, names in [(os.path.join(gen, "library"), ["abs.md", "acos.md"]),
                            (os.path.join(gen, "concepts"), ["dax-glossary.md"]),
-                           (os.path.join(self.dir, "dax-reference", "notes"),
+                           (os.path.join(self.dir, "skills", "dax-reference", "notes"),
                             ["abs.md", "acos.md", "sumx.md"])]:
             os.makedirs(sub)
             for n in names:
                 open(os.path.join(sub, n), "w", encoding="utf-8").close()
-        os.makedirs(os.path.join(self.dir, "una-skill"))
-        open(os.path.join(self.dir, "una-skill", "SKILL.md"), "w", encoding="utf-8").close()
+        os.makedirs(os.path.join(self.dir, "skills", "una-skill"))
+        open(os.path.join(self.dir, "skills", "una-skill", "SKILL.md"), "w", encoding="utf-8").close()
         with open(os.path.join(self.dir, "DOC.md"), "w", encoding="utf-8") as f:
             f.write(doc)
 
@@ -254,7 +254,7 @@ class TheUpstreamStamp(unittest.TestCase):
 
     def _fixture(self, stamped, prose):
         f = Fixture("")
-        gen = os.path.join(f.dir, "dax-reference", "generated")
+        gen = os.path.join(f.dir, "skills", "dax-reference", "generated")
         with open(os.path.join(gen, "catalog.json"), "w", encoding="utf-8") as fh:
             json.dump({"source": f"MicrosoftDocs/query-docs@{stamped}"}, fh)
         with open(os.path.join(f.dir, "DOC.md"), "w", encoding="utf-8") as fh:
@@ -309,14 +309,14 @@ class TheUpstreamStamp(unittest.TestCase):
         # Devolver [] ahi dice "ningun sello desfasado" cuando la verdad es "no se pudo
         # comprobar", que es el paso en vacio de siempre.
         with self._fixture("323524c", "de `MicrosoftDocs/query-docs@c6a9a72`.") as f:
-            os.remove(os.path.join(f.dir, "dax-reference", "generated", "catalog.json"))
+            os.remove(os.path.join(f.dir, "skills", "dax-reference", "generated", "catalog.json"))
             errors = stale_stamps(f.dir, ["DOC.md"])
         self.assertEqual(len(errors), 1)
         self.assertIn("cannot be checked", errors[0])
 
     def test_a_catalog_without_a_source_is_reported(self):
         with self._fixture("323524c", "de `MicrosoftDocs/query-docs@c6a9a72`.") as f:
-            path = os.path.join(f.dir, "dax-reference", "generated", "catalog.json")
+            path = os.path.join(f.dir, "skills", "dax-reference", "generated", "catalog.json")
             with open(path, "w", encoding="utf-8") as fh:
                 json.dump({"functions": []}, fh)
             errors = stale_stamps(f.dir, ["DOC.md"])
@@ -394,8 +394,8 @@ class TheListThatRechecksItself(unittest.TestCase):
         # dax-udf-authoring dice "1,649 functions" del catalogo de daxlib. Es cierto, y de
         # otra cosa: discutirselo seria el gate equivocandose.
         with Fixture("") as f:
-            os.makedirs(os.path.join(f.dir, "otra-skill"))
-            with open(os.path.join(f.dir, "otra-skill", "SKILL.md"), "w",
+            os.makedirs(os.path.join(f.dir, "skills", "otra-skill"))
+            with open(os.path.join(f.dir, "skills", "otra-skill", "SKILL.md"), "w",
                       encoding="utf-8") as fh:
                 fh.write("daxlib publica 1,649 functions.\n")
             self.assertEqual(check(root=f.dir, docs=["DOC.md"]), [])
@@ -405,8 +405,8 @@ class TheListThatRechecksItself(unittest.TestCase):
         # Es prosa sobre lo que hace DAX, no sobre lo que tiene el repo. Sus cifras las
         # comprueba check_examples.py contra el motor, que es quien puede.
         with Fixture("") as f:
-            os.makedirs(os.path.join(f.dir, "dax-reference", "examples", "math-and-trig"))
-            with open(os.path.join(f.dir, "dax-reference", "examples", "math-and-trig",
+            os.makedirs(os.path.join(f.dir, "skills", "dax-reference", "examples", "math-and-trig"))
+            with open(os.path.join(f.dir, "skills", "dax-reference", "examples", "math-and-trig",
                                    "floor.md"), "w", encoding="utf-8") as fh:
                 fh.write("Tres funciones, dos comportamientos.\n")
             self.assertEqual(check(root=f.dir, docs=["DOC.md"]), [])
@@ -415,8 +415,8 @@ class TheListThatRechecksItself(unittest.TestCase):
         # Solo `examples`. Una nota de campo que cuente fichas sigue teniendo que cuadrar:
         # sin este limite, exceptuar la prosa didactica apagaria el gate en todo el arbol.
         with Fixture("") as f:
-            os.makedirs(os.path.join(f.dir, "dax-reference", "notes"), exist_ok=True)
-            with open(os.path.join(f.dir, "dax-reference", "notes", "nueva.md"), "w",
+            os.makedirs(os.path.join(f.dir, "skills", "dax-reference", "notes"), exist_ok=True)
+            with open(os.path.join(f.dir, "skills", "dax-reference", "notes", "nueva.md"), "w",
                       encoding="utf-8") as fh:
                 fh.write("Tiene 999 fichas.\n")
             errors = check(root=f.dir, docs=["DOC.md"])

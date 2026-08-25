@@ -83,12 +83,12 @@ El criterio, aplicado a las 30 notas: entra la que **necesita** un visual para e
 
 | página | nota | visual | por qué no cabe en una consulta |
 |---|---|---|---|
-| `allselected-slicer` | [`allselected`](../../../dax-reference/notes/allselected.md) | slicer de `Brand` + matriz + tarjetas | respeta el filtro **externo** y quita el interno. Sin slicer no hay filtro externo que respetar |
-| `rankx-matriz` | [`rankx`](../../../dax-reference/notes/rankx.md) | matriz por `Brand` con la medida de ranking | la matriz trae **una sola marca** al contexto de cada fila, así que rankea 1 en todas |
-| `selectedvalue-tarjeta` | [`selectedvalue`](../../../dax-reference/notes/selectedvalue.md) | slicer + tarjeta | la tarjeta vacía **no distingue** «seleccionó varios» de «no seleccionó nada» |
-| `sumx-total` | [`sumx`](../../../dax-reference/notes/sumx.md) | matriz con fila de Total | el **Total** no cuadra con la suma de las filas que ves. En una consulta no hay fila de total |
-| `blanco-desaparece` | [`divide`](../../../dax-reference/notes/divide.md) · [`count`](../../../dax-reference/notes/count.md) | dos gráficos idénticos, uno con blanco y otro con cero | el blanco **borra la categoría**; el cero la dibuja. En un resultado tabular los dos ocupan una celda |
-| `format-ordena-mal` | [`format`](../../../dax-reference/notes/format.md) | dos tablas, número contra cadena | el visual ordena la cadena alfabéticamente: **el 9 va después del 10** |
+| `allselected-slicer` | [`allselected`](../../../skills/dax-reference/notes/allselected.md) | slicer de `Brand` + matriz + tarjetas | respeta el filtro **externo** y quita el interno. Sin slicer no hay filtro externo que respetar |
+| `rankx-matriz` | [`rankx`](../../../skills/dax-reference/notes/rankx.md) | matriz por `Brand` con la medida de ranking | la matriz trae **una sola marca** al contexto de cada fila, así que rankea 1 en todas |
+| `selectedvalue-tarjeta` | [`selectedvalue`](../../../skills/dax-reference/notes/selectedvalue.md) | slicer + tarjeta | la tarjeta vacía **no distingue** «seleccionó varios» de «no seleccionó nada» |
+| `sumx-total` | [`sumx`](../../../skills/dax-reference/notes/sumx.md) | matriz con fila de Total | el **Total** no cuadra con la suma de las filas que ves. En una consulta no hay fila de total |
+| `blanco-desaparece` | [`divide`](../../../skills/dax-reference/notes/divide.md) · [`count`](../../../skills/dax-reference/notes/count.md) | dos gráficos idénticos, uno con blanco y otro con cero | el blanco **borra la categoría**; el cero la dibuja. En un resultado tabular los dos ocupan una celda |
+| `format-ordena-mal` | [`format`](../../../skills/dax-reference/notes/format.md) | dos tablas, número contra cadena | el visual ordena la cadena alfabéticamente: **el 9 va después del 10** |
 
 ## Lo que hay que tocar además del PBIR
 

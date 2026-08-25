@@ -36,7 +36,7 @@ WORD = re.compile(r"[a-z0-9]+")
 
 def load_skills():
     skills = {}
-    for skill_md in glob.glob(os.path.join(ROOT, "*", "SKILL.md")):
+    for skill_md in glob.glob(os.path.join(ROOT, "skills", "*", "SKILL.md")):
         txt = open(skill_md, encoding="utf-8").read()
         m = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", txt, re.S)
         if not m:
@@ -191,7 +191,7 @@ def accuracy_eval(catalog, cases, top_n=RETRIEVAL_TOP_N):
         # Con casos escritos y sin catálogo, devolver 0 seria afirmar que se comprobó algo.
         # Un PR que borre o no genere el catálogo tiene que ponerse rojo.
         return 1, [f"hay {len(cases)} caso(s) de exactitud y no hay catálogo legible en "
-                   f"dax-reference/generated/catalog.json — genera la biblioteca antes"]
+                   f"skills/dax-reference/generated/catalog.json — genera la biblioteca antes"]
 
     for case in cases:
         name = case.get("expectFunction")
@@ -272,7 +272,7 @@ def model_eval(skills, cases):
 
 def load_catalog():
     """El catálogo generado, o None si la biblioteca aún no se ha construido."""
-    path = os.path.join(ROOT, "dax-reference", "generated", "catalog.json")
+    path = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
     try:
         with open(path, encoding="utf-8") as f:
             return json.load(f)

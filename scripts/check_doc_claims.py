@@ -53,7 +53,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = ["README.md",
         "INDEX.md",
         "CONTRIBUTING.md",
-        os.path.join("dax-reference", "SKILL.md"),
+        os.path.join("skills", "dax-reference", "SKILL.md"),
         os.path.join("lab", "README.md"),
         os.path.join("lab", "contoso", "README.md")]
 
@@ -75,7 +75,7 @@ HISTORICAL = [
 # — dax-udf-authoring says "1,649 functions" about daxlib's catalogue, which is a true
 # sentence about something else, and a checker that argues with it would be wrong.
 SCOPE_FILES = [""]                                    # top-level .md, not recursive
-SCOPE_TREES = ["docs", "dax-reference", "lab"]
+SCOPE_TREES = ["docs", os.path.join("skills", "dax-reference"), "lab"]
 
 # Prose about what DAX does is not prose about what this repository holds, and the example
 # files are all of the first kind. `floor.md` says "Tres funciones, dos comportamientos"
@@ -87,7 +87,7 @@ SCOPE_TREES = ["docs", "dax-reference", "lab"]
 # RESULTS and they have a stricter gate than this one: check_examples.py rejects any query
 # without a result block, and lab/check_lab.py re-runs every single one against the engine
 # and fails if a digit moved. This gate checks inventory claims; that one checks the DAX.
-OUT_OF_SCOPE = [os.path.join("dax-reference", "examples")]
+OUT_OF_SCOPE = [os.path.join("skills", "dax-reference", "examples")]
 
 # The noun must follow the number directly. Only markdown emphasis and spaces may sit
 # between them.
@@ -106,15 +106,16 @@ def _counts(root=ROOT):
     checking a fixture's prose compares two different repositories, and every test in the
     suite failed on exactly that.
     """
-    ref = os.path.join(root, "dax-reference")
+    ref = os.path.join(root, "skills", "dax-reference")
     gen = os.path.join(ref, "generated")
 
     def md(path):
         return len([f for f in os.listdir(path) if f.endswith(".md")]) \
             if os.path.isdir(path) else 0
 
-    skills = len([d for d in os.listdir(root)
-                  if os.path.isfile(os.path.join(root, d, "SKILL.md"))])
+    skills_dir = os.path.join(root, "skills")
+    skills = len([d for d in (os.listdir(skills_dir) if os.path.isdir(skills_dir) else [])
+                  if os.path.isfile(os.path.join(skills_dir, d, "SKILL.md"))])
 
     workflows = len(glob.glob(os.path.join(root, ".github", "workflows", "*.yml")))
     scenarios = len([d for d in glob.glob(os.path.join(root, "lab", "*"))
@@ -130,7 +131,7 @@ def _counts(root=ROOT):
     # inside one of them is a loop. Verified equal to what `unittest discover` reports
     # across the three directories, which is what makes the proxy honest.
     tests = 0
-    for pattern in ("dax-reference/scripts", "scripts", "evals"):
+    for pattern in ("skills/dax-reference/scripts", "scripts", "evals"):
         for path in glob.glob(os.path.join(root, pattern, "test_*.py")):
             with open(path, encoding="utf-8") as f:
                 tests += len(re.findall(r"^\s+def test_", f.read(), re.M))
@@ -257,7 +258,7 @@ def stale_stamps(root=ROOT, docs=None):
     # stale stamps", it is "a sentence names a commit and I cannot check it" — which
     # `validate_skills` would not catch, because it only notices a missing catalog when
     # cards exist beside it.
-    catalog = os.path.join(root, "dax-reference", "generated", "catalog.json")
+    catalog = os.path.join(root, "skills", "dax-reference", "generated", "catalog.json")
     try:
         with open(catalog, encoding="utf-8") as f:
             stamped = json.load(f)["source"].split("@")[-1].lower()

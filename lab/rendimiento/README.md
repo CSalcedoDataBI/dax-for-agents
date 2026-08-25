@@ -109,7 +109,7 @@ La regla que se sostiene con estos números no es «no uses FILTER sobre tablas�
 
 > **No metas una medida donde vas a iterar dos millones de filas.**
 
-Ver [`sumx`](../../dax-reference/notes/sumx.md) y [`calculate`](../../dax-reference/notes/calculate.md)
+Ver [`sumx`](../../skills/dax-reference/notes/sumx.md) y [`calculate`](../../skills/dax-reference/notes/calculate.md)
 para el mecanismo, que es el mismo que hace que `SUMX` con una medida dé un número distinto
 al de `SUMX` con la expresión escrita a mano. Aquí se ve lo que además cuesta.
 

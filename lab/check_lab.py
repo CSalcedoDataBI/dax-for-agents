@@ -392,7 +392,7 @@ def run_notes(data_source):
 
 
 def run_examples(data_source, model="contoso"):
-    """Ejecuta los ejemplos de `dax-reference/examples/` y los compara con su bloque result.
+    """Ejecuta los ejemplos de `skills/dax-reference/examples/` y los compara con su bloque result.
 
     `model` dice QUE escenario esta abierto en `data_source`. Se ejecuta lo que declara ese
     modelo y lo que declara `ninguno` —aritmetica, texto, logica— que corre contra cualquier
@@ -478,7 +478,7 @@ def local_instances():
 
 def main(argv):
     # `examples` no es un escenario del laboratorio: es un modo que recorre
-    # dax-reference/examples/ contra el escenario que ya tengas abierto.
+    # skills/dax-reference/examples/ contra el escenario que ya tengas abierto.
     if len(argv) > 1 and argv[1] == "examples":
         if len(argv) < 3:
             print(f"Uso: {argv[0]} examples <servidor:puerto> [modelo abierto]",

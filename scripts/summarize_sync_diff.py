@@ -16,7 +16,7 @@ says which functions changed and which files only moved their stamp.
 
 Reads a `git diff -U0` on stdin.
 
-Run: git diff -U0 -- dax-reference/generated |
+Run: git diff -U0 -- skills/dax-reference/generated |
        python scripts/summarize_sync_diff.py --old-sha c6a9a72 --new-sha 323524c
 """
 import re

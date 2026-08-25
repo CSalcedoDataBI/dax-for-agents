@@ -52,7 +52,7 @@ jobs:
         run: python scripts/check_examples.py
 
       - name: Unit tests (sync pipeline)
-        run: python -m unittest discover -s dax-reference/scripts -t dax-reference/scripts -v
+        run: python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts -v
 
       - name: Unit tests (repo scripts)
         run: python -m unittest discover -s scripts -t scripts -v

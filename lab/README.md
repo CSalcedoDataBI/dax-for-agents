@@ -1,6 +1,6 @@
 # lab — evidencia que se puede ejecutar
 
-Las notas de campo de [`dax-reference/notes/`](../dax-reference/notes/) traen la consulta que
+Las notas de campo de [`dax-reference/notes/`](../skills/dax-reference/notes/) traen la consulta que
 demuestra cada trampa y el número que devolvió. Este directorio es el otro lado de esa
 promesa: **los modelos donde ejecutarlas**.
 
@@ -72,7 +72,7 @@ Que estén en un parquet en vez de en el TMDL no las esconde — las publica.
 3. Compara con la tabla de resultados publicada.
 
 En `contoso` el paso 2 son las consultas de las **notas de campo**, que están en
-[`dax-reference/notes/`](../dax-reference/notes/) y no repetidas en su README.
+[`dax-reference/notes/`](../skills/dax-reference/notes/) y no repetidas en su README.
 
 El `.gitignore` de cada escenario excluye `.pbi/`, que es la caché local de Power BI Desktop
 (unos megas de binario por modelo). Solo se versiona el texto.
@@ -95,7 +95,7 @@ en una consulta DAX no hay slicer, que es justo por lo que esas páginas existen
 
 Esas trece son las páginas de **trampa visual-only**. `contoso` trae cuatro páginas más, de otro
 tipo: una por cada skill de la biblioteca, mostrando lo que aportó al escenario real de
-[`window.md`](../dax-reference/notes/window.md). Ver
+[`window.md`](../skills/dax-reference/notes/window.md). Ver
 [`lab/contoso/README.md`](./contoso/README.md#las-otras-cuatro-lo-que-aportó-cada-skill).
 
 Y no es una precaución teórica. Al construirlas, mirar el dibujo encontró tres cosas que ninguna

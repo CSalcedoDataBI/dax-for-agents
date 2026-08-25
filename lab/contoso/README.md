@@ -30,7 +30,7 @@ ser el que dicen, no tiene sentido seguir.
 Seis existen porque una trampa de las notas de campo **no se puede enseñar en texto** —
 solo vive dentro de un visual. Las otras cuatro, añadidas después, muestran en vivo lo que
 aportó, una por una, cada skill de las que existían al construirlas, a un escenario real (la media móvil de
-3 meses medida en [`dax-reference/notes/window.md`](../../dax-reference/notes/window.md)).
+3 meses medida en [`dax-reference/notes/window.md`](../../skills/dax-reference/notes/window.md)).
 Los dos grupos comparten el mismo lenguaje visual: un textbox de nota arriba, un visual de
 datos real debajo, contra medidas persistidas en `_Measures.tmdl` — nunca contra una consulta
 suelta.

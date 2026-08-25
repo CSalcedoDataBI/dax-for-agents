@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import examples_io as exio
 
 ROOT = exio.ROOT
-CATALOG = os.path.join(ROOT, "dax-reference", "generated", "catalog.json")
+CATALOG = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
 LAB = os.path.join(ROOT, "lab")
 
 MIN_EXAMPLES = 3

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """CI validation for the dax-for-agents repo.
 
-Checks, for every skill folder (a top-level dir containing SKILL.md):
+Checks, for every skill folder (a dir under `skills/` containing SKILL.md):
   1. Frontmatter: name == folder, name is kebab-case, description starts with "Use when".
   2. The skill is referenced in INDEX.md.
 Then, repo-wide:
-  3. Every Python script under */scripts/ and scripts/ compiles.
+  3. Every Python script under skills/*/scripts/ and scripts/ compiles.
   4. dax-reference integrity: catalog rows <-> library cards <-> notes all line up.
      Tolerates the pre-sync state where the library is still empty.
 
@@ -41,12 +41,13 @@ def frontmatter(path):
 
 
 # ---- 1 & 2: per-skill frontmatter + INDEX coverage ----
+SKILLS = os.path.join(ROOT, "skills")
 skill_dirs = sorted(
-    d for d in os.listdir(ROOT)
-    if os.path.isfile(os.path.join(ROOT, d, "SKILL.md"))
+    d for d in (os.listdir(SKILLS) if os.path.isdir(SKILLS) else [])
+    if os.path.isfile(os.path.join(SKILLS, d, "SKILL.md"))
 )
 if not skill_dirs:
-    errors.append("no skill folders found (none contain SKILL.md)")
+    errors.append("no skill folders found under skills/ (none contain SKILL.md)")
 
 index_path = os.path.join(ROOT, "INDEX.md")
 index_txt = open(index_path, encoding="utf-8").read() if os.path.exists(index_path) else ""
@@ -54,7 +55,7 @@ if not index_txt:
     errors.append("INDEX.md missing or empty")
 
 for d in skill_dirs:
-    fm = frontmatter(os.path.join(ROOT, d, "SKILL.md"))
+    fm = frontmatter(os.path.join(SKILLS, d, "SKILL.md"))
     if fm is None:
         errors.append(f"{d}: missing YAML frontmatter")
         continue
@@ -73,7 +74,7 @@ for d in skill_dirs:
         errors.append(f"{d}: not referenced in INDEX.md")
 
 # ---- 3: every Python script compiles ----
-py_scripts = glob.glob(os.path.join(ROOT, "*", "scripts", "*.py")) + \
+py_scripts = glob.glob(os.path.join(ROOT, "skills", "*", "scripts", "*.py")) + \
     glob.glob(os.path.join(ROOT, "scripts", "*.py")) + \
     glob.glob(os.path.join(ROOT, "lab", "*.py"))
 for py in sorted(py_scripts):
@@ -84,7 +85,7 @@ for py in sorted(py_scripts):
         errors.append(f"py_compile failed: {os.path.relpath(py, ROOT)}: {r.stderr.strip()}")
 
 # ---- 4: dax-reference integrity ----
-REF = os.path.join(ROOT, "dax-reference")
+REF = os.path.join(SKILLS, "dax-reference")
 GEN = os.path.join(REF, "generated")
 cat_json = os.path.join(GEN, "catalog.json")
 lib_dir = os.path.join(GEN, "library")

@@ -9,7 +9,7 @@ Uso:
     # con el escenario abierto y refrescado en Power BI Desktop
     python lab/dump_examples.py localhost:<puerto> [fichero.md ...]
 
-Sin ficheros, recorre todos los de `dax-reference/examples/`. Los que ya tienen result se
+Sin ficheros, recorre todos los de `skills/dax-reference/examples/`. Los que ya tienen result se
 dejan intactos; para rehacer uno, borra su bloque ```result y vuelve a ejecutar.
 """
 import os

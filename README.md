@@ -57,7 +57,7 @@ instead"* in a form an agent can consult without guessing.
   [daxpatterns.com](https://www.daxpatterns.com) and
   [daxformatter.com](https://www.daxformatter.com) by SQLBI. Better than anything here for a
   person reading with their own eyes.
-- **Ready-made UDFs** → [daxlib.org](https://daxlib.org). Indexed offline in `dax-lib/`.
+- **Ready-made UDFs** → [daxlib.org](https://daxlib.org). Indexed offline in `skills/dax-lib/`.
 
 ## Skills
 
@@ -65,6 +65,7 @@ instead"* in a form an agent can consult without guessing.
 |---|---|
 | `dax-reference` | You need what a DAX function does, its signature, or which one to reach for |
 | `dax-lib` | Before writing a UDF from scratch — someone may have shipped it already |
+| `dax-lib-install` | `dax-lib` found one and you want it *in* the model, licensed and attributed |
 | `dax-udf-authoring` | Writing your own `FUNCTION`: parameter types, `VAL` vs `EXPR`, GA limits |
 | `dax-window-functions` | `WINDOW` / `OFFSET` / `INDEX` / `RANK` — rolling, running totals, ranking |
 
@@ -99,28 +100,34 @@ As a plugin — **needs Claude Code 2.1.142 or newer** (see below):
 /plugin install dax@dax-for-agents
 ```
 
-The skills arrive as `dax:dax-reference`, `dax:dax-lib`, `dax:dax-udf-authoring` and
-`dax:dax-window-functions`. Around 650 tokens of descriptions are always on; everything
+The skills arrive as `dax:dax-reference`, `dax:dax-lib`, `dax:dax-lib-install`,
+`dax:dax-udf-authoring` and `dax:dax-window-functions`. Around 650 tokens of descriptions are always on; everything
 else is read only when a question needs it.
 
-Or as a submodule, which also works before a marketplace entry exists:
+Or as a submodule, which also works before a marketplace entry exists. The skills live
+under `skills/`, so point the submodule at the repo and let the plugin root be the repo
+root — not at `.claude/skills`, which would nest them one level too deep:
 
 ```bash
-git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git .claude/skills
+git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git vendor/dax-for-agents
 ```
 
 ### Why the version floor
 
-The five skills sit flat at the repo root rather than under `skills/`, so that the
-submodule line above drops them straight into `.claude/skills/`. Nothing is
-auto-discovered from there: `.claude-plugin/plugin.json` names each one by path.
+The five skills sit under `skills/`, the same layout Microsoft ships in
+[`skills-for-fabric`](https://github.com/microsoft/skills-for-fabric): one folder per
+skill, and `.claude-plugin/plugin.json` naming each one by path. That list is not
+decoration — it is what makes the shipped set reviewable in a diff — but it is no longer
+the only thing standing between the plugin and an empty install, because `skills/` is
+also where the default scan looks.
 
-Claude Code only started reading a skill path that points at a directory holding
-`SKILL.md` in **2.1.142**. Measured by bisecting the published releases: on 2.1.141 the
-plugin installs, reports success and loads **zero** skills — because when none of the
-listed paths resolve, Claude Code silently falls back to scanning `skills/`, which does
-not exist here. On 2.1.142 all four load. `scripts/check_plugin_manifest.py` keeps the
-manifest and the tree in step so that failure cannot come back quietly.
+That difference is why the floor exists at all. Claude Code only started reading a skill
+path that points at a directory holding `SKILL.md` in **2.1.142**. Measured by bisecting
+the published releases against the older flat layout: on 2.1.141 the plugin installed,
+reported success and loaded **zero** skills, because when none of the listed paths
+resolve it silently falls back to scanning `skills/` — which back then did not exist.
+`scripts/check_plugin_manifest.py` keeps the manifest and the tree in step so that
+failure cannot come back quietly.
 
 ## Checking it yourself
 
@@ -149,8 +156,8 @@ remembering to update them.
 | What | Licence |
 |---|---|
 | Code, skills and hand-written content | [MIT](LICENSE) © 2026 CSalcedoDataBI |
-| `dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from [`query-docs`](https://github.com/MicrosoftDocs/query-docs). See [`dax-reference/NOTICE`](dax-reference/NOTICE) |
-| `dax-lib/` | An offline index of [daxlib.org](https://daxlib.org). No package code is redistributed; licences vary per author. See [`dax-lib/NOTICE`](dax-lib/NOTICE) |
+| `skills/dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from [`query-docs`](https://github.com/MicrosoftDocs/query-docs). See [`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE) |
+| `skills/dax-lib/` | An offline index of [daxlib.org](https://daxlib.org). No package code is redistributed; licences vary per author. See [`skills/dax-lib/NOTICE`](skills/dax-lib/NOTICE) |
 | The lab's Parquet data | MIT, and **synthetic** — generated, not sourced. It lives in [`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) |
 
 "Contoso" is Microsoft's fictional-company name, used here the way its own samples use it.

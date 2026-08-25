@@ -1,4 +1,4 @@
-"""Lo que devuelve cada consulta publicada en `dax-reference/notes/` sobre `lab/contoso`.
+"""Lo que devuelve cada consulta publicada en `skills/dax-reference/notes/` sobre `lab/contoso`.
 
 Este fichero no repite las consultas: las lee `check_lab.py` del propio .md de la nota, que
 es su unica fuente. Aqui solo viven los RESULTADOS, y por eso una nota deja de ser una

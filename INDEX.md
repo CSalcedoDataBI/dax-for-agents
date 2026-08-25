@@ -32,15 +32,22 @@ Pregunta sobre DAX
 
 Toda skill sigue el estándar de [agentskills.io](https://agentskills.io/specification):
 
-1. **Una skill = una carpeta** con `SKILL.md`. Apoyo en `scripts/`, `references/`, `evals/`.
+1. **Una skill = una carpeta bajo `skills/`** con `SKILL.md`. Apoyo en `scripts/`,
+   `references/`, `evals/` dentro de la propia carpeta.
 2. **Frontmatter YAML** con `name` (kebab-case, idéntico a la carpeta) y `description` (tercera
    persona, empieza con **"Use when …"**, describe *cuándo* usarla).
 3. **Token-eficiente:** el `SKILL.md` es conciso; el detalle pesado vive en archivos aparte que
    el agente lee solo cuando los necesita.
 4. **Cross-links por nombre** (`` `dax-lib` ``), no por ruta.
-5. **El prefijo `dax-` se conserva** aunque el plugin ya se llame `dax`. El repo debe funcionar
-   también como skills planas (submódulo), donde una carpeta `reference/` suelta no se explica.
-   Instalado como plugin quedan `dax:dax-reference`, `dax:dax-lib`, `dax:dax-udf-authoring` y
-   `dax:dax-window-functions`.
-6. **Las cinco skills van listadas por ruta en `.claude-plugin/plugin.json`.** Al estar
-   planas en la raíz no se descubre ninguna sola: esa lista *es* el plugin. Lo comprueba CI.
+5. **El prefijo `dax-` se conserva** aunque el plugin ya se llame `dax` y aunque `skills/`
+   ya dé contexto. Renombrar a `skills/reference/` tocaría los cross-links de las cinco
+   `SKILL.md`, `evals/cases.yaml` y cualquier referencia ya instalada; el prefijo cuesta
+   cuatro caracteres y no se paga solo. Instaladas quedan `dax:dax-reference`,
+   `dax:dax-lib`, `dax:dax-lib-install`, `dax:dax-udf-authoring` y `dax:dax-window-functions`.
+6. **Las cinco skills van listadas por ruta en `.claude-plugin/plugin.json`.** Bajo `skills/`
+   el escaneo por defecto ya las encontraría, así que la lista dejó de ser la diferencia
+   entre cinco skills y ninguna — pero sigue siendo lo que hace revisable en un diff el
+   conjunto que se publica. Lo comprueba CI.
+7. **El layout es el de [`microsoft/skills-for-fabric`](https://github.com/microsoft/skills-for-fabric):**
+   `skills/` como fuente única y el manifiesto del plugin en la raíz. Es también lo que
+   deja añadir un segundo plugin más adelante sin duplicar ninguna skill.

@@ -34,8 +34,8 @@ jobs:
           # `ls-remote` gives 40 characters and the cards carry the 7 that `rev-parse
           # --short` wrote. Both are kept: the long one to compare, the short one to read.
           echo "upstream_short=${UPSTREAM:0:7}" >> "$GITHUB_OUTPUT"
-          if [ -f dax-reference/generated/catalog.json ]; then
-            STAMPED=$(python -c "import json;print(json.load(open('dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
+          if [ -f skills/dax-reference/generated/catalog.json ]; then
+            STAMPED=$(python -c "import json;print(json.load(open('skills/dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
           else
             STAMPED="(never synced)"
           fi
@@ -77,7 +77,7 @@ jobs:
       # thing the gate is for.
       - name: Regenerate
         if: steps.drift.outputs.drift == 'true'
-        run: python dax-reference/scripts/sync_query_docs.py /tmp/query-docs/query-languages/dax --write
+        run: python skills/dax-reference/scripts/sync_query_docs.py /tmp/query-docs/query-languages/dax --write
 
       # A pull request opened with GITHUB_TOKEN does not trigger other workflows, so
       # validate-skills and evals would never run on it. The checks run here instead,
@@ -108,12 +108,12 @@ jobs:
         id: diff
         shell: bash
         run: |
-          git add -A dax-reference/generated
-          if git diff --cached --quiet -- dax-reference/generated; then
+          git add -A skills/dax-reference/generated
+          if git diff --cached --quiet -- skills/dax-reference/generated; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            git diff --cached -U0 -- dax-reference/generated \
+            git diff --cached -U0 -- skills/dax-reference/generated \
               | python scripts/summarize_sync_diff.py \
                   --old-sha "${{ steps.drift.outputs.stamped }}" \
                   --new-sha "${{ steps.drift.outputs.upstream }}" > /tmp/pr-body.md

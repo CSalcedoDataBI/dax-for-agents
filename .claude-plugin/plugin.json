@@ -20,10 +20,10 @@
     "reference"
   ],
   "skills": [
-    "./dax-reference",
-    "./dax-lib",
-    "./dax-lib-install",
-    "./dax-udf-authoring",
-    "./dax-window-functions"
+    "./skills/dax-reference",
+    "./skills/dax-lib",
+    "./skills/dax-lib-install",
+    "./skills/dax-udf-authoring",
+    "./skills/dax-window-functions"
   ]
 }
