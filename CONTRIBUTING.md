@@ -77,24 +77,28 @@ Rules:
 
 ## Skills
 
-Each skill is one top-level folder with a `SKILL.md`. Frontmatter needs:
+Each skill is one folder under `skills/` with a `SKILL.md`. Frontmatter needs:
 
 - `name` — kebab-case, **identical to the folder name**.
 - `description` — third person, **starts with "Use when …"**, describes *when* to reach for it
   (symptoms and triggers), not what it does.
 
-Keep the `dax-` prefix even though the plugin is already called `dax`: the repo has to work as
-flat skills too, where a bare `reference/` folder explains nothing.
+Keep the `dax-` prefix even though the plugin is already called `dax` and `skills/` already
+supplies the context. Renaming to `skills/reference/` would touch the cross-links in all
+five `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere. Four
+characters do not buy that.
 
 Add the skill to [INDEX.md](INDEX.md), list its path in the `skills` array of
 [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json), and give it at least one
 routing case in `evals/cases.yaml`, or CI fails.
 
-The manifest list is not optional bookkeeping. Because the skills sit flat at the repo
-root instead of under `skills/`, that array *is* the plugin: a folder left out of it
-ships invisible, and Claude Code says nothing — when none of the listed paths resolve it
-quietly scans `skills/`, which does not exist here, and the plugin installs with zero
-skills. `scripts/check_plugin_manifest.py` is what turns that silence into a red build.
+The manifest list is not optional bookkeeping, but be precise about what it protects
+today. Under `skills/` the default scan would find the folders on its own, so a path left
+out of the array no longer ships an invisible skill the way it did when they sat flat at
+the repo root. What the array still buys is a reviewable diff: the set that gets published
+is written down in one place instead of inferred from a directory listing.
+`scripts/check_plugin_manifest.py` keeps the manifest and the tree in step, and the README
+explains the Claude Code version floor that comes with this layout.
 
 ## Scope
 
