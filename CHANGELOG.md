@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.3.0...v0.4.0) (2026-08-25)
+
+
+### Features
+
+* add dax-lib-install, a fifth skill that installs a third-party UDF ([633f666](https://github.com/CSalcedoDataBI/dax-for-agents/commit/633f666410ab01379cc0b29925c57710718ff813))
+
+## Changelog
+
 Releases of this repository start at **0.4.0**.
 
 The version number does not: it continues the plugin's line, because `dax` was already
