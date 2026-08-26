@@ -8,6 +8,7 @@ semantics, and the gotchas the documentation doesn't tell you.
 | | |
 |---|---|
 | **479 function cards** | derived from [`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs), one file each |
+| **99 functions with runnable examples** | three each, every one carrying the result the engine returned |
 | **34 conceptual pages** | evaluation context, `EVALUATE`/`DEFINE`, operators, glossary |
 | **31 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
 | **4 lab scenarios** | runnable `.pbip` models. Download, refresh, run the queries yourself |
@@ -18,18 +19,18 @@ tokens never enter the context window.
 
 **And what you are not getting.** The 31 field notes are the highest-traffic functions, not
 coverage of 479. Runnable examples reach further than the notes but still nowhere near all the
-cards. This README deliberately does not print that count — a number typed in prose is exactly
-what rots. For the live figure, run:
+cards; the rest carry only Microsoft's own examples, marked as what they are — written against
+a model that is not here. Growing that number is
+[epic #6](https://github.com/CSalcedoDataBI/dax-for-agents/issues/6).
+
+The count in that table is checked from two directions, which is the only reason it is written
+here at all. `check_doc_claims.py` fails if the sentence and the tree disagree, and
+`check_examples.py` holds a floor (`MIN_COVERED`) that refuses to go backwards, so a deleted
+example fails the build instead of quietly shrinking the library:
 
 ```bash
 python scripts/check_examples.py
 ```
-
-It prints the current coverage, and it also enforces a floor (`MIN_COVERED`) that refuses to go
-backwards, so a deleted example fails the build instead of quietly shrinking the library. The
-remaining cards carry only Microsoft's own examples, marked as what they are — written against
-a model that is not here. Growing that floor is
-[epic #6](https://github.com/CSalcedoDataBI/dax-for-agents/issues/6).
 
 **It does not replace DAX experts.** It stops your agent from inventing functions that don't
 exist.
@@ -143,13 +144,17 @@ python -m unittest discover -s scripts -t scripts
 ```
 
 `check_doc_claims.py` is the one worth knowing about: it reads a number written next to a
-noun this repository counts — cards, concepts, notes, skills, workflows, lab scenarios,
-tests, plugins — and fails if the tree disagrees. **That list is the whole
-scope, and example coverage is not in it** (see
-[issue #5](https://github.com/CSalcedoDataBI/dax-for-agents/issues/5)) — which is why this
-README sends you to run `check_examples.py` instead of printing that number. The counts at the
-top of this file are kept honest by it, not by anyone
-remembering to update them.
+noun this repository counts — cards, functions with runnable examples, concepts, notes,
+skills, workflows, lab scenarios, tests, plugins — and fails if the tree disagrees. **That
+list is the whole scope**: a number about anything else, including estimates like the 376,000
+tokens above, is not a promise this repository can keep, so the gate leaves it alone. The
+counts at the top of this file are kept honest by it, not by anyone remembering to update
+them.
+
+Coverage is the noun that needs a qualifier, and the reason is worth stating: the phrase has
+to say *functions*, not *examples*. A bare `examples` noun would read "three examples per
+function" as a claim that the library holds three, and a gate that cries wolf on correct prose
+is a gate someone switches off.
 
 ## Licensing
 

@@ -13,9 +13,9 @@ thing, with no list to keep up to date.
 
 What is in scope, and what is not
 --------------------------------
-Only quantities the repository can count about ITSELF, exactly: skills, cards, concepts,
-notes, workflows, lab scenarios, tests, plugins. Each has an entry in
-`_counts` and a noun in `NOUNS`, and a claim about one of them must be right.
+Only quantities the repository can count about ITSELF, exactly: skills, cards, functions
+with runnable examples, concepts, notes, workflows, lab scenarios, tests, plugins. Each has
+an entry in `_counts` and a noun in `NOUNS`, and a claim about one of them must be right.
 
 Deliberately out of scope, and this is the boundary that stops the list growing forever:
 
@@ -45,6 +45,9 @@ import re
 import sys
 import glob
 import json
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import examples_io as exio                                          # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -142,8 +145,15 @@ def _counts(root=ROOT):
         except (ValueError, AttributeError):
             plugins = 0
 
+    # Functions carrying runnable examples. Counted through `examples_io`, the module that
+    # already defines what an example file IS, and counted the way check_examples.py counts
+    # it: one file per function. Re-deriving it here with a second glob is how the gate and
+    # the ratchet would drift apart while both kept printing OK.
+    covered = len(exio.example_files(os.path.join(ref, "examples")))
+
     return {
         "cards": md(os.path.join(gen, "library")),
+        "covered functions": covered,
         "concepts": md(os.path.join(gen, "concepts")),
         "notes": md(os.path.join(ref, "notes")),
         "skills": skills,
@@ -159,6 +169,21 @@ def _counts(root=ROOT):
 NOUNS = {
     "cards": [r"functions?\b", r"function cards?\b", r"function files?\b", r"fichas?\b",
               r"funciones?\b"],
+    # QUALIFIED ONLY, and the two reasons are the whole design of this entry.
+    #
+    # A bare `examples?` would read "three examples per function" — the promise of epic #6,
+    # written in more than one document — as a claim that the library holds three, and fail
+    # on correct prose. That is precisely the cry-wolf failure the comment above calls the
+    # thing that gets a gate switched off.
+    #
+    # And 99 is not a count of examples in the first place: at three apiece the examples
+    # number closer to 300. What is 99 is the FUNCTIONS that have them, so the noun says
+    # so. Which is also why every phrase here contains `functions`/`funciones`, and why
+    # `claims_in` has to resolve the overlap with `cards` — see the dedup there.
+    "covered functions": [r"functions? with runnable examples?\b",
+                          r"functions? with examples?\b",
+                          r"covered functions?\b",
+                          r"funciones? con ejemplos( ejecutables)?\b"],
     "concepts": [r"conceptual pages?\b", r"p[áa]ginas? conceptuales?\b", r"concepts?\b",
                  r"conceptos?\b"],
     # The bare forms matter: the first live failure this gate found was "The 18 notes
@@ -206,8 +231,17 @@ _NUMBER = r"(\d[\d.,]*|(?<![\w-])(?:" + "|".join(sorted(WORDS)) + r")\b)"
 
 
 def claims_in(text):
-    """Every (quantity, stated number, matched phrase) a document asserts."""
-    found = []
+    """Every (quantity, stated number, matched phrase) a document asserts.
+
+    One noun can sit inside another. "99 functions with runnable examples" is a claim
+    about covered functions, and the `cards` noun `functions?` matches its first two
+    words — so without a rule the same sentence is read as a claim that the library holds
+    99 function cards, and the gate fails on prose that is right. The rule is the obvious
+    one: when one match is wholly contained in another, the LONGER phrase is what the
+    sentence says. It is general, not a patch for this pair — it also stops "479 function
+    cards" being reported twice, once for each `cards` noun that matches it.
+    """
+    hits = []
     for quantity, nouns in NOUNS.items():
         for noun in nouns:
             # A space inside a multi-word noun becomes \s+, because prose wraps. A doc
@@ -215,9 +249,15 @@ def claims_in(text):
             # with a literal space, while the same phrase on one line matched.
             pattern = _NUMBER + _GAP + noun.replace(" ", r"\s+")
             for m in re.finditer(pattern, text, re.IGNORECASE):
-                found.append((quantity, _as_int(m.group(1)),
-                              " ".join(m.group(0).split())))
-    return found
+                hits.append((m.start(), m.end(), quantity, _as_int(m.group(1)),
+                             " ".join(m.group(0).split())))
+
+    def swallowed(start, end):
+        return any(other <= start and end <= stop and (stop - other) > (end - start)
+                   for other, stop, _, _, _ in hits)
+
+    return [(q, n, phrase) for start, end, q, n, phrase in hits
+            if not swallowed(start, end)]
 
 
 _STAMP_IN_PROSE = re.compile(r"MicrosoftDocs/query-docs@([0-9a-fA-F]{7,40})")

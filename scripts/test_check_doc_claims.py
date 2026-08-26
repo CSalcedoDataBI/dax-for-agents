@@ -19,9 +19,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class Fixture:
-    """A throwaway repo with 2 cards, 1 concept, 3 notes and 1 skill."""
+    """A throwaway repo with 2 cards, 1 concept, 3 notes, 1 skill and `examples` of them
+    carrying runnable examples (none by default, like the tree before the first batch)."""
 
-    def __init__(self, doc=""):
+    def __init__(self, doc="", examples=0):
         self.dir = tempfile.mkdtemp()
         gen = os.path.join(self.dir, "skills", "dax-reference", "generated")
         for sub, names in [(os.path.join(gen, "library"), ["abs.md", "acos.md"]),
@@ -33,6 +34,13 @@ class Fixture:
                 open(os.path.join(sub, n), "w", encoding="utf-8").close()
         os.makedirs(os.path.join(self.dir, "skills", "una-skill"))
         open(os.path.join(self.dir, "skills", "una-skill", "SKILL.md"), "w", encoding="utf-8").close()
+        # One file per covered function, under a category, which is the layout
+        # `examples_io.example_files` reads and the one check_examples.py counts.
+        if examples:
+            cat = os.path.join(self.dir, "skills", "dax-reference", "examples", "math-and-trig")
+            os.makedirs(cat)
+            for i in range(examples):
+                open(os.path.join(cat, f"fn{i}.md"), "w", encoding="utf-8").close()
         with open(os.path.join(self.dir, "DOC.md"), "w", encoding="utf-8") as f:
             f.write(doc)
 
@@ -103,6 +111,63 @@ class Disagreeing(unittest.TestCase):
         self.assertEqual([n for _, n, _ in claims_in("It has 1,234 functions.")], [1234])
         with Fixture("Tiene 1.234 fichas.") as f:
             self.assertEqual(len(f.check()), 1)
+
+
+class ExampleCoverage(unittest.TestCase):
+    """La cifra que mas se mueve, y la ultima que el gate aprendio a leer.
+
+    El fallo real esta medido en el repo hermano: el README decia «examples reach 54» con el
+    arbol ya en 99, y REVIEW.md repetia el 54 en dos sitios mas. Nadie lo vio porque ningun
+    gate contaba los ejemplos, mientras `publishing.md` afirmaba que si.
+    """
+
+    def test_the_right_number_passes(self):
+        with Fixture("Son 2 functions with runnable examples.", examples=2) as f:
+            self.assertEqual(f.check(), [])
+
+    def test_a_stale_coverage_count_fails(self):
+        with Fixture("Son 54 functions with runnable examples.", examples=2) as f:
+            errors = f.check()
+        self.assertEqual(len(errors), 1)
+        self.assertIn("54 functions with runnable examples", errors[0])
+        self.assertIn("2 covered functions", errors[0])
+
+    def test_the_long_noun_wins_over_the_short_one_inside_it(self):
+        # El choque que hacia falta resolver antes de escribir nada: 'functions?' es de
+        # `cards`, y casa con las dos primeras palabras de esta frase. Sin desempate, una
+        # frase CORRECTA sobre cobertura se leia como una afirmacion de 99 fichas.
+        self.assertEqual([(q, n) for q, n, _ in claims_in("99 functions with runnable examples")],
+                         [("covered functions", 99)])
+        with Fixture("2 functions with runnable examples.", examples=2) as f:
+            self.assertEqual(f.check(), [])
+
+    def test_the_promise_of_three_apiece_is_not_a_total(self):
+        # La otra mitad del diseno. 'tres ejemplos por funcion' es la promesa de la epica
+        # #6 y esta escrita en varios sitios: con un sustantivo 'ejemplos' suelto, el gate
+        # leeria 3 como el total y fallaria sobre prosa correcta — el fallo que hace que
+        # alguien apague el guardia. Por eso el sustantivo lleva 'functions' dentro.
+        for prosa in ("three examples per function",
+                      "tres ejemplos por funcion",
+                      "3 examples per covered function, each with a result"):
+            self.assertEqual([q for q, _, _ in claims_in(prosa) if q == "covered functions"],
+                             [], prosa)
+
+    def test_spanish_says_it_too(self):
+        self.assertEqual([(q, n) for q, n, _ in claims_in("99 funciones con ejemplos ejecutables")],
+                         [("covered functions", 99)])
+        self.assertEqual([(q, n) for q, n, _ in claims_in("99 funciones con ejemplos")],
+                         [("covered functions", 99)])
+
+    def test_coverage_is_counted_the_way_check_examples_counts_it(self):
+        # Un segundo glob aqui es como el gate y el ratchet se separarian mientras los dos
+        # siguen diciendo OK. Se cuenta por el mismo modulo, asi que no pueden discrepar.
+        import examples_io as exio
+        with Fixture("", examples=7) as f:
+            covered = _counts(f.dir)["covered functions"]
+            files = exio.example_files(
+                os.path.join(f.dir, "skills", "dax-reference", "examples"))
+        self.assertEqual(covered, 7)
+        self.assertEqual(covered, len(files))
 
 
 class MoreThanTheLibrarySize(unittest.TestCase):
