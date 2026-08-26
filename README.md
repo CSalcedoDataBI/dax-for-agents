@@ -12,7 +12,7 @@ semantics, and the gotchas the documentation doesn't tell you.
 | **34 conceptual pages** | evaluation context, `EVALUATE`/`DEFINE`, operators, glossary |
 | **31 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
 | **4 lab scenarios** | runnable `.pbip` models. Download, refresh, run the queries yourself |
-| **5 skills** | routed by `INDEX.md`, ~650 tokens of descriptions always on |
+| **5 skills** | routed by `INDEX.md`, ~806 tokens of descriptions always on |
 
 An agent reads `catalog.md` once, finds the function, opens **one** card. The other 376,000
 tokens never enter the context window.
@@ -102,8 +102,14 @@ As a plugin — **needs Claude Code 2.1.142 or newer** (see below):
 ```
 
 The skills arrive as `dax:dax-reference`, `dax:dax-lib`, `dax:dax-lib-install`,
-`dax:dax-udf-authoring` and `dax:dax-window-functions`. Around 650 tokens of descriptions are always on; everything
-else is read only when a question needs it.
+`dax:dax-udf-authoring` and `dax:dax-window-functions`. Around 806 tokens of descriptions are
+always on; everything else is read only when a question needs it. That figure is measured, not
+estimated, and re-measuring it is one command — worth running whenever a skill is added or its
+description is rewritten, because the number moves and nothing here checks it:
+
+```bash
+claude plugin details dax@dax-for-agents
+```
 
 Or as a submodule, which also works before a marketplace entry exists. The skills live
 under `skills/`, so point the submodule at the repo and let the plugin root be the repo
