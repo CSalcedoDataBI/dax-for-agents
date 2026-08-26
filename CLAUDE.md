@@ -4,19 +4,20 @@ This repository is **public**. Read
 [CONTRIBUTING.md](CONTRIBUTING.md#this-repository-is-public-and-that-is-one-way) before
 writing anything that leaves the working tree.
 
-## Filing work: two boards, and the difference is not the board
+## Filing work: the decision is issue-or-draft, never which board
 
-| board | visibility | what goes there |
-|---|---|---|
-| [#47 — dax-for-agents — Roadmap público](https://github.com/users/CSalcedoDataBI/projects/47) | public | issues of this repo |
-| [#39 — dax-for-agents — Interno](https://github.com/users/CSalcedoDataBI/projects/39) | private | internal work, as **draft items** |
+| board | what goes there |
+|---|---|
+| [#47 — dax-for-agents — Roadmap](https://github.com/users/CSalcedoDataBI/projects/47) | issues of this repo |
+| [#39 — dax-for-agents — Interno](https://github.com/users/CSalcedoDataBI/projects/39) | internal work, as **draft items** |
 
-Both are linked to this repository, so `agentic-board` offers both and the choice is yours
-to get right.
+Both are linked to this repository, so `agentic-board` offers both. **Both are private**,
+and that is deliberate: a board is a working layer, and this repo has no audience for one
+yet — no stars, no watchers, one contributor.
 
-**Do not reason about which board an issue goes on.** An issue in a public repository is
-public the instant it is created — the board it sits on changes nothing about that. A
-private board hides only status, priority, custom fields and ordering.
+Which is why board visibility is the wrong thing to reason about. It protects nothing: an
+issue in a public repository is public the instant it is created, whatever board holds it.
+A board's visibility only ever covered status, priority, custom fields and ordering.
 
 The decision is one step earlier, and it is about the *kind of item*:
 

@@ -24,17 +24,22 @@ any reference can reach; run it after any history rewrite. The lab scenarios und
 are **synthetic on purpose** — generated data, Microsoft's fictional "Contoso" — so that a
 claim about DAX can be reproduced without anyone's real numbers.
 
-### Where planning goes: two boards, and the difference is not the board
+### Where planning goes: issue or draft, never which board
 
 | | |
 |---|---|
-| [**#47 — Roadmap público**](https://github.com/users/CSalcedoDataBI/projects/47) | public. Issues of this repo. What a reader can follow |
-| [**#39 — Interno**](https://github.com/users/CSalcedoDataBI/projects/39) | private. Internal work, as **draft items** |
+| [**#47 — Roadmap**](https://github.com/users/CSalcedoDataBI/projects/47) | issues of this repo |
+| [**#39 — Interno**](https://github.com/users/CSalcedoDataBI/projects/39) | internal work, as **draft items** |
 
-The trap is thinking a private board makes its contents private. It does not. **An issue in
-this repo is public the moment it exists**, whatever board it sits on and whoever can see
-that board. What a private board hides is only the layer above: status, priority, custom
-fields, ordering.
+Both boards are private. A public board is for coordinating with people who are not you —
+so that someone outside sees what is taken and what is wanted. That needs an audience, and
+this repo has none yet: no stars, no watchers, one contributor. It becomes worth publishing
+the day there is a reason to, and that is one toggle.
+
+None of which is a security decision, because board visibility protects nothing. **An issue
+in this repo is public the moment it exists**, whatever board it sits on and whoever can see
+that board. What a board's visibility ever covered is the layer above: status, priority,
+custom fields, ordering.
 
 The one thing that is genuinely private is a **draft item** — a card that lives only in the
 project and never becomes an issue, so it never touches the repository:
