@@ -73,6 +73,13 @@ jobs:
       - name: Examples keep their contract
         run: python scripts/check_examples.py
 
+      # 87 imagenes de las fichas apuntaban al raw de query-docs, que devuelve 404 desde
+      # 2026-08. Learn sirve las mismas y se comprobaron las 87 una a una. Esto impide que
+      # el host muerto vuelva. Offline a proposito: una compuerta que depende del uptime
+      # de otro se acaba re-lanzando en vez de leyendose. Ver #13.
+      - name: No card points an image at the dead upstream host
+        run: python scripts/check_dead_media.py
+
       # La otra mitad del mismo contrato. check_examples.py dice que los ficheros de
       # ejemplo estan bien formados; esto dice que las fichas apuntan de verdad a ellos.
       # Es mas fuerte que las tres comparaciones que sustituye porque re-deriva TODO lo que

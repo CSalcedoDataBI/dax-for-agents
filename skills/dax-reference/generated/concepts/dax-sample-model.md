@@ -13,7 +13,7 @@ The sample model does not contain any DAX formulas. It does however support hund
 
 ## Scenario
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-sample-model/adventure-works-logo-150x150.png" alt-text="An image of the Adventure Works company logo is shown.":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-sample-model/adventure-works-logo-150x150.png" alt-text="An image of the Adventure Works company logo is shown.":::
 
 The Adventure Works company represents a bicycle manufacturer that sells bicycles and accessories to global markets. The company has their data warehouse data stored in an Azure SQL Database.
 

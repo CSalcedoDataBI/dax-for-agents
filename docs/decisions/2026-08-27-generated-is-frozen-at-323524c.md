@@ -109,6 +109,21 @@ sync, and now it protects the option of ever syncing again.
   [#8](https://github.com/CSalcedoDataBI/dax-for-agents/issues/8): its fix is a regeneration,
   not a gate.
 
+## One thing the freeze did NOT have to cost: the pictures
+
+87 image URLs across 33 cards pointed at the dead host, 47 of them in eight conceptual pages.
+The obvious readings were all bad — re-point at Wayback (sampled six, only two archived, and it
+ties the content to a third party), delete the images (loses CC BY material Microsoft
+published), or say it out loud in `SKILL.md` and leave them broken.
+
+None was needed. Learn serves every one of those files, at the same path behind a different
+prefix, and **all 87 answered 200** when fetched. So the URLs were repaired rather than the
+content changed, `sync_query_docs.py` now writes Learn URLs for images so a future
+regeneration does the same, and `check_dead_media.py` keeps the dead host from coming back.
+
+This is the same finding as the attribution one, applied twice: the upstream mirror is gone,
+the published form is not.
+
 ## What this does not decide
 
 Whether to build a Learn-HTML path back to regeneration. It is the only source that is both

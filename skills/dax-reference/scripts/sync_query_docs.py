@@ -628,8 +628,12 @@ _SITE_ABS_LINK_RE = re.compile(r'\]\(/([^)\s]+)\)')
 # An image kept in the upstream repo next to the docs.
 _MEDIA_LINK_RE = re.compile(r'\]\((media/[^)\s]+)(\s+"[^"]*")?\)')
 LEARN_ROOT = "https://learn.microsoft.com/en-us/"
-UPSTREAM_RAW = ("https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/"
-                "query-languages/dax/")
+# Las imagenes apuntaban al raw de query-docs, que era lo correcto mientras ese host
+# contestara. Desde 2026-08 devuelve 404 y dejaba 87 imagenes muertas repartidas en 33
+# fichas -- 47 de ellas en las ocho paginas conceptuales, que son las que se leen para
+# entender el lenguaje. Learn sirve exactamente las mismas, en la misma ruta cambiando el
+# prefijo, y las 87 se comprobaron una a una antes de mover esto: 200 las 87. Ver #13.
+MEDIA_ROOT = LEARN_ROOT + "dax/"
 
 
 
@@ -742,6 +746,8 @@ def absolutise_links(text, base=""):
     `base` is the directory the page itself lives in, relative to dax/. Every relative
     target — pages and images alike — is resolved against it. best-practices/ has its own
     media/ folder, so getting this wrong broke the images as well as the links.
+
+    Images go to Learn, not to the upstream raw host: that host is gone. See MEDIA_ROOT.
     """
     def _rel(target):
         return posixpath.normpath(posixpath.join(base, target)) if base else target
@@ -754,10 +760,10 @@ def absolutise_links(text, base=""):
     text = _SITE_ABS_LINK_RE.sub(lambda m: f"]({LEARN_ROOT}{m.group(1)})", text)
     # Images live beside the docs upstream; this repo carries no binaries.
     text = _MEDIA_LINK_RE.sub(
-        lambda m: f"]({UPSTREAM_RAW}{_rel(m.group(1))}{m.group(2) or ''})", text)
+        lambda m: f"]({MEDIA_ROOT}{_rel(m.group(1))}{m.group(2) or ''})", text)
     # DocFX directives carry their paths in attributes, not markdown link syntax.
     text = DOCFX_MEDIA_RE.sub(
-        lambda m: f"{m.group(1)}{UPSTREAM_RAW}{_rel(m.group(2))}{m.group(3)}", text)
+        lambda m: f"{m.group(1)}{MEDIA_ROOT}{_rel(m.group(2))}{m.group(3)}", text)
     return text
 
 

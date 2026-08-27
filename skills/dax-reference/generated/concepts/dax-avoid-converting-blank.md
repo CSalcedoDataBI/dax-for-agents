@@ -37,7 +37,7 @@ Also, too many groupings often overwhelm your report users.
 
 Let's see what happens when the **Profit Margin** measure is added to a table visual, grouping by customer.
 
-![Screenshot of Power B I Desktop showing table visual of data with one row per customer. Sales values are BLANK and Profit Margin values are zero per cent. ](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/best-practices/media/dax-avoid-converting-blank/table-visual-poor.png)
+![Screenshot of Power B I Desktop showing table visual of data with one row per customer. Sales values are BLANK and Profit Margin values are zero per cent. ](https://learn.microsoft.com/en-us/dax/best-practices/media/dax-avoid-converting-blank/table-visual-poor.png)
 
 The table visual displays an overwhelming number of rows. (There are in fact 18,484 customers in the model, and so the table attempts to display all of them.) Notice that the customers in view haven't achieved any sales. Yet, because the **Profit Margin** measure always returns a value, they are displayed.
 
@@ -53,7 +53,7 @@ DIVIDE([Profit], [Sales])
 
 The table visual now displays only customers who have made sales within the current filter context. The improved measure results in a more efficient and practical experience for your report users.
 
-![Screenshot of Power BI Desktop showing table visual of data that has filtered content.](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/best-practices/media/dax-avoid-converting-blank/table-visual-good.png)
+![Screenshot of Power BI Desktop showing table visual of data that has filtered content.](https://learn.microsoft.com/en-us/dax/best-practices/media/dax-avoid-converting-blank/table-visual-good.png)
 
 > [!TIP]
 > When necessary, you can configure a visual to display all groupings (that return values or BLANK) within the filter context by enabling the [Show Items With No Data](https://learn.microsoft.com/en-us/power-bi/create-reports/desktop-show-items-no-data) option.

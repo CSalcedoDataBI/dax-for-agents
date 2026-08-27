@@ -22,7 +22,7 @@ In Power BI Desktop, in the **Preview features** section of the **Options**, ena
 1. Create a new query tab.
 1. Open Copilot by clicking on the **Copilot** button or using <kbd>CTRL + I</kbd>.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-power-bi-desktop.png" alt-text="Screenshot showing Power BI Desktop with Fabric Copilot in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-power-bi-desktop.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-power-bi-desktop.png" alt-text="Screenshot showing Power BI Desktop with Fabric Copilot in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-power-bi-desktop.png":::
 
 ### Power BI service or workspace
 
@@ -31,7 +31,7 @@ In Power BI Desktop, in the **Preview features** section of the **Options**, ena
 3. Create a new query tab.
 4. Open Copilot by clicking on the Copilot button or using <kbd>CTRL + I</kbd>.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-power-bi-service-write-dax-queries.png" alt-text="Screenshot showing Power BI service with Fabric Copilot in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-power-bi-service-write-dax-queries.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-power-bi-service-write-dax-queries.png" alt-text="Screenshot showing Power BI service with Fabric Copilot in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-power-bi-service-write-dax-queries.png":::
 
 > [!NOTE]
 > DirectQuery and Direct Lake model authors can also use DAX query view. View the data in your tables whenever you want.
@@ -56,13 +56,13 @@ To use Copilot to explain a DAX topic, click the **Explain a DAX topic** inspire
 
 You can **Run** the DAX query then decide to **Keep** or **Discard** the DAX query. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-run-query.png" alt-text="Screenshot of running the DAX query before you save it." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-run-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-run-query.png" alt-text="Screenshot of running the DAX query before you save it." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-run-query.png":::
 
 ### 2. Build the DAX query conversationally
 
 After the initial DAX query is generated, you can simply adjust by typing in additional user prompts. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-explain-query.png" alt-text="Screenshot of asking DAX to explain the query." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-explain-query.png"::: 
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-explain-query.png" alt-text="Screenshot of asking DAX to explain the query." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-explain-query.png"::: 
 
 ### 3. Syntax checks on the generated DAX query
 
@@ -74,7 +74,7 @@ The generated DAX query syntax is checked, and the prompt automatically retried 
  
 Type in a prompt or select any of these buttons to see quickly what you can do with Copilot.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-inspire-buttons-get-started.png" alt-text="Screenshot of showing Copilot offers suggestions." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/copilot-inspire-buttons-get-started.png"::: 
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-inspire-buttons-get-started.png" alt-text="Screenshot of showing Copilot offers suggestions." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/copilot-inspire-buttons-get-started.png"::: 
 
 ## Sample prompts
 
@@ -91,19 +91,19 @@ In a blank query tab, invoke Copilot with <kbd>CTRL+I</kbd> and enter this reque
 
 "Write a DAX query to show profit by product"
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-list-products.png" alt-text="Screenshot showing Copilot with the prompt Write a DAX query to show profit by product." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-list-products.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-list-products.png" alt-text="Screenshot showing Copilot with the prompt Write a DAX query to show profit by product." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-list-products.png":::
 
 After a few moments I get a DAX query. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-query-list-products.png" alt-text="Screenshot showing DAX query generated by Fabric Copilot." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-query-list-products.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-query-list-products.png" alt-text="Screenshot showing DAX query generated by Fabric Copilot." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-query-list-products.png":::
 
 I can select **run** to see the results before I keep the query.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-run-query.png" alt-text="Screenshot showing Run DAX query generated by Fabric Copilot." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-run-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-run-query.png" alt-text="Screenshot showing Run DAX query generated by Fabric Copilot." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-run-query.png":::
 
 I can conversationally make updates to my initial request. Type in "Add in Orders" and hit <kbd>enter</kbd> and Copilot adds in the additional measure. I can again **run** the query to see the results.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-conversational-query.png" alt-text="Screenshot showing how to build the DAX query conversationally." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-conversational-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-conversational-query.png" alt-text="Screenshot showing how to build the DAX query conversationally." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-conversational-query.png":::
 
 When I select **keep query**, the query is added to the query tab. 
 
@@ -113,29 +113,29 @@ Let's now add a column to the existing DAX query. First I select the DAX query, 
 
 "Add a column to show profit per order"
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-show-diff.png" alt-text="Screenshot showing a selection included with the Copilot prompt." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-show-diff.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-show-diff.png" alt-text="Screenshot showing a selection included with the Copilot prompt." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-show-diff.png":::
 
 Now the diff styling in the DAX query editor shows exactly what Copilot has changed.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-highlight-diff.png" alt-text="Screenshot showing diff styling to see what Copilot has changed." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-highlight-diff.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-highlight-diff.png" alt-text="Screenshot showing diff styling to see what Copilot has changed." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-highlight-diff.png":::
 
 I select **run** to see the results, and **keep query** to add it to the query editor. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-updated-query.png" alt-text="Screenshot showing the query in the DAX query editor." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-updated-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-updated-query.png" alt-text="Screenshot showing the query in the DAX query editor." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-updated-query.png":::
 
 ### Explain a DAX query
 
 Copilot can provide a detailed explanation of a DAX query. Again, select the entire DAX query and invoke Copilot. This time select the **Explain this query** button. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-explain-query.png" alt-text="Screenshot showing Explain to me what this query does." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-explain-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-explain-query.png" alt-text="Screenshot showing Explain to me what this query does." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-explain-query.png":::
 
 Now, instead of writing DAX queries, it’s responding in the inline Copilot. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-query-explanation.png" alt-text="Screenshot showing brief explanation of the query.":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-query-explanation.png" alt-text="Screenshot showing brief explanation of the query.":::
 
 Copilot generates a few lines. I select **Show more** to see the full explanation.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-explain-query-more.png" alt-text="Screenshot showing a long explanation of what the query does.":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-explain-query-more.png" alt-text="Screenshot showing a long explanation of what the query does.":::
 
 Now I understand each part and the DAX functions used.
 
@@ -145,15 +145,15 @@ Copilot can also explain DAX functions with more detail. Let's ask about SUMMARI
 
 "Explain what SUMMARIZECOLUMNS is for"
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-explain-summarize-columns.png" alt-text="Screenshot showing an explanation of what the SUMMARIZECOLUMNS does." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-explain-summarize-columns.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-explain-summarize-columns.png" alt-text="Screenshot showing an explanation of what the SUMMARIZECOLUMNS does." lightbox="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-explain-summarize-columns.png":::
 
 Again, Copilot generates brief description: 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-summarize-columns-brief.png" alt-text="Screenshot showing a brief description of the SUMMARIZECOLUMNS DAX function.":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-summarize-columns-brief.png" alt-text="Screenshot showing a brief description of the SUMMARIZECOLUMNS DAX function.":::
 
 I can select **Show more** to see a more detailed explanation with an example. 
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-copilot/dax-copilot-summarize-columns-more.png" alt-text="Screenshot showing Copilot generates a much more in-depth description.":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/dax-copilot/dax-copilot-summarize-columns-more.png" alt-text="Screenshot showing Copilot generates a much more in-depth description.":::
 
 The example also uses columns in my model.
 

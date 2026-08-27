@@ -256,7 +256,7 @@ You can think of PARTITIONBY as a way to divide the table into parts in which to
 
 Visually, what's happening is this:
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/best-practices/media/dax-understand-orderby/offset-by-calendar-year.png" border="false" alt-text="Table showing OFFSET by Calendar Year":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/best-practices/media/dax-understand-orderby/offset-by-calendar-year.png" border="false" alt-text="Table showing OFFSET by Calendar Year":::
 
 First, the call to PARTITIONBY results in the table getting divided into parts, one for each Color. This is represented by the light blue boxes in the table image. Next, ORDERBY makes sure that each part is sorted by CalendarYear (represented by the orange arrows). Finally, within each sorted part, for each row, OFFSET finds the row above it and returns that value in the PreviousYearSalesForSameColor column. Since for every first row in each part there is no previous row in that same part, the result in that row for the PreviousYearSalesForSameColor column is empty.
 

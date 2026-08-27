@@ -56,7 +56,7 @@ NextInternetSalesAmount = NEXT ( [Sum of SalesAmount], ROWS, LowestParent )
 
 The screenshot below shows the visual matrix and the visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-next.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-next.png)
 
 ## Related content
 

@@ -69,7 +69,7 @@ QuarterOrSelfValue = COLLAPSE([SalesAmount], [Month])
 
 The screenshot below shows the matrix with the three visual calculations.
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-collapse.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-collapse.png)
 
 ## See also
 

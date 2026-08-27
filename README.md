@@ -91,9 +91,13 @@ separates the three cases it was collapsing into one: it reports the 404 and sta
 fails if the probe cannot tell, and turns red only when the upstream **answers again** —
 the one event that would reopen the decision.
 
-Still open, tracked in [issue #13](https://github.com/CSalcedoDataBI/dax-for-agents/issues/13):
-87 image URLs across 33 files under `generated/` point at `raw.githubusercontent.com` paths
-that are now 404. The prose of those cards is intact; their screenshots are not.
+The pictures survived too, which was not obvious. 87 image URLs across 33 files pointed at
+`raw.githubusercontent.com` and were 404 — 47 of them in eight of the 34 conceptual pages,
+the ones read to understand the language rather than one function. Microsoft Learn serves every one of
+those images, at the same path behind a different prefix, and **all 87 were fetched and
+answered 200** before a single card was touched. So they point there now: alive, canonical,
+and not dependent on a third-party archive. `check_dead_media.py` stops the dead host coming
+back.
 
 This is also the argument for the shape of this repository. A derived copy, versioned and
 gated, survives its source disappearing. A link does not.
@@ -213,6 +217,7 @@ python scripts/check_workflow_cost.py    # the Actions cost rules, on every work
 python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
 python scripts/check_doc_claims.py       # inventory counts in the prose against what is on disk
 python scripts/check_documented_gates.py # this very list against what CI actually runs
+python scripts/check_dead_media.py       # no card points an image at the dead upstream host
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
 python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
 python scripts/render_readme_assets.py --check   # the two images above against the tree

@@ -447,37 +447,37 @@ In the first four cases, DAX flags the entire column that contains the invalid f
 
 ### Power BI Desktop
 
-![Power BI Desktop](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-pbid.png)
+![Power BI Desktop](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-pbid.png)
 
 [Power BI Desktop](https://powerbi.microsoft.com/desktop/) is a free data modeling and reporting application. The model designer includes a DAX editor for creating DAX calculation formulas.
 
 ### Power Pivot in Excel
 
-![Power Pivot in Excel](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-excel.png)
+![Power Pivot in Excel](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-excel.png)
 
 The [Power Pivot in Excel](https://support.office.com/article/power-pivot-powerful-data-analysis-and-data-modeling-in-excel-a9c2c6e2-cc49-4976-a7d7-40896795d045) models designer includes a DAX editor for creating DAX calculation formulas.
 
 ### Visual Studio
 
-![Visual Studio](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-vs.png)
+![Visual Studio](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-vs.png)
 
 Visual Studio with [Analysis Services projects](https://marketplace.visualstudio.com/items?itemName=ProBITools.MicrosoftAnalysisServicesModelingProjects) extension (VSIX) is used to create Analysis Services model projects. Tabular model designer, installed with the projects extension includes a DAX editor.
 
 ### SQL Server Management Studio
 
-![SQL Server Management Studio](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-ssms.png)
+![SQL Server Management Studio](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-ssms.png)
 
 [SQL Server Management Studio](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms) (SSMS) is an essential tool for working with Analysis Services. SSMS includes a DAX query editor for querying both tabular and multidimensional models.
 
 ### DAX Studio
 
-![DAX Studio icon](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-studio.png)
+![DAX Studio icon](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-studio.png)
 
 [DAX Studio](http://daxstudio.org/) is an open-source client tool for creating and running DAX queries against Analysis Services, Power BI Desktop, and Power Pivot in Excel models.
 
 ### Tabular Editor
 
-![Tabular Editor icon](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-te.png)
+![Tabular Editor icon](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-te.png)
 
 [Tabular Editor](https://tabulareditor.com/) is an open-source tool that provides an intuitive, hierarchical view of every object in tabular model metadata. Tabular Editor includes a DAX Editor with syntax highlighting, which provides an easy way to edit measures, calculated column, and calculated table expressions.
 
@@ -491,7 +491,7 @@ When learning DAX, it's best to use the application you'll be using to create yo
 
 The [Definitive Guide to DAX](https://www.sqlbi.com/books/the-definitive-guide-to-dax-2nd-edition/) by Alberto Ferrari and Marco Russo (Microsoft Press). Now in its second edition, this extensive guide provides basics to innovative high-performance techniques for beginning data modelers and BI professionals.
 
-![The Definitive Guide to DAX book image](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-overview/dax-overview-book.png)
+![The Definitive Guide to DAX book image](https://learn.microsoft.com/en-us/dax/media/dax-overview/dax-overview-book.png)
 
 ## Community
 

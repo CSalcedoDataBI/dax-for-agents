@@ -151,7 +151,7 @@ Returns the difference in total sales between each month and the previous one wi
 
 The screenshot below shows the visual matrix and the visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-offset.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-offset.png)
 
 ## Related content
 

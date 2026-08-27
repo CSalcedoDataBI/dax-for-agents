@@ -59,7 +59,7 @@ TotalValue = COLLAPSEALL([SalesAmount], ROWS)
 
 The screenshot below shows the matrix with the visual calculation.
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-collapseall.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-collapseall.png)
 
 ## See also
 

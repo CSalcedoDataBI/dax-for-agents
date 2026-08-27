@@ -54,7 +54,7 @@ AvgSalesLast6Months = MOVINGAVERAGE([SalesAmount], 6, Rows)
 
 The screenshot below shows the visual matrix and the visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-movingaverage.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-movingaverage.png)
 
 ## Example 2
 

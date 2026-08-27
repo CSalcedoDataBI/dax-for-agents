@@ -148,7 +148,7 @@ Enhance a table so it contains, for each month:
 
 The screenshot below shows the visual matrix and the first visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-index.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-index.png)
 
 ## Related content
 

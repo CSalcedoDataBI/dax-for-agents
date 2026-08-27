@@ -58,11 +58,11 @@ CLOSINGBALANCEWEEK, CLOSINGBALANCEMONTH, CLOSINGBALANCEQUARTER, CLOSINGBALANCEYE
 
 In the following model diagram, both DimProduct and DimDate have a single direction relationship with FactInternetSales.
 
-![CROSSFILTER_Examp_DiagView](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/crossfilter-function/crossfilter-examp-diagview.png "CROSSFILTER_Examp_DiagView")
+![CROSSFILTER_Examp_DiagView](https://learn.microsoft.com/en-us/dax/media/crossfilter-function/crossfilter-examp-diagview.png "CROSSFILTER_Examp_DiagView")
 
 By default, we cannot get the Count of Products sold by year:
 
-![CROSSFILTER_Examp_PivotTable1](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/crossfilter-function/crossfilter-examp-pivottable1.png "CROSSFILTER_Examp_PivotTable1")
+![CROSSFILTER_Examp_PivotTable1](https://learn.microsoft.com/en-us/dax/media/crossfilter-function/crossfilter-examp-pivottable1.png "CROSSFILTER_Examp_PivotTable1")
 
 There are  two ways to get the count of products by year:
 
@@ -78,4 +78,4 @@ BiDi:= CALCULATE([Distinct Count of ProductKey], CROSSFILTER(FactInternetSales[P
 
 By using the CROSSFILTER function in our measure expression, we get the expected results:
 
-![CROSSFILTER_Examp_PivotTable2](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/crossfilter-function/crossfilter-examp-pivottable2.png "CROSSFILTER_Examp_PivotTable2")
+![CROSSFILTER_Examp_PivotTable2](https://learn.microsoft.com/en-us/dax/media/crossfilter-function/crossfilter-examp-pivottable2.png "CROSSFILTER_Examp_PivotTable2")

@@ -56,7 +56,7 @@ EVALUATE
 
 This DAX query returns a table with all of the columns of this DAX function.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/dax-query-example-1.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() DAX function in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/dax-query-example-1.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/dax-query-example-1.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() DAX function in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/dax-query-example-1.png":::
 
 ## Example 2 - DAX query with SELECTCOLUMNS and ADDCOLUMNS
 
@@ -86,7 +86,7 @@ EVALUATE
 
 This DAX query returns a table with only the specified columns and a new column to categorize the tables with a DAX formula.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/dax-query-example-2.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with selected columns in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/dax-query-example-2.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/dax-query-example-2.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with selected columns in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/dax-query-example-2.png":::
 
 ## Example 3 - calculated table with SELECTCOLUMNS and ADDCOLUMNS
 
@@ -115,7 +115,7 @@ xTables2 =
 ```
 This calculated table shows the same information as the DAX query in example 2 in a table in the model itself.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/calculated-table-example-3.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with selected columns in a calculated table." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/calculated-table-example-3.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/calculated-table-example-3.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with selected columns in a calculated table." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/calculated-table-example-3.png":::
 
 ## Example 4 - measure
 
@@ -134,7 +134,7 @@ This will show a scalar value with the number of calculated tables in my model.
 
 This can be shown in a visual:
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/measure-example-4-visuals.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with a measure then used in report visuals." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/measure-example-4-visuals.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/measure-example-4-visuals.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with a measure then used in report visuals." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/measure-example-4-visuals.png":::
 
 Or a DAX query in [DAX query view](https://learn.microsoft.com/en-us/power-bi/transform-model/dax-query-view): 
 
@@ -154,7 +154,7 @@ EVALUATE
     )
 ```
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/measure-example-4-dax-query.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with a measure then used in a DAX query in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-tables-function-dax/measure-example-4-dax-query.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/measure-example-4-dax-query.png" alt-text="Screenshot showing the output of INFO.VIEW.TABLES() with a measure then used in a DAX query in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-tables-function-dax/measure-example-4-dax-query.png":::
 
 ## See also
 

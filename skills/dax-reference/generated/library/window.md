@@ -169,7 +169,7 @@ Returns the cumulative total sales by month, calculated along each year. The val
 
 The screenshot below shows the visual matrix and the visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-window.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-window.png)
 
 ## Example 4 - visual calculation
 

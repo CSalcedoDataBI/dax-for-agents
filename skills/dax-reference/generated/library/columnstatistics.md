@@ -79,7 +79,7 @@ The following excerpt shows the **Customer** table rows from the result, includi
 |Customer|Postal Code|[Not Applicable]|YO15|324|16|
 |Customer|Location|[Not Applicable] [Not Applicable]|Yveline France|54|33|
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/columnstatistics-function-dax/columnstatistics-result-table.png" alt-text="COLUMNSTATISTICS result table":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/columnstatistics-function-dax/columnstatistics-result-table.png" alt-text="COLUMNSTATISTICS result table":::
 
 ## Related content
 

@@ -1751,13 +1751,12 @@ class LinksAreRelativeToTheirOwnPage(unittest.TestCase):
     def test_an_image_resolves_under_the_base_too(self):
         out = absolutise_links("![x](media/dax-understand-orderby/offset.png)",
                                base="best-practices")
-        self.assertIn("query-languages/dax/best-practices/media/dax-understand-orderby/"
-                      "offset.png", out)
+        self.assertIn("/dax/best-practices/media/dax-understand-orderby/offset.png", out)
 
     def test_a_docfx_image_directive_resolves_under_the_base_too(self):
         out = absolutise_links(':::image type="content" source="media/x/y.png":::',
                                base="best-practices")
-        self.assertIn("query-languages/dax/best-practices/media/x/y.png", out)
+        self.assertIn("/dax/best-practices/media/x/y.png", out)
 
     def test_an_unknown_sibling_area_is_still_refused(self):
         with self.assertRaises(ValueError):
@@ -1973,13 +1972,19 @@ class AbsolutiseLinks(unittest.TestCase):
         self.assertIn("https://learn.microsoft.com/en-us/power-bi/transform-model/dax-query-view",
                       out)
 
-    def test_a_media_image_points_at_the_upstream_file(self):
+    def test_a_media_image_points_at_a_host_that_answers(self):
+        """It pointed at the upstream raw host, which was right until that host started
+        returning 404 and left 87 dead images across 33 cards. Learn serves the same file
+        at the same path behind a different prefix; all 87 were fetched and answered 200
+        before this moved."""
         out = absolutise_links("![shot](media/dax-queries/collapse.png)\n")
-        self.assertIn("raw.githubusercontent.com/MicrosoftDocs/query-docs", out)
+        self.assertIn(
+            "https://learn.microsoft.com/en-us/dax/media/dax-queries/collapse.png", out)
+        self.assertNotIn("raw.githubusercontent.com", out)
 
     def test_a_media_image_with_a_title_attribute_is_still_rewritten(self):
         out = absolutise_links('![x](media/crossfilter/diag.png "CROSSFILTER_DiagView")\n')
-        self.assertIn("raw.githubusercontent.com", out)
+        self.assertIn("learn.microsoft.com/en-us/dax/media/crossfilter/diag.png", out)
         self.assertIn('"CROSSFILTER_DiagView"', out)
 
     def test_an_in_page_anchor_is_left_alone(self):
@@ -2064,7 +2069,7 @@ class DocFxImageDirectives(unittest.TestCase):
 
     def test_the_source_attribute_is_absolutised(self):
         out = absolutise_links(':::image type="content" source="media/x/y.png" alt-text="a":::')
-        self.assertIn("raw.githubusercontent.com", out)
+        self.assertIn("learn.microsoft.com/en-us/dax/media/x/y.png", out)
         self.assertNotIn('source="media/', out)
 
     def test_the_lightbox_attribute_is_absolutised_too(self):

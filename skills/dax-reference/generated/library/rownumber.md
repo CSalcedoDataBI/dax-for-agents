@@ -95,7 +95,7 @@ Create two columns that uniquely rank each month by the total sales, both within
 
 The screenshot below shows the visual matrix and the first visual calculation expression:
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-rownumber.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-rownumber.png)
 
 ## Related content
 

@@ -97,7 +97,7 @@ EVALUATE
 
 This DAX query returns a table with only the specified columns and rows meeting the filter condition with a DAX formula.
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-columns-function-dax/dax-query-example-2.png" alt-text="Screenshot showing the output of INFO.VIEW.COLUMNS() with selected columns in DAX query view." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-columns-function-dax/dax-query-example-2.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-columns-function-dax/dax-query-example-2.png" alt-text="Screenshot showing the output of INFO.VIEW.COLUMNS() with selected columns in DAX query view." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-columns-function-dax/dax-query-example-2.png":::
 
 ## Example 3 - calculated table with SELECTCOLUMNS and FILTER
 
@@ -142,7 +142,7 @@ This will show a scalar value with the number of text columns in my model.
 
 This can be shown in a visual:
 
-:::image type="content" source="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-columns-function-dax/measure-example-4-visuals.png" alt-text="Screenshot showing the output of INFO.VIEW.COLUMNS() with a measure then used in report visuals." lightbox="https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/info-view-columns-function-dax/measure-example-4-visuals.png":::
+:::image type="content" source="https://learn.microsoft.com/en-us/dax/media/info-view-columns-function-dax/measure-example-4-visuals.png" alt-text="Screenshot showing the output of INFO.VIEW.COLUMNS() with a measure then used in report visuals." lightbox="https://learn.microsoft.com/en-us/dax/media/info-view-columns-function-dax/measure-example-4-visuals.png":::
 
 Or a DAX query in [DAX query view](https://learn.microsoft.com/en-us/power-bi/transform-model/dax-query-view): 
 

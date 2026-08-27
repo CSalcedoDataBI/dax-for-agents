@@ -55,7 +55,7 @@ IsQuarterLevelAfterCollapse = COLLAPSE(ISATLEVEL([Fiscal Quarter]), ROWS)
 
 The screenshot below shows the matrix with the five visual calculations.
 
-![DAX visual calculation](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-isatlevel.png)
+![DAX visual calculation](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-isatlevel.png)
 
 ## See also
 

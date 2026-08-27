@@ -49,7 +49,7 @@ LookupExample1 = LOOKUP([Sales Amount], [Fiscal Year], "FY2018")
 
 The screenshot below shows the matrix with two visual calculations.
 
-![lookupwithTotals example 1](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-lookupwithtotals-example1.png)
+![lookupwithTotals example 1](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-lookupwithtotals-example1.png)
 
 ## Example 2
 In this example, **LookupWithTotalExample2** retrieves the sum of sales for Bikes Category. Notices that uses the total for other the dimensions since they were not specified. In other words, those dimensions are not filtered. It's useful when we want to do comparison since the result is locked to one value.
@@ -58,7 +58,7 @@ In this example, **LookupWithTotalExample2** retrieves the sum of sales for Bike
 LookupWithTotalExample2 = lookupWithTotals([Sales Amount], [Category], "Bikes")
 ```
 
-![lookupwithTotals example 2](https://raw.githubusercontent.com/MicrosoftDocs/query-docs/main/query-languages/dax/media/dax-queries/dax-visualcalc-lookupwithtotals-example2.png)
+![lookupwithTotals example 2](https://learn.microsoft.com/en-us/dax/media/dax-queries/dax-visualcalc-lookupwithtotals-example2.png)
 
 ## Related content
 
