@@ -17,7 +17,7 @@ semantics, and the gotchas the documentation doesn't tell you.
 
 | | |
 |---|---|
-| **479 function cards** | derived from [`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs), one file each |
+| **479 function cards** | derived from `MicrosoftDocs/query-docs` ([gone since 2026-08](#the-upstream-is-gone)), one file each |
 | **99 functions with runnable examples** | three each, every one carrying the result the engine returned |
 | **34 conceptual pages** | evaluation context, `EVALUATE`/`DEFINE`, operators, glossary |
 | **31 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
@@ -62,6 +62,31 @@ python scripts/check_examples.py
 
 **It does not replace DAX experts.** It stops your agent from inventing functions that don't
 exist.
+
+## The upstream is gone
+
+`MicrosoftDocs/query-docs` — the repository every generated card derives from — **no longer
+exists**. Since August 2026 it returns 404 on `github.com` and on the API alike, without
+authentication, and no successor was found in the organisation or among its forks. The last
+commit this repository read was `616f1e8`, on 2026-08-24.
+
+The name stays written wherever attribution requires it, because that is what CC BY 4.0 asks
+for. The links do not, because a 404 attributes nothing. What is left instead:
+
+- [The Wayback snapshot of 2026-03-01](http://web.archive.org/web/20260301020123/https://github.com/MicrosoftDocs/query-docs)
+- [The DAX documentation on Microsoft Learn](https://learn.microsoft.com/en-us/dax/), which is
+  the published form of the same material
+
+Two consequences that are **not** yet fixed, tracked in
+[issue #7](https://github.com/CSalcedoDataBI/dax-for-agents/issues/7):
+
+- `sync-check.yml` polls a repository that cannot answer, so the weekly drift check can no
+  longer tell "unchanged" from "unreachable".
+- 89 image URLs, spread over 37 files under `generated/`, point at `raw.githubusercontent.com`
+  paths that are now 404. The prose of those cards is intact; their screenshots are not.
+
+This is also the argument for the shape of this repository. A derived copy, versioned and
+gated, survives its source disappearing. A link does not.
 
 ## Why this exists
 
@@ -195,7 +220,7 @@ is a gate someone switches off.
 | What | Licence |
 |---|---|
 | Code, skills and hand-written content | [MIT](LICENSE) © 2026 CSalcedoDataBI |
-| `skills/dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from [`query-docs`](https://github.com/MicrosoftDocs/query-docs). See [`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE) |
+| `skills/dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from `MicrosoftDocs/query-docs` ([gone since 2026-08](#the-upstream-is-gone)). See [`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE) |
 | `skills/dax-lib/` | An offline index of [daxlib.org](https://daxlib.org). No package code is redistributed; licences vary per author. See [`skills/dax-lib/NOTICE`](skills/dax-lib/NOTICE) |
 | The lab's Parquet data | MIT, and **synthetic** — generated, not sourced. It lives in [`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) |
 

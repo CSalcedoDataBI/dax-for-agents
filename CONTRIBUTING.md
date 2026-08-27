@@ -64,9 +64,12 @@ edit and the sync never touches it. CI fails if anything generated turns up outs
 
 If a generated card is wrong, the fix is one of:
 
-- **Wrong upstream** → fix it in
-  [`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs) and let the weekly
-  sync pick it up.
+- **Wrong upstream** → this route is **closed**. It used to mean fixing it in
+  `MicrosoftDocs/query-docs` and letting the weekly sync pick it up, but that repository has
+  been gone since August 2026 — see [the README](README.md#the-upstream-is-gone). Until
+  [issue #7](https://github.com/CSalcedoDataBI/dax-for-agents/issues/7) settles where the
+  attribution points, treat a wrong card the way you would treat one that is right but
+  incomplete: write a note.
 - **Wrong parse** → fix `skills/dax-reference/scripts/sync_query_docs.py`.
 - **Right but incomplete** → that is what `skills/dax-reference/notes/` is for. Write a note.
 
