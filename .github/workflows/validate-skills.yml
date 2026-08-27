@@ -51,6 +51,12 @@ jobs:
       - name: Examples keep their contract
         run: python scripts/check_examples.py
 
+      # Las dos imagenes del README se generan del arbol. Si alguien anade una nota o un
+      # ejemplo y no las regenera, el mapa dice una cobertura que ya no existe -- que es
+      # justo la clase de numero pudriendose que este repositorio no admite en prosa.
+      - name: README assets match the tree
+        run: python scripts/render_readme_assets.py --check
+
       - name: Unit tests (sync pipeline)
         run: python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts -v
 
