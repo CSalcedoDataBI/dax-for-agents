@@ -98,16 +98,16 @@ class Gate(unittest.TestCase):
 
     def test_two_examples_are_not_enough(self):
         self.fx = Fixture(EJEMPLO[:EJEMPLO.index('```dax\nEVALUATE ROW("c"')])
-        self.assertIn("2 ejemplo(s)", " ".join(self.fx.run()))
+        self.assertIn("2 example(s)", " ".join(self.fx.run()))
 
     def test_a_query_with_no_result_block_fails(self):
         body = EJEMPLO + '\n```dax\nEVALUATE ROW("d", 4)\n```\n'
         self.fx = Fixture(body)
-        self.assertIn("sin bloque result", " ".join(self.fx.run()))
+        self.assertIn("no result block", " ".join(self.fx.run()))
 
     def test_a_model_that_is_not_a_lab_scenario_fails(self):
         self.fx = Fixture(EJEMPLO.replace("model: ninguno", "model: inventado"))
-        self.assertIn("no es un escenario de lab/", " ".join(self.fx.run()))
+        self.assertIn("is not a lab/ scenario", " ".join(self.fx.run()))
 
     def test_a_real_lab_scenario_is_accepted(self):
         self.fx = Fixture(EJEMPLO.replace("model: ninguno", "model: contoso"))
@@ -115,22 +115,22 @@ class Gate(unittest.TestCase):
 
     def test_a_missing_model_key_fails(self):
         self.fx = Fixture(EJEMPLO.replace("model: ninguno\n", ""))
-        self.assertIn("falta 'model:'", " ".join(self.fx.run()))
+        self.assertIn("has no 'model:'", " ".join(self.fx.run()))
 
     def test_a_stem_with_no_function_in_the_catalog_fails(self):
         self.fx = Fixture(name="noexiste.md")
-        self.assertIn("no hay ninguna funcion con el stem", " ".join(self.fx.run()))
+        self.assertIn("no function with the stem", " ".join(self.fx.run()))
 
     def test_frontmatter_naming_another_function_fails(self):
         """if.md que dice `function: ABS` mandaria al lector a la ficha equivocada."""
         self.fx = Fixture(EJEMPLO.replace("function: IF", "function: ABS"))
-        self.assertIn("pero el stem", " ".join(self.fx.run()))
+        self.assertIn("but the stem", " ".join(self.fx.run()))
 
     def test_coverage_below_the_ratchet_fails(self):
         self.fx = Fixture()
         problems = check(root=self.fx.examples, catalog=self.fx.catalog, lab=self.fx.lab,
                          min_covered=2)[0]
-        self.assertIn("cobertura", " ".join(problems))
+        self.assertIn("coverage", " ".join(problems))
 
 
 if __name__ == "__main__":

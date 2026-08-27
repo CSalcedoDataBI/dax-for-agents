@@ -59,6 +59,7 @@ In order, and deliberately not all at once:
 | 2 | The 99 example files, plus every new one from the epic | **done** — see below |
 | 3 | The 31 field notes | **done** — see below |
 | 4 | The five `lab/` READMEs | **done** |
+| 5 | What the gates print when you run them | **done 2026-08-27** — see below |
 
 Steps 3 and 4 were meant to be incremental and were finished in the same sitting instead. That
 changes the plan, not the reasoning: the argument for English did not depend on doing it slowly,
@@ -78,6 +79,23 @@ second copy to maintain — nothing reads it and it is never updated — but bec
 prose is the one step in this migration where meaning could drift with no gate noticing. The
 queries could not drift; the sentences around them are what a reader has to take on trust, and
 that directory is what they can check it against.
+
+Step 5 was not in the original plan, and that is the finding rather than a footnote. The four
+steps above are all *files*; nobody had looked at what the repository **says out loud**. The
+README is English and told a reader to run a script that answered `OK: 99 de 479 funciones con
+ejemplos` — the one moment where the shop window and the content meet, and they did not match.
+`check_examples.py`, `check_no_credentials.py`, `evals/run_evals.py` and one `::error::` in
+`claude.yml` now answer in English; the other gates already did.
+
+It cost thirteen assertions, which is the interesting part. Tests compared the Spanish strings
+literally, so every translated line dragged its test with it — and two of those tests were
+comparing against a *copy* of a label rather than the constant beside it. Translating turned a
+duplicated literal into a red test, which is how it was found; both now reference the constant,
+so the next rewording cannot make them disagree in silence. The label itself had the same
+duplication inside `check_no_credentials.py` and it is now one definition.
+
+Code comments stayed Spanish, per the section below. Only what a reader sees on running
+something moved.
 
 One value stayed Spanish on purpose: `model: ninguno` in the frontmatter. It is the sentinel
 `examples_io.py` compares against, sitting beside the real `lab/` directory names — a value in

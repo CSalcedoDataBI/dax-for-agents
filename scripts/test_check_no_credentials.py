@@ -15,8 +15,9 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from check_no_credentials import (_aceptado, find_in_text, load_accepted,
-                                  load_digests, tramos,  # noqa: E402
+from check_no_credentials import (ETIQUETA_HUELLA, PATTERNS, _aceptado,  # noqa: E402
+                                  find_in_text, load_accepted,
+                                  load_digests, tramos,
                                   scan_history, scan_tree)
 
 PAT_CLASICO = "ghp_" + "a1B2" * 9                     # 4 + 36
@@ -61,7 +62,7 @@ class FindInText(unittest.TestCase):
         h = self.hits(f"token = {PAT_CLASICO}\n")[0]
         self.assertNotIn(PAT_CLASICO, h["text"])
         self.assertNotIn(PAT_CLASICO[4:20], h["text"])
-        self.assertIn("REDACTADO", h["text"])
+        self.assertIn("REDACTED", h["text"])
         self.assertIn(str(len(PAT_CLASICO)), h["text"])
 
     def test_los_marcadores_de_ejemplo_no_cuentan(self):
@@ -81,7 +82,7 @@ class FindInText(unittest.TestCase):
         d = {hashlib.sha256(valor.encode()).hexdigest()}
         h = self.hits(f"tenant = {valor}\n", d)
         self.assertEqual(len(h), 1)
-        self.assertIn("huella", h[0]["label"])
+        self.assertIn("fingerprint", h[0]["label"])
         self.assertNotIn(valor, h[0]["text"])
 
     def test_un_guid_que_no_esta_en_la_lista_no_cuenta(self):
@@ -95,7 +96,7 @@ class FindInText(unittest.TestCase):
         d = {hashlib.sha256(b"nombre-privado").hexdigest()}
         h = self.hits("Branch: issue-9-copiar-algo-desde-nombre-privado-con-su", d)
         self.assertEqual(len(h), 1)
-        self.assertIn("huella", h[0]["label"])
+        self.assertIn("fingerprint", h[0]["label"])
 
     def test_un_nombre_vigilado_incrustado_no_se_reporta_dos_veces(self):
         # Un candidato con muchos tramos podria encajar varias veces y llenar el informe
@@ -115,7 +116,7 @@ class FindInText(unittest.TestCase):
         d = {hashlib.sha256(b"nombre-privado").hexdigest()}
         h = self.hits("rama: x-nombre-privado-y", d)
         self.assertNotIn("nombre-privado", h[0]["text"])
-        self.assertIn("REDACTADO", h[0]["text"])
+        self.assertIn("REDACTED", h[0]["text"])
 
     def test_un_token_con_demasiados_segmentos_no_dispara_el_cuadratico(self):
         # El tope existe para que una linea patologica no cueste sin limite. Por encima
@@ -223,13 +224,15 @@ class LineaBase(unittest.TestCase):
     """La historia se rinde; el arbol no. Y una credencial no se rinde nunca."""
 
     def test_un_nombre_en_un_objeto_rendido_deja_de_contar(self):
-        h = {"label": "valor vigilado por huella"}
+        # La constante, no una copia del texto: este test se quedo rojo al traducir la
+        # salida, que es la prueba de que un literal aqui es una segunda definicion.
+        h = {"label": ETIQUETA_HUELLA}
         self.assertTrue(_aceptado(h, "abc1234def", {"abc1234"}))
 
     def test_una_credencial_no_la_exime_ningun_sha(self):
         # La linea que separa las dos mitades del guardia. Una credencial se ROTA: dejar
         # que un SHA la silencie convertiria la lista en el sitio donde se entierran.
-        h = {"label": "PAT clasico de GitHub"}
+        h = {"label": PATTERNS[0][0]}   # cualquier etiqueta de credencial sirve
         self.assertFalse(_aceptado(h, "abc1234def", {"abc1234"}))
 
     def test_el_mismo_nombre_en_un_objeto_NUEVO_sigue_fallando(self):

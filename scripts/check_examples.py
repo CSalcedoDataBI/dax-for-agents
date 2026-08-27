@@ -82,31 +82,31 @@ def check(root=exio.EXAMPLES_DIR, catalog=CATALOG, lab=LAB, min_covered=MIN_COVE
         covered += 1
 
         if stem not in stems:
-            problems.append(f"{rel}: no hay ninguna funcion con el stem '{stem}' en el catalogo")
+            problems.append(f"{rel}: no function with the stem '{stem}' is in the catalogue")
         elif fm.get("function") and fm["function"] != stems[stem]:
-            problems.append(f"{rel}: frontmatter dice function: {fm['function']} pero el "
-                            f"stem '{stem}' es {stems[stem]}")
+            problems.append(f"{rel}: the frontmatter says function: {fm['function']} but "
+                            f"the stem '{stem}' is {stems[stem]}")
         if not fm.get("function"):
-            problems.append(f"{rel}: falta 'function:' en el frontmatter")
+            problems.append(f"{rel}: the frontmatter has no 'function:'")
 
         model = fm.get("model")
         if not model:
-            problems.append(f"{rel}: falta 'model:' en el frontmatter")
+            problems.append(f"{rel}: the frontmatter has no 'model:'")
         elif model not in models:
-            problems.append(f"{rel}: model: {model} no es un escenario de lab/ "
-                            f"(hay: {', '.join(sorted(models))})")
+            problems.append(f"{rel}: model: {model} is not a lab/ scenario "
+                            f"(there are: {', '.join(sorted(models))})")
 
         if len(pairs) < MIN_EXAMPLES:
-            problems.append(f"{rel}: {len(pairs)} ejemplo(s), el minimo son {MIN_EXAMPLES}")
+            problems.append(f"{rel}: {len(pairs)} example(s), the minimum is {MIN_EXAMPLES}")
         for i, (_, result) in enumerate(pairs, 1):
             if result is None:
-                problems.append(f"{rel} [{i}]: consulta sin bloque result — un ejemplo sin "
-                                f"numero medido es una afirmacion, no un ejemplo")
+                problems.append(f"{rel} [{i}]: a query with no result block — an example "
+                                f"without a measured number is an assertion, not an example")
 
     if covered < min_covered:
-        problems.append(f"cobertura: {covered} funcion(es) con ejemplos, y el suelo esta en "
-                        f"{min_covered}. Si se ha borrado un fichero a proposito, baja "
-                        f"MIN_COVERED en el mismo commit y di por que.")
+        problems.append(f"coverage: {covered} function(s) with examples, and the floor is "
+                        f"{min_covered}. If a file was deleted on purpose, lower "
+                        f"MIN_COVERED in the same commit and say why.")
     return problems, covered, len(stems)
 
 
@@ -116,10 +116,10 @@ def main():
         print("EXAMPLES CHECK FAILED:")
         for p in problems:
             print(f"  - {p}")
-        print(f"\n{len(problems)} problema(s). {covered} de {total} funciones con ejemplos.")
+        print(f"\n{len(problems)} problem(s). {covered} of {total} functions with examples.")
         return 1
-    print(f"OK: {covered} de {total} funciones con ejemplos, {MIN_EXAMPLES}+ cada una, "
-          f"todas con resultado medido.")
+    print(f"OK: {covered} of {total} functions with examples, {MIN_EXAMPLES}+ each, "
+          f"every one carrying a measured result.")
     return 0
 
 

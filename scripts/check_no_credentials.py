@@ -37,7 +37,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIGESTS_PATH = os.path.join(ROOT, "scripts", "forbidden-digests.txt")
 ACCEPTED_PATH = os.path.join(ROOT, "scripts", "accepted-history.txt")
 
-ETIQUETA_HUELLA = "valor vigilado por huella"
+ETIQUETA_HUELLA = "value watched by fingerprint"
 
 SKIP_DIRS = {".git", "__pycache__", ".venv", "node_modules"}
 
@@ -66,22 +66,22 @@ def _ignored_dirs(root):
 # Los patrones se escriben para que su propio texto fuente no encaje con ellos: asi el
 # guardia no necesita excluirse a si mismo, que es la excepcion que luego tapa una fuga.
 PATTERNS = [
-    ("PAT clasico de GitHub", re.compile(r"\bghp_[A-Za-z0-9]{36}\b")),
-    ("token de GitHub (oauth, app o refresh)", re.compile(r"\bgh[ousr]_[A-Za-z0-9]{36}\b")),
-    ("PAT de grano fino de GitHub", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{50,}\b")),
-    ("clave de acceso de AWS", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
-    ("token de Slack", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b")),
-    ("clave de API de Google", re.compile(r"\bAIza[0-9A-Za-z_\-]{35}\b")),
-    ("clave privada PEM", re.compile(r"-----BEGIN (?:[A-Z]+ )*PRIVATE KEY-----")),
+    ("GitHub classic PAT", re.compile(r"\bghp_[A-Za-z0-9]{36}\b")),
+    ("GitHub token (oauth, app or refresh)", re.compile(r"\bgh[ousr]_[A-Za-z0-9]{36}\b")),
+    ("GitHub fine-grained PAT", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{50,}\b")),
+    ("AWS access key", re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b")),
+    ("Slack token", re.compile(r"\bxox[baprs]-[A-Za-z0-9-]{10,}\b")),
+    ("Google API key", re.compile(r"\bAIza[0-9A-Za-z_\-]{35}\b")),
+    ("PEM private key", re.compile(r"-----BEGIN (?:[A-Z]+ )*PRIVATE KEY-----")),
     # El secreto de cliente de Azure AD v2 lleva "8Q~" incrustado y ronda los 40 caracteres.
-    ("secreto de cliente de Azure AD",
+    ("Azure AD client secret",
      re.compile(r"\b[A-Za-z0-9~._\-]{2,4}8Q~[A-Za-z0-9~._\-]{30,40}\b")),
-    ("contrasena en cadena de conexion",
+    ("password in a connection string",
      re.compile(r"(?i)\b(?:password|pwd)\s*=\s*(?P<v>[^\s;,\"'<>&]{6,})")),
-    ("secreto asignado en claro",
+    ("secret assigned in the clear",
      re.compile(r"(?i)\b(?:client[_-]?secret|api[_-]?key|access[_-]?token|"
                 r"secret[_-]?key)\s*[:=]\s*[\"']?(?P<v>[A-Za-z0-9~._\-+/]{20,})")),
-    ("cabecera Authorization con token",
+    ("Authorization header carrying a token",
      re.compile(r"(?i)\bbearer\s+(?P<v>[A-Za-z0-9\-._~+/]{20,}={0,2})")),
 ]
 
@@ -205,7 +205,7 @@ def _aceptado(hit, sha, accepted):
 def _redact(line, start, end):
     """La linea con el hallazgo sustituido por su longitud. Nunca devuelve el valor."""
     largo = end - start
-    fuera = f"{line[:start]}[REDACTADO {largo} caracteres]{line[end:]}"
+    fuera = f"{line[:start]}[REDACTED {largo} characters]{line[end:]}"
     return fuera.strip()[:160]
 
 
@@ -226,7 +226,11 @@ def find_in_text(text, digests=frozenset()):
                         # Se tacha el candidato entero y no solo el tramo: senalar el
                         # tramo exacto seria decir cual de todos encajo, que es una pista
                         # sobre el valor vigilado en un log que puede ser publico.
-                        yield {"line": n, "label": "valor vigilado por huella",
+                        # ETIQUETA_HUELLA, no una copia: la linea 199 compara contra la
+                        # constante, asi que un literal duplicado aqui rompe el redactado
+                        # en silencio en cuanto una de las dos cambie -- que es justo lo
+                        # que paso al traducir la salida.
+                        yield {"line": n, "label": ETIQUETA_HUELLA,
                                "text": _redact(line, m.start(), m.end())}
                         break
 
@@ -299,19 +303,20 @@ def main(argv=None):
                    for h in scan_history(ROOT, digests, accepted=accepted)]
 
     if report:
-        print("CREDENTIAL CHECK FAILED — esto no puede llegar a un repositorio publico:")
+        print("CREDENTIAL CHECK FAILED — this cannot reach a public repository:")
         for where, h in report:
             print(f"  {where}:{h['line']}  [{h['label']}]  {h['text']}")
-        print(f"\n{len(report)} hallazgo(s). Si alguno es real, lo primero no es borrarlo: "
-              f"es ROTAR la credencial. Borrarla del arbol no la borra de la historia, y "
-              f"borrarla de la historia no la borra de donde ya se haya copiado. "
-              f"Si es un ejemplo de documentacion, use un marcador (<TU_CLAVE>).")
+        print(f"\n{len(report)} finding(s). If any is real, the first move is not to "
+              f"delete it: it is to ROTATE the credential. Removing it from the tree does "
+              f"not remove it from the history, and removing it from the history does not "
+              f"remove it from wherever it has already been copied. If it is a "
+              f"documentation example, use a placeholder (<YOUR_KEY>).")
         return 1
-    alcance = "arbol e historia" if history else "arbol"
-    rendidos = (f", {len(accepted)} objetos historicos rendidos" if history and accepted
+    alcance = "tree and history" if history else "tree"
+    rendidos = (f", {len(accepted)} historical objects surrendered" if history and accepted
                 else "")
-    print(f"OK: sin credenciales en el {alcance} "
-          f"({len(PATTERNS)} patrones, {len(digests)} huellas{rendidos}).")
+    print(f"OK: no credentials in the {alcance} "
+          f"({len(PATTERNS)} patterns, {len(digests)} fingerprints{rendidos}).")
     return 0
 
 

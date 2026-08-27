@@ -287,14 +287,14 @@ def run_accuracy(all_cases):
         return 0
     catalog = load_catalog()
     code, fails = accuracy_eval(catalog, cases)
-    print(f"Accuracy evals: {len(cases)} casos contra "
-          f"{(catalog or {}).get('functionCount', 'ningún')} funciones.")
+    print(f"Accuracy evals: {len(cases)} cases against "
+          f"{(catalog or {}).get('functionCount', 'no')} functions.")
     if fails:
         print("FAILED:")
         for f in fails:
             print(f"  - {f}")
     else:
-        print("  OK (función encontrada y flags correctos).")
+        print("  OK (function found, flags correct).")
     return code
 
 
