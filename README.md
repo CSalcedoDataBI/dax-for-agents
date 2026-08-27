@@ -3,6 +3,10 @@
 **The canonical DAX language reference for AI agents** — every function with its signature,
 semantics, and the gotchas the documentation doesn't tell you.
 
+> **The long read** (in Spanish): [DAX para que tu agente deje de
+> inventar](https://csalcedodatabi.com/blog/dax-for-agents/) — why the gap exists, one field
+> note shown in full, and a map of what this library actually covers.
+
 ## What you are getting, exactly
 
 | | |
