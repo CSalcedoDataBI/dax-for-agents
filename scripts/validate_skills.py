@@ -141,6 +141,52 @@ if os.path.exists(cat_json):
                    for f in cat.get("functions", []) if f.get("notes")}
         for bad in sorted(flagged - notes):
             errors.append(f"catalog flags '{bad}' as having notes but notes/{bad}.md is missing")
+
+        # The OTHER direction, which nothing checked until it had already cost something.
+        #
+        # The line above catches a flag with no file — a promise the tree cannot keep. The
+        # reverse is a file with no flag, and it is worse, because it fails silently: the
+        # work exists, nothing is broken, and no one can find it. SKILL.md routes on this
+        # flag ("if the card's frontmatter says examples: N greater than zero, the card
+        # links to examples/..."), so an unflagged file is work an agent has no reason to
+        # open.
+        #
+        # Both had already rotted when this was written. examples/ held 99 functions and
+        # the catalog marked 54 — 45 invisible, including ABS with three measured queries.
+        # notes/ held 31 and the catalog marked 30: WINDOW, one of the functions the
+        # window-functions skill exists for, carried a hand-written note behind a card
+        # that said notes: false.
+        for lost in sorted(notes - flagged):
+            errors.append(f"notes/{lost}.md exists but the catalog does not flag '{lost}' "
+                          f"as having notes, so nothing routes to it — re-run the sync")
+
+        # Examples are the same contract, plus a count. The count matters on its own: a
+        # card promising three when the file holds two sends an agent looking for one that
+        # is not there.
+        example_counts = {}
+        examples_dir = os.path.join(REF, "examples")
+        if os.path.isdir(examples_dir):
+            for category in sorted(os.listdir(examples_dir)):
+                cat_dir = os.path.join(examples_dir, category)
+                if not os.path.isdir(cat_dir):
+                    continue
+                for name in sorted(os.listdir(cat_dir)):
+                    if name.endswith(".md"):
+                        with open(os.path.join(cat_dir, name), encoding="utf-8") as f:
+                            example_counts[os.path.splitext(name)[0]] = f.read().count("```dax")
+
+        stated = {f.get("file") or str(f.get("name", "")).lower(): (f.get("examples") or 0)
+                  for f in cat.get("functions", [])}
+        for lost in sorted(set(example_counts) - {s for s, n in stated.items() if n}):
+            errors.append(f"examples/{lost}.md exists but the catalog says '{lost}' has no "
+                          f"examples, so nothing routes to it — re-run the sync")
+        for bad in sorted({s for s, n in stated.items() if n} - set(example_counts)):
+            errors.append(f"catalog says '{bad}' has examples but no examples/**/{bad}.md "
+                          f"is there")
+        for stem, real in sorted(example_counts.items()):
+            if stem in stated and stated[stem] and stated[stem] != real:
+                errors.append(f"catalog says '{stem}' has {stated[stem]} example(s) but "
+                              f"examples/**/{stem}.md holds {real}")
         # Same invariant for the conceptual pages: an index row with no page behind it
         # sends an agent to a file that is not there, which is worse than no row at all.
         concept_rows = {c.get("file") for c in cat.get("concepts", [])}
