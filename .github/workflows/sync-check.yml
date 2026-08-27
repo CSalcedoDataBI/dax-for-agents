@@ -25,31 +25,79 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Compare upstream SHA against the stamped one
+      # Three answers, not two. Before this step existed the job could only say "the SHA
+      # matches" or "it does not", and a 404 came out the second door: `ls-remote` failed,
+      # the pipe swallowed its exit code, UPSTREAM went empty, empty did not equal the
+      # stamp, and the job went off to clone a repository that is not there. Every Monday
+      # since 2026-08 that produced a red run whose message was about the clone, for a
+      # cause nobody can fix. "Gone" and "changed" are not the same finding and no longer
+      # share an exit.
+      - name: Probe the upstream
         id: drift
         shell: bash
         run: |
-          UPSTREAM=$(git ls-remote https://github.com/MicrosoftDocs/query-docs.git HEAD | cut -f1)
-          echo "upstream=$UPSTREAM" >> "$GITHUB_OUTPUT"
-          # `ls-remote` gives 40 characters and the cards carry the 7 that `rev-parse
-          # --short` wrote. Both are kept: the long one to compare, the short one to read.
-          echo "upstream_short=${UPSTREAM:0:7}" >> "$GITHUB_OUTPUT"
           if [ -f skills/dax-reference/generated/catalog.json ]; then
             STAMPED=$(python -c "import json;print(json.load(open('skills/dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
           else
             STAMPED="(never synced)"
           fi
           echo "stamped=$STAMPED" >> "$GITHUB_OUTPUT"
-          echo "upstream: $UPSTREAM"
           echo "stamped : $STAMPED"
-          if [ "${UPSTREAM:0:7}" = "${STAMPED:0:7}" ]; then
-            echo "drift=false" >> "$GITHUB_OUTPUT"
+
+          # Read WITHOUT a pipe, so the exit code is the answer rather than `cut`'s. That
+          # masking is the whole reason the old step could not tell the two cases apart.
+          if RAW=$(git ls-remote https://github.com/MicrosoftDocs/query-docs.git HEAD 2>"$RUNNER_TEMP/ls-remote.err"); then
+            UPSTREAM=$(printf '%s' "$RAW" | head -n1 | cut -f1)
+            echo "state=reachable" >> "$GITHUB_OUTPUT"
+            echo "upstream=$UPSTREAM" >> "$GITHUB_OUTPUT"
+            # `ls-remote` gives 40 characters and the cards carry the 7 that `rev-parse
+            # --short` wrote. Both are kept: the long one to compare, the short one to read.
+            echo "upstream_short=${UPSTREAM:0:7}" >> "$GITHUB_OUTPUT"
+            echo "upstream: $UPSTREAM"
+            if [ "${UPSTREAM:0:7}" = "${STAMPED:0:7}" ]; then
+              echo "drift=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "drift=true" >> "$GITHUB_OUTPUT"
+            fi
           else
-            echo "drift=true" >> "$GITHUB_OUTPUT"
+            cat "$RUNNER_TEMP/ls-remote.err"
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+            # A deleted repository and a private one give GitHub's same "Repository not
+            # found"; for an unauthenticated poll they are the same fact. A resolver or a
+            # timeout says nothing about the upstream at all, so it is NOT read as gone --
+            # calling a bad morning a disappearance is how a sentinel goes quiet for weeks.
+            if grep -qiE 'repository not found|not found|does not exist' "$RUNNER_TEMP/ls-remote.err"; then
+              echo "state=gone" >> "$GITHUB_OUTPUT"
+            else
+              echo "state=unknown" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
+      # Green on purpose. This is the expected state since 2026-08 and there is nothing to
+      # do about it: `generated/` is frozen at its stamp on purpose, and a weekly red for a
+      # decision already taken is how a team learns to stop reading CI.
+      - name: Report the upstream is gone
+        if: steps.drift.outputs.state == 'gone'
+        run: |
+          echo "::notice::MicrosoftDocs/query-docs is still gone (404). generated/ stays frozen at ${{ steps.drift.outputs.stamped }} -- see docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md"
+
+      # Red on purpose, and the only red anyone should act on: the source came back, so the
+      # freeze can be revisited and the drift check below is meaningful again.
+      - name: The upstream answered again
+        if: steps.drift.outputs.state == 'reachable' && steps.drift.outputs.drift == 'true'
+        run: |
+          echo "::warning::MicrosoftDocs/query-docs answers again, at ${{ steps.drift.outputs.upstream_short }}. Revisit docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md -- the freeze was decided because every surviving copy was OLDER than ${{ steps.drift.outputs.stamped }}."
+
+      # Fail closed. An unreadable answer is not evidence of anything, and a sentinel that
+      # treats "I could not tell" as "nothing to report" is worse than no sentinel.
+      - name: Fail when the probe could not tell
+        if: steps.drift.outputs.state == 'unknown'
+        run: |
+          echo "::error::git ls-remote failed for a reason that is not a 404 -- network, DNS or a timeout. This says nothing about the upstream, so it is not read as gone."
+          exit 1
+
       - name: Report no drift
-        if: steps.drift.outputs.drift != 'true'
+        if: steps.drift.outputs.state == 'reachable' && steps.drift.outputs.drift != 'true'
         run: echo "::notice::query-docs is unchanged at ${{ steps.drift.outputs.upstream }}."
 
       # Only the DAX folder is read, and only its current commit. The whole repo is

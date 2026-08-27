@@ -1,23 +1,31 @@
-NOTICE — third-party content in dax-reference/
-==============================================
+NOTICE — third-party content in skills/dax-reference/
+=====================================================
 
 The generated content in this folder is derived from Microsoft documentation.
 
-  Source : https://github.com/MicrosoftDocs/query-docs
-           query-languages/dax/
+  Source : Microsoft Learn — https://learn.microsoft.com/en-us/dax/
+           One page per file, addressable as learn.microsoft.com/en-us/dax/<slug>, where
+           <slug> is the name in each file's `source:` line without the .md.
+  Origin : MicrosoftDocs/query-docs, query-languages/dax/, at commit 323524c.
+           That repository has returned 404 since 2026-08. The name stays because it is
+           what the content was taken from and CC BY 4.0 asks for the attribution, not
+           for a working link; the link above is where the same material is published,
+           and it is live. Learn names MicrosoftDocs/query-docs-pr as its own origin.
+           Why the generated tree is frozen at that commit rather than re-pointed:
+           docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md
   License: Creative Commons Attribution 4.0 International (CC BY 4.0)
            https://creativecommons.org/licenses/by/4.0/
   © Microsoft Corporation
 
 Affected paths:
 
-  dax-reference/generated/library/     one card per DAX function
-  dax-reference/generated/concepts/    conceptual topics
-  dax-reference/generated/catalog.md   function index
-  dax-reference/generated/concepts.md  concept index
-  dax-reference/generated/catalog.json both indexes, for scripts
+  skills/dax-reference/generated/library/     one card per DAX function
+  skills/dax-reference/generated/concepts/    conceptual topics
+  skills/dax-reference/generated/catalog.md   function index
+  skills/dax-reference/generated/concepts.md  concept index
+  skills/dax-reference/generated/catalog.json both indexes, for scripts
 
-Everything under dax-reference/generated/ is produced by the sync and replaced wholesale on
+Everything under skills/dax-reference/generated/ is produced by the sync and replaced wholesale on
 every run, so that directory is exactly the CC BY 4.0 surface. Nothing outside it is derived
 from Microsoft's documentation.
 
@@ -27,10 +35,11 @@ Each generated file records its upstream source path and date in its frontmatter
 
 NOT covered by this notice — these are original work under the repository's MIT license:
 
-  dax-reference/SKILL.md
-  dax-reference/notes/        hand-written field notes
-  dax-reference/overrides.json
-  dax-reference/scripts/      the sync pipeline
+  skills/dax-reference/SKILL.md
+  skills/dax-reference/notes/        hand-written field notes
+  skills/dax-reference/examples/     hand-written runnable examples
+  skills/dax-reference/overrides.json
+  skills/dax-reference/scripts/      the sync pipeline
 
 Microsoft's own repository splits its licensing the same way: LICENSE (CC BY 4.0) for the
 documentation and LICENSE-CODE (MIT) for the code.

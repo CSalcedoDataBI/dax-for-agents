@@ -5,9 +5,10 @@ description: Use when you need to know what a built-in DAX function does, its ex
 
 # DAX Reference
 
-The complete DAX function library, agent-native. Derived from
-[`MicrosoftDocs/query-docs`](https://github.com/MicrosoftDocs/query-docs) (CC BY 4.0 — see
-[`NOTICE`](./NOTICE)) and annotated with the gotchas the docs leave out.
+The complete DAX function library, agent-native. Derived from `MicrosoftDocs/query-docs`
+(CC BY 4.0 — see [`NOTICE`](./NOTICE)), which has returned 404 since 2026-08; the same
+material is published on [Microsoft Learn](https://learn.microsoft.com/en-us/dax/).
+Annotated with the gotchas the docs leave out.
 
 > **Status.** `generated/` is built — 479 functions and 34 conceptual pages from
 > `MicrosoftDocs/query-docs@323524c`, plus **31 field notes**, each one measured

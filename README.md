@@ -77,13 +77,23 @@ for. The links do not, because a 404 attributes nothing. What is left instead:
 - [The DAX documentation on Microsoft Learn](https://learn.microsoft.com/en-us/dax/), which is
   the published form of the same material
 
-Two consequences that are **not** yet fixed, tracked in
-[issue #7](https://github.com/CSalcedoDataBI/dax-for-agents/issues/7):
+**`generated/` is frozen at `@323524c`, and that is a decision rather than a defect.** A
+complete copy of the upstream markdown does survive in a third-party repository — the sync
+runs against it unmodified and reproduces all 513 files. It was not adopted because every
+copy that survives is *older* than what is already here: 24 files would move backwards,
+`CALCULATE`, `WINDOW` and `DATEDIFF` among them. So the tree stays as it is, and stays a
+generated artifact nobody edits by hand, which is exactly what keeps it replaceable the day
+a newer source appears. What was searched, and how it was measured:
+[the decision record](docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md).
 
-- `sync-check.yml` polls a repository that cannot answer, so the weekly drift check can no
-  longer tell "unchanged" from "unreachable".
-- 89 image URLs, spread over 37 files under `generated/`, point at `raw.githubusercontent.com`
-  paths that are now 404. The prose of those cards is intact; their screenshots are not.
+`sync-check.yml` used to fail every Monday against a repository that cannot answer. It now
+separates the three cases it was collapsing into one: it reports the 404 and stays green,
+fails if the probe cannot tell, and turns red only when the upstream **answers again** —
+the one event that would reopen the decision.
+
+Still open, tracked in [issue #13](https://github.com/CSalcedoDataBI/dax-for-agents/issues/13):
+87 image URLs across 33 files under `generated/` point at `raw.githubusercontent.com` paths
+that are now 404. The prose of those cards is intact; their screenshots are not.
 
 This is also the argument for the shape of this repository. A derived copy, versioned and
 gated, survives its source disappearing. A link does not.
