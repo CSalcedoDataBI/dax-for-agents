@@ -19,6 +19,8 @@ on:
 
 permissions:
   contents: read
+  # Mismo motivo que en validate-skills.yml: la PR de release solo ve commit statuses.
+  statuses: write
 
 # R2 — varios pushes seguidos a la misma PR: solo importa el ultimo veredicto.
 concurrency:
@@ -40,6 +42,16 @@ jobs:
           python-version: "3.x"
       - run: pip install pyyaml
       - run: python evals/run_evals.py
+
+      # Ver la nota larga en validate-skills.yml: un `workflow_dispatch` deja check runs
+      # que la PR de release no muestra. El contexto se llama como el job porque asi lo
+      # nombra el ruleset. #9
+      - name: Report the verdict on the release branch
+        if: always() && startsWith(github.ref_name, 'release-please--')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/statuses/${{ github.sha }}"             -f state="${{ job.status == 'success' && 'success' || 'failure' }}"             -f context="static"             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"             -f description="los evals corrieron sobre esta rama"
 
   llm-judge:
     # Manual only — real routing accuracy, spends tokens.

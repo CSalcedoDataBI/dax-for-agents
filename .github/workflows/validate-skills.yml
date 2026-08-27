@@ -19,6 +19,9 @@ on:
 
 permissions:
   contents: read
+  # Para publicar el veredicto como commit status en la rama de release. Ver el
+  # ultimo paso del job.
+  statuses: write
 
 # R2 — varios pushes seguidos a la misma PR: solo importa el ultimo veredicto.
 concurrency:
@@ -77,3 +80,19 @@ jobs:
 
       - name: Unit tests (evals)
         run: python -m unittest discover -s evals -t evals -v
+
+      # El veredicto ya existe -- este job acaba de emitirlo sobre el SHA exacto de la
+      # PR de release -- pero la PR no lo ve: los check runs de un `workflow_dispatch`
+      # no entran en su rollup, asi que la pagina sigue diciendo "no checks reported"
+      # sobre un arbol que si se comprobo, y quien mergea no puede distinguir verde de
+      # no mirado. Un commit status si entra en el rollup, y ademas es lo que el ruleset
+      # de main compara: por nombre de contexto, que es este job. #9
+      #
+      # `always()` porque un rojo tiene que llegar a la PR igual que un verde; el filtro
+      # por rama para no plantar un status a mano sobre cualquier otra corrida.
+      - name: Report the verdict on the release branch
+        if: always() && startsWith(github.ref_name, 'release-please--')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X POST "repos/${{ github.repository }}/statuses/${{ github.sha }}"             -f state="${{ job.status == 'success' && 'success' || 'failure' }}"             -f context="validate"             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"             -f description="las compuertas corrieron sobre esta rama"
