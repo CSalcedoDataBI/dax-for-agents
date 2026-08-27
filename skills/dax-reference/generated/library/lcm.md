@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/lcm-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # LCM
 
@@ -39,6 +39,13 @@ Returns the least common multiple of integers.
 - If LCM(a,b) &gt;=2^53, LCM returns the `#NUM!` error value.
 
 - This function is not supported for use in DirectQuery mode when used in calculated columns or row-level security (RLS) rules.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/lcm.md`](../../examples/math-and-trig/lcm.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

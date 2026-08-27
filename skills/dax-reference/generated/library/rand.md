@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/rand-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # RAND
 
@@ -33,6 +33,13 @@ A decimal number.
 - RAND is always recalculated if the function is used in the definition of a measure.
 
 - RAND function cannot return a result of zero, to prevent errors such as division by zero.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/rand.md`](../../examples/math-and-trig/rand.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

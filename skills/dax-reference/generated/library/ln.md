@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/ln-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 5
 ---
 # LN
 
@@ -33,6 +33,13 @@ A decimal number.
 ## Remarks
 
 LN is the inverse of the EXP function.
+
+## Ejemplos ejecutables
+
+**5** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/ln.md`](../../examples/math-and-trig/ln.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

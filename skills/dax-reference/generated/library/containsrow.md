@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/containsrow-function-dax.md@323524c
 sourceDate: 06/29/2026
 notes: false
-examples: 0
+examples: 6
 ---
 # CONTAINSROW function
 
@@ -44,6 +44,13 @@ CONTAINSROW(<Table>, <Value> [, <Value> [, …] ] )
   - NOT IN isn't an operator in DAX. To perform the logical negation of the IN operator, put NOT in front of the entire expression. For example, NOT [Color] IN { "Red", "Yellow", "Blue" }.
 
 - Unlike the = operator, the IN operator and the CONTAINSROW function perform strict comparison. For example, the BLANK value doesn't match 0.
+
+## Ejemplos ejecutables
+
+**6** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/information/containsrow.md`](../../examples/information/containsrow.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

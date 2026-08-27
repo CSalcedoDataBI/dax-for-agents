@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/convert-function-dax.md@323524c
 sourceDate: 06/29/2026
 notes: false
-examples: 0
+examples: 3
 ---
 # CONVERT
 
@@ -48,6 +48,13 @@ Returns the value of `Expression`, translated to `Datatype`.
     ```
 
 - This function is not supported for use in DirectQuery mode when used in calculated columns or row-level security (RLS) rules.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/convert.md`](../../examples/math-and-trig/convert.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

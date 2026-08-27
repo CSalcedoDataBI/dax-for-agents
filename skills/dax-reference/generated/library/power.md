@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/power-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 4
 ---
 # POWER
 
@@ -30,6 +30,13 @@ POWER(<number>, <power>)
 ## Return value
 
 A decimal number.
+
+## Ejemplos ejecutables
+
+**4** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/power.md`](../../examples/math-and-trig/power.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

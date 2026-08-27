@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/exp-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 4
 ---
 # EXP
 
@@ -37,6 +37,13 @@ A decimal number.
 - EXP is the inverse of LN, which is the natural logarithm of the given number.
 
 - To calculate powers of bases other than e, use the exponentiation operator (^). For more information, see [DAX Operator Reference](https://learn.microsoft.com/en-us/dax/dax-operator-reference).
+
+## Ejemplos ejecutables
+
+**4** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/exp.md`](../../examples/math-and-trig/exp.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

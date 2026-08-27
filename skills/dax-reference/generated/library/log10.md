@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/log10-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # LOG10
 
@@ -33,6 +33,13 @@ A decimal number.
 ## Remarks
 
 The LOG function lets you change the base of the logarithm, instead of using the base 10.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/log10.md`](../../examples/math-and-trig/log10.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

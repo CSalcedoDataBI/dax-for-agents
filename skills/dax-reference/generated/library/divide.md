@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/divide-function-dax.md@323524c
 sourceDate: 
 notes: true
-examples: 0
+examples: 3
 ---
 # DIVIDE
 
@@ -37,6 +37,13 @@ DIVIDE(<numerator>, <denominator> [,<alternateresult>])
 - Alternate result on divide by 0 must be a constant.
 
 - For best practices when using DIVIDE, see [DIVIDE function vs. divide operator (/) in DAX](https://learn.microsoft.com/en-us/dax/best-practices/dax-divide-function-operator).
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/divide.md`](../../examples/math-and-trig/divide.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

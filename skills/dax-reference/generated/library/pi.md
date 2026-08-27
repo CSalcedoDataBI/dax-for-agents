@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/pi-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # PI
 
@@ -27,6 +27,13 @@ A decimal number with the value of Pi, 3.14159265358979, accurate to 15 digits.
 ## Remarks
 
 Pi is a mathematical constant. In DAX, Pi is represented as a real number accurate to 15 digits, the same as Excel.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/pi.md`](../../examples/math-and-trig/pi.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

@@ -25,9 +25,11 @@ Annotated with the gotchas the docs leave out.
 3. If the catalog row is flagged **★**, also read **`notes/<function>.md`** — that is the field
    knowledge that is not in Microsoft's docs. It sits outside `generated/` because it is
    written by hand.
-4. If the card's frontmatter says `examples: N` with N greater than zero, the card links to
+4. If the catalog row is flagged **▶** — or, the same fact seen from the card, its
+   frontmatter says `examples: N` with N greater than zero — the card links to
    **`examples/<category>/<function>.md`**: N queries **executed against a model that is in
-   this repository**, each one published with the number the engine returned.
+   this repository**, each one published with the number the engine returned. The flag is
+   there so this can be decided from the index instead of by opening 479 cards.
 
 **Do not quote figures from the card's `## Examples (Microsoft — no verificados aquí)`
 section as if they were verified.** Those come from `query-docs` and are measured against
@@ -46,6 +48,7 @@ concepts, ~2k tokens) and open the one page it points to. Going through `catalog
 |---|---|
 | ⛔ | Microsoft discourages it **in visual calculations only** — it says the function there "likely returns meaningless results". It says nothing about using it in a measure or a calculated column. The card field is `discouragedInVisualCalculations`, named that way because "discouraged" on its own gets read as deprecated, and warning someone off a function that is fine where they are using it is a wrong answer said with confidence |
 | ★ | There is a hand-written note in `notes/` — read it |
+| ▶ | There are runnable examples in `examples/` — queries executed against a model that is in this repository, each published with the number the engine returned. The card carries the count in `examples:` |
 
 ### Where a function applies
 
@@ -97,14 +100,23 @@ Four gates, all before anything is written:
 |---|---|
 | No category | A function gets none from the category indexes, the filename rules, `toc.yml`, or `overrides.json`. The exceptions are named in `overrides.json`, so a swap that keeps the total unchanged still fails — and a name left there after upstream classifies it fails too |
 | Orphan note | A `notes/<fn>.md` has no card. The catalog would flag ★ and send a reader to a file that is not there |
+| Unrouted work | The reverse, and the one that fails silently: a `notes/` or `examples/` file the cards and catalogue do not point at. Nothing is broken, the work simply cannot be found. Checked by `refresh_local_metadata.py --check` |
 | Broken cross-link | Any relative link in a card resolves to nothing |
 | Count deviation | The function or concept count moved more than 5% since the last sync. Override with `--accept-count-change` for a real upstream release |
 
 Plus a coverage floor of 90% as a coarse net against a total parser collapse.
 
 The new tree is built in a scratch directory and only then swapped into place, so a failure
-part-way leaves the previous `generated/` exactly as it was. `notes/` is read to set the ★ flag
-and never written.
+part-way leaves the previous `generated/` exactly as it was. `notes/` and `examples/` are read
+to set the ★ and ▶ flags and the `examples:` count, and never written.
+
+Those two flags are the only part of `generated/` that does not come from upstream, which
+matters now that the upstream is gone and the tree is frozen (see
+[the decision record](../../docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md)).
+`scripts/refresh_local_metadata.py` rewrites exactly that half — the two frontmatter fields,
+the block they point at, and the two indexes — and touches no Microsoft prose. It imports its
+placement and formatting from the sync, so the two writers cannot drift apart, and
+`--check` runs it in CI as a gate.
 
 A weekly CI job compares the upstream SHA against the stamped one. When it moves, the job
 sparse-clones the DAX folder, regenerates through the four gates, runs the repo's own

@@ -57,19 +57,39 @@ Public work is an ordinary issue here, and it belongs on #47.
 ## The one rule that matters
 
 **Everything under `skills/dax-reference/generated/` is generated. Never edit it by hand.** Your
-change would be silently erased by the next sync, which replaces that whole directory in one
-move. Everything beside it — `SKILL.md`, `NOTICE`, `overrides.json`, `notes/` — is yours to
-edit and the sync never touches it. CI fails if anything generated turns up outside
-`generated/`, because a copy there is never refreshed again.
+change would be silently erased by the next regeneration, which replaces that whole directory
+in one move. Everything beside it — `SKILL.md`, `NOTICE`, `overrides.json`, `notes/`,
+`examples/` — is yours to edit and nothing generated ever writes there. CI fails if anything
+generated turns up outside `generated/`, because a copy there is never refreshed again.
+
+The rule survives the upstream disappearing, and the reason changed with it. It used to
+protect a weekly sync. Now that `generated/` is frozen at its stamp —
+[the decision record](docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md) says why —
+it protects the option of ever regenerating again: hand edits are the one thing that would
+make the swap expensive on the day a newer source arrives.
+
+**Two writers, not one.** `sync_query_docs.py` writes the whole directory from upstream and
+is parked. `skills/dax-reference/scripts/refresh_local_metadata.py` writes only the half that
+comes from THIS repository — the `notes:` and `examples:` fields, the runnable-examples block,
+and the two indexes — and never touches Microsoft's prose. Run it after adding or removing a
+note or an example file:
+
+```bash
+python skills/dax-reference/scripts/refresh_local_metadata.py
+```
+
+Forgetting is not an option that stays quiet: `--check` runs in CI. It failed on 48 files the
+first time it was written, which is how 45 example files came to be invisible to the route
+`SKILL.md` documents.
 
 If a generated card is wrong, the fix is one of:
 
-- **Wrong upstream** → this route is **closed**. It used to mean fixing it in
-  `MicrosoftDocs/query-docs` and letting the weekly sync pick it up, but that repository has
-  been gone since August 2026 — see [the README](README.md#the-upstream-is-gone). Until
-  [issue #7](https://github.com/CSalcedoDataBI/dax-for-agents/issues/7) settles where the
-  attribution points, treat a wrong card the way you would treat one that is right but
-  incomplete: write a note.
+- **Wrong upstream** → this route is **closed**, and stays closed. It used to mean fixing it
+  in `MicrosoftDocs/query-docs` and letting the weekly sync pick it up; that repository has
+  been gone since August 2026, and every surviving copy of its markdown is older than the
+  tree here — see [the README](README.md#the-upstream-is-gone) and
+  [the decision record](docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md). Treat a
+  wrong card the way you would treat one that is right but incomplete: write a note.
 - **Wrong parse** → fix `skills/dax-reference/scripts/sync_query_docs.py`.
 - **Right but incomplete** → that is what `skills/dax-reference/notes/` is for. Write a note.
 
@@ -107,6 +127,9 @@ Rules:
 - Be concrete. "It can be slow" is useless; "1M context transitions in an iterator over 1M
   rows" is a note.
 - A note without its matching `generated/library/<function>.md` **fails CI** — check the spelling.
+- After adding a note, run `refresh_local_metadata.py` so the ★ flag and the card's
+  `notes:` field catch up. `WINDOW` spent a while with a hand-written note behind a card
+  that said `notes: false`, which is a note nothing routes to.
 - Notes attach to **functions**, not to concepts. A conceptual page is Microsoft's prose;
   if you have field knowledge about `EVALUATE`, it belongs in a note on the function it
   bites on, where the ★ flag will actually surface it.

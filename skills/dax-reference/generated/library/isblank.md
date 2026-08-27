@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/isblank-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # ISBLANK
 
@@ -33,6 +33,13 @@ A Boolean value of `TRUE` if the value is blank; otherwise `FALSE`.
 ## Remarks
 
 To learn more about best practices when working with BLANKS, see [Avoid converting BLANKs to values in DAX](https://learn.microsoft.com/en-us/dax/best-practices/dax-avoid-converting-blank).
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/information/isblank.md`](../../examples/information/isblank.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

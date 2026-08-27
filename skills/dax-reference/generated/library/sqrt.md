@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/sqrt-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 4
 ---
 # SQRT
 
@@ -33,6 +33,13 @@ A decimal number.
 ## Remarks
 
 If the number is negative, the SQRT function returns an error.
+
+## Ejemplos ejecutables
+
+**4** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/sqrt.md`](../../examples/math-and-trig/sqrt.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

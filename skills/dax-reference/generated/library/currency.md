@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/currency-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # CURRENCY
 
@@ -39,6 +39,13 @@ The value of the expression evaluated and returned as a currency type value.
 - If the data type of the expression is Text then CURRENCY(`Text`) will try to convert text to a number. If conversion succeeds the number will be converted to currency, otherwise an error is returned.
 
 - If the data type of the expression is DateTime then CURRENCY(`DateTime`) will convert the datetime value to a number and that number to currency. DateTime values have an integer part that represents the number of days between the given date and 1900-03-01 and a fraction that represents the fraction of a day (where 12 hours or noon is 0.5 day). If the value of the expression is not a proper DateTime value an error is returned.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/currency.md`](../../examples/math-and-trig/currency.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

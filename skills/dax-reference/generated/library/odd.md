@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/odd-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 3
 ---
 # ODD
 
@@ -37,6 +37,13 @@ Returns number rounded up to the nearest odd integer.
 - Regardless of the sign of number, a value is rounded up when adjusted away from zero. If number is an odd integer, no rounding occurs.
 
 - This function is not supported for use in DirectQuery mode when used in calculated columns or row-level security (RLS) rules.
+
+## Ejemplos ejecutables
+
+**3** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/odd.md`](../../examples/math-and-trig/odd.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/fact-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 4
 ---
 # FACT
 
@@ -35,6 +35,13 @@ A decimal number.
 - If the number is not an integer, it is truncated and an error is returned. If the result is too large, an error is returned.
 
 - This function is not supported for use in DirectQuery mode when used in calculated columns or row-level security (RLS) rules.
+
+## Ejemplos ejecutables
+
+**4** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/fact.md`](../../examples/math-and-trig/fact.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

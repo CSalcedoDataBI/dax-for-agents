@@ -66,6 +66,14 @@ jobs:
       - name: Examples keep their contract
         run: python scripts/check_examples.py
 
+      # La otra mitad del mismo contrato. check_examples.py dice que los ficheros de
+      # ejemplo estan bien formados; esto dice que las fichas apuntan de verdad a ellos.
+      # Es mas fuerte que las tres comparaciones que sustituye porque re-deriva TODO lo que
+      # el sync calcula del arbol propio y falla ante cualquier diferencia, incluida la que
+      # a nadie se le ocurrio afirmar. Ver #8.
+      - name: Cards and catalogue agree with notes/ and examples/
+        run: python skills/dax-reference/scripts/refresh_local_metadata.py --check
+
       # Las dos imagenes del README se generan del arbol. Si alguien anade una nota o un
       # ejemplo y no las regenera, el mapa dice una cobertura que ya no existe -- que es
       # justo la clase de numero pudriendose que este repositorio no admite en prosa.

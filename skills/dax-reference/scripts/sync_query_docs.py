@@ -940,14 +940,21 @@ def _catalog_md(entries, source, source_date):
         f"> {len(entries)} funciones · generado por `scripts/sync_query_docs.py`",
         "> **No editar a mano.** ⛔ = Microsoft la desaconseja **en cálculos visuales** "
         "(dice que probablemente devuelve resultados sin sentido); en una medida o columna "
-        "calculada no dice nada · ★ = tiene nota propia.",
+        "calculada no dice nada · ★ = tiene nota propia · ▶ = tiene ejemplos ejecutables "
+        "en este repositorio.",
         "",
         "| Función | Cat | Ret | Aplica | Resumen | ⚑ |",
         "|---|---|---|---|---|---|",
     ]
     rows = []
     for e in entries:
-        flags = ("⛔" if e["discouragedInVisualCalculations"] else "") + ("★" if e["notes"] else "")
+        # ▶ existe porque sin el la unica forma de saber que una funcion tiene ejemplos
+        # ejecutables era abrir su ficha: el catalogo marcaba la nota y callaba los
+        # ejemplos. Con 99 funciones cubiertas eso son 99 fichas que abrir para encontrar
+        # las que se pueden ejecutar.
+        flags = (("⛔" if e["discouragedInVisualCalculations"] else "")
+                 + ("★" if e["notes"] else "")
+                 + ("▶" if e.get("examples") else ""))
         applies = " ".join(_APPLIES_CODE.get(a, a) for a in e["appliesTo"])
         summary = e["summary"].replace("|", "\\|")
         rows.append(f"| {_cell(e['name'])} | {_cell(e['primaryCategory'])} | "

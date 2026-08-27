@@ -7,7 +7,7 @@ appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/window-function-dax.md@323524c
 sourceDate: 07/08/2026
-notes: false
+notes: true
 examples: 0
 ---
 # WINDOW

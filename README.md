@@ -208,6 +208,7 @@ and so is everything else that can be:
 python scripts/validate_skills.py        # frontmatter, INDEX, catalogue/cards/notes integrity
 python scripts/check_doc_claims.py       # inventory counts in the prose against what is on disk
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
+python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
 python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
 python -m unittest discover -s scripts -t scripts
 ```

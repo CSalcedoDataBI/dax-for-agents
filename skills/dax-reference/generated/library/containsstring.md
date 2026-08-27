@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/containsstring-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 6
 ---
 # CONTAINSSTRING
 
@@ -36,6 +36,13 @@ CONTAINSSTRING(<within_text>, <find_text>)
 - CONTAINSSTRING is case-insensitive, kanatype-insensitive, width-insensitive and accent sensitive.
 
 - You can use `?` and `*` wildcard characters. Use `~` to escape wildcard characters.
+
+## Ejemplos ejecutables
+
+**6** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/information/containsstring.md`](../../examples/information/containsstring.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

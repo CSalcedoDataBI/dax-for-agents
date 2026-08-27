@@ -8,7 +8,7 @@ discouragedInVisualCalculations: false
 source: query-languages/dax/log-function-dax.md@323524c
 sourceDate: 
 notes: false
-examples: 0
+examples: 4
 ---
 # LOG
 
@@ -36,6 +36,13 @@ A decimal number.
 You might receive an error if the value is too large to be displayed.
 
 The function LOG10 is similar, but always returns the common logarithm, meaning the logarithm for the base 10.
+
+## Ejemplos ejecutables
+
+**4** consulta(s) medidas contra un modelo que sí está en este repositorio, cada una con el número que devolvió el motor:
+[`examples/math-and-trig/log.md`](../../examples/math-and-trig/log.md).
+
+Se ejecutan y se comparan con `python lab/check_lab.py examples localhost:<puerto>`.
 
 ## Examples (Microsoft — no verificados aquí)
 

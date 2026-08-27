@@ -21,7 +21,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the absolute value of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ACCRINT",
@@ -97,7 +97,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the inverse hyperbolic cosine of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "ACOT",
@@ -116,7 +116,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the arccotangent, or inverse cotangent, of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ACOTH",
@@ -135,7 +135,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the inverse hyperbolic cotangent of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "ADDCOLUMNS",
@@ -427,7 +427,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the inverse hyperbolic sine of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ATAN",
@@ -465,7 +465,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the inverse hyperbolic tangent of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "AVERAGE",
@@ -1138,7 +1138,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns true if values for all referred columns exist, or are contained, in those columns; otherwise, the function returns false.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "CONTAINSROW",
@@ -1157,7 +1157,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns `TRUE` if a row of values exists or contained in a table, otherwise returns `FALSE`.",
       "notes": false,
-      "examples": 0
+      "examples": 6
     },
     {
       "name": "CONTAINSSTRING",
@@ -1176,7 +1176,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns `TRUE` or `FALSE` indicating whether one string contains another string.",
       "notes": false,
-      "examples": 0
+      "examples": 6
     },
     {
       "name": "CONTAINSSTRINGEXACT",
@@ -1195,7 +1195,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns `TRUE` or `FALSE` indicating whether one string contains another string.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "CONVERT",
@@ -1214,7 +1214,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Converts an expression of one data type to another.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "COS",
@@ -1271,7 +1271,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the cotangent of an angle specified in radians.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "COTH",
@@ -1290,7 +1290,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the hyperbolic cotangent of a hyperbolic angle.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "COUNT",
@@ -1612,7 +1612,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Evaluates the argument and returns the result as currency data type.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "CURRENTGROUP",
@@ -1935,7 +1935,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Converts radians into degrees.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "DEPENDON",
@@ -2083,7 +2083,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Performs division and returns alternate result or BLANK() on division by 0.",
       "notes": true,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "DOLLARDE",
@@ -2366,7 +2366,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns number rounded up to the nearest even integer.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "EXACT",
@@ -2423,7 +2423,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns e raised to the power of a given number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "EXPAND",
@@ -2507,7 +2507,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the factorial of a number, equal to the series 1*2\\*3\\*...\\* , ending in the given number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "FALSE",
@@ -2767,7 +2767,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the greatest common divisor of two or more integers.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "GENERATE",
@@ -4356,7 +4356,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks whether a value is blank, and returns `TRUE` or `FALSE`.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISBOOLEAN",
@@ -4432,7 +4432,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks whether a value is a date / time, and returns `TRUE` or `FALSE`.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISDECIMAL",
@@ -4508,7 +4508,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks whether a value is an error, and returns `TRUE` or `FALSE`.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISEVEN",
@@ -4527,7 +4527,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns `TRUE` if number is even, or `FALSE` if number is odd.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISFILTERED",
@@ -4641,7 +4641,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks if a value is not text (blank cells are not text), and returns `TRUE` or `FALSE`.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISNUMBER",
@@ -4660,7 +4660,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks whether a value is a number, and returns `TRUE` or `FALSE`. Alias of [ISNUMERIC](https://learn.microsoft.com/en-us/dax/isnumeric-function-dax).",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISNUMERIC",
@@ -4679,7 +4679,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks whether a value is a number, and returns `TRUE` or `FALSE`. Alias of [ISNUMBER](https://learn.microsoft.com/en-us/dax/isnumber-function-dax).",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISO.CEILING",
@@ -4717,7 +4717,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns `TRUE` if number is odd, or `FALSE` if number is even.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISONORAFTER",
@@ -4792,7 +4792,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks if a value is text, and returns `TRUE` or `FALSE`. Alias of [ISTEXT](https://learn.microsoft.com/en-us/dax/istext-function-dax).",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ISSUBTOTAL",
@@ -4829,7 +4829,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Checks if a value is text, and returns `TRUE` or `FALSE`. Alias of [ISSTRING](https://learn.microsoft.com/en-us/dax/isstring-function-dax).",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "KEEPFILTERS",
@@ -4940,7 +4940,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the least common multiple of integers.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "LEFT",
@@ -5035,7 +5035,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the natural logarithm of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 5
     },
     {
       "name": "LOG",
@@ -5054,7 +5054,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the logarithm of a number to the base you specify.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "LOG10",
@@ -5073,7 +5073,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the base-10 logarithm of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "LOOKUP",
@@ -5389,7 +5389,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the remainder after a number is divided by a divisor. The result always has the same sign as the divisor.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "MONTH",
@@ -5835,7 +5835,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns number rounded up to the nearest odd integer.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "ODDFPRICE",
@@ -6310,7 +6310,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the value of Pi, 3.14159265358979, accurate to 15 digits.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "PMT",
@@ -6367,7 +6367,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the result of a number raised to a power.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "PPMT",
@@ -6649,7 +6649,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Performs division and returns only the integer portion of the division result.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "RADIANS",
@@ -6668,7 +6668,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Converts degrees to radians.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "RAND",
@@ -6687,7 +6687,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns a random number greater than or equal to 0 and less than 1, evenly distributed.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "RANDBETWEEN",
@@ -6706,7 +6706,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns a random number in the range between two numbers you specify.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "RANGE",
@@ -7370,7 +7370,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Determines the sign of a number, the result of a calculation, or a value in a column.",
       "notes": false,
-      "examples": 0
+      "examples": 3
     },
     {
       "name": "SIN",
@@ -7446,7 +7446,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the square root of a number.",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "SQRTPI",
@@ -7465,7 +7465,7 @@
       "discouragedInVisualCalculations": false,
       "summary": "Returns the square root of (number * pi).",
       "notes": false,
-      "examples": 0
+      "examples": 4
     },
     {
       "name": "STARTOFMONTH",
@@ -8655,7 +8655,7 @@
       ],
       "discouragedInVisualCalculations": false,
       "summary": "Returns multiple rows which are positioned within the given interval.",
-      "notes": false,
+      "notes": true,
       "examples": 0
     },
     {
