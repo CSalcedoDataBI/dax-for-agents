@@ -43,6 +43,10 @@ jobs:
         if: steps.release.outputs.pr != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Este job no hace checkout -- no le hace falta ninguno. Sin GH_REPO, `gh`
+          # busca el repositorio en el .git del directorio, que aqui no existe, y muere
+          # con "not a git repository". Nombrarlo cuesta una linea; clonar, un minuto.
+          GH_REPO: ${{ github.repository }}
           BRANCH: ${{ fromJSON(steps.release.outputs.pr || '{}').headBranchName }}
         run: |
           echo "Dispatching gates against $BRANCH"
