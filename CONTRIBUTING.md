@@ -15,7 +15,7 @@ a real engagement, no credential, not even in a commit that "will be fixed in th
 Two gates hold the line, and they are not optional:
 
 ```bash
-python scripts/check_no_credentials.py            # el arbol de trabajo. Corre en cada PR
+python scripts/check_no_credentials.py            # el arbol de trabajo. Corre en cada commit de main y en cada PR
 python scripts/check_no_credentials.py --history  # + todos los blobs alcanzables
 ```
 

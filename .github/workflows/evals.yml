@@ -1,9 +1,14 @@
 name: Evals
 
 on:
-  # R1 — solo en PR, igual que validate-skills. El push a main volvia a correr
-  # el mismo arbol que la PR ya habia aprobado: dos runs por cambio.
+  # Mismo motivo que en validate-skills.yml: con los commits entrando directos a
+  # main, "solo en PR" dejaba a main sin un solo veredicto. Y el repo es publico,
+  # asi que el run no cuesta minutos (R8).
+  push:
+    branches: [main]
   pull_request:
+  # Tambien es la puerta por la que release-please.yml pide veredicto sobre la rama
+  # de release, cuyos runs de `pull_request` mueren en `action_required`. Ver #9.
   workflow_dispatch:
     inputs:
       mode:

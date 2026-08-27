@@ -1,9 +1,21 @@
 name: Validate skills
 
 on:
-  # R1 — solo en PR. El push a main revalidaba el mismo commit que la PR ya
-  # habia aprobado: dos runs por cambio.
+  # R1 decia "solo en PR" porque el push a main revalidaba lo que la PR ya habia
+  # aprobado. Ese razonamiento suponia un flujo de PRs que aqui ya no existe: los
+  # commits entran directos a main, asi que quitar el push no evitaba un run
+  # duplicado, evitaba el UNICO run. Ninguna de las compuertas habia visto un solo
+  # commit de main. Y R1 aqui no ahorra nada de todas formas: este repositorio es
+  # publico, y los repos publicos no consumen cuota de Actions (R8).
+  push:
+    branches: [main]
   pull_request:
+  # La PR de release la empuja release-please con el GITHUB_TOKEN, y sus runs se
+  # quedan en `action_required` para siempre porque el actor es un bot y la politica
+  # de aprobacion del repo es `first_time_contributors`. workflow_dispatch es el
+  # unico disparador que GitHub exime de eso, y es release-please.yml quien lo
+  # dispara contra la rama de release. Ver #9.
+  workflow_dispatch:
 
 permissions:
   contents: read
