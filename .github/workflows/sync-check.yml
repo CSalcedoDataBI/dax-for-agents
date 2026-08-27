@@ -48,6 +48,16 @@ jobs:
           # masking is the whole reason the old step could not tell the two cases apart.
           if RAW=$(git ls-remote https://github.com/MicrosoftDocs/query-docs.git HEAD 2>"$RUNNER_TEMP/ls-remote.err"); then
             UPSTREAM=$(printf '%s' "$RAW" | head -n1 | cut -f1)
+            # Exit code 0 is not the same as a usable answer. A proxy, a captive portal or
+            # a redirect page can all leave `ls-remote` succeeding with something that is
+            # not a sha, and the comparison below would then quietly resolve to "unchanged"
+            # -- a green run whose message is a lie. Forty hex characters or nothing.
+            if ! printf '%s' "$UPSTREAM" | grep -qE '^[0-9a-f]{40}$'; then
+              echo "state=unknown" >> "$GITHUB_OUTPUT"
+              echo "drift=false" >> "$GITHUB_OUTPUT"
+              echo "ls-remote answered, but not with a sha: '$UPSTREAM'"
+              exit 0
+            fi
             echo "state=reachable" >> "$GITHUB_OUTPUT"
             echo "upstream=$UPSTREAM" >> "$GITHUB_OUTPUT"
             # `ls-remote` gives 40 characters and the cards carry the 7 that `rev-parse
@@ -93,7 +103,7 @@ jobs:
       - name: Fail when the probe could not tell
         if: steps.drift.outputs.state == 'unknown'
         run: |
-          echo "::error::git ls-remote failed for a reason that is not a 404 -- network, DNS or a timeout. This says nothing about the upstream, so it is not read as gone."
+          echo "::error::the upstream probe could not tell. Either git ls-remote failed for a reason that is not a 404 -- network, DNS, a timeout -- or it succeeded and did not answer with a 40-character sha. Neither is evidence about the upstream, so neither is read as 'unchanged'."
           exit 1
 
       - name: Report no drift
