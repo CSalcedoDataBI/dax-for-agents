@@ -60,6 +60,13 @@ jobs:
       - name: Prose counts match the tree
         run: python scripts/check_doc_claims.py
 
+      # La seccion «Checking it yourself» del README enumera las garantias del repo y
+      # llego a declarar cuatro compuertas mientras CI corria siete. No lo caza
+      # check_doc_claims: ahi no hay un numero junto a un sustantivo, hay una lista.
+      # Esta compara la lista con lo que este mismo fichero ejecuta. Ver #12.
+      - name: The README lists every check CI runs
+        run: python scripts/check_documented_gates.py
+
       # Estructura, no numeros: 3 ejemplos por funcion, modelo real, un result detras de
       # cada consulta. Que el numero sea el correcto lo comprueba lab/check_lab.py, y eso
       # necesita un motor tabular que CI no tiene.

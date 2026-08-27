@@ -202,16 +202,29 @@ failure cannot come back quietly.
 ## Checking it yourself
 
 Nothing here asks to be taken on trust. The prose is checked against the tree by a gate,
-and so is everything else that can be:
+and so is everything else that can be. This is the whole list, and it is the whole list on
+purpose — it used to name four of them while CI ran seven, which is a bad paragraph to get
+wrong in the section about not taking things on trust:
 
 ```bash
 python scripts/validate_skills.py        # frontmatter, INDEX, catalogue/cards/notes integrity
+python scripts/check_no_credentials.py   # 11 credential patterns and 7 fingerprints, in the tree
+python scripts/check_workflow_cost.py    # the Actions cost rules, on every workflow
+python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
 python scripts/check_doc_claims.py       # inventory counts in the prose against what is on disk
+python scripts/check_documented_gates.py # this very list against what CI actually runs
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
 python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
-python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
+python scripts/render_readme_assets.py --check   # the two images above against the tree
+python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts
 python -m unittest discover -s scripts -t scripts
+python -m unittest discover -s evals -t evals
 ```
+
+`check_documented_gates.py` is why that list can be trusted to stay complete: it reads every
+python command CI runs unconditionally on a pull request and fails if this block and that set
+differ. Routing accuracy is checked too, in its own workflow — `python evals/run_evals.py`,
+free and static; the LLM-judge variant is manual because it spends tokens.
 
 `check_doc_claims.py` is the one worth knowing about: it reads a number written next to a
 noun this repository counts — cards, functions with runnable examples, concepts, notes,
