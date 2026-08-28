@@ -13,6 +13,8 @@ import os
 import sys
 import unittest
 
+import yaml
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import fetch_from_learn as learn                                  # noqa: E402
@@ -254,6 +256,96 @@ class ToMarkdown(unittest.TestCase):
 
     def test_empty_in_empty_out(self):
         self.assertEqual(learn.to_markdown("   "), "")
+
+
+class TocYaml(unittest.TestCase):
+    """The toc has to come out in the shape `parse_toc` reads, or it classifies nothing."""
+
+    TOC = json.dumps({"items": [{"toc_title": "Math and trig functions", "children": [
+        {"toc_title": "ABS", "href": "abs-function-dax"},
+        {"toc_title": "Videos", "href": "https://aka.ms/learndax"},
+        {"toc_title": "Overview", "href": "./"},
+    ]}]})
+
+    def setUp(self):
+        self.doc = yaml.safe_load(learn.toc_yaml(self.TOC))
+
+    def test_children_become_items_and_toc_title_becomes_name(self):
+        section = self.doc["items"][0]
+        self.assertEqual(section["name"], "Math and trig functions")
+        self.assertEqual(section["items"][0]["name"], "ABS")
+
+    def test_a_function_href_gets_its_extension_back(self):
+        """`parse_toc` selects function pages by the `-function-dax.md` suffix. Without
+        the extension the table of contents classifies nothing, and the five functions it
+        is the only source for lose their category."""
+        self.assertEqual(self.doc["items"][0]["items"][0]["href"], "abs-function-dax.md")
+
+    def test_the_sync_can_read_what_this_writes(self):
+        """The contract, exercised rather than described."""
+        found = sync.parse_toc(learn.toc_yaml(self.TOC), {"math-and-trig"})
+        self.assertEqual(found, {"abs-function-dax.md": "math-and-trig"})
+
+    def test_an_external_link_carries_no_href(self):
+        self.assertNotIn("href", self.doc["items"][0]["items"][1])
+
+
+class PageMarkdown(unittest.TestCase):
+    PAGE = ('<meta name="description" content="Learn more about: ABS">'
+            '<meta name="title" content="ABS function (DAX) - DAX | Microsoft Learn">'
+            '<meta name="ms.topic" content="reference">'
+            '<meta name="ms.date" content="2023-10-20T00:00:00Z">'
+            '<div class="content"><h1 id="abs">ABS</h1></div>'
+            '<div class="content">' + icons("yes", "yes", "yes", "yes") +
+            "<p>Returns the absolute value of a number.</p></div>"
+            '<h2 id="feedback">Feedback</h2>')
+
+    def setUp(self):
+        self.md = learn.page_markdown(self.PAGE)
+
+    def test_it_has_the_four_parts_in_order(self):
+        lines = [l for l in self.md.splitlines() if l.strip()]
+        self.assertEqual(lines[0], "---")
+        self.assertIn("# ABS", lines)
+        self.assertTrue(any("[!INCLUDE[applies-to" in l for l in lines))
+        self.assertIn("Returns the absolute value of a number.", lines)
+        self.assertLess(lines.index("# ABS"),
+                        [i for i, l in enumerate(lines) if "[!INCLUDE" in l][0])
+
+    def test_the_title_loses_learns_site_suffix(self):
+        """The page is "ABS function (DAX)". The browser tab is that plus
+        " - DAX | Microsoft Learn", and only the first half is Microsoft's document."""
+        self.assertIn('title: "ABS function (DAX)"', self.md)
+        self.assertNotIn("Microsoft Learn", self.md)
+
+    def test_the_date_is_a_date_and_not_a_timestamp(self):
+        self.assertIn("ms.date: 2023-10-20", self.md)
+
+    def test_the_rendered_applies_to_does_not_survive_as_prose(self):
+        """It becomes the include line. Left in place the card states the same thing twice,
+        in two formats, and one of them is not the one the sync reads."""
+        self.assertNotIn("Applies to:", self.md)
+
+    def test_the_sync_reads_back_what_this_writes(self):
+        self.assertEqual(sync.parse_applies_to(self.md),
+                         (["measure", "column", "table", "visual-calculation"], False))
+        self.assertEqual(sync.parse_title(self.md), "ABS")
+
+
+class Unlisted(unittest.TestCase):
+    def test_the_unlisted_set_is_the_uncategorised_set(self):
+        """The claim the list is built on, checked against the tree instead of trusted.
+
+        Sixteen functions have no category because no index lists them, and the same
+        sixteen are unreachable from Learn's navigation. If a future sync categorises one,
+        this goes red and the list gets re-read rather than surviving as a story."""
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "generated", "catalog.json")
+        with open(path, encoding="utf-8") as f:
+            catalog = json.load(f)
+        uncategorised = {f["file"] for f in catalog["functions"]
+                         if not f["primaryCategory"]}
+        self.assertEqual(set(learn.UNLISTED), uncategorised)
 
 
 if __name__ == "__main__":

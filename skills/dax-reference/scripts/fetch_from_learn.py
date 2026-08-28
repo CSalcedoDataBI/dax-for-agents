@@ -29,6 +29,34 @@ from html.parser import HTMLParser
 
 LEARN = "https://learn.microsoft.com/en-us/dax/"
 TOC = LEARN + "toc.json"
+# `math-and-trig-functions-dax` and friends: the plural is the whole difference
+# between a category index and a function page.
+INDEX_SLUG_SUFFIX = "-functions-dax"
+
+# Pages Learn PUBLISHES but does not NAVIGATE to. They answer 200 and render like any
+# other function page; nothing in the table of contents or in the fifteen category indexes
+# points at them, so no amount of crawling finds them.
+#
+# This is the one thing this fetch cannot discover on its own, and the list is written down
+# rather than hidden because of what it costs to be wrong: without it the run is short by
+# sixteen functions and says "463 / 463 categorized", which reads as perfect.
+#
+# They are the same sixteen three times over, which is why they are believable as a set
+# rather than as an accident:
+#
+#   - no category index lists them  (docs/decisions/2026-08-17-sixteen-functions-without-category.md)
+#   - Learn's navigation does not reach them  (measured here: 479 - 463)
+#   - nine of them are not in the engine at all  (lab/engine-baseline.json)
+#
+# A seventeenth would have to arrive the way these did: someone noticing a function with no
+# page reachable from anywhere. There is no mechanical route to it, and pretending
+# otherwise would be worse than saying so.
+UNLISTED = (
+    "allselectedapply", "allselectedremove", "alwaysapply", "collapse", "collapseall",
+    "dependon", "expand", "expandall", "filtercluster", "groupcrossapply",
+    "groupcrossapplytable", "isatlevel", "nonfilter", "sampleaxiswithlocalminmax",
+    "shadowcluster", "topnskip",
+)
 
 # The five applies-to includes the sync knows, keyed by the icons Learn prints. Read off
 # all 479 function pages rather than inferred from a few: the counts below add up to 479
@@ -380,6 +408,143 @@ def to_markdown(body):
     return parser.result()
 
 
+# What upstream puts in its own frontmatter, in its order. `title` loses Learn's site
+# suffix -- the page is "ABS function (DAX)", the browser tab is "... - DAX | Microsoft
+# Learn", and only the first is Microsoft's.
+_TITLE_SUFFIX = re.compile(r"\s*-\s*DAX\s*\|\s*Microsoft Learn\s*$")
+
+
+def frontmatter(meta):
+    """The YAML block, quoted the way upstream quotes it."""
+    title = _TITLE_SUFFIX.sub("", meta.get("title", ""))
+    lines = ["---"]
+    if meta.get("description"):
+        lines.append(f'description: "{meta["description"]}"')
+    if title:
+        lines.append(f'title: "{title}"')
+    if meta.get("ms.topic"):
+        lines.append(f'ms.topic: {meta["ms.topic"]}')
+    # Learn stamps a full timestamp; upstream writes a date. The sync reads this field.
+    if meta.get("ms.date"):
+        lines.append(f'ms.date: {meta["ms.date"][:10]}')
+    lines.append("---")
+    return "\n".join(lines) + "\n"
+
+
+def page_markdown(page):
+    """One upstream-shaped document: frontmatter, heading, applies-to include, body.
+
+    The include line is put back rather than the rendered applies-to paragraph, because
+    that line is the only thing `parse_applies_to` reads. A page whose icons this fetch
+    does not recognise gets NO include, which the sync reports as no claim and refuses to
+    guess at — the same refusal, one step earlier.
+    """
+    meta = page_meta(page)
+    name = heading(page)
+    include = applies_to_include(page)
+    body = to_markdown(article(page))
+
+    out = [frontmatter(meta), ""]
+    if name:
+        out.append(f"# {name}")
+        out.append("")
+    if include:
+        out.append(f"[!INCLUDE[{include}](includes/{include}.md)]")
+        out.append("")
+    out.append(body)
+    return "\n".join(out)
+
+
+def toc_yaml(toc_json):
+    """Learn's toc.json in the shape `sync_query_docs.parse_toc` reads.
+
+    Three renames and one addition: `children` -> `items`, `toc_title` -> `name`, and every
+    in-area href gets the `.md` back. That last one is not cosmetic — `parse_toc` selects
+    function pages by the `-function-dax.md` suffix, so without it the table of contents
+    classifies nothing and five functions lose the only category anyone declares for them.
+    """
+    import yaml
+
+    def convert(nodes):
+        out = []
+        for node in nodes or []:
+            if not isinstance(node, dict):
+                continue
+            item = {}
+            name = node.get("toc_title") or node.get("name")
+            if name:
+                item["name"] = name
+            href = node.get("href") or ""
+            if href and "://" not in href and not href.startswith(("/", "#")):
+                path = href.split("#")[0].rstrip("/")
+                if path and path not in (".", "./") and "." not in path.rsplit("/", 1)[-1]:
+                    item["href"] = path + ".md"
+                elif path:
+                    item["href"] = path
+            children = convert(node.get("children"))
+            if children:
+                item["items"] = children
+            if item:
+                out.append(item)
+        return out
+
+    doc = toc_json if isinstance(toc_json, dict) else json.loads(toc_json)
+    return yaml.safe_dump({"items": convert(doc.get("items"))},
+                          allow_unicode=True, sort_keys=False, default_flow_style=False)
+
+
+_INDEX_LINK = re.compile(r"\]\(([a-z0-9][a-z0-9\-]*-function-dax)\.md[^)]*\)")
+
+
+def linked_from_indexes(slugs, cache):
+    """Function pages the category indexes link to and the table of contents does not.
+
+    The toc is not the whole library. It lists 459 function pages; the fifteen category
+    indexes between them link to twenty more, and those twenty are real functions with
+    real cards — FIRST, LAST, NEXT and PREVIOUS among them. Fetching only what the toc
+    names loses them silently, and silently is the problem: the sync reports "459 / 459
+    categorized" and looks perfect while the library is twenty functions short.
+
+    So the indexes get the last word on what exists. They are Microsoft's own lists of the
+    category's members, which is exactly the question being asked.
+    """
+    known = set(slugs)
+    extra = []
+    for slug in [s for s in slugs if s.endswith(INDEX_SLUG_SUFFIX)]:
+        try:
+            page = fetch(slug, cache)
+        except Exception:                                     # noqa: BLE001
+            continue
+        for found in _INDEX_LINK.findall(to_markdown(article(page))):
+            if found not in known:
+                known.add(found)
+                extra.append(found)
+    return extra
+
+
+def write_tree(dest, slugs, cache):
+    """Write the pages and the toc. Returns (written, unreadable)."""
+    written, unreadable = 0, []
+    for slug in slugs:
+        try:
+            page = fetch(slug, cache)
+        except Exception as exc:                              # noqa: BLE001
+            unreadable.append((slug, f"fetch {type(exc).__name__}"))
+            continue
+        if slug.endswith("-function-dax") and applies_to_include(page) is None:
+            unreadable.append((slug, "applies-to not recognised"))
+            continue
+        path = os.path.join(dest, slug.replace("/", os.sep) + ".md")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(page_markdown(page))
+        written += 1
+
+    with open(os.path.join(dest, "toc.yml"), "w", encoding="utf-8", newline="\n") as f:
+        f.write(toc_yaml(_get(TOC)))
+    return written, unreadable
+
+
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("dest", help="directory to write the query-docs-shaped tree into")
@@ -387,6 +552,8 @@ def main(argv):
     ap.add_argument("--only", action="append", help="only this slug (repeatable)")
     ap.add_argument("--report", action="store_true",
                     help="do not write markdown; report what the pages say")
+    ap.add_argument("--write", action="store_true",
+                    help="write the query-docs-shaped tree into DEST")
     args = ap.parse_args(argv)
 
     cache = os.path.join(args.dest, ".cache")
@@ -394,6 +561,27 @@ def main(argv):
     if args.limit:
         slugs = slugs[:args.limit]
     print(f"{len(slugs)} page(s) from the Learn table of contents")
+
+    if args.write:
+        extra = linked_from_indexes(slugs, cache)
+        if extra:
+            print(f"  + {len(extra)} page(s) the indexes link to and the toc does not")
+            slugs = slugs + extra
+        known = set(slugs)
+        unlisted = [f"{stem}-function-dax" for stem in UNLISTED
+                    if f"{stem}-function-dax" not in known]
+        if unlisted:
+            print(f"  + {len(unlisted)} page(s) Learn publishes and does not navigate to")
+            slugs = slugs + unlisted
+        written, unreadable = write_tree(args.dest, slugs, cache)
+        print(f"wrote {written} page(s) + toc.yml to {args.dest}")
+        for slug, why in unreadable[:20]:
+            print(f"  SKIPPED  {why:<26} {slug}")
+        if unreadable:
+            print(f"\n{len(unreadable)} page(s) were not written. A page this fetch cannot "
+                  f"read is not written as a guess.")
+            return 1
+        return 0
 
     unreadable = []
     for i, slug in enumerate(slugs, 1):
