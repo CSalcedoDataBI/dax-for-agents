@@ -1,0 +1,124 @@
+# Questions for the invented-function A/B. Issue #10.
+#
+# Each one has to be a question whose answer NAMES DAX FUNCTIONS, because that is what the
+# metric counts. A question answerable in prose measures nothing.
+#
+# `regime` splits the bank in two on purpose, and it is the design requirement the issue
+# insists on. The 31 field notes and the 99 example files are all classic-model DAX;
+# for INFO.* and visual calculations this library ships Microsoft's card and no judgement
+# of its own. Averaged together, the headline number would be a blend of two different
+# claims and would not say which half it is describing.
+#
+# `category` is the catalogue category whose rows arm B is given. Not the answer's card:
+# handing over the card that holds the answer would measure nothing but obedience. The
+# rows are the first hop SKILL.md actually documents — "read catalog.md, find the
+# function" — so arm B knows WHAT EXISTS, and still has to choose.
+#
+# `traps` are function names this question is known to attract that do not exist. They are
+# not the metric — the metric is the whole catalogue — they are here so a reader can see
+# what the question is for, and they are asserted to be absent from the catalogue by a
+# test, so a trap that Microsoft later ships stops being a trap loudly.
+
+questions:
+  - id: previous-year
+    regime: classic
+    category: time-intelligence
+    question: >-
+      In DAX, which function gives me the same measure for the equivalent period of the
+      previous year, so I can put this year and last year side by side? Name the function
+      and show a short measure.
+    traps: [PREVIOUSYEARTOTAL, SAMEPERIODPREVIOUSYEAR, LASTYEARTOTAL]
+
+  - id: running-total-ytd
+    regime: classic
+    category: time-intelligence
+    question: >-
+      I need a year-to-date running total of Sales in DAX. Which function should I reach
+      for, and is there more than one way? Show the measure.
+    traps: [YTDTOTAL, RUNNINGTOTALYTD, TOTALYEARTODATE]
+
+  - id: previous-row
+    regime: classic
+    category: filter
+    question: >-
+      In a DAX table sorted by date, how do I compare each row with the previous one
+      without writing a self-join? Name the functions involved.
+    traps: [PREVIOUSROW, LAG, PRIORROW]
+
+  - id: moving-window
+    regime: window
+    category: filter
+    question: >-
+      Which DAX function gives me a moving window of the last N rows relative to the
+      current one, and what does it need to know about ordering? Show the syntax.
+    traps: [MOVINGWINDOW, ROLLINGWINDOW, SLIDINGWINDOW]
+
+  - id: rank-in-partition
+    regime: window
+    category: filter
+    question: >-
+      How do I rank rows inside a partition in DAX using the newer window-function
+      syntax, rather than RANKX? Name the function and show it.
+    traps: [RANKWINDOW, DENSERANK, ROWRANK]
+
+  - id: running-sum-window
+    regime: window
+    category: filter
+    question: >-
+      Is there a DAX function that computes a running sum directly, without CALCULATE and
+      a filter over dates? Name it if it exists.
+    traps: [CUMULATIVESUM, ACCUMULATE, RUNNINGTOTAL]
+
+  - id: list-model-tables
+    regime: info
+    category: info
+    question: >-
+      From a DAX query, how do I list the tables in the model with their names and
+      descriptions? Name the function.
+    # INFO.TABLES y INFO.VIEW.TABLES existen las dos; solo estas son inventadas.
+    traps: [MODELTABLES, DMV.TABLES, INFO.LISTTABLES]
+
+  - id: list-model-measures
+    regime: info
+    category: info
+    question: >-
+      Which DAX function lets me read every measure in the model, with its expression,
+      from a query? Name it and show the query.
+    traps: [MODELMEASURES, INFO.LISTMEASURES]
+
+  - id: list-relationships
+    regime: info
+    category: info
+    question: >-
+      I want to audit my model's relationships from a DAX query — which ones are active,
+      what they join. Which function do I use?
+    traps: [MODELRELATIONSHIPS, INFO.LISTRELATIONSHIPS]
+
+  - id: visual-axis-collapse
+    regime: visual
+    # "" is not a placeholder: COLLAPSE, EXPAND and ISATLEVEL are three of the sixteen
+    # functions the catalogue leaves UNCATEGORISED (see the 2026-08-17 decision record).
+    # So the honest arm B for this regime is that bucket, which is also the finding: for
+    # visual calculations the catalogue cannot even offer a category to look in.
+    category: ""
+    question: >-
+      In a Power BI visual calculation, which functions move up and down the visual's
+      axis — collapsing to a parent level or expanding to a lower one? Name them.
+    # ROLLUP existe (agrupacion), asi que nombrarla no es inventar aunque no sirva aqui.
+    traps: [DRILLUP, DRILLDOWN, PARENTLEVEL]
+
+  - id: visual-first-last
+    regime: visual
+    category: filter
+    question: >-
+      Inside a visual calculation, how do I refer to the first and the last value along
+      the axis? Name the functions.
+    traps: [FIRSTVALUE, LASTVALUE, HEAD, TAIL]
+
+  - id: visual-is-at-level
+    regime: visual
+    category: ""
+    question: >-
+      In a visual calculation, how do I test whether the current row sits at a particular
+      level of the axis hierarchy? Name the function.
+    traps: [ATLEVEL, ISLEVEL, LEVELIS]

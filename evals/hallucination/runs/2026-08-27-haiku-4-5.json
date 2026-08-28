@@ -1,0 +1,115 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "date": "2026-08-27",
+  "note": "Pilot, 9 of the 12 questions, one model. Not the headline number: see issue #10. Re-count with: python evals/hallucination/run_ab.py --replay evals/hallucination/runs/2026-08-27-haiku-4-5.json",
+  "records": [
+    {
+      "id": "previous-year",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "In DAX, which function gives me the same measure for the equivalent period of the previous year, so I can put this year and last year side by side? Name the function and show a short measure.",
+      "A": {
+        "text": "Use **SAMEPERIODLASTYEAR()**.\n\n```dax\nSales LY = CALCULATE([Sales], SAMEPERIODLASTYEAR(Calendar[Date]))\n```\n\nThis shifts the filter context back 12 months, so you can compare side-by-side in a visual."
+      },
+      "B": {
+        "text": "Use **SAMEPERIODLASTYEAR**.\n\n```dax\nSales_PriorYear = \nCALCULATE(\n    [Sales],\n    SAMEPERIODLASTYEAR('Date'[Date])\n)\n```\n\nThis shifts your date context back exactly one year, so you can compare side-by-side measures in a visual."
+      }
+    },
+    {
+      "id": "running-total-ytd",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "I need a year-to-date running total of Sales in DAX. Which function should I reach for, and is there more than one way? Show the measure.",
+      "A": {
+        "text": "Use **CALCULATE** with **DATESYTD** for a simple YTD total:\n\n```dax\nYTD Sales = CALCULATE(SUM(Sales[Amount]), DATESYTD(Calendar[Date]))\n```\n\nAlternatively, use **TOTALYTD** as a shorthand:\n\n```dax\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), Calendar[Date])\n```\n\nBoth work identically. `TOTALYTD` is cleaner; `CALCULATE` + `DATESYTD` gives you more control if you need to layer in additional filters."
+      },
+      "B": {
+        "text": "Use **TOTALYTD** — it's the simplest approach:\n\n```dax\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), Calendar[Date])\n```\n\nAlternatively, use **DATESYTD** with SUMX for more control:\n\n```dax\nYTD Sales = SUMX(DATESYTD(Calendar[Date]), SUM(Sales[Amount]))\n```\n\n**TOTALYTD** is your go-to. Use DATESYTD only if you need custom logic within the YTD period."
+      }
+    },
+    {
+      "id": "previous-row",
+      "regime": "classic",
+      "category": "filter",
+      "question": "In a DAX table sorted by date, how do I compare each row with the previous one without writing a self-join? Name the functions involved.",
+      "A": {
+        "text": "Use **OFFSET** and **ORDERBY** in a calculated column or measure:\n\n```dax\nPreviousValue = \nOFFSET(\n  -1,\n  ORDERBY('Table'[Date]),\n  EARLIER('Table'[Value])\n)\n```\n\nOr use **CALCULATE** with **MAXX** to get the previous row's value:\n\n```dax\nPreviousValue = \nCALCULATE(\n  MAX('Table'[Value]),\n  FILTER(\n    'Table',\n    'Table'[Date] = MAX('Table'[Date]) - 1\n  )\n)\n```\n\nThe **OFFSET** approach is cleaner for direct row-by-row comparison without self-joins."
+      },
+      "B": {
+        "text": "Use **OFFSET** with **ORDERBY**.\n\n```dax\nPreviousValue = OFFSET(-1, ORDERBY([Date]))\n```\n\nThis retrieves the value from the previous row (offset -1) in the sort order defined by your date column, without requiring a self-join."
+      }
+    },
+    {
+      "id": "list-model-tables",
+      "regime": "info",
+      "category": "info",
+      "question": "From a DAX query, how do I list the tables in the model with their names and descriptions? Name the function.",
+      "A": {
+        "text": "Use **TOPN** with **INFO.TABLES()** or query the model metadata directly.\n\nHowever, the most straightforward approach in DAX is using **SELECTCOLUMNS** with the **INFO.TABLES()** function:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.TABLES(),\n    \"TableName\", [NAME],\n    \"Description\", [DESCRIPTION]\n)\n```\n\nThis returns all tables with their names and descriptions from your model metadata."
+      },
+      "B": {
+        "text": "Use **INFO.TABLES** function:\n\n```dax\nEVALUATE INFO.TABLES()\n```\n\nThis returns a table with columns including `[Name]` and `[Description]` for each table in the model."
+      }
+    },
+    {
+      "id": "list-model-measures",
+      "regime": "info",
+      "category": "info",
+      "question": "Which DAX function lets me read every measure in the model, with its expression, from a query? Name it and show the query.",
+      "A": {
+        "text": "**TMSCHEMA_MEASURES** table function.\n\n```dax\nEVALUATE\nTMSCHEMA_MEASURES()\n```\n\nThis returns all measures with their expressions, descriptions, and other metadata. Filter for the columns you need like `[MEASURE_NAME]` and `[EXPRESSION]`."
+      },
+      "B": {
+        "text": "# INFO.MEASURES\n\nThis function returns a table with each measure's name, expression, and other metadata.\n\n```dax\nINFO.MEASURES()\n```\n\nThe result includes columns like `[Name]`, `[Expression]`, `[Description]`, etc., giving you the DAX formula for every measure in the model."
+      }
+    },
+    {
+      "id": "list-relationships",
+      "regime": "info",
+      "category": "info",
+      "question": "I want to audit my model's relationships from a DAX query — which ones are active, what they join. Which function do I use?",
+      "A": {
+        "text": "Use **RELATED()** and **RELATEDTABLE()** to traverse relationships in DAX, but for auditing the relationship metadata itself, you need **INFO.RELATIONSHIPS()**.\n\n```dax\nEVALUATE INFO.RELATIONSHIPS()\n```\n\nThis returns a table with columns like `FromTable`, `ToTable`, `FromColumn`, `ToColumn`, and `IsActive`, giving you a complete audit of all model relationships."
+      },
+      "B": {
+        "text": "Use **INFO.RELATIONSHIPS** (or **INFO.VIEW.RELATIONSHIPS** for a more user-friendly view).\n\n```dax\nEVALUATE INFO.RELATIONSHIPS()\n```\n\nThis returns all relationships with columns including:\n- FromTableName, FromColumnName\n- ToTableName, ToColumnName\n- IsActive\n- CrossFilteringBehavior\n- Cardinality\n\nFilter for active ones:\n```dax\nEVALUATE FILTER(INFO.RELATIONSHIPS(), [IsActive] = TRUE())\n```"
+      }
+    },
+    {
+      "id": "visual-axis-collapse",
+      "regime": "visual",
+      "category": "",
+      "question": "In a Power BI visual calculation, which functions move up and down the visual's axis — collapsing to a parent level or expanding to a lower one? Name them.",
+      "A": {
+        "text": "**EXPAND** and **COLLAPSE**\n\n```dax\nEXPAND(AXIS(Rows), <levels>)\nCOLLAPSE(AXIS(Rows), <levels>)\n```\n\nThese control drill-up/drill-down behavior on the row or column axis in visual calculations."
+      },
+      "B": {
+        "text": "The functions are **COLLAPSE** / **COLLAPSEALL** (move up to parent/highest level) and **EXPAND** / **EXPANDALL** (move down to detail/most detailed level).\n\n**Snippet:**\n```dax\nEXPAND([Sales]) // Adds detail level below current context\nCOLLAPSE([Sales]) // Moves up one level in hierarchy\nEXPANDALL([Sales]) // Goes to most granular level\nCOLLAPSEALL([Sales]) // Goes to top level\n```"
+      }
+    },
+    {
+      "id": "visual-first-last",
+      "regime": "visual",
+      "category": "filter",
+      "question": "Inside a visual calculation, how do I refer to the first and the last value along the axis? Name the functions.",
+      "A": {
+        "text": "Use **FIRST()** and **LAST()** functions.\n\n```dax\nFIRST([Sales]) -- first value along the axis\nLAST([Sales])  -- last value along the axis\n```\n\nThese functions respect the current axis context in visual calculations."
+      },
+      "B": {
+        "text": "Use **FIRST** and **LAST** functions in visual calculations.\n\n```dax\nFIRST([Sales], ORDERBY(Date))\nLAST([Sales], ORDERBY(Date))\n```\n\nThese retrieve values from the first and last rows along your axis, respectively."
+      }
+    },
+    {
+      "id": "visual-is-at-level",
+      "regime": "visual",
+      "category": "",
+      "question": "In a visual calculation, how do I test whether the current row sits at a particular level of the axis hierarchy? Name the function.",
+      "A": {
+        "text": "Use **WINDOW()** with **AXIS()** to identify the current position in the hierarchy.\n\n```dax\nVAR CurrentLevel = AXIS(Dates[Year])\nRETURN IF(CurrentLevel = 2023, \"Match\", \"No Match\")\n```\n\nFor checking depth in the hierarchy itself, use **ISINSCOPE()** on the hierarchy column:\n\n```dax\nIF(ISINSCOPE(Dates[Quarter]), \"Quarter level\", \"Not at quarter\")\n```"
+      },
+      "B": {
+        "text": "**ISATLEVEL**\n\n```dax\nIF(ISATLEVEL([YourColumn]), \"At this level\", \"Not at this level\")\n```\n\nThis function returns TRUE if the specified column is present at the current level of the hierarchy in your visual calculation."
+      }
+    }
+  ]
+}
