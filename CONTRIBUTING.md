@@ -12,6 +12,17 @@ goes with it — a file deleted three months ago is one `git log -p` away, and t
 that index GitHub read all of it. So nothing private goes in: no client name, no model from
 a real engagement, no credential, not even in a commit that "will be fixed in the next one".
 
+Before committing, one command runs everything:
+
+```bash
+python scripts/check_all.py --local
+```
+
+It does not carry a list of its own. It reads `.github/workflows/` through the same function
+the README gate uses, so it cannot promise a check CI does not run or skip one it does.
+`--fast` leaves out the test suites; `--local` adds what CI has no machine for, and says so
+out loud when it cannot run it rather than passing quietly.
+
 One check does not live in CI and is worth knowing about: `lab/check_engine.py` compares the
 catalogue against the functions a real engine says exist. It needs Power BI Desktop, so it
 cannot run there — but it is the only check that asks something other than the documentation,
