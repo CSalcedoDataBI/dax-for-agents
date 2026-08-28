@@ -164,5 +164,97 @@ class Meta(unittest.TestCase):
         self.assertEqual(meta["updated_at"][:10], "2026-01-22")
 
 
+class UpstreamHref(unittest.TestCase):
+    """Links have to come back in the shape the sync recognises.
+
+    `rewrite_links` knows exactly one form — `other-function-dax.md` — and turns it into a
+    local `./other.md`. That is what makes the library navigable without leaving it.
+    Absolute learn.microsoft.com links would pass every gate and send an agent to the
+    internet for a page it already has on disk.
+    """
+
+    def test_a_site_absolute_dax_page_becomes_a_relative_md(self):
+        self.assertEqual(learn.upstream_href("/en-us/dax/sign-function-dax"),
+                         "sign-function-dax.md")
+
+    def test_a_relative_dax_page_gets_its_extension_back(self):
+        """Learn writes most in-area links relative and without the extension. Without
+        putting it back, the library silently stops linking to itself."""
+        self.assertEqual(learn.upstream_href("sign-function-dax"), "sign-function-dax.md")
+
+    def test_an_anchor_survives(self):
+        self.assertEqual(learn.upstream_href("/en-us/dax/dax-overview#filter-context"),
+                         "dax-overview.md#filter-context")
+
+    def test_another_area_keeps_its_path_and_loses_the_locale(self):
+        """Upstream writes `/power-bi/...`, never `/en-us/power-bi/...`."""
+        self.assertEqual(learn.upstream_href("/en-us/power-bi/transform-model/x"),
+                         "/power-bi/transform-model/x")
+
+    def test_an_external_link_is_left_alone(self):
+        self.assertEqual(learn.upstream_href("https://example.invalid/x"),
+                         "https://example.invalid/x")
+
+    def test_an_in_page_anchor_is_left_alone(self):
+        self.assertEqual(learn.upstream_href("#remarks"), "#remarks")
+
+
+class ToMarkdown(unittest.TestCase):
+    def test_headings_and_paragraphs(self):
+        out = learn.to_markdown(
+            '<p>Text.</p><h2 id="syntax">Syntax</h2><h3 id="p">Parameters</h3>')
+        self.assertEqual(out.strip().splitlines(),
+                         ["Text.", "", "## Syntax", "", "### Parameters"])
+
+    def test_a_fenced_block_keeps_its_language_and_its_whitespace(self):
+        """The code mode has to open on `<pre>`, not on the `<code>` inside. Opening it
+        there made every block come out as a one-line `code span` with the language
+        dropped and the indentation collapsed."""
+        out = learn.to_markdown(
+            '<pre><code class="lang-dax">ABS(&lt;number&gt;)\n</code></pre>')
+        self.assertEqual(out.strip(), "```dax\nABS(<number>)\n```")
+
+    def test_a_table_gets_a_separator_row(self):
+        out = learn.to_markdown(
+            "<table><thead><tr><th>Term</th><th>Definition</th></tr></thead>"
+            "<tbody><tr><td>a</td><td>b</td></tr></tbody></table>")
+        self.assertEqual(out.strip().splitlines(),
+                         ["|Term|Definition|", "|---|---|", "|a|b|"])
+
+    def test_a_break_inside_a_cell_stays_inline(self):
+        """A newline there ends the row. The INFO.* pages have cells listing a dozen
+        column types separated by `<br/>`; turning those into newlines destroys the table
+        and leaves the list as loose body text."""
+        out = learn.to_markdown("<table><tbody><tr><td>one<br/>two</td></tr></tbody></table>")
+        self.assertIn("|one<br/>two|", out)
+
+    def test_a_list_is_one_block(self):
+        """One block per item puts a blank line between every bullet, which markdown reads
+        as a loose list and renders with extra spacing."""
+        out = learn.to_markdown("<ul><li>first</li><li>second</li></ul>")
+        self.assertEqual(out.strip(), "- first\n- second")
+
+    def test_a_note_box_does_not_repeat_the_word_note(self):
+        """Learn renders the shortcode's own label as the box's first paragraph. Keeping
+        it writes `> Note` underneath `> [!NOTE]`."""
+        out = learn.to_markdown('<div class="NOTE"><p>Note</p><p>Careful.</p></div>')
+        self.assertEqual(out.strip(), "> [!NOTE]\n> Careful.")
+
+    def test_site_furniture_is_dropped(self):
+        """`<nav>` and `<button>` are Learn's, not Microsoft's prose."""
+        out = learn.to_markdown("<nav><p>In this article</p></nav>"
+                                "<button>Feedback</button><p>Real.</p>")
+        self.assertEqual(out.strip(), "Real.")
+
+    def test_an_image_keeps_the_relative_media_path(self):
+        """`absolutise_links` turns `media/...` into a URL later. Absolutising here would
+        do it twice and produce a path that resolves nowhere."""
+        out = learn.to_markdown('<p><img src="media/x/y.png" alt="a shot"></p>')
+        self.assertEqual(out.strip(), "![a shot](media/x/y.png)")
+
+    def test_empty_in_empty_out(self):
+        self.assertEqual(learn.to_markdown("   "), "")
+
+
 if __name__ == "__main__":
     unittest.main()
