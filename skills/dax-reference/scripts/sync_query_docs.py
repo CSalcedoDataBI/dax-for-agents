@@ -273,6 +273,33 @@ def unlisted_content_dirs(dax_dir):
     return sorted(unlisted)
 
 
+def function_name(label):
+    """The typeable function name from a label Microsoft wrote for humans.
+
+    A DAX function name is a single token. Microsoft disambiguates overloads in the LABEL,
+    not in the name: the table-manipulation index lists `DISTINCT column` and
+    `DISTINCT table` for two pages of the same function, and the pages head themselves
+    `# DISTINCT (column)` and `# DISTINCT (table)`.
+
+    Taken literally those became catalogue names with a space in them — and `catalog.md` is
+    the file an agent reads to learn what exists, so the reference against invention was
+    handing out `DISTINCT column`, which does not compile. The engine settles it:
+    `INFO.FUNCTIONS()` returns one `DISTINCT`.
+
+    The disambiguation is not lost. The two rows keep their own file and their own summary,
+    and those already say it: "from the specified column" against "removing duplicate rows
+    from another table". What is dropped is only the part that was pretending to be a name.
+
+    Upper-cased for the same reason, and on the same evidence. The statistical index lists
+    `[T.INV.2t]` — a typo in Microsoft's own table, contradicted by that page's `# T.INV.2T`
+    heading and its title, and by the engine, whose 470 names are upper-case without
+    exception. The sync prefers the index label over the heading, so it inherited the typo
+    and published a name one character away from the function.
+    """
+    parts = label.split()
+    return parts[0].upper() if parts else ""
+
+
 def parse_category_index(text, filename):
     """Return one entry per row of the index's "In this category" table.
 
@@ -300,7 +327,7 @@ def parse_category_index(text, filename):
         if not m:
             continue
         entries.append({
-            "name": m.group(1).strip(),
+            "name": function_name(m.group(1)),
             "file": m.group(2).strip(),
             "summary": cells[1],
             "category": category,
@@ -446,7 +473,7 @@ def parse_title(text):
     """
     for line in text.splitlines():
         if line.startswith("# "):
-            return line[2:].strip()
+            return function_name(line[2:])
     return ""
 
 

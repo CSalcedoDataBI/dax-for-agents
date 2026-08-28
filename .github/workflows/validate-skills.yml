@@ -73,6 +73,14 @@ jobs:
       - name: Examples keep their contract
         run: python scripts/check_examples.py
 
+      # catalog.md es lo que el agente lee para saber que existe, y llego a ofrecerle
+      # `DISTINCT column` y `T.INV.2t`: un nombre con espacio y una errata de mayusculas
+      # del propio indice de Microsoft. La biblioteca contra la invencion dandole algo que
+      # no compila. Lo caza el motor en una consulta, pero eso necesita datos; esto es la
+      # parte comprobable desde el arbol. Ver #17.
+      - name: Every catalogue name is a name you can type
+        run: python scripts/check_function_names.py
+
       # 87 imagenes de las fichas apuntaban al raw de query-docs, que devuelve 404 desde
       # 2026-08. Learn sirve las mismas y se comprobaron las 87 una a una. Esto impide que
       # el host muerto vuelva. Offline a proposito: una compuerta que depende del uptime

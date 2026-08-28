@@ -1,5 +1,5 @@
 ---
-name: T.INV.2t
+name: T.INV.2T
 category: [statistical]
 primaryCategory: statistical
 returns: scalar

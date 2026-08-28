@@ -217,6 +217,7 @@ python scripts/check_workflow_cost.py    # the Actions cost rules, on every work
 python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
 python scripts/check_doc_claims.py       # inventory counts in the prose against what is on disk
 python scripts/check_documented_gates.py # this very list against what CI actually runs
+python scripts/check_function_names.py   # every catalogue name is one you can type
 python scripts/check_dead_media.py       # no card points an image at the dead upstream host
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
 python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them

@@ -1,5 +1,5 @@
 ---
-name: DISTINCT table
+name: DISTINCT
 category: [table-manipulation]
 primaryCategory: table-manipulation
 returns: table

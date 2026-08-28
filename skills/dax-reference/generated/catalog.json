@@ -1991,7 +1991,7 @@
       "examples": 0
     },
     {
-      "name": "DISTINCT column",
+      "name": "DISTINCT",
       "file": "distinct",
       "category": [
         "table-manipulation"
@@ -2010,7 +2010,7 @@
       "examples": 0
     },
     {
-      "name": "DISTINCT table",
+      "name": "DISTINCT",
       "file": "distinct-table",
       "category": [
         "table-manipulation"
@@ -7846,7 +7846,7 @@
       "examples": 0
     },
     {
-      "name": "T.INV.2t",
+      "name": "T.INV.2T",
       "file": "t-inv-2t",
       "category": [
         "statistical"

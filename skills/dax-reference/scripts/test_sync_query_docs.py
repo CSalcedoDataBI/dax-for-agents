@@ -2644,3 +2644,77 @@ class BrokenLinksKnowsAboutExamples(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FunctionNameIsTypeable(unittest.TestCase):
+    """A catalogue name has to be something you can put in front of a parenthesis.
+
+    Two of the 479 were not, and it went unnoticed for as long as the catalogue was only
+    ever compared against documentation. Asking the engine settled it in one query:
+    `INFO.FUNCTIONS()` returns 470 names and exactly one of them is DISTINCT.
+    """
+
+    def test_a_plain_name_is_untouched(self):
+        self.assertEqual(sync_query_docs.function_name("CALCULATE"), "CALCULATE")
+
+    def test_a_dotted_name_is_untouched(self):
+        self.assertEqual(sync_query_docs.function_name("INFO.VIEW.TABLES"),
+                         "INFO.VIEW.TABLES")
+
+    def test_the_index_label_loses_its_disambiguator(self):
+        """`DISTINCT column` is how the table-manipulation index lists it. As a name it is
+        something no engine will accept, and `catalog.md` is what an agent reads to learn
+        what exists."""
+        self.assertEqual(sync_query_docs.function_name("DISTINCT column"), "DISTINCT")
+        self.assertEqual(sync_query_docs.function_name("DISTINCT table"), "DISTINCT")
+
+    def test_the_parenthesised_heading_form_too(self):
+        """The pages head themselves `# DISTINCT (column)`, which reaches the name by a
+        different route — `parse_title`, used for the 21 docs no index lists."""
+        self.assertEqual(sync_query_docs.function_name("DISTINCT (column)"), "DISTINCT")
+
+    def test_an_empty_label_is_empty_and_not_an_exception(self):
+        self.assertEqual(sync_query_docs.function_name("   "), "")
+
+    def test_the_index_parser_applies_it(self):
+        index = ("## In this category\n\n"
+                 "|Function|Description|\n|---|---|\n"
+                 "|[DISTINCT column](distinct-function-dax.md)|One column.|\n"
+                 "|[DISTINCT table](distinct-table-function-dax.md)|A table.|\n")
+        entries = sync_query_docs.parse_category_index(
+            index, "table-manipulation-functions-dax.md")
+        self.assertEqual([e["name"] for e in entries], ["DISTINCT", "DISTINCT"])
+        # The disambiguation survives where it belongs: two files, two summaries.
+        self.assertEqual([e["file"] for e in entries],
+                         ["distinct-function-dax.md", "distinct-table-function-dax.md"])
+        self.assertNotEqual(entries[0]["summary"], entries[1]["summary"])
+
+    def test_parse_title_applies_it(self):
+        self.assertEqual(sync_query_docs.parse_title("# DISTINCT (table)\n\nProse.\n"),
+                         "DISTINCT")
+
+    def test_no_shipped_catalogue_name_carries_a_space(self):
+        """The tree, not a fixture. This is the assertion the whole change exists for."""
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "generated", "catalog.json")
+        with open(path, encoding="utf-8") as f:
+            catalog = json.load(f)
+        bad = [f["name"] for f in catalog["functions"]
+               if not re.fullmatch(r"[A-Z][A-Z0-9_]*(?:\.[A-Z0-9_]+)*", f["name"])]
+        self.assertEqual(bad, [])
+
+    def test_microsofts_own_index_typo_is_corrected(self):
+        """`[T.INV.2t](t-inv-2t-function-dax.md)` is what the statistical index says. The
+        page heads itself `# T.INV.2T`, its title says T.INV.2T, and the engine returns
+        T.INV.2T. The sync prefers the index label, so it published the typo."""
+        self.assertEqual(sync_query_docs.function_name("T.INV.2t"), "T.INV.2T")
+
+    def test_every_shipped_name_is_upper_case(self):
+        """470 of 470 names the engine returns are upper-case, and so is every page title.
+        One index label was not, and it reached the catalogue."""
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "generated", "catalog.json")
+        with open(path, encoding="utf-8") as f:
+            catalog = json.load(f)
+        self.assertEqual([f["name"] for f in catalog["functions"]
+                          if f["name"] != f["name"].upper()], [])

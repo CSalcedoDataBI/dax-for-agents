@@ -112,8 +112,8 @@
 | DEPENDON |  | scalar | M C T | Change the table expression to be dependent on outer columns, based on the table data. |  |
 | DETAILROWS | table-manipulation | table | M C T | Evaluates a Detail Rows Expression defined for a measure and returns the data. |  |
 | DISC | financial | scalar | M C T V | Returns the discount rate for a security. |  |
-| DISTINCT column | table-manipulation | table | M C T V | Returns a one-column table that contains the distinct values from the specified column. |  |
-| DISTINCT table | table-manipulation | table | M C T V | Returns a table by removing duplicate rows from another table or expression. |  |
+| DISTINCT | table-manipulation | table | M C T V | Returns a one-column table that contains the distinct values from the specified column. |  |
+| DISTINCT | table-manipulation | table | M C T V | Returns a table by removing duplicate rows from another table or expression. |  |
 | DISTINCTCOUNT | aggregation | scalar | M C T V | Counts the number of distinct values in a column. |  |
 | DISTINCTCOUNTNOBLANK | aggregation | scalar | M C T V | Counts the number of distinct values in a column. |  |
 | DIVIDE | math-and-trig | scalar | M C T V | Performs division and returns alternate result or BLANK() on division by 0. | ★▶ |
@@ -435,7 +435,7 @@
 | T.DIST.2T | statistical | scalar | M C T V | Returns the two-tailed Student's t-distribution. |  |
 | T.DIST.RT | statistical | scalar | M C T V | Returns the right-tailed Student's t-distribution. |  |
 | T.INV | statistical | scalar | M C T V | Returns the left-tailed inverse of the Student's t-distribution. |  |
-| T.INV.2t | statistical | scalar | M C T V | Returns the two-tailed inverse of the Student's t-distribution. |  |
+| T.INV.2T | statistical | scalar | M C T V | Returns the two-tailed inverse of the Student's t-distribution. |  |
 | TABLEOF | information | table | M C T | Returns a reference to the table associated with a specified column, measure, or calendar. |  |
 | TAN | math-and-trig | scalar | M C T V | Returns the tangent of the given angle. | ▶ |
 | TANH | math-and-trig | scalar | M C T V | Returns the hyperbolic tangent of a number. | ▶ |
