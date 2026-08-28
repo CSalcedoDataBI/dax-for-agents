@@ -156,6 +156,18 @@ HTTPS from a public data repo, so a `.pbip` of a few kilobytes is all that is ve
 the results, so a field note is a test and not an assertion. It needs a tabular engine with
 the data loaded, which is why it is a local tool and not a CI job.
 
+`lab/check_engine.py` asks the engine a different question: **which functions exist.**
+
+```bash
+python lab/check_engine.py localhost:<port>
+```
+
+Every gate above compares prose against the tree. This one compares the tree against
+`INFO.FUNCTIONS()`, which is the only authority on the subject — the same idea as a field
+note, applied to the catalogue. It found three names no engine would accept, inherited from
+Microsoft's own index tables. It needs Desktop but **not a refresh**: `INFO.FUNCTIONS()` is
+metadata, so any scenario answers it the moment it opens.
+
 ## Install
 
 As a plugin — **needs Claude Code 2.1.142 or newer** (see below):

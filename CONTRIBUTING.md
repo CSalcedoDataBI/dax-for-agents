@@ -12,6 +12,12 @@ goes with it — a file deleted three months ago is one `git log -p` away, and t
 that index GitHub read all of it. So nothing private goes in: no client name, no model from
 a real engagement, no credential, not even in a commit that "will be fixed in the next one".
 
+One check does not live in CI and is worth knowing about: `lab/check_engine.py` compares the
+catalogue against the functions a real engine says exist. It needs Power BI Desktop, so it
+cannot run there — but it is the only check that asks something other than the documentation,
+and it is what found three catalogue names no engine would accept. Run it after anything that
+touches `generated/`.
+
 Two gates hold the line, and they are not optional:
 
 ```bash

@@ -1,0 +1,20 @@
+{
+  "recorded": "2026-08-28",
+  "engine": "Power BI Desktop, local Analysis Services workspace, lab/blancos",
+  "why": "Where the catalogue and a real engine are allowed to differ, and why. Rewrite with: python lab/check_engine.py localhost:<port> --record",
+  "documented_not_in_engine": {
+    "ALLSELECTEDAPPLY": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "ALLSELECTEDREMOVE": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "ALWAYSAPPLY": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "DEPENDON": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "FILTERCLUSTER": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "GROUPCROSSAPPLY": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "GROUPCROSSAPPLYTABLE": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "NONFILTER": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised.",
+    "SHADOWCLUSTER": "Documented by Microsoft, not exposed by this engine. One of the sixteen the catalogue leaves uncategorised."
+  },
+  "in_engine_not_documented": {
+    "NATURALJOINUSAGE": "The engine has it and describes it: 'Adds a table as Natural Join into filter context.' No page under query-languages/dax documents it, so there is no card. A gap in the library rather than in the engine."
+  },
+  "note": "All nine on the first list are among the sixteen uncategorised functions of docs/decisions/2026-08-17-sixteen-functions-without-category.md. The other seven of those sixteen -- COLLAPSE, COLLAPSEALL, EXPAND, EXPANDALL, ISATLEVEL, SAMPLEAXISWITHLOCALMINMAX, TOPNSKIP -- ARE in this engine. Two lists that overlap that cleanly are probably one fact seen twice, and that is a lead worth following rather than a coincidence worth recording."
+}
