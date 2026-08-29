@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.6.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.5.0...v0.6.0) (2026-08-29)
+
+
+### Features
+
+* **evals:** measure the README's thesis, and find where it actually bites ([a124a93](https://github.com/CSalcedoDataBI/dax-for-agents/commit/a124a932097b62a58589ffa8176a212263a18f30))
+* **lab:** ask the engine which functions exist, and record where it disagrees ([ba85611](https://github.com/CSalcedoDataBI/dax-for-agents/commit/ba85611f0b2407dc9820512b00fc56b75ea69ed1))
+* **scripts:** one command that runs what CI runs, read from the workflow ([2f9cf83](https://github.com/CSalcedoDataBI/dax-for-agents/commit/2f9cf833547c699d4f61257b806e332ab07ecd28))
+* **sync:** convert Learn's HTML back into the markdown the sync reads ([c28985a](https://github.com/CSalcedoDataBI/dax-for-agents/commit/c28985a853b62a01f6d9362d1658d5e18ac0ce7d))
+* **sync:** read the applies-to contract off Learn, verified on all 479 ([6ab7618](https://github.com/CSalcedoDataBI/dax-for-agents/commit/6ab76185942b70272fc979623d156377abe78708))
+* **sync:** the category indexes and the toc, and a full run off Learn ([bf682c4](https://github.com/CSalcedoDataBI/dax-for-agents/commit/bf682c4fd1aa49460a5fb73051e6434112a072b7))
+* **sync:** the two unlisted concepts, and what the remaining differences are ([9473d29](https://github.com/CSalcedoDataBI/dax-for-agents/commit/9473d29682bb3759aaed0682cab5049a8e03b6f2))
+
+
+### Bug Fixes
+
+* **catalog:** three names an engine would reject, and the gate that finds them ([17e0e3e](https://github.com/CSalcedoDataBI/dax-for-agents/commit/17e0e3e8a8654bd28884bc90f8297f3090ddc08f))
+* **ci:** a green sync-check now requires an answer that is actually a sha ([d4b4a4e](https://github.com/CSalcedoDataBI/dax-for-agents/commit/d4b4a4e2806718e19d7e47e1df8986355536660b))
+* **generated:** point the 87 dead images at Learn, which serves every one ([1ec1b17](https://github.com/CSalcedoDataBI/dax-for-agents/commit/1ec1b1701e6575c7f1a0c80341112acf352046a8))
+* **metadata:** make the 45 invisible example files reachable again ([f2e660d](https://github.com/CSalcedoDataBI/dax-for-agents/commit/f2e660d5270a560ee7687b647f9665f3ad003519))
+* **upstream:** decide the freeze, and stop the sentinel asking a dead question ([42afceb](https://github.com/CSalcedoDataBI/dax-for-agents/commit/42afceb6f225c933a7115785582dd97cfed27bc4))
+
 ## [0.5.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.4.0...v0.5.0) (2026-08-27)
 
 
