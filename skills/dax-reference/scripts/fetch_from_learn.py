@@ -51,11 +51,20 @@ INDEX_SLUG_SUFFIX = "-functions-dax"
 # A seventeenth would have to arrive the way these did: someone noticing a function with no
 # page reachable from anywhere. There is no mechanical route to it, and pretending
 # otherwise would be worse than saying so.
+# Slugs, not function stems: two CONCEPT pages are unlisted the same way, and holding
+# only function names meant appending "-function-dax" to everything and quietly having no
+# way to express them. They came out as 32 concepts against the tree's 34.
 UNLISTED = (
-    "allselectedapply", "allselectedremove", "alwaysapply", "collapse", "collapseall",
-    "dependon", "expand", "expandall", "filtercluster", "groupcrossapply",
-    "groupcrossapplytable", "isatlevel", "nonfilter", "sampleaxiswithlocalminmax",
-    "shadowcluster", "topnskip",
+    "allselectedapply-function-dax", "allselectedremove-function-dax",
+    "alwaysapply-function-dax", "collapse-function-dax", "collapseall-function-dax",
+    "dependon-function-dax", "expand-function-dax", "expandall-function-dax",
+    "filtercluster-function-dax", "groupcrossapply-function-dax",
+    "groupcrossapplytable-function-dax", "isatlevel-function-dax",
+    "nonfilter-function-dax", "sampleaxiswithlocalminmax-function-dax",
+    "shadowcluster-function-dax", "topnskip-function-dax",
+    # `VAR` inside a query has its own page for the column form and the table form.
+    # Neither is navigated to; both answer 200.
+    "virtual-column-statement-dax", "virtual-table-statement-dax",
 )
 
 # The five applies-to includes the sync knows, keyed by the icons Learn prints. Read off
@@ -568,8 +577,7 @@ def main(argv):
             print(f"  + {len(extra)} page(s) the indexes link to and the toc does not")
             slugs = slugs + extra
         known = set(slugs)
-        unlisted = [f"{stem}-function-dax" for stem in UNLISTED
-                    if f"{stem}-function-dax" not in known]
+        unlisted = [slug for slug in UNLISTED if slug not in known]
         if unlisted:
             print(f"  + {len(unlisted)} page(s) Learn publishes and does not navigate to")
             slugs = slugs + unlisted

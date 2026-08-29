@@ -343,9 +343,17 @@ class Unlisted(unittest.TestCase):
                             "generated", "catalog.json")
         with open(path, encoding="utf-8") as f:
             catalog = json.load(f)
-        uncategorised = {f["file"] for f in catalog["functions"]
+        uncategorised = {f["file"] + "-function-dax" for f in catalog["functions"]
                          if not f["primaryCategory"]}
-        self.assertEqual(set(learn.UNLISTED), uncategorised)
+        functions = {s for s in learn.UNLISTED if s.endswith("-function-dax")}
+        self.assertEqual(functions, uncategorised)
+
+    def test_the_unlisted_concepts_are_there_too(self):
+        """Two concept pages are unlisted the same way. Holding only function stems, the
+        list had no way to say so and the run came out at 32 concepts against 34."""
+        concepts = {s for s in learn.UNLISTED if not s.endswith("-function-dax")}
+        self.assertEqual(concepts, {"virtual-column-statement-dax",
+                                    "virtual-table-statement-dax"})
 
 
 if __name__ == "__main__":
