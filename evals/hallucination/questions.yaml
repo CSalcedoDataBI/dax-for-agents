@@ -122,3 +122,475 @@ questions:
       In a visual calculation, how do I test whether the current row sits at a particular
       level of the axis hierarchy? Name the function.
     traps: [ATLEVEL, ISLEVEL, LEVELIS]
+  # ---- classic: the regime where all 31 notes and all 99 example files live -------------
+  - id: last-year-same-day
+    regime: classic
+    category: time-intelligence
+    question: >-
+      I need the value from the same day one year ago, not the same period. Which DAX
+      function shifts the date context by a fixed interval? Show it.
+    traps: [DATESHIFT, SHIFTDATE, OFFSETDATE]
+
+  - id: month-to-date
+    regime: classic
+    category: time-intelligence
+    question: >-
+      Month-to-date sales in DAX, and I want the shortest form. Which function?
+    traps: [MTD, TOTALMONTHTODATE, MONTHTODATE]
+
+  - id: closing-balance
+    regime: classic
+    category: time-intelligence
+    question: >-
+      I need the inventory value at the last date of each quarter. Which DAX function is
+      built for that? Name it.
+    traps: [ENDBALANCEQUARTER, QUARTERENDBALANCE, LASTBALANCEQUARTER]
+
+  - id: remove-all-filters
+    regime: classic
+    category: filter
+    question: >-
+      In a measure, how do I ignore every filter coming from the visual? Name the function
+      and any alternative that does the same thing more explicitly.
+    traps: [CLEARFILTERS, IGNOREFILTERS, RESETFILTERS]
+
+  - id: keep-one-filter
+    regime: classic
+    category: filter
+    question: >-
+      I want CALCULATE to add my filter to the existing one instead of replacing it. Which
+      modifier do I use?
+    traps: [ADDFILTERS, MERGEFILTERS, ANDFILTERS]
+
+  - id: relate-inactive
+    regime: classic
+    category: relationship
+    question: >-
+      My model has an inactive relationship between Sales and Dates. How do I use it for
+      one measure only? Name the function.
+    traps: [ACTIVATERELATIONSHIP, WITHRELATIONSHIP, SWITCHRELATIONSHIP]
+
+  - id: divide-safely
+    regime: classic
+    category: math-and-trig
+    question: >-
+      Dividing two measures and I do not want an error when the denominator is zero. What
+      is the DAX way?
+    traps: [SAFEDIVIDE, DIVIDESAFE, NULLIFDIVIDE]
+
+  - id: count-distinct-no-blank
+    regime: classic
+    category: aggregation
+    question: >-
+      I need a distinct count that does NOT count the blank row the engine adds. Which
+      function?
+    traps: [DISTINCTCOUNTNOBLANKS, COUNTDISTINCTNOBLANK, DISTINCTCOUNTNONBLANK]
+
+  - id: concat-column
+    regime: classic
+    category: text
+    question: >-
+      Join every value of a column into one comma-separated string in a measure. Which DAX
+      function, and what does it need?
+    traps: [JOINTEXT, STRINGAGG, TEXTJOIN, CONCATCOLUMN]
+
+  - id: find-substring
+    regime: classic
+    category: text
+    question: >-
+      Find where a substring starts inside a text column, case-insensitively. Which DAX
+      function, and how does it differ from the case-sensitive one?
+    traps: [INSTR, INDEXOF, POSITION]
+
+  - id: multiple-conditions
+    regime: classic
+    category: logical
+    question: >-
+      I have five mutually exclusive conditions. What is the idiomatic DAX instead of
+      nested IFs?
+    traps: [CASE, WHEN, SELECTCASE, IFS]
+
+  - id: first-non-blank
+    regime: classic
+    category: statistical
+    question: >-
+      The first date on which a measure has a value, evaluating the measure rather than
+      just scanning the column. Which function?
+    traps: [FIRSTVALUEDATE, MINNONBLANK, EARLIESTNONBLANK]
+
+  - id: table-from-values
+    regime: classic
+    category: table-manipulation
+    question: >-
+      Build a small literal table inside a DAX query, with typed columns. Which construct?
+    traps: [VALUESTABLE, TABLECONSTRUCTOR, LITERALTABLE]
+
+  - id: rank-classic
+    regime: classic
+    category: statistical
+    question: >-
+      Rank products by sales inside a measure, the classic way that existed before window
+      functions. Name the function and its ordering argument.
+    traps: [RANKBY, RANKOVER, ORDERRANK]
+
+  - id: selected-one-value
+    regime: classic
+    category: information
+    question: >-
+      Return a slicer's value when exactly one item is selected and a fallback otherwise,
+      without writing HASONEVALUE plus IF. Which function?
+    traps: [ONEVALUE, SINGLEVALUE, PICKEDVALUE]
+
+  # ---- window: the newer family, where the notes stop ------------------------------------
+  - id: window-nth-row
+    regime: window
+    category: filter
+    question: >-
+      Get the value from the Nth row of an ordered table relative to the current row, using
+      the window-function family. Name the function.
+    traps: [NTHROW, ROWAT, RELATIVEROW]
+
+  - id: window-absolute-position
+    regime: window
+    category: filter
+    question: >-
+      I want an absolute position in an ordered partition, not a relative one — the third
+      row, always. Which window function?
+    traps: [ROWAT, ABSOLUTEROW, POSITION]
+
+  - id: window-row-number
+    regime: window
+    category: filter
+    question: >-
+      A sequential number per row inside a partition, like SQL's ROW_NUMBER. Does DAX have
+      one? Name it.
+    traps: [ROW_NUMBER, SEQUENCE, ROWINDEX]
+
+  - id: window-moving-average
+    regime: window
+    category: filter
+    question: >-
+      A moving average over the last N rows, without writing the CALCULATE and DATESINPERIOD
+      pattern. Is there a dedicated function?
+    traps: [ROLLINGAVERAGE, AVGWINDOW, SLIDINGAVERAGE]
+
+  - id: window-partition
+    regime: window
+    category: filter
+    question: >-
+      How do I tell a window function which columns define the partition? Name the
+      modifier.
+    traps: [GROUPBYCOLUMNS, OVER, SPLITBY]
+
+  - id: window-order
+    regime: window
+    category: filter
+    question: >-
+      And how do I tell it the order inside the partition, with a direction? Name the
+      modifier and show the direction keywords.
+    traps: [SORTBY, ORDERBYCOLUMNS, SEQUENCEBY]
+
+  - id: window-match-rows
+    regime: window
+    category: filter
+    question: >-
+      Window functions need to know which columns identify a row when the relation is not
+      a plain table. Which modifier expresses that?
+    traps: [KEYBY, IDENTIFYBY, ROWKEY]
+
+  - id: window-first-last-rows
+    regime: window
+    category: filter
+    question: >-
+      The first and the last row of an ordered partition, using the window family rather
+      than FIRSTDATE and LASTDATE. Name them.
+    traps: [HEAD, TAIL, FIRSTROW, LASTROW]
+
+  - id: window-next-previous
+    regime: window
+    category: filter
+    question: >-
+      The next and previous row in an ordered partition, as window functions rather than as
+      time intelligence. Name them.
+    traps: [LEAD, LAG, NEXTROW, PRIORROW]
+
+  - id: window-range
+    regime: window
+    category: filter
+    question: >-
+      A window bounded by VALUES of the ordering column rather than by a row count — all
+      rows within 7 days. Which function?
+    traps: [VALUEWINDOW, RANGEWINDOW, INTERVAL]
+
+  - id: window-running-sum
+    regime: window
+    category: filter
+    question: >-
+      A cumulative total from the start of the partition to the current row, as a single
+      dedicated function. Name it.
+    traps: [CUMULATIVE, RUNNINGTOTAL, ACCUMULATE]
+
+  - id: window-rank-dense
+    regime: window
+    category: filter
+    question: >-
+      Ranking with the window family, and I need to control how ties are handled. Name the
+      function and the tie argument.
+    traps: [DENSERANK, RANKDENSE, TIEBREAK]
+
+  - id: window-sample
+    regime: window
+    category: filter
+    question: >-
+      Take an evenly spaced sample of rows from an ordered partition. Does DAX have a
+      function for that?
+    traps: [SAMPLEROWS, EVERYNTH, THIN]
+
+  - id: window-visual-shape
+    regime: window
+    category: filter
+    question: >-
+      Which argument tells OFFSET whether to work over the whole table or only the rows
+      visible in the current filter context? Name it and its values.
+    traps: [SCOPE, CONTEXT, VISIBILITY]
+
+  - id: window-lookup-totals
+    regime: window
+    category: filter
+    question: >-
+      Look up a value in a table and have it work at the total level too, not just per row.
+      Which function is built for that?
+    traps: [LOOKUPTOTAL, TOTALLOOKUP, LOOKUPAGG]
+
+  # ---- info: the DMV family, where this library ships Microsoft's card and no judgement ---
+  - id: info-columns
+    regime: info
+    category: info
+    question: >-
+      From a DAX query, list every column in the model with its data type. Which function?
+    traps: [MODELCOLUMNS, INFO.LISTCOLUMNS, DMV.COLUMNS]
+
+  - id: info-partitions
+    regime: info
+    category: info
+    question: >-
+      I want to audit refresh: which partitions exist and when each last refreshed. Which
+      DAX function?
+    traps: [MODELPARTITIONS, INFO.REFRESH, INFO.LISTPARTITIONS]
+
+  - id: info-roles
+    regime: info
+    category: info
+    question: >-
+      List the security roles defined in the model, from a query. Name the function.
+    traps: [MODELROLES, INFO.SECURITYROLES, INFO.RLS]
+
+  - id: info-calc-dependency
+    regime: info
+    category: info
+    question: >-
+      I need the dependency graph: which measures reference which columns. Which DAX
+      function exposes it?
+    traps: [INFO.DEPENDENCYGRAPH, MODELDEPENDENCIES, INFO.LINEAGE]
+
+  - id: info-calculation-groups
+    regime: info
+    category: info
+    question: >-
+      List the calculation groups and their items from a DAX query. Which functions?
+    traps: [MODELCALCGROUPS, INFO.CALCGROUPS, INFO.GROUPS]
+
+  - id: info-hierarchies
+    regime: info
+    category: info
+    question: >-
+      Which DAX function lists the hierarchies in the model and their levels?
+    traps: [MODELHIERARCHIES, INFO.LISTHIERARCHIES]
+
+  - id: info-view-friendly
+    regime: info
+    category: info
+    question: >-
+      The INFO functions return raw IDs. Is there a friendlier variant that resolves the
+      names for me? Name one.
+    traps: [INFO.FRIENDLY.TABLES, INFO.READABLE, INFO.NAMES]
+
+  - id: info-storage
+    regime: info
+    category: info
+    question: >-
+      I want to see how much memory each column takes in the VertiPaq store, from DAX.
+      Which function?
+    traps: [INFO.MEMORY, INFO.VERTIPAQ, MODELSTORAGE]
+
+  - id: info-expressions
+    regime: info
+    category: info
+    question: >-
+      List the Power Query expressions (named M queries) stored in the model, from a DAX
+      query. Which function?
+    traps: [INFO.QUERIES, INFO.MQUERIES, MODELEXPRESSIONS]
+
+  - id: info-cultures
+    regime: info
+    category: info
+    question: >-
+      Which DAX function lists the cultures and translations defined in the model?
+    traps: [INFO.TRANSLATIONS, MODELCULTURES, INFO.LOCALES]
+
+  - id: info-relationships-audit
+    regime: info
+    category: info
+    question: >-
+      From a query, which relationships exist and which of them are active? Name the
+      function and the column that tells you.
+    traps: [MODELRELATIONSHIPS, INFO.LISTRELATIONSHIPS]
+
+  - id: info-kpis
+    regime: info
+    category: info
+    question: >-
+      Are the KPIs defined on measures visible from DAX? Which function lists them?
+    traps: [MODELKPIS, INFO.LISTKPIS]
+
+  - id: info-annotations
+    regime: info
+    category: info
+    question: >-
+      Tools like Tabular Editor store annotations on model objects. Can I read them from a
+      DAX query? Which function?
+    # INFO.PROPERTIES existe; nombrarla no es inventar.
+    traps: [INFO.METADATA, MODELANNOTATIONS, INFO.ANNOTATIONLIST]
+
+  - id: info-datasources
+    regime: info
+    category: info
+    question: >-
+      Which data sources does the model connect to? Is that readable from DAX?
+    traps: [INFO.CONNECTIONS, MODELDATASOURCES, INFO.SOURCES]
+
+  - id: info-format-strings
+    regime: info
+    category: info
+    question: >-
+      Dynamic format strings are defined per measure or calculation item. Which INFO
+      function exposes those definitions?
+    traps: [INFO.FORMATS, INFO.FORMATSTRINGS, MODELFORMATS]
+
+  # ---- visual: where the catalogue cannot even offer a category to look in ---------------
+  - id: visual-running-total
+    regime: visual
+    category: filter
+    question: >-
+      A running total inside a Power BI visual calculation, along the visual's axis. Which
+      function, and does it need an axis argument?
+    traps: [VISUALRUNNINGTOTAL, AXISRUNNINGSUM, CUMULATIVEAXIS]
+
+  - id: visual-percent-of-parent
+    regime: visual
+    category: ""
+    question: >-
+      Percentage of the parent level inside a visual calculation. Which function gives me
+      the parent's value?
+    traps: [PARENT, PERCENTOFPARENT, PARENTVALUE, ROLLUPVALUE]
+
+  - id: visual-moving-average
+    regime: visual
+    category: filter
+    question: >-
+      A moving average across the visual's axis in a visual calculation. Which function?
+    traps: [VISUALMOVINGAVERAGE, AXISAVERAGE]
+
+  - id: visual-difference-previous
+    regime: visual
+    category: filter
+    question: >-
+      The difference against the previous point on the axis, inside a visual calculation.
+      Which function do I reach for?
+    traps: [PREVIOUSPOINT, DELTA, AXISPREVIOUS]
+
+  - id: visual-hide-column
+    regime: visual
+    category: ""
+    question: >-
+      I need a column in the visual for the calculation but I do not want it displayed.
+      Which visual-calculation modifier?
+    traps: [HIDE, HIDDEN, INVISIBLE, NOSHOW]
+
+  - id: visual-total-row
+    regime: visual
+    category: information
+    question: >-
+      Inside a visual calculation, how do I test whether the current row is a subtotal?
+      Name the function.
+    traps: [ISTOTAL, ISSUBTOTALROW, ISGRANDTOTAL]
+
+  - id: visual-scope-level
+    regime: visual
+    category: information
+    question: >-
+      How do I test which level of a hierarchy the current row is at, in a visual? Name the
+      function.
+    traps: [ISLEVEL, ATLEVEL, LEVELOF]
+
+  - id: visual-selected-measure
+    regime: visual
+    category: ""
+    question: >-
+      Inside a calculation item, how do I refer to the measure the item is being applied to?
+      Name the function.
+    traps: [CURRENTMEASURE, THISMEASURE, APPLIEDMEASURE]
+
+  - id: visual-measure-name
+    regime: visual
+    category: ""
+    question: >-
+      And how do I get the NAME of that measure as text, to branch on it?
+    traps: [MEASURENAME, CURRENTMEASURENAME, NAMEOFMEASURE]
+
+  - id: visual-format-string
+    regime: visual
+    category: ""
+    question: >-
+      A calculation item needs to override the format string of the measure it wraps. Which
+      function returns the original one?
+    traps: [MEASUREFORMAT, CURRENTFORMATSTRING, FORMATOF]
+
+  - id: visual-expand-all
+    regime: visual
+    category: ""
+    question: >-
+      Expand a visual calculation to every level of the axis at once, not one level. Which
+      function?
+    traps: [EXPANDLEVELS, FULLEXPAND, EXPANDAXIS]
+
+  - id: visual-collapse-all
+    regime: visual
+    category: ""
+    question: >-
+      And the opposite: collapse all the way to the top of the axis. Name it.
+    traps: [COLLAPSELEVELS, FULLCOLLAPSE, ROLLUPALL]
+
+  - id: visual-first-on-axis
+    regime: visual
+    category: filter
+    question: >-
+      Reference the first value along the visual's axis to index everything against it.
+      Which function?
+    traps: [AXISFIRST, FIRSTONAXIS, BASELINE]
+
+  - id: visual-is-selected-measure
+    regime: visual
+    category: ""
+    question: >-
+      In a calculation item, branch on WHICH measure is being evaluated without comparing
+      strings. Is there a function for that?
+    traps: [MEASUREIS, CURRENTMEASUREIS, ISMEASURE]
+
+  - id: visual-lookup-on-axis
+    regime: visual
+    category: filter
+    question: >-
+      Inside a visual calculation, look up a value at a specific position on the axis.
+      Which function?
+    traps: [AXISLOOKUP, POINTAT, VALUEAT]
