@@ -28,6 +28,7 @@ it costs nothing, and it can be re-run on a saved transcript forever.
     python evals/hallucination/run_ab.py                    # the whole bank
     python evals/hallucination/run_ab.py --regime info      # one regime
     python evals/hallucination/run_ab.py --replay out.json  # re-count, no API calls
+    python evals/hallucination/run_ab.py --out r.json --resume   # finish an interrupted run
 
 The provider is read from the model's name, and each one has its own key variable:
 ANTHROPIC_API_KEY for `claude-*`, DEEPSEEK_API_KEY for `deepseek-*`. A key is read
@@ -309,6 +310,37 @@ def report(records, names):
     return total_a, total_b
 
 
+def save(path, model, provider, records):
+    """Write the run file. Called after every question, not at the end.
+
+    A 144-call run takes long enough to be killed by something -- a closed session, a
+    timeout, a laptop lid. Twice now that has thrown away everything, including calls that
+    were paid for. Writing as it goes costs one small file write per question and makes an
+    interruption free.
+    """
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"model": model, "provider": provider, "records": records}, f,
+                  ensure_ascii=False, indent=2)
+
+
+def already_answered(path):
+    """Questions a previous run of this file finished, by id.
+
+    Only complete ones: a question whose arms are both present is done. A partial record
+    is re-asked rather than kept, because half a question is not a cheaper question -- it
+    is one arm compared against nothing.
+    """
+    if not path or not os.path.exists(path):
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            saved = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    return {r["id"]: r for r in saved.get("records", [])
+            if r.get("A") is not None and r.get("B") is not None}
+
+
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, help="ask only the first N questions")
@@ -317,6 +349,8 @@ def main(argv):
                                                       "claude-haiku-4-5-20251001"))
     ap.add_argument("--out", help="write every answer to this JSON file")
     ap.add_argument("--replay", help="re-count a saved run, making no API calls")
+    ap.add_argument("--resume", action="store_true",
+                    help="keep the answers already in --out and ask only what is missing")
     args = ap.parse_args(argv)
 
     names, catalog = catalog_names()
@@ -348,9 +382,15 @@ def main(argv):
 
     print(f"model {args.model} ({provider}) · {len(questions)} question(s) · 2 arms "
           f"each = {len(questions) * 2} calls")
-    records, tokens_in, tokens_out = [], 0, 0
+    done = already_answered(args.out) if args.resume else {}
+    if done:
+        print(f"  resuming: {len(done)} question(s) already answered in {args.out}")
+    records = [done[q["id"]] for q in questions if q["id"] in done]
+    tokens_in, tokens_out = 0, 0
     consecutive = 0
     for q in questions:
+        if q["id"] in done:
+            continue
         rows = category_rows(catalog, q["category"])
         rec = {"id": q["id"], "regime": q["regime"], "category": q["category"],
                "question": q["question"]}
@@ -373,20 +413,23 @@ def main(argv):
             # produced at all.
             print(f"\n{consecutive} calls failed in a row. Stopping: this is a condition, "
                   f"not a blip, and a run of empty answers is not a measurement.")
+            if args.out and records:
+                save(args.out, args.model, provider, records)
+                print(f"the {len(records)} question(s) already answered are kept in "
+                      f"{args.out}; re-run with --resume once it is fixed.")
             return 2
         records.append(rec)
+        if args.out:
+            save(args.out, args.model, provider, records)
         a = len(invented(rec["A"]["text"], names))
         b = len(invented(rec["B"]["text"], names))
-        print(f"  {q['id']:<22} A={a} B={b}")
+        print(f"  {q['id']:<22} A={a} B={b}", flush=True)
 
     total_a, total_b = report(records, names)
     print(f"\ntokens: {tokens_in} in, {tokens_out} out")
 
     if args.out:
-        with open(args.out, "w", encoding="utf-8", newline="\n") as f:
-            json.dump({"model": args.model, "provider": provider,
-                       "records": records}, f,
-                      ensure_ascii=False, indent=2)
+        save(args.out, args.model, provider, records)
         print(f"answers written to {args.out} — re-count with --replay")
     return 0
 
