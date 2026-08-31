@@ -25,44 +25,75 @@ NAMES, CATALOG = run_ab.catalog_names()
 
 class Extractor(unittest.TestCase):
     def test_a_name_followed_by_a_paren_is_a_call(self):
-        self.assertEqual(run_ab.called_functions("Use CALCULATE( ... )"), ["CALCULATE"])
+        self.assertEqual(run_ab.called_functions("Use `CALCULATE( ... )`"), ["CALCULATE"])
 
     def test_a_name_without_a_paren_is_not(self):
         """`Sales[Amount]` and prose about ALL should not be read as calls."""
-        self.assertEqual(run_ab.called_functions("The ALL behaviour of Sales[Amount]"), [])
+        self.assertEqual(
+            run_ab.called_functions("The ALL behaviour of `Sales[Amount]`"), [])
 
     def test_a_dotted_name_stays_whole(self):
         """Splitting on the dot would report INFO, VIEW and TABLES — three inventions per
         mention of one real function."""
-        self.assertEqual(run_ab.called_functions("EVALUATE INFO.VIEW.TABLES()"),
-                         ["INFO.VIEW.TABLES"])
+        self.assertEqual(
+            run_ab.called_functions("```dax\nEVALUATE INFO.VIEW.TABLES()\n```"),
+            ["INFO.VIEW.TABLES"])
 
     def test_statements_are_not_counted(self):
         """A keyword written with a parenthesis would land in BOTH arms identically and
         add noise to the only number that matters, which is the difference."""
-        self.assertEqual(run_ab.called_functions("EVALUATE ( ROW(\"a\", 1) )"), ["ROW"])
+        self.assertEqual(
+            run_ab.called_functions("```dax\nEVALUATE ( ROW(\"a\", 1) )\n```"), ["ROW"])
 
     def test_a_name_is_counted_once_however_often_it_appears(self):
         """The metric is distinct invented names. Counting mentions would score a model
         that repeats one wrong name in a code block worse than one that invents three."""
-        self.assertEqual(run_ab.called_functions("SUM( SUM( SUM(x) ) )"), ["SUM"])
+        self.assertEqual(run_ab.called_functions("`SUM( SUM( SUM(x) ) )`"), ["SUM"])
 
     def test_it_counts_the_real_functions_too(self):
         """The guard against a silent zero. An extractor that finds nothing reports no
         inventions and looks like a perfect score, so a run whose answers cite no function
         at all has to be distinguishable from a run that cites only real ones."""
-        called = run_ab.called_functions("CALCULATE( [Sales], SAMEPERIODLASTYEAR(D[Date]) )")
+        called = run_ab.called_functions(
+            "`CALCULATE( [Sales], SAMEPERIODLASTYEAR(D[Date]) )`")
         self.assertEqual(called, ["CALCULATE", "SAMEPERIODLASTYEAR"])
-        self.assertEqual(run_ab.invented("CALCULATE( [Sales] )", NAMES), [])
+        self.assertEqual(run_ab.invented("`CALCULATE( [Sales] )`", NAMES), [])
+
+
+class ProseIsNotCode(unittest.TestCase):
+    """The correction that cost a published number.
+
+    English puts capitalised words in front of parentheses constantly, and a bare
+    NAME-then-paren rule reads every one of them as a function call. Opus 5 was scored
+    with two inventions on that basis and had invented nothing - the counter had. Both
+    were ordinary prose: "along ROWS (the default axis)" and "BLANKS (...)".
+    """
+
+    def test_a_capitalised_word_before_a_parenthetical_is_not_a_call(self):
+        self.assertEqual(
+            run_ab.called_functions("That averages along ROWS (the default axis)."), [])
+
+    def test_the_same_word_inside_code_still_counts(self):
+        """Restricting to code must not lose real calls: a model naming a function it
+        believes in writes it in a fence or in backticks. Every genuine invention the
+        pilot found was inside code, because that is what naming a function looks like."""
+        self.assertEqual(run_ab.called_functions("```dax\nROWS(1)\n```"), ["ROWS"])
+
+    def test_an_answer_with_no_code_at_all_reports_nothing(self):
+        """Prose-only answers go silent rather than noisy. A question whose answers never
+        contain code measures nothing, and keeping such a question out is the bank's job,
+        not something the counter should paper over by guessing at prose."""
+        self.assertEqual(
+            run_ab.called_functions("You want SAMEPERIODLASTYEAR for that."), [])
 
 
 class Invented(unittest.TestCase):
     def test_a_function_that_does_not_exist_is_reported(self):
-        self.assertEqual(run_ab.invented("Use PREVIOUSYEARTOTAL([Sales])", NAMES),
+        self.assertEqual(run_ab.invented("Use `PREVIOUSYEARTOTAL([Sales])`", NAMES),
                          ["PREVIOUSYEARTOTAL"])
 
     def test_a_function_that_exists_is_not(self):
-        self.assertEqual(run_ab.invented("Use SAMEPERIODLASTYEAR(D[Date])", NAMES), [])
+        self.assertEqual(run_ab.invented("Use `SAMEPERIODLASTYEAR(D[Date])`", NAMES), [])
 
     def test_the_pilot_findings_are_still_findings(self):
         """The three the pilot caught, kept as a regression on the counter rather than on
@@ -72,7 +103,7 @@ class Invented(unittest.TestCase):
         finding gets re-read instead of quietly surviving as folklore."""
         for name in ("TMSCHEMA_MEASURES", "AXIS"):
             self.assertNotIn(name, NAMES)
-            self.assertEqual(run_ab.invented(f"{name}(x)", NAMES), [name])
+            self.assertEqual(run_ab.invented(f"`{name}(x)`", NAMES), [name])
 
 
 class Bank(unittest.TestCase):

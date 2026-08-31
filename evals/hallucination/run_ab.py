@@ -69,14 +69,36 @@ def catalog_names(path=CATALOG):
     return {f["name"].upper() for f in catalog["functions"]}, catalog
 
 
+_FENCE = re.compile(r"```[a-zA-Z]*\n(.*?)```", re.S)
+_INLINE = re.compile(r"`([^`\n]+)`")
+
+
+def code_spans(text):
+    """The parts of an answer that are CODE: fenced blocks and inline spans.
+
+    Only these are searched for calls, and the reason is a false positive that survived
+    into a published number. Prose puts capitalised words in front of parentheses all the
+    time — "along ROWS (the default axis)", "BLANKS (…)" — and a bare `NAME\\s*\\(` rule
+    reads both as function calls. Opus 5 scored two inventions that way and had invented
+    nothing; the counter had.
+
+    Restricting to code loses nothing real. A model naming a function it believes in
+    writes it in a fence or in backticks — every genuine invention the pilot caught
+    (`EVALUATE TMSCHEMA_MEASURES()`, `EXPAND(AXIS(Rows), …)`, `AXIS(Dates[Year])`) is
+    inside code, because that is what naming a function looks like.
+    """
+    return _FENCE.findall(text or "") + _INLINE.findall(text or "")
+
+
 def called_functions(text):
-    """Every distinct NAME( in the text, keywords removed. Order preserved."""
+    """Every distinct NAME( in the answer's CODE, keywords removed. Order preserved."""
     seen, out = set(), []
-    for name in _CALL_RE.findall(text or ""):
-        if name in KEYWORDS or name in seen:
-            continue
-        seen.add(name)
-        out.append(name)
+    for span in code_spans(text):
+        for name in _CALL_RE.findall(span):
+            if name in KEYWORDS or name in seen:
+                continue
+            seen.add(name)
+            out.append(name)
     return out
 
 
