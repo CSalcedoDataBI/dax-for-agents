@@ -130,7 +130,12 @@ def ask(model, key, question, reference=None, timeout=90):
         f"{question}\n\n---\nDAX functions available in this category, from the "
         f"language reference:\n\n{reference}")
     body = json.dumps({
-        "model": model, "max_tokens": 700,
+        # 700 was enough for Haiku and not for Opus 5, which thinks before it answers and
+        # spends the budget doing it. Twenty-four of its 144 answers came back EMPTY, and
+        # an empty answer scores zero inventions -- the best possible result, for not
+        # having answered. Output is billed by what is generated, so the headroom is free
+        # unless it is used.
+        "model": model, "max_tokens": 4000,
         "system": SYSTEM,
         "messages": [{"role": "user", "content": user}],
     }).encode()
@@ -140,7 +145,9 @@ def ask(model, key, question, reference=None, timeout=90):
                  "content-type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         out = json.load(r)
-    return "".join(b.get("text", "") for b in out.get("content", [])), out.get("usage", {})
+    usage = dict(out.get("usage", {}))
+    usage["stop_reason"] = out.get("stop_reason")
+    return "".join(b.get("text", "") for b in out.get("content", [])), usage
 
 
 def summarise(records, names):
@@ -155,6 +162,18 @@ def summarise(records, names):
             slot[arm] += len(bad)
             slot[arm + "_q"] += 1 if bad else 0
     return by_regime
+
+
+def silent(records):
+    """Answers with no text at all, per arm.
+
+    A silent answer is the one failure this metric cannot survive quietly: it scores zero
+    inventions, which is the best possible result, for not having said anything. Reported
+    on its own line rather than folded into the totals -- a run with silences is a run
+    whose number means less, and that has to be visible without reading the JSON.
+    """
+    return {arm: sum(1 for r in records if not (r[arm]["text"] or "").strip())
+            for arm in ("A", "B")}
 
 
 def report(records, names):
@@ -182,6 +201,12 @@ def report(records, names):
     total_b = sum(s["B"] for s in by_regime.values())
     print("-" * 68)
     print(f"{'TOTAL':<10} {len(records):>9} {total_a:>11} {total_b:>11}")
+
+    quiet = silent(records)
+    if quiet["A"] or quiet["B"]:
+        print(f"\nWARNING: {quiet['A']} answer(s) in arm A and {quiet['B']} in arm B are "
+              f"EMPTY. An empty answer scores zero inventions for not having answered, so "
+              f"both arms are understated and the run cannot be compared with a clean one.")
     return total_a, total_b
 
 
