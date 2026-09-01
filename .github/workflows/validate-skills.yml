@@ -73,6 +73,13 @@ jobs:
       - name: Examples keep their contract
         run: python scripts/check_examples.py
 
+      # La afirmacion mas grande del README ya no es una frase, es una tabla de numeros
+      # que salen de corridas guardadas. Una tabla que nadie compara es la misma frase con
+      # mas sitios donde pudrirse. La comparacion es gratis: las respuestas estan en el
+      # repo y contar invenciones es un lookup contra catalog.json. Ver #20.
+      - name: The README's invention table matches its runs
+        run: python scripts/check_eval_claims.py
+
       # catalog.md es lo que el agente lee para saber que existe, y llego a ofrecerle
       # `DISTINCT column` y `T.INV.2t`: un nombre con espacio y una errata de mayusculas
       # del propio indice de Microsoft. La biblioteca contra la invencion dandole algo que

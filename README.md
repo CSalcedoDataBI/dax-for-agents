@@ -60,8 +60,42 @@ example fails the build instead of quietly shrinking the library:
 python scripts/check_examples.py
 ```
 
-**It does not replace DAX experts.** It stops your agent from inventing functions that don't
-exist.
+**It does not replace DAX experts.** What it does instead is measured rather than asserted: it
+stops your agent inventing functions that do not exist — and how much it helps depends on which
+model you are running, and on which corner of the language you are in.
+
+Each of 72 questions was asked twice of the same model, once alone and once with the catalogue
+rows for its category. Every DAX name written inside code in the answer was looked up in
+`catalog.json`; a name that is not in the catalogue is an invention. No model judged another —
+the count is a lookup:
+
+| | alone | with the catalogue |
+|---|---:|---:|
+| Claude Haiku 4.5 | 11 | 6 |
+| Claude Sonnet 5 | 8 | **0** |
+| DeepSeek V4-Pro | 4 | **0** |
+| DeepSeek V4-Flash | 3 | **0** |
+
+Three of the four stop inventing entirely, and the catalogue's list of names is enough to do it
+— they are never shown a card. **The weaker the model, the more there was to gain**, which is
+worth saying plainly rather than quoting the best row.
+
+**It is also not uniform across the language.** In classic-model DAX no model invented anything,
+with the reference or without it. Every invention sat in `INFO.*`, the window functions and
+visual calculations — the three corners where this library carries Microsoft's card and no
+judgement of its own. Visual calculations is the one place the reference barely helped, and the
+reason is in the index: three of the functions an agent needs there are among the sixteen the
+catalogue leaves uncategorised, so the first hop has nothing to return.
+
+The answers are kept, so the number can be checked rather than believed:
+
+```bash
+python evals/hallucination/run_ab.py --replay evals/hallucination/runs/2026-08-29-claude-sonnet-5.json
+```
+
+That re-counts a run offline, without an API call. Raw answers for every model are in
+[`evals/hallucination/runs/`](evals/hallucination/runs), and the method is
+[issue #10](https://github.com/CSalcedoDataBI/dax-for-agents/issues/10).
 
 ## The upstream is gone
 
@@ -229,6 +263,7 @@ python scripts/check_workflow_cost.py    # the Actions cost rules, on every work
 python scripts/check_plugin_manifest.py  # the manifest against the skills on disk
 python scripts/check_doc_claims.py       # inventory counts in the prose against what is on disk
 python scripts/check_documented_gates.py # this very list against what CI actually runs
+python scripts/check_eval_claims.py      # the invention table against the runs it came from
 python scripts/check_function_names.py   # every catalogue name is one you can type
 python scripts/check_dead_media.py       # no card points an image at the dead upstream host
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
