@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.7.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.6.0...v0.7.0) (2026-09-01)
+
+
+### Features
+
+* **evals:** a provider layer, and a run that says why it failed ([3f49045](https://github.com/CSalcedoDataBI/dax-for-agents/commit/3f490453cd6a09eb422be256d538eaf30870991a))
+* **evals:** a run that survives being killed ([f7b6d0c](https://github.com/CSalcedoDataBI/dax-for-agents/commit/f7b6d0c727fc763ed57bd94df725c02f81852ce9))
+* **evals:** grow the invented-function bank from 12 to 72 questions ([5ba87cc](https://github.com/CSalcedoDataBI/dax-for-agents/commit/5ba87cc8da172497bced0d9703b81f595c034047))
+* **evals:** the A/B across three models, and the counter that was over-counting ([8ce3dde](https://github.com/CSalcedoDataBI/dax-for-agents/commit/8ce3dde7325b5d087ead40f0c9a3cdf85782f4c7))
+* **evals:** the A/B outside Anthropic — two DeepSeek models ([4a26394](https://github.com/CSalcedoDataBI/dax-for-agents/commit/4a263947bb15e487dcb107bc12423fb30d1ca022))
+
+
+### Bug Fixes
+
+* **evals:** an empty answer was scoring the best possible result ([3d144cb](https://github.com/CSalcedoDataBI/dax-for-agents/commit/3d144cb94121f86bf9df0bb8ae2e0d60eab756ea))
+
 ## [0.6.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.5.0...v0.6.0) (2026-08-29)
 
 
