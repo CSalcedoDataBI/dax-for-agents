@@ -249,6 +249,28 @@ resolve it silently falls back to scanning `skills/` — which back then did not
 `scripts/check_plugin_manifest.py` keeps the manifest and the tree in step so that
 failure cannot come back quietly.
 
+## What this plugin runs, sends and fetches
+
+Installed, the plugin is text: skills, reference pages and an offline index. It ships no
+hooks, no MCP server, no telemetry and no background process, and nothing it contains runs
+on its own.
+
+| When | What happens | Where it goes |
+|---|---|---|
+| Any skill is used | Claude reads Markdown and JSON from the installed plugin folder | Nowhere: local reads only |
+| `dax-lib-install` installs a package you picked | Claude runs `gh api` to read that package's `functions.tmdl`, with **your own** GitHub CLI login, checks its declared licence, installs it in the model you are working on (through a modeling MCP if one is connected, otherwise as a TMDL edit) and runs one DAX query to confirm it executes | `api.github.com`, repository `daxlib/daxlib`, read-only |
+| You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
+
+The maintainer scripts in this repository are **not** run by the plugin. Each runs only when
+someone types its command:
+
+- `skills/dax-lib/scripts/refresh-daxlib.ps1` clones `github.com/daxlib/daxlib` to rebuild the index.
+- `skills/dax-reference/scripts/fetch_from_learn.py` reads `learn.microsoft.com/en-us/dax/`.
+- `evals/hallucination/run_ab.py` sends benchmark questions to the Anthropic or DeepSeek API, using a
+  key the person running it sets in their own environment. Nothing in the plugin reads that key.
+
+No personal data is collected, stored or sent anywhere.
+
 ## Checking it yourself
 
 Nothing here asks to be taken on trust. The prose is checked against the tree by a gate,
