@@ -1,6 +1,6 @@
 ---
 name: dax-window-functions
-description: Use when writing a DAX window function — WINDOW, OFFSET, INDEX, RANK, ROWNUMBER, MOVINGAVERAGE, RUNNINGSUM with ORDERBY/PARTITIONBY/MATCHBY — for rolling and trailing averages, running totals, prior-row or prior-year comparisons, or ranking within a partition. Covers ABS vs REL positioning, the ALLSELECTED relation default that silently returns blanks, and MATCHBY for fact tables. Triggers on "rolling average", "running total", "trailing N", "OFFSET returns blank", "ABS vs REL", "PARTITIONBY".
+description: Use when writing a DAX measure with WINDOW, OFFSET, INDEX, RANK, ROWNUMBER, MOVINGAVERAGE or RUNNINGSUM (ORDERBY/PARTITIONBY/MATCHBY) — rolling averages, running totals, prior-period rows, ranking within a partition. Covers ABS vs REL and the ALLSELECTED default that silently returns blanks. Triggers on "rolling average", "running total", "trailing N", "OFFSET returns blank", "ABS vs REL", "PARTITIONBY".
 ---
 
 # DAX Window Functions — the navigation machinery
@@ -40,7 +40,7 @@ Skip `relation` but keep `orderBy`: leave the slot empty → `OFFSET(-1, , ORDER
 |---|---|
 | Trailing N rows incl. current | `WINDOW(-(N-1), REL, 0, REL, ...)` |
 | Running total | `WINDOW(1, ABS, 0, REL, ...)` |
-| Everything after current | `WINDOW(0, REL, -1, ABS, ...)` |
+| Current row and everything after | `WINDOW(0, REL, -1, ABS, ...)` |
 
 ```dax
 -- Trailing 4-quarter avg (true cross-year window — no PARTITIONBY)

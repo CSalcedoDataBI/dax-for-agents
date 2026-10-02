@@ -1,6 +1,6 @@
 ---
 name: dax-reference
-description: Use when you need to know what a built-in DAX function does, its exact signature, what it returns, whether it is legal in a measure, a calculated column, a calculated table or a visual calculation, whether Microsoft discourages it, or which of several similar functions to reach for — and equally for the DAX language itself when no single function is in question, such as evaluation context, context transition, filter and row context, the query statements EVALUATE, DEFINE, MEASURE, ORDER BY and START AT, operators, data types, BLANK semantics, variables with VAR, and Microsoft's own best-practice guidance. The canonical reference for DAX. Triggers on "what does X do in DAX", "DAX function signature", "which DAX function", "difference between", "is X deprecated", "can I use X in a calculated column", "does X work in a measure", "what is evaluation context", "context transition", "DAX query syntax", "EVALUATE statement", "what does BLANK mean in DAX", "DAX operators", "DAX best practice".
+description: Use when you need what a built-in DAX function does — signature, return type, where it is legal (measure, calculated column or table, visual calculation), whether it is discouraged or deprecated, or which of several similar functions to pick — or a DAX language concept — evaluation, filter and row context, context transition, EVALUATE/DEFINE query syntax, operators, data types, BLANK, VAR, Microsoft best practices. Triggers on "what does X do in DAX", "DAX function signature", "which DAX function", "difference between two DAX functions", "is X deprecated", "can I use X in a calculated column", "context transition", "EVALUATE syntax", "BLANK in DAX".
 ---
 
 # DAX Reference
@@ -17,11 +17,13 @@ Annotated with the gotchas the docs leave out.
 
 ## How to use this
 
-**One hop. Do not read the whole library — it is ~376.000 tokens.**
+**One hop. Do not read the whole library — it is ~376,000 tokens.**
 
 1. Read **[`generated/catalog.md`](./generated/catalog.md)** (~14k tokens). Every function, one
    row each: name, category, return type, where it applies, one-line summary, and flags.
-2. Find the function. Open its card: **`generated/library/<function>.md`**.
+2. Find the function. Open its card: **`generated/library/<function>.md`**, where the
+   filename is the catalogue name lowercased with `.` turned into `-` (`ISO.CEILING` →
+   `iso-ceiling.md`, `T.DIST.2T` → `t-dist-2t.md`). `notes/` and `examples/` use the same rule.
 3. If the catalog row is flagged **★**, also read **`notes/<function>.md`** — that is the field
    knowledge that is not in Microsoft's docs. It sits outside `generated/` because it is
    written by hand.
@@ -55,6 +57,8 @@ concepts, ~2k tokens) and open the one page it points to. Going through `catalog
 The `appliesTo` field says where the function is legal: `measure`, `column` (calculated column),
 `table` (calculated table), `visual-calculation`, or `query` (query-only). Check it before
 suggesting a function in the wrong place — that is a common invented-answer failure.
+In `catalog.md` the `Aplica` column abbreviates it: `M` measure, `C` calculated column,
+`T` calculated table, `V` visual calculation, `Q` query-only.
 
 ## Layout
 
@@ -73,60 +77,11 @@ directory, so it can never half-update the tree, and it can never eat your notes
 | `overrides.json` | Values the parser cannot derive (mostly `returns`). Hand-written |
 | `scripts/sync_query_docs.py` | Regenerates `generated/` |
 
-## Regenerating
+## Maintaining `generated/`
 
-Clone the upstream docs, then point the sync at the DAX folder:
-
-```bash
-python scripts/sync_query_docs.py /path/to/query-docs/query-languages/dax --write
-```
-
-Without `--write` it only reports; nothing on disk is touched.
-
-It parses the 15 category index files to build the function → category map, parses the 479
-function files, then picks up every remaining page — anything that is neither a function nor a
-category index — as a concept. Cross-links are rewritten to local paths and all three indexes
-are stamped with the upstream commit SHA.
-
-The concept rule is mechanical rather than a list of filenames, so a page Microsoft adds is
-picked up on the next sync. If it lands in a docs directory the sync does not read, the run
-says so instead of quietly leaving it out.
-
-### What stops a bad generation
-
-Four gates, all before anything is written:
-
-| Gate | Fails when |
-|---|---|
-| No category | A function gets none from the category indexes, the filename rules, `toc.yml`, or `overrides.json`. The exceptions are named in `overrides.json`, so a swap that keeps the total unchanged still fails — and a name left there after upstream classifies it fails too |
-| Orphan note | A `notes/<fn>.md` has no card. The catalog would flag ★ and send a reader to a file that is not there |
-| Unrouted work | The reverse, and the one that fails silently: a `notes/` or `examples/` file the cards and catalogue do not point at. Nothing is broken, the work simply cannot be found. Checked by `refresh_local_metadata.py --check` |
-| Broken cross-link | Any relative link in a card resolves to nothing |
-| Count deviation | The function or concept count moved more than 5% since the last sync. Override with `--accept-count-change` for a real upstream release |
-
-Plus a coverage floor of 90% as a coarse net against a total parser collapse.
-
-The new tree is built in a scratch directory and only then swapped into place, so a failure
-part-way leaves the previous `generated/` exactly as it was. `notes/` and `examples/` are read
-to set the ★ and ▶ flags and the `examples:` count, and never written.
-
-Those two flags are the only part of `generated/` that does not come from upstream, which
-matters now that the upstream is gone and the tree is frozen (see
-[the decision record](../../docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md)).
-`scripts/refresh_local_metadata.py` rewrites exactly that half — the two frontmatter fields,
-the block they point at, and the two indexes — and touches no Microsoft prose. It imports its
-placement and formatting from the sync, so the two writers cannot drift apart, and
-`--check` runs it in CI as a gate.
-
-A weekly CI job compares the upstream SHA against the stamped one. When it moves, the job
-sparse-clones the DAX folder, regenerates through the four gates, runs the repo's own
-checks, and opens a pull request — one branch, `sync/query-docs`, replaced on every run.
-
-That pull request touches every file whether or not any DAX changed, because each card
-names the commit it came from. So its body classifies the diff before anyone reads it:
-the functions that actually changed, and the count that only moved their stamp. The first
-real run was 516 files and **zero** substantive changes, which is one sentence to read
-instead of a wall.
+Regenerating, the gates that stop a bad generation and the weekly CI sync are maintainer
+material, kept out of this file so it does not load on every lookup: see
+[`scripts/README.md`](./scripts/README.md).
 
 ## Related skills
 

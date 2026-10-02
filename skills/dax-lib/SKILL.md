@@ -1,6 +1,6 @@
 ---
 name: dax-lib
-description: Use when looking for an EXISTING published DAX user-defined function before writing one — moving averages, format strings, SVG visuals, KPI/variance, RFM or ABC classification, unit conversion, model audit/metadata, sample data, time intelligence. Offline index of the DAX Lib registry (daxlib.org) — what exists, who wrote it, and where to get it. Triggers on "is there a UDF for", "find an existing DAX function", "ready-made", "already exists", "daxlib", "DAX package".
+description: Use when about to write a DAX UDF, to check whether one is already published on DAX Lib (daxlib.org) — moving averages, format strings, SVG visuals, KPI/variance, RFM/ABC classification, unit conversion, model metadata, sample data. Offline index — what exists, who wrote it, where to get it. Triggers on "is there a UDF for", "existing DAX UDF", "daxlib", "DAX Lib package".
 ---
 
 # DAX Lib — index of published DAX UDFs
@@ -22,8 +22,8 @@ Pairs with **`dax-lib-install`** (actually install what this index found),
 
 | File | Use |
 |---|---|
-| `catalog.md` | Human index — one row per package: id, latest version, author, functions, description. **Scan this first.** |
-| `catalog.json` | Machine index — every version, with `functions[]`, `tags[]`, `isLatest`, `url`. Use for keyword/tag search. |
+| [`catalog.md`](./catalog.md) | Human index — one row per package: id, latest version, author, functions, description. **Scan this first.** |
+| [`catalog.json`](./catalog.json) | Machine index — every version, with `functions[]`, `tags[]`, `isLatest`, `url`. Use for keyword/tag search. |
 | `scripts/refresh-daxlib.ps1` | Rebuild the index from `daxlib/daxlib`. |
 
 ## Workflow

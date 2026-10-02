@@ -57,6 +57,7 @@ DOCS = ["README.md",
         "INDEX.md",
         "CONTRIBUTING.md",
         os.path.join("skills", "dax-reference", "SKILL.md"),
+        os.path.join("skills", "dax-reference", "scripts", "README.md"),  # its maintainer half
         os.path.join("lab", "README.md"),
         os.path.join("lab", "contoso", "README.md")]
 

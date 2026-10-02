@@ -1,6 +1,6 @@
 ---
 name: dax-udf-authoring
-description: Use when AUTHORING your own DAX user-defined function — the mechanics of writing a FUNCTION — declaring parameter types (Scalar, AnyRef, ColumnRef, MeasureRef, CalendarRef), VAL vs EXPR evaluation, TABLEOF/NAMEOF, optional parameters and defaults, dot-notation naming, GA limitations and parser red-underline bugs. Not for finding an existing one (that is dax-lib) nor for what a built-in does (that is dax-reference). Triggers on "write a DAX UDF", "define a DAX FUNCTION", "ANYREF", "VAL vs EXPR", "TABLEOF", "optional parameter in a UDF".
+description: Use when writing your own DAX user-defined function (FUNCTION) — parameter types (AnyRef, ColumnRef, MeasureRef, CalendarRef), VAL vs EXPR, TABLEOF/NAMEOF, optional parameters, naming, and known parser bugs. For existing UDFs use dax-lib; for built-ins, dax-reference. Triggers on "write a DAX UDF", "define a DAX FUNCTION", "ANYREF", "VAL vs EXPR", "TABLEOF", "optional parameter in a UDF".
 ---
 
 # DAX UDF Authoring — the mechanics
@@ -88,7 +88,7 @@ Dot-notation namespace: `Contoso.Scorecard.Rolling4QtrAvg`. Param suffixes: `_Co
 
 ## GA limitations & known bugs (June 2026, CL 1702+)
 
-- Desktop-only authoring; no folders, no hide/show, no translations, no OLS transfer.
+- Desktop is the only authoring UI (TOM, TMDL and the modeling MCP can also create them); no folders, no hide/show, no translations, no OLS transfer.
 - **No recursion, no overloading, no explicit return type.**
 - ⚠️ **`ColumnRef`/`MeasureRef`/`TableRef` may be rejected at some call sites → fall back to `ANYREF`.**
 - ⚠️ **Red underlines on columns-as-`expr` are often false positives** — the code can still execute correctly. Validate by running, not by trusting IntelliSense.
