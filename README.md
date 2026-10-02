@@ -107,7 +107,7 @@ commit this repository read was `616f1e8`, on 2026-08-24.
 The name stays written wherever attribution requires it, because that is what CC BY 4.0 asks
 for. The links do not, because a 404 attributes nothing. What is left instead:
 
-- [The Wayback snapshot of 2026-03-01](http://web.archive.org/web/20260301020123/https://github.com/MicrosoftDocs/query-docs)
+- [The Wayback snapshot of 2026-03-01](https://web.archive.org/web/20260301020123/https://github.com/MicrosoftDocs/query-docs)
 - [The DAX documentation on Microsoft Learn](https://learn.microsoft.com/en-us/dax/), which is
   the published form of the same material
 
