@@ -2,7 +2,7 @@
 name: ALLCROSSFILTERED
 category: [filter]
 primaryCategory: filter
-returns: scalar
+returns: modifier
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/allcrossfiltered-function-dax.md@323524c

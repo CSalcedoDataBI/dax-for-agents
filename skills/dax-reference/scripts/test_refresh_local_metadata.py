@@ -289,6 +289,18 @@ class CatalogFlags(unittest.TestCase):
         for glyph in ("⛔", "★", "▶"):
             self.assertIn(glyph, legend)
 
+    def test_the_legend_explains_modifier_when_a_row_uses_it(self):
+        """`modifier` is neither scalar nor table: REMOVEFILTERS clears filters and returns
+        nothing usable. A Ret value the reader cannot look up is a guess handed to them."""
+        entry = {"name": "REMOVEFILTERS", "primaryCategory": "filter", "returns": "modifier",
+                 "appliesTo": ["measure"], "summary": "s",
+                 "discouragedInVisualCalculations": False, "notes": False, "examples": 0}
+        md = sync._catalog_md([entry], "src", "date")
+        self.assertIn("`modifier`", md.split("| Función |")[0])
+        entry["returns"] = "scalar"
+        md = sync._catalog_md([entry], "src", "date")
+        self.assertNotIn("modifier", md.split("| Función |")[0])
+
 
 if __name__ == "__main__":
     unittest.main()

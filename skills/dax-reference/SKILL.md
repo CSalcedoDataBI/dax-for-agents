@@ -60,6 +60,12 @@ suggesting a function in the wrong place — that is a common invented-answer fa
 In `catalog.md` the `Aplica` column abbreviates it: `M` measure, `C` calculated column,
 `T` calculated table, `V` visual calculation, `Q` query-only.
 
+### What a function returns
+
+`returns` (the catalogue's `Ret`) is `scalar` or `table`, or `modifier` for the functions
+that are neither — `REMOVEFILTERS` and `ALLCROSSFILTERED` only clear filters as a `CALCULATE`
+argument and return nothing usable, so never assign them to a `VAR` or iterate them.
+
 ## Layout
 
 Everything under `generated/` is produced by the sync and replaced wholesale on every run.

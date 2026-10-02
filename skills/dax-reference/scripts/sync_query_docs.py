@@ -975,6 +975,15 @@ def _catalog_md(entries, source, source_date):
         "(dice que probablemente devuelve resultados sin sentido); en una medida o columna "
         "calculada no dice nada · ★ = tiene nota propia · ▶ = tiene ejemplos ejecutables "
         "en este repositorio.",
+    ]
+    # Only when a row uses it: the value comes from overrides.json, never from the parser,
+    # and a legend line for something absent from the table would be noise.
+    if any(e.get("returns") == "modifier" for e in entries):
+        head.append("> Ret `modifier` = ni escalar ni tabla: solo sirve como argumento de "
+                    "filtro de `CALCULATE`/`CALCULATETABLE` y no devuelve nada utilizable "
+                    "(Microsoft: *can only be used to clear filters but not to return a "
+                    "table*).")
+    head += [
         "",
         "| Función | Cat | Ret | Aplica | Resumen | ⚑ |",
         "|---|---|---|---|---|---|",

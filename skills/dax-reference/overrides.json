@@ -1,11 +1,12 @@
 {
   "_comment": "Values the sync cannot derive from query-docs. Hand-maintained; the sync reads this and never writes it. Keys are function names in UPPERCASE.",
   "_schema": {
-    "returns": "scalar | table - used when the doc has no '## Return value' section to parse, or when the parser misreads the one it has (see _returnsMisread)",
+    "returns": "scalar | table | modifier - used when the doc has no '## Return value' section to parse, or when the parser misreads the one it has (see _returnsMisread). modifier = usable only as a CALCULATE filter argument, returns nothing usable",
     "primaryCategory": "overrides the first-index-wins rule for functions listed in several category indexes",
     "uncategorized": "functions upstream classifies nowhere - see its own _reason"
   },
   "returns": {
+    "ALLCROSSFILTERED": "modifier",
     "ALLSELECTED": "table",
     "CURRENTGROUP": "table",
     "DATEVALUE": "scalar",
@@ -15,16 +16,19 @@
     "OFFSET": "table",
     "RADIANS": "scalar",
     "RANGE": "table",
+    "REMOVEFILTERS": "modifier",
     "WINDOW": "table"
   },
   "_returnsMisread": {
-    "_reason": "The parser only calls a return value 'table' when the first line names a table or column. These seven have a Return value section that says rows, a context or values instead, and were stamped 'scalar'. Each line below quotes Microsoft's own first line, measured on the card at query-docs@323524c. ALLCROSSFILTERED and REMOVEFILTERS say 'N/A. See remarks.': they are CALCULATE modifiers that return no usable table, so neither value is true of them and they are left as the parser wrote them rather than given one this repo cannot back.",
+    "_reason": "The parser only calls a return value 'table' when the first line names a table or column. These seven have a Return value section that says rows, a context or values instead, and were stamped 'scalar'. Each line below quotes Microsoft's own first line, measured on the card at query-docs@323524c. ALLCROSSFILTERED and REMOVEFILTERS say 'N/A. See remarks.' and are neither: their remarks say each 'can only be used to clear filters but not to return a table', so they get 'modifier' instead of a value this repo cannot back.",
+    "ALLCROSSFILTERED": "N/A. See remarks. — Remarks: ALLCROSSFILTERED can only be used to clear filters but not to return a table.",
     "ALLSELECTED": "The context of the query without any column and row filters.",
     "CURRENTGROUP": "The rows in the table argument of the GROUPBY function corresponding to one group of values of the groupBy_columnName arguments.",
     "FILTERS": "The values that are directly applied as filters to columnName.",
     "INDEX": "A row at an absolute position.",
     "OFFSET": "One or more rows from relation.",
     "RANGE": "An interval of data rows.",
+    "REMOVEFILTERS": "N/A. See remarks. — Remarks: REMOVEFILTERS can only be used to clear filters but not to return a table.",
     "WINDOW": "All rows from the window."
   },
   "primaryCategory": {},

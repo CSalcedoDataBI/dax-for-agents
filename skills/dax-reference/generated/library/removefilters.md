@@ -2,7 +2,7 @@
 name: REMOVEFILTERS
 category: [filter]
 primaryCategory: filter
-returns: scalar
+returns: modifier
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/removefilters-function-dax.md@323524c

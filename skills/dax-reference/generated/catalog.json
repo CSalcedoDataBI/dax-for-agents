@@ -200,7 +200,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "modifier",
       "appliesTo": [
         "measure",
         "column",
@@ -6862,7 +6862,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "modifier",
       "appliesTo": [
         "measure",
         "column",

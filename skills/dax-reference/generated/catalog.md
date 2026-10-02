@@ -3,6 +3,7 @@
 > Fuente: `MicrosoftDocs/query-docs@323524c` · commit 2026-08-13T16:02:28Z
 > 479 funciones · generado por `scripts/sync_query_docs.py`
 > **No editar a mano.** ⛔ = Microsoft la desaconseja **en cálculos visuales** (dice que probablemente devuelve resultados sin sentido); en una medida o columna calculada no dice nada · ★ = tiene nota propia · ▶ = tiene ejemplos ejecutables en este repositorio.
+> Ret `modifier` = ni escalar ni tabla: solo sirve como argumento de filtro de `CALCULATE`/`CALCULATETABLE` y no devuelve nada utilizable (Microsoft: *can only be used to clear filters but not to return a table*).
 
 | Función | Cat | Ret | Aplica | Resumen | ⚑ |
 |---|---|---|---|---|---|
@@ -16,7 +17,7 @@
 | ADDCOLUMNS | table-manipulation | table | M C T V | Adds calculated columns to the given table or table expression. |  |
 | ADDMISSINGITEMS | table-manipulation | table | M C T | Adds combinations of items from multiple columns to a table if they do not already exist. |  |
 | ALL | filter | table | M C T V | Returns all the rows in a table, or all the values in a column, ignoring any filters that might have been applied. | ★ |
-| ALLCROSSFILTERED | filter | scalar | M C T V | Clear all filters which are applied to a table. |  |
+| ALLCROSSFILTERED | filter | modifier | M C T V | Clear all filters which are applied to a table. |  |
 | ALLEXCEPT | filter | table | M C T | Removes all context filters in the table except filters that have been applied to the specified columns. | ★ |
 | ALLNOBLANKROW | filter | table | M C T V | From the parent table of a relationship, returns all rows but the blank row, or all distinct values of a column but the blank row, and disregards any context filters that might exist. |  |
 | ALLSELECTED | filter | table | M C T V | Removes context filters from columns and rows in the current query, while retaining all other context filters or explicit filters. | ★ |
@@ -382,7 +383,7 @@
 | RECEIVED | financial | scalar | M C T V | Returns the amount received at maturity for a fully invested security. |  |
 | RELATED | relationship | scalar | M C T | Returns a related value from another table. | ★ |
 | RELATEDTABLE | relationship | table | M C T | Evaluates a table expression in a context modified by the given filters. | ★ |
-| REMOVEFILTERS | filter | scalar | M C T V | Clears filters from the specified tables or columns. | ★ |
+| REMOVEFILTERS | filter | modifier | M C T V | Clears filters from the specified tables or columns. | ★ |
 | REPLACE | text | scalar | M C T V | REPLACE replaces part of a text string, based on the number of characters you specify, with a different text string. | ▶ |
 | REPT | text | scalar | M C T V | Repeats text a given number of times. | ▶ |
 | RIGHT | text | scalar | M C T V | RIGHT returns the last character or characters in a text string, based on the number of characters you specify. | ▶ |
