@@ -39,12 +39,12 @@ Every skill follows the [agentskills.io](https://agentskills.io/specification) s
 3. **Token-efficient:** the `SKILL.md` is short; the heavy detail lives in separate files the
    agent reads only when a question needs them.
 4. **Cross-link by name** (`` `dax-lib` ``), never by path.
-5. **The `dax-` prefix stays**, even though the plugin is already called `dax` and `skills/`
+5. **The `dax-` prefix stays**, even though the plugin name already starts with `dax` and `skills/`
    already supplies the context. Renaming to `skills/reference/` would touch the cross-links
    in the five `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere;
    the prefix costs four characters and does not pay for itself. Installed, they are
-   `dax:dax-reference`, `dax:dax-lib`, `dax:dax-lib-install`, `dax:dax-udf-authoring` and
-   `dax:dax-window-functions`.
+   `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`, `dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring` and
+   `dax-for-agents:dax-window-functions`.
 6. **All five skills are listed by path in `.claude-plugin/plugin.json`.** Under `skills/` the
    default scan would find them anyway, so that list stopped being the difference between
    five skills and none — but it is still what makes the published set reviewable in a diff.

@@ -85,7 +85,7 @@ def check(root):
         errors.append(f"{missing}/SKILL.md exists but is not listed in plugin.json "
                       f"skills -- it would ship invisible")
 
-    # `/plugin install dax@dax-for-agents` is spelled out of these two names. If the entry
+    # `/plugin install dax-for-agents@dax-for-agents` is spelled out of these two names. If the entry
     # names a different plugin, the README's install line points at nothing.
     entries = market.get("plugins")
     if not isinstance(entries, list) or not entries:

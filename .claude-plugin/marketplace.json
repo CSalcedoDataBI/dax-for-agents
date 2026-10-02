@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "dax",
+      "name": "dax-for-agents",
       "source": "./",
       "description": "The DAX language, agent-native: 479 function cards, 34 conceptual pages, hand-written field notes, the daxlib.org catalogue, UDF authoring and the window family. Not performance tuning."
     }

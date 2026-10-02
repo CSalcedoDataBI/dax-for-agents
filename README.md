@@ -211,17 +211,20 @@ As a plugin — **needs Claude Code 2.1.142 or newer** (see below):
 ```
 
 ```bash
-/plugin install dax@dax-for-agents
+/plugin install dax-for-agents@dax-for-agents
 ```
 
-The skills arrive as `dax:dax-reference`, `dax:dax-lib`, `dax:dax-lib-install`,
-`dax:dax-udf-authoring` and `dax:dax-window-functions`. Around 806 tokens of descriptions are
+The skills arrive as `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`,
+`dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring` and
+`dax-for-agents:dax-window-functions`. Until 0.6.0 the plugin was called `dax` and the prefix was
+`dax:`; an install made under the old name has to be removed and reinstalled under the new one.
+Around 576 tokens of descriptions are
 always on; everything else is read only when a question needs it. That figure is measured, not
 estimated, and re-measuring it is one command — worth running whenever a skill is added or its
 description is rewritten, because the number moves and nothing here checks it:
 
 ```bash
-claude plugin details dax@dax-for-agents
+claude plugin details dax-for-agents@dax-for-agents
 ```
 
 Or as a submodule, which also works before a marketplace entry exists. The skills live

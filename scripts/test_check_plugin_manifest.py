@@ -117,7 +117,7 @@ class SkillsList(unittest.TestCase):
 
 
 class TheTwoNames(unittest.TestCase):
-    """`/plugin install dax@dax-for-agents` se deletrea con estos dos nombres."""
+    """`/plugin install dax-for-agents@dax-for-agents` se deletrea con estos dos nombres."""
 
     def test_a_plugin_name_absent_from_the_marketplace_fails(self):
         with Fixture(plugin=deep(PLUGIN, name="other")) as f:
