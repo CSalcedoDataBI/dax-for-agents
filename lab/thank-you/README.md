@@ -13,7 +13,7 @@ python lab/add_thank_you.py
 | Button | Goes to |
 |---|---|
 | Servicio de consultoría | https://csalcedodatabi.com/ |
-| Archivos y plantillas | https://github.com/CSalcedoDataBI/PowerBI-Deneb |
+| Archivos y plantillas | the lab folder holding that report, e.g. https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/blancos |
 | Blog | https://csalcedodatabi.com/blog/ |
 | Canal de YouTube | https://www.youtube.com/@CSalcedoDataBI |
 | Perfil de LinkedIn | https://www.linkedin.com/in/cristobal-salcedo |

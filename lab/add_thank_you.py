@@ -21,6 +21,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "thank-you")
 DENEB = "deneb7E15AEF80B9E4D4F8E12924291ECE89A"
+REPO = "https://github.com/CSalcedoDataBI/dax-for-agents"
+FILES_BUTTON = "btn2"   # "Archivos y plantillas": in each copy, the folder that holds the report
 PAGE = "thankyou"
 
 # report folder -> (measures table, its placeholder column, a measure in it). All four exist
@@ -59,6 +61,12 @@ def planned(report, binding):
             v["visual"]["query"] = {"queryState": {"dataset": {"projections": [
                 _ref("Column", table, column), _ref("Measure", table, measure)]}}}
             v.pop("filterConfig", None)
+        if vid == FILES_BUTTON:
+            # The cover only draws the repo's name; the click lands on this button, so each
+            # report sends the reader to its own folder: the .pbip, its model and README.
+            folder = os.path.dirname(report[len(HERE) + 1:]).replace(os.sep, "/")
+            link = v["visual"]["visualContainerObjects"]["visualLink"][0]["properties"]
+            link["webUrl"]["expr"]["Literal"]["Value"] = f"'{REPO}/tree/main/lab/{folder}'"
         files[os.path.join("definition", "pages", PAGE, "visuals", vid, "visual.json")] = _text(v)
 
     pages_path = os.path.join(report, "definition", "pages", "pages.json")

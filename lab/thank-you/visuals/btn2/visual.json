@@ -207,7 +207,7 @@
             "webUrl": {
               "expr": {
                 "Literal": {
-                  "Value": "'https://github.com/CSalcedoDataBI/PowerBI-Deneb'"
+                  "Value": "'https://github.com/CSalcedoDataBI/dax-for-agents'"
                 }
               }
             }
