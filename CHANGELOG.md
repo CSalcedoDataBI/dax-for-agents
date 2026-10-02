@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.7.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.6.0...v0.7.0) (2026-10-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* skills are now dax-for-agents:dax-reference and so on, not dax:dax-reference. Install with /plugin install dax-for-agents@dax-for-agents; an install under the old name has to be removed and reinstalled.
+
+### Features
+
+* **evals:** a provider layer, and a run that says why it failed ([3f49045](https://github.com/CSalcedoDataBI/dax-for-agents/commit/3f490453cd6a09eb422be256d538eaf30870991a))
+* **evals:** a run that survives being killed ([f7b6d0c](https://github.com/CSalcedoDataBI/dax-for-agents/commit/f7b6d0c727fc763ed57bd94df725c02f81852ce9))
+* **evals:** grow the invented-function bank from 12 to 72 questions ([5ba87cc](https://github.com/CSalcedoDataBI/dax-for-agents/commit/5ba87cc8da172497bced0d9703b81f595c034047))
+* **evals:** the A/B across three models, and the counter that was over-counting ([8ce3dde](https://github.com/CSalcedoDataBI/dax-for-agents/commit/8ce3dde7325b5d087ead40f0c9a3cdf85782f4c7))
+* **evals:** the A/B outside Anthropic — two DeepSeek models ([4a26394](https://github.com/CSalcedoDataBI/dax-for-agents/commit/4a263947bb15e487dcb107bc12423fb30d1ca022))
+* **lab:** open every lab report on the author's Thank You page ([0d8f389](https://github.com/CSalcedoDataBI/dax-for-agents/commit/0d8f3891700be09c7c149e11d4dac776977c5a6c))
+* **lab:** Thank You page sends "Archivos y plantillas" to this repo ([9fc7447](https://github.com/CSalcedoDataBI/dax-for-agents/commit/9fc744716b1a4d0f4546b2b3242046e0c115fd32))
+* **lab:** Thank You tagline names DAX and M ([aa7bfb4](https://github.com/CSalcedoDataBI/dax-for-agents/commit/aa7bfb44630597506b30ace7345e0547731c2347))
+* rename the plugin from dax to dax-for-agents ([37015a5](https://github.com/CSalcedoDataBI/dax-for-agents/commit/37015a50384f46a5c56a04db7a8d9f20231179ca)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+
+
+### Bug Fixes
+
+* **dax-reference:** REMOVEFILTERS and ALLCROSSFILTERED return neither ([e78ba8b](https://github.com/CSalcedoDataBI/dax-for-agents/commit/e78ba8b0faeacb6edc27c79383cdc25387d859e4)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+* **dax-reference:** seven table functions catalogued as scalar ([d948a52](https://github.com/CSalcedoDataBI/dax-for-agents/commit/d948a52e485ec1e3ac92e81aa3e2c54caae9a479)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+* **dax-udf-authoring:** a VAL vs EXPR example that shows the difference ([f95ae4c](https://github.com/CSalcedoDataBI/dax-for-agents/commit/f95ae4c4c76c7ba9f5f3fcdf1ff7426bb56de6c5)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+* **evals:** an empty answer was scoring the best possible result ([3d144cb](https://github.com/CSalcedoDataBI/dax-for-agents/commit/3d144cb94121f86bf9df0bb8ae2e0d60eab756ea))
+* **lab:** Thank You subtitle speaks of DAX, not Deneb ([32e3b58](https://github.com/CSalcedoDataBI/dax-for-agents/commit/32e3b58b47cb3397145a737c9d3c307582fb3ecd))
+
 ## [0.6.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.5.0...v0.6.0) (2026-08-29)
 
 
