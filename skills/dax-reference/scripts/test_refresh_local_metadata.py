@@ -227,6 +227,45 @@ class RefreshTree(unittest.TestCase):
         self.assertEqual(raw, json.dumps(parsed, indent=2, ensure_ascii=False) + "\n")
 
 
+class ReturnsOverride(unittest.TestCase):
+    """overrides.json is this repo's, like notes/ and examples/. With generated/ frozen, a
+    return type the parser got wrong can only be corrected through it, so the local half
+    has to carry it to the card and both indexes."""
+
+    def setUp(self):
+        RefreshTree.setUp(self)
+        with open(os.path.join(self.dir, "overrides.json"), "w",
+                  encoding="utf-8", newline="\n") as f:
+            json.dump({"returns": {"ABS": "table"}}, f)
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_the_card_takes_the_overridden_return_type(self):
+        refresh.refresh(root=self.gen, ref=self.dir, check=False)
+        with open(os.path.join(self.gen, "library", "abs.md"), encoding="utf-8") as f:
+            self.assertEqual(fm(f.read(), "returns"), "table")
+
+    def test_both_indexes_take_it_too(self):
+        refresh.refresh(root=self.gen, ref=self.dir, check=False)
+        with open(os.path.join(self.gen, "catalog.json"), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["functions"][0]["returns"], "table")
+        with open(os.path.join(self.gen, "catalog.md"), encoding="utf-8") as f:
+            self.assertIn("| ABS | math-and-trig | table |", f.read())
+
+    def test_check_mode_reports_the_disagreement(self):
+        changed, reasons = refresh.refresh(root=self.gen, ref=self.dir, check=True)
+        self.assertIn(os.path.join("library", "abs.md"), changed)
+        self.assertTrue(any("overrides.json" in r for r in reasons), reasons)
+
+    def test_a_function_without_an_override_keeps_what_the_parser_found(self):
+        """No override is not a reset: the 472 cards the parser got right stay as they are."""
+        os.remove(os.path.join(self.dir, "overrides.json"))
+        refresh.refresh(root=self.gen, ref=self.dir, check=False)
+        with open(os.path.join(self.gen, "library", "abs.md"), encoding="utf-8") as f:
+            self.assertEqual(fm(f.read(), "returns"), "scalar")
+
+
 class CatalogFlags(unittest.TestCase):
     def test_the_catalog_marks_functions_that_have_runnable_examples(self):
         """Without ▶ the only way to know a function has measured examples was to open its

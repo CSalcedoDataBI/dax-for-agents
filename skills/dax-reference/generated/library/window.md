@@ -2,7 +2,7 @@
 name: WINDOW
 category: [filter]
 primaryCategory: filter
-returns: scalar
+returns: table
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/window-function-dax.md@323524c

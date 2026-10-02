@@ -44,7 +44,9 @@ Those two flags are the only part of `generated/` that does not come from upstre
 matters now that the upstream is gone and the tree is frozen (see
 [the decision record](../../../docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md)).
 `scripts/refresh_local_metadata.py` rewrites exactly that half — the two frontmatter fields,
-the block they point at, and the two indexes — and touches no Microsoft prose. It imports its
+the block they point at, and the two indexes — plus the `returns` of any function named in
+`overrides.json`, the only way a return type the parser misread can be corrected while the
+sync cannot run. It touches no Microsoft prose. It imports its
 placement and formatting from the sync, so the two writers cannot drift apart, and
 `--check` runs it in CI as a gate.
 

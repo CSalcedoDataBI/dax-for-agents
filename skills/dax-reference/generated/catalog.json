@@ -256,7 +256,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",
@@ -1621,7 +1621,7 @@
         "table-manipulation"
       ],
       "primaryCategory": "table-manipulation",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",
@@ -2570,7 +2570,7 @@
         "table-manipulation"
       ],
       "primaryCategory": "table-manipulation",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",
@@ -3054,7 +3054,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",
@@ -5920,7 +5920,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",
@@ -6715,7 +6715,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "visual-calculation"
       ],
@@ -8646,7 +8646,7 @@
         "filter"
       ],
       "primaryCategory": "filter",
-      "returns": "scalar",
+      "returns": "table",
       "appliesTo": [
         "measure",
         "column",

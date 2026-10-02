@@ -14,7 +14,12 @@ functions had example files and 54 cards admitted it. The other 45 were unreacha
 route `SKILL.md` documents, which reads `examples: N` off the card.
 
 This script is the local half on its own. It touches no Microsoft prose — it rewrites two
-frontmatter fields, the block those fields point at, and the two indexes. Everything it
+frontmatter fields, the block those fields point at, and the two indexes.
+
+It also carries `overrides.json`'s `returns`, the third thing this repo writes by hand. The
+sync applies it too, but the sync cannot run, so a return type the parser got wrong — WINDOW
+was `scalar`, read off "All rows from the window." — could otherwise never be corrected.
+Only functions named there change; every other card keeps what the parser found. Everything it
 needs, it imports from the sync rather than restating: one definition of where the block
 goes and what the catalogue looks like, so the two writers cannot drift apart.
 
@@ -66,10 +71,11 @@ def _set_field(frontmatter, key, value):
     return frontmatter.rstrip("\n") + "\n" + line + "\n"
 
 
-def refresh_card(text, stem, has_notes, entry):
+def refresh_card(text, stem, has_notes, entry, returns=None):
     """The card as the sync would write it today, given this repo's notes/ and examples/.
 
-    `entry` is `(category, count)` or None. Pure: takes text, returns text, so a test can
+    `entry` is `(category, count)` or None. `returns` is the overrides.json value for this
+    function, or None to leave the field as it is. Pure: takes text, returns text, so a test can
     state the contract on a card literal instead of on a tree.
     """
     m = _FM_RE.match(text)
@@ -79,6 +85,8 @@ def refresh_card(text, stem, has_notes, entry):
 
     frontmatter = _set_field(frontmatter, "notes", "true" if has_notes else "false")
     frontmatter = _set_field(frontmatter, "examples", entry[1] if entry else 0)
+    if returns:
+        frontmatter = _set_field(frontmatter, "returns", returns)
 
     # Always strip, then re-place. Editing in place would need a third branch for "the
     # block exists but belongs somewhere else", and placement is the sync's decision.
@@ -97,7 +105,7 @@ def refresh_card(text, stem, has_notes, entry):
     return f"---\n{frontmatter}---\n{body.lstrip()}"
 
 
-def _reasons(stem, before, after, has_notes, entry):
+def _reasons(stem, before, after, has_notes, entry, returns=None):
     """Why this card changed, in the words of the thing that is wrong.
 
     A diff would be honest and useless at 479 files. These read like the finding: a file
@@ -111,6 +119,10 @@ def _reasons(stem, before, after, has_notes, entry):
     stated_ex = int(old_ex.group(1)) if old_ex and old_ex.group(1).isdigit() else 0
     count = entry[1] if entry else 0
 
+    old_ret = re.search(r"^returns:\s*(\S*)$", old, re.M)
+    if returns and (old_ret.group(1) if old_ret else "") != returns:
+        out.append(f"{stem}: overrides.json says returns: {returns} and the card says "
+                   f"{old_ret.group(1) if old_ret else 'nothing'}")
     if has_notes and not stated_notes:
         out.append(f"{stem}: notes/{stem}.md exists and the card says notes: false, "
                    f"so nothing routes to it")
@@ -131,10 +143,20 @@ def _reasons(stem, before, after, has_notes, entry):
     return out
 
 
+def _card_name(text):
+    """The card's own `name:` — overrides.json is keyed by it, not by the file stem, and
+    the two differ for every dotted name (`T.DIST.2T` lives in `t-dist-2t.md`)."""
+    m = _FM_RE.match(text)
+    found = re.search(r"^name:\s*(\S+)$", m.group(1), re.M) if m else None
+    return found.group(1) if found else None
+
+
 def refresh(root=GENERATED, ref=REF, check=False):
     """Returns (changed_paths, reasons). Writes nothing when `check`."""
     notes = sync._notes_stems(ref)
     examples = sync._examples_index(ref)
+    returns = (sync.load_overrides(os.path.join(ref, "overrides.json"))
+               .get("returns") or {})
 
     library = os.path.join(root, "library")
     changed, reasons = [], []
@@ -146,11 +168,14 @@ def refresh(root=GENERATED, ref=REF, check=False):
         path = os.path.join(library, name)
         with open(path, encoding="utf-8") as f:
             before = f.read()
-        after = refresh_card(before, stem, stem in notes, examples.get(stem))
+        name_ = _card_name(before) or stem.upper()
+        after = refresh_card(before, stem, stem in notes, examples.get(stem),
+                             returns.get(name_))
         if after == before:
             continue
         changed.append(os.path.join("library", name))
-        reasons += _reasons(stem, before, after, stem in notes, examples.get(stem))
+        reasons += _reasons(stem, before, after, stem in notes, examples.get(stem),
+                            returns.get(name_))
         if not check:
             with open(path, "w", encoding="utf-8", newline="\n") as f:
                 f.write(after)
@@ -166,12 +191,15 @@ def refresh(root=GENERATED, ref=REF, check=False):
         entry = examples.get(stem)
         fn["notes"] = stem in notes
         fn["examples"] = entry[1] if entry else 0
+        if fn.get("name") in returns:
+            fn["returns"] = returns[fn["name"]]
     # Byte for byte how the sync writes it. Comparing parsed objects instead would let this
     # script quietly reformat the file the first time the two dumps disagreed.
     after_json = json.dumps(catalog, indent=2, ensure_ascii=False) + "\n"
     if after_json != before_json:
         changed.append("catalog.json")
-        reasons.append("catalog.json: the notes/examples flags disagree with the tree")
+        reasons.append("catalog.json: the notes/examples flags or an overridden return "
+                       "type disagree with the tree")
         if not check:
             with open(cat_path, "w", encoding="utf-8", newline="\n") as f:
                 f.write(after_json)
@@ -183,7 +211,7 @@ def refresh(root=GENERATED, ref=REF, check=False):
                                 catalog.get("sourceCommitDate", ""))
     if after_md != before_md:
         changed.append("catalog.md")
-        reasons.append("catalog.md: the flag column disagrees with the tree")
+        reasons.append("catalog.md: the flag or return column disagrees with the tree")
         if not check:
             with open(md_path, "w", encoding="utf-8", newline="\n") as f:
                 f.write(after_md)
@@ -195,18 +223,18 @@ def main(argv):
     check = "--check" in argv
     changed, reasons = refresh(check=check)
     if not changed:
-        print("OK: generated/ agrees with notes/ and examples/ (nothing to rewrite).")
+        print("OK: generated/ agrees with notes/, examples/ and overrides.json (nothing to rewrite).")
         return 0
     if check:
-        print(f"ERROR: {len(changed)} file(s) in generated/ disagree with notes/ and "
-              f"examples/. Run: python skills/dax-reference/scripts/"
+        print(f"ERROR: {len(changed)} file(s) in generated/ disagree with notes/, "
+              f"examples/ or overrides.json. Run: python skills/dax-reference/scripts/"
               f"refresh_local_metadata.py")
         for r in reasons[:40]:
             print(f"  - {r}")
         if len(reasons) > 40:
             print(f"  ... and {len(reasons) - 40} more")
         return 1
-    print(f"rewrote {len(changed)} file(s) in generated/ from notes/ and examples/.")
+    print(f"rewrote {len(changed)} file(s) in generated/ from notes/, examples/ and overrides.json.")
     for r in reasons[:20]:
         print(f"  - {r}")
     if len(reasons) > 20:

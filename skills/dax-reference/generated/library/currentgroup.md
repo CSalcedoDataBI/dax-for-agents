@@ -2,7 +2,7 @@
 name: CURRENTGROUP
 category: [table-manipulation]
 primaryCategory: table-manipulation
-returns: scalar
+returns: table
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: true
 source: query-languages/dax/currentgroup-function-dax.md@323524c

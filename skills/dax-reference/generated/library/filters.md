@@ -2,7 +2,7 @@
 name: FILTERS
 category: [table-manipulation]
 primaryCategory: table-manipulation
-returns: scalar
+returns: table
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/filters-function-dax.md@323524c

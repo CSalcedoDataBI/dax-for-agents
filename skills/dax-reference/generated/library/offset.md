@@ -2,7 +2,7 @@
 name: OFFSET
 category: [filter]
 primaryCategory: filter
-returns: scalar
+returns: table
 appliesTo: [measure, column, table, visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/offset-function-dax.md@323524c

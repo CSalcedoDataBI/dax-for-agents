@@ -2,7 +2,7 @@
 name: RANGE
 category: [filter]
 primaryCategory: filter
-returns: scalar
+returns: table
 appliesTo: [visual-calculation]
 discouragedInVisualCalculations: false
 source: query-languages/dax/range-function-dax.md@323524c

@@ -19,7 +19,7 @@
 | ALLCROSSFILTERED | filter | scalar | M C T V | Clear all filters which are applied to a table. |  |
 | ALLEXCEPT | filter | table | M C T | Removes all context filters in the table except filters that have been applied to the specified columns. | ★ |
 | ALLNOBLANKROW | filter | table | M C T V | From the parent table of a relationship, returns all rows but the blank row, or all distinct values of a column but the blank row, and disregards any context filters that might exist. |  |
-| ALLSELECTED | filter | scalar | M C T V | Removes context filters from columns and rows in the current query, while retaining all other context filters or explicit filters. | ★ |
+| ALLSELECTED | filter | table | M C T V | Removes context filters from columns and rows in the current query, while retaining all other context filters or explicit filters. | ★ |
 | ALLSELECTEDAPPLY |  | table | M C T | Modifies how filters are applied while evaluating a GROUPCROSSAPPLY or GROUPCROSSAPPLYTABLE function. |  |
 | ALLSELECTEDREMOVE |  | table | M C T | Modifies how filters are applied while evaluating a GROUPCROSSAPPLY or GROUPCROSSAPPLYTABLE function. |  |
 | ALWAYSAPPLY |  | table | M C T | Modifies how filters are applied while evaluating a GROUPCROSSAPPLY or GROUPCROSSAPPLYTABLE function. |  |
@@ -92,7 +92,7 @@
 | CUMIPMT | financial | scalar | M C T V | Returns the cumulative interest paid on a loan between start_period and end_period. |  |
 | CUMPRINC | financial | scalar | M C T V | Returns the cumulative principal paid on a loan between start_period and end_period. |  |
 | CURRENCY | math-and-trig | scalar | M C T V | Evaluates the argument and returns the result as currency data type. | ▶ |
-| CURRENTGROUP | table-manipulation | scalar | M C T V | Returns a set of rows from the table argument of a GROUPBY expression. | ⛔ |
+| CURRENTGROUP | table-manipulation | table | M C T V | Returns a set of rows from the table argument of a GROUPBY expression. | ⛔ |
 | CUSTOMDATA | information | scalar | M C T V | Returns the content of the CustomData property in the connection string. |  |
 | DATATABLE | table-manipulation | table | M C T V | Provides a mechanism for declaring an inline set of data values. |  |
 | DATE | date-and-time | scalar | M C T V | Returns the specified date in datetime format. |  |
@@ -143,7 +143,7 @@
 | FALSE | logical | scalar | M C T V | Returns the logical value `FALSE`. | ▶ |
 | FILTER | filter | table | M C T V | Returns a table that represents a subset of another table or expression. | ★ |
 | FILTERCLUSTER |  | table | M C T | Returns a correlated join table over a set of groups. |  |
-| FILTERS | table-manipulation | scalar | M C T V | Returns a table of values directly applied as filters to `columnName`. |  |
+| FILTERS | table-manipulation | table | M C T V | Returns a table of values directly applied as filters to `columnName`. |  |
 | FIND | text | scalar | M C T V | Returns the starting position of one text string within another text string. | ★▶ |
 | FIRST | filter | scalar | V | Used in visual calculations only. Retrieves a value in the visual matrix from the first row of an axis. |  |
 | FIRSTDATE | time-intelligence | table | M C T V | Returns the first date in the current context for the specified column of dates. | ⛔ |
@@ -169,7 +169,7 @@
 | IF.EAGER | logical | scalar | M C T V | Checks a condition, and returns one value when `TRUE`, otherwise it returns a second value. Uses an *eager* execution plan which always executes the branch expressions regardless of the condition expression. | ▶ |
 | IFERROR | logical | scalar | M C T V | Evaluates an expression and returns a specified value if the expression returns an error | ▶ |
 | IGNORE | table-manipulation | scalar | M C T | Modifies SUMMARIZECOLUMNS by omitting specific expressions from the BLANK/NULL evaluation. |  |
-| INDEX | filter | scalar | M C T V | Returns a row at an absolute position, specified by the position parameter, within the specified partition, sorted by the specified order or on the specified axis. |  |
+| INDEX | filter | table | M C T V | Returns a row at an absolute position, specified by the position parameter, within the specified partition, sorted by the specified order or on the specified axis. |  |
 | INFO.ALTERNATEOFDEFINITIONS | info | table | Q | Returns a table with information about each alternate of definition in the semantic model. This function provides metadata about alternate definitions for model objects. |  |
 | INFO.ANNOTATIONS | info | table | Q | Returns a table with information about each annotation in the semantic model. This information helps you understand the model. |  |
 | INFO.ATTRIBUTEHIERARCHIES | info | table | Q | Returns a table with information about each attribute hierarchy in the semantic model. This function provides metadata about the attribute hierarchies defined in the model. |  |
@@ -332,7 +332,7 @@
 | ODDFYIELD | financial | scalar | M C T V | Returns the yield of a security that has an odd (short or long) first period. |  |
 | ODDLPRICE | financial | scalar | M C T V | Returns the price per $100 face value of a security having an odd (short or long) last coupon period. |  |
 | ODDLYIELD | financial | scalar | M C T V | Returns the yield of a security that has an odd (short or long) last period. |  |
-| OFFSET | filter | scalar | M C T V | Returns a single row that is positioned either before or after the *current row* within the same table, by a given offset. |  |
+| OFFSET | filter | table | M C T V | Returns a single row that is positioned either before or after the *current row* within the same table, by a given offset. |  |
 | OPENINGBALANCEMONTH | time-intelligence | scalar | M C T V | Evaluates the expression at the first date of the month in the current context. | ⛔ |
 | OPENINGBALANCEQUARTER | time-intelligence | scalar | M C T V | Evaluates the expression at the first date of the quarter, in the current context. | ⛔ |
 | OPENINGBALANCEWEEK | time-intelligence | scalar | M C T V | Evaluates the expression at the first date of the week in the current context. | ⛔ |
@@ -374,7 +374,7 @@
 | RADIANS | math-and-trig | scalar | M C T V | Converts degrees to radians. | ▶ |
 | RAND | math-and-trig | scalar | M C T V | Returns a random number greater than or equal to 0 and less than 1, evenly distributed. | ▶ |
 | RANDBETWEEN | math-and-trig | scalar | M C T V | Returns a random number in the range between two numbers you specify. | ▶ |
-| RANGE | filter | scalar | V | Returns an interval of rows within the given axis, relative to the current row. A shortcut for WINDOW. |  |
+| RANGE | filter | table | V | Returns an interval of rows within the given axis, relative to the current row. A shortcut for WINDOW. |  |
 | RANK | filter | scalar | M C T V | Returns the ranking of a row within the given interval. |  |
 | RANK.EQ | statistical | scalar | M C T V | Returns the ranking of a number in a list of numbers. |  |
 | RANKX | statistical | scalar | M C T V | Returns the ranking of a number in a list of numbers for each row in the `table` argument. | ★ |
@@ -477,7 +477,7 @@
 | VDB | financial | scalar | M C T V | Returns the depreciation of an asset for any period you specify, including partial periods, using the double-declining balance method or some other method you specify. |  |
 | WEEKDAY | date-and-time | scalar | M C T V | Returns a number from 1 to 7 identifying the day of the week of a date. |  |
 | WEEKNUM | date-and-time | scalar | M C T V | Returns the week number for the given date and year according to the return_type value. |  |
-| WINDOW | filter | scalar | M C T V | Returns multiple rows which are positioned within the given interval. | ★ |
+| WINDOW | filter | table | M C T V | Returns multiple rows which are positioned within the given interval. | ★ |
 | XIRR | financial | scalar | M C T V | Returns the internal rate of return for a schedule of cash flows that is not necessarily periodic. |  |
 | XNPV | financial | scalar | M C T V | Returns the present value for a schedule of cash flows that is not necessarily periodic. |  |
 | YEAR | date-and-time | scalar | M C T V | Returns the year of a date as a four digit integer in the range 1900-9999. |  |
