@@ -218,7 +218,7 @@ The skills arrive as `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`,
 `dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring` and
 `dax-for-agents:dax-window-functions`. Until 0.6.0 the plugin was called `dax` and the prefix was
 `dax:`; an install made under the old name has to be removed and reinstalled under the new one.
-Around 576 tokens of descriptions are
+Around 589 tokens of descriptions are
 always on; everything else is read only when a question needs it. That figure is measured, not
 estimated, and re-measuring it is one command — worth running whenever a skill is added or its
 description is rewritten, because the number moves and nothing here checks it:
