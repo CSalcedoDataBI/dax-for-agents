@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.7.0...v0.8.0) (2026-10-02)
+
+
+### Features
+
+* **plugin:** directory listing icon ([4579f05](https://github.com/CSalcedoDataBI/dax-for-agents/commit/4579f05fb86d6bb97d0eeeb2a6f30eef396356e0)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+
 ## [0.7.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.6.0...v0.7.0) (2026-10-02)
 
 
