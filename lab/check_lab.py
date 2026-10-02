@@ -116,6 +116,26 @@ CHECKS = {
                 "AVERAGEX_con_mas_cero": 120,
             },
         ),
+        # Seccion 3 del README: el modo del parametro de una UDF decide la respuesta. VAL llega
+        # ya evaluado (100) y el ALL de dentro no lo toca; EXPR se evalua tras el ALL (200).
+        (
+            "una medida pasada como VAL no la cambia el CALCULATE de la UDF; como EXPR si",
+            """
+            DEFINE
+                FUNCTION Media.Val  = ( m ) => CALCULATE ( m, ALL ( Tiendas ) )
+                FUNCTION Media.Expr = ( m : EXPR ) => CALCULATE ( m, ALL ( Tiendas ) )
+            EVALUATE
+            CALCULATETABLE (
+                ROW (
+                    "Media",      [Media],
+                    "Media_VAL",  Media.Val ( [Media] ),
+                    "Media_EXPR", Media.Expr ( [Media] )
+                ),
+                Tiendas[TiendaKey] = 1
+            )
+            """,
+            {"Media": 100, "Media_VAL": 100, "Media_EXPR": 200},
+        ),
         # Lo de arriba comprueba el DAX; esto comprueba las MEDIDAS, que es lo que la
         # pagina dibuja. No es la misma afirmacion: una medida puede estar escrita de otra
         # forma, o renombrada, y el informe seguiria ensenando un numero que nadie mide.

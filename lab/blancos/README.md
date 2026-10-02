@@ -91,6 +91,45 @@ What is wrong is that the difference is hidden inside a `+ 0`.
 > ([screenshot](../screenshots/blancos-mas-cero.webp)). Open it with the `.pbip` and look, because
 > that is where you see what the query result does not show.
 
+## 3. The same measure, passed to a UDF as VAL or as EXPR
+
+Not a blank trap, but this model makes it visible at a glance: one function, two parameter
+modes, and a `CALCULATE` inside that tries to remove the store filter.
+
+```dax
+DEFINE
+    FUNCTION Media.Val  = ( m ) => CALCULATE ( m, ALL ( Tiendas ) )
+    FUNCTION Media.Expr = ( m : EXPR ) => CALCULATE ( m, ALL ( Tiendas ) )
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "Media",      [Media],
+        "Media_VAL",  Media.Val ( [Media] ),
+        "Media_EXPR", Media.Expr ( [Media] )
+    ),
+    Tiendas[TiendaKey] = 1
+)
+```
+
+| expression | result |
+|---|---|
+| `[Media]` with store 1 selected | **100** |
+| `Media.Val([Media])` | **100** |
+| `Media.Expr([Media])` | **200** |
+
+**A VAL parameter is evaluated before the function runs**, in the caller's context, so it
+arrives as the number 100 and the `ALL ( Tiendas )` inside has nothing left to change. **An
+EXPR parameter is evaluated inside**, after `ALL` removed the store filter, so it is the
+average of the whole table: 200. The parameter mode, not the body, decided the answer.
+
+Pass a literal instead of a measure and the difference disappears: `CALCULATE ( COUNTROWS (
+Tiendas ), Tiendas[TiendaKey] = k )` returns 1 for `k = 1` in both modes, because a constant
+has no context to re-evaluate. That is why the difference only shows with a measure or an
+expression that depends on the filter context.
+
+The functions live in the query (`DEFINE FUNCTION`), not in the model, so this runs on the
+model as it is — no compatibility-level change, nothing to save.
+
 ## Where the data comes from
 
 Those five rows are a **1 KB** Parquet file published in
@@ -121,4 +160,5 @@ by one.
 python lab/check_lab.py blancos localhost:<port>
 ```
 
-Measured on 2026-08-12 with the two queries above, exactly as written.
+Measured on 2026-08-12 with the first two queries above, exactly as written; the third on
+2026-10-02.

@@ -61,11 +61,16 @@ Scalar subtypes: `Int64`, `Decimal`, `Double`, `String`, `DateTime`, `Boolean`, 
 - **EXPR (lazy):** arg evaluated **inside** the function. Inherits **only filter** context. **Required** for all Ref types. Needed when `CALCULATE` must modify the arg's context.
 
 ```dax
--- ❌ doc_type as VAL → CALCULATE can't change its context
-FUNCTION Bad = ( doc_type ) => CALCULATE ( SUMX(...), 'T'[DocType] = doc_type )
--- ✅ ANYREF implies EXPR → CALCULATE works
-FUNCTION Good = ( doc_type : ANYREF ) => CALCULATE ( SUMX(...), 'T'[DocType] = doc_type )
+-- A measure passed in: the mode decides whether CALCULATE can re-context it
+FUNCTION Media.Val  = ( m ) => CALCULATE ( m, ALL ( Tiendas ) )         -- VAL (default)
+FUNCTION Media.Expr = ( m : EXPR ) => CALCULATE ( m, ALL ( Tiendas ) )  -- EXPR
+-- With store 1 selected, [Media] = 100:
+--   Media.Val ( [Media] )  = 100   evaluated before the call; ALL has nothing to change
+--   Media.Expr ( [Media] ) = 200   evaluated inside, after ALL removed the store filter
 ```
+A **literal** argument behaves the same in both modes (a constant has no context to
+re-evaluate), so test a mode with a measure, not with a value. Measured on the lab's Blancos
+model — `lab/blancos/README.md` §3, re-run by `lab/check_lab.py blancos`.
 
 ## Utility functions
 
