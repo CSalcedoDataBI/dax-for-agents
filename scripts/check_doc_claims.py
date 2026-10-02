@@ -54,6 +54,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Prose only. generated/ states its own counts and is rewritten by the sync every time,
 # so a number there cannot drift from the tree it was produced with.
 DOCS = ["README.md",
+        "PRIVACY.md",
         "INDEX.md",
         "CONTRIBUTING.md",
         os.path.join("skills", "dax-reference", "SKILL.md"),
