@@ -109,6 +109,11 @@ jobs:
       - name: README assets match the tree
         run: python scripts/render_readme_assets.py --check
 
+      # La pagina Thank You!! vive una vez, en lab/thank-you/, y se copia a cada informe.
+      # Cambiar un enlace alli sin regenerar dejaria cuatro copias diciendo otra cosa.
+      - name: Lab reports open on the Thank You page
+        run: python lab/add_thank_you.py --check
+
       - name: Unit tests (sync pipeline)
         run: python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts -v
 

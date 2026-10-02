@@ -294,6 +294,7 @@ python scripts/check_dead_media.py       # no card points an image at the dead u
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
 python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
 python scripts/render_readme_assets.py --check   # the two images above against the tree
+python lab/add_thank_you.py --check      # every lab report opens on the same Thank You page
 python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts
 python -m unittest discover -s scripts -t scripts
 python -m unittest discover -s evals -t evals

@@ -1,9 +1,10 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.0.0/schema.json",
   "pageOrder": [
+    "thankyou",
     "de-que-lado",
     "donde-caen",
     "limpiar-pierde"
   ],
-  "activePageName": "donde-caen"
+  "activePageName": "thankyou"
 }
