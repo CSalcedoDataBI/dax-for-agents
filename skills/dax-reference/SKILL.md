@@ -83,8 +83,31 @@ what already exists before building anything.** Every scenario in
 Tell the user to unzip, open the `.pbip` and press **Refresh** — a PBIP opens without data, and
 the first refresh asks for the web source's privacy level (**Anonymous/Public** is enough).
 
-If none of the four covers the function, say so in one line, point to `notes/<function>.md` if
-it exists, and only then offer to build a new project.
+**If none of the four covers it, inject — do not build a project.** Write the measures (read
+their cards first, like any other DAX), put them in a spec, and let
+[`scripts/inject_example.py`](./scripts/inject_example.py) add them to the Contoso master with
+one page that shows them. It takes `lab/contoso` when the repo is on disk and downloads
+`lab-contoso.zip` otherwise, refuses unknown columns, unknown measures and name clashes before
+writing, and hands back a zip to give the user:
+
+```bash
+python scripts/inject_example.py spec.json --out <dir>
+```
+
+```json
+{"title": "CALCULATE vs KEEPFILTERS",
+ "note": "One paragraph: what to look at, and why the two columns differ.",
+ "rows": "DimProduct[Color]",
+ "measures": [{"name": "Red (KEEPFILTERS)",
+               "expression": "CALCULATE([Total Sales], KEEPFILTERS(DimProduct[Color] = \"Red\"))",
+               "formatString": "\$#,0", "description": "Intersects with the Color filter."}]}
+```
+
+Build the page around a **contrast** — the right form next to the wrong one or the
+alternative — and pick `rows` so the difference shows up row by row. Use only tables and
+columns that exist in Contoso; the script lists what it rejects. And say what was not checked:
+**nothing evaluated the measures** — the lab pages carry measured numbers, an injected page
+does not until the user refreshes it.
 
 ## Layout
 

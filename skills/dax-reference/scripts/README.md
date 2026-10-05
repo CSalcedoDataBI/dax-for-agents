@@ -59,3 +59,11 @@ names the commit it came from. So its body classifies the diff before anyone rea
 the functions that actually changed, and the count that only moved their stamp. The first
 real run was 516 files and **zero** substantive changes, which is one sentence to read
 instead of a wall.
+
+## `inject_example.py` — an example to open, without building a project
+
+Not part of the sync. When a user asks for a `.pbip` example of something no lab page covers,
+this adds the agent's measures and one page to the `lab/contoso` master and zips it. How and
+when to use it is in the [`SKILL.md`](../SKILL.md#when-someone-asks-for-an-example-to-open);
+`test_inject_example.py` checks the shape, offline. The numbers were checked once, by opening
+the CALCULATE-vs-KEEPFILTERS result in Power BI Desktop on 2026-10-05.
