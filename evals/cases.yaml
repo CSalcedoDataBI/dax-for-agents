@@ -26,6 +26,14 @@ cases:
   - prompt: "what does BLANK mean in DAX and how do the comparison operators treat it?"
     expect: dax-reference
 
+  # Writing DAX as one step of a bigger build. No skill fired when a PBIP demo was
+  # requested on claude.ai, because every description answered questions about DAX
+  # and none the act of writing it (docs/decisions/2026-10-05-no-pbip-builder-skill.md).
+  - prompt: "build me a small PBIP that teaches CALCULATE and KEEPFILTERS, with the measures in TMDL"
+    expect: dax-reference
+  - prompt: "write the DAX measures for this semantic model: total sales, % of total and sales last year"
+    expect: dax-reference
+
   # --- dax-lib ---
   - prompt: "is there an existing DAX library function for moving averages before I write one from scratch?"
     expect: dax-lib
