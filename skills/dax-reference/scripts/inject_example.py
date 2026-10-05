@@ -310,21 +310,24 @@ def main():
     if not spec.get("title") or not spec.get("measures"):
         fail("spec needs a title and at least one measure")
 
-    work = tempfile.mkdtemp(prefix="dax-example-")
     check_fields(spec)
-    master = fetch_master(a.master, work)
-    check(spec, read_model(os.path.join(master, MODEL)))
-    inject_measures(os.path.join(master, MODEL), spec)
-    page = add_page(os.path.join(master, REPORT), spec)
+    # fail() exits through SystemExit, so only a finally removes the work folder on a refusal.
+    work = tempfile.mkdtemp(prefix="dax-example-")
+    try:
+        master = fetch_master(a.master, work)
+        check(spec, read_model(os.path.join(master, MODEL)))
+        inject_measures(os.path.join(master, MODEL), spec)
+        page = add_page(os.path.join(master, REPORT), spec)
 
-    os.makedirs(a.out, exist_ok=True)
-    zip_path = os.path.join(a.out, f"dax-example-{slug(spec['title'])}.zip")
-    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-        for root, _, files in os.walk(master):
-            for fn in files:
-                full = os.path.join(root, fn)
-                z.write(full, os.path.relpath(full, work).replace(os.sep, "/"))
-    shutil.rmtree(work, ignore_errors=True)
+        os.makedirs(a.out, exist_ok=True)
+        zip_path = os.path.join(a.out, f"dax-example-{slug(spec['title'])}.zip")
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+            for root, _, files in os.walk(master):
+                for fn in files:
+                    full = os.path.join(root, fn)
+                    z.write(full, os.path.relpath(full, work).replace(os.sep, "/"))
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
 
     print(f"OK: {len(spec['measures'])} measure(s) in _Measures > {FOLDER}, page '{page}' "
           f"opens first.\n    {zip_path}")
