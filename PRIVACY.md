@@ -17,6 +17,7 @@ server of its own, so nothing you do with it reaches the maintainer.
 |---|---|---|
 | Any skill is used | Claude reads Markdown and JSON from the installed plugin folder | Nowhere: local reads only |
 | `dax-lib-install` installs a package you picked | Claude runs `gh api` with **your own** GitHub CLI login to download that package's `functions.tmdl`, then installs it in the model you are working on, after asking you | `api.github.com`, repository `daxlib/daxlib`, read-only. The request names the package; it carries no data from your model |
+| You ask for an example `.pbip` that no lab page covers | Claude runs `inject_example.py`, which may download `lab-contoso.zip` from this repository's latest release, adds the measures it wrote and hands you a zip | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries no data from you or your model |
 | You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
 
 Your semantic models, queries and conversations stay between you, Claude and the tools you

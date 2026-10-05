@@ -59,17 +59,35 @@ def fail(msg):
 
 # --- master -------------------------------------------------------------------------------
 
+MAX_ZIP = 20 * 1024 * 1024
+
+
+def safe_extract(z, workdir):
+    root = os.path.realpath(workdir)
+    for member in z.namelist():
+        target = os.path.realpath(os.path.join(root, member))
+        if os.path.isabs(member) or not target.startswith(root + os.sep):
+            fail(f"zip entry escapes the work folder: {member}")
+    z.extractall(root)
+
+
 def fetch_master(source, workdir):
     """Copy the master into workdir/contoso and return that path."""
     dest = os.path.join(workdir, "contoso")
     if source is None:
         source = LOCAL_MASTER if os.path.isdir(LOCAL_MASTER) else RELEASE_ZIP
-    if source.startswith("http"):
+    if "://" in source:
+        # Only the official asset. A URL taken from anywhere else would let whoever wrote it
+        # pick the model the user opens and refreshes -- and a refresh runs Power Query.
+        if source != RELEASE_ZIP:
+            fail(f"--master URL must be {RELEASE_ZIP}")
         with urllib.request.urlopen(source, timeout=60) as r:
-            data = r.read()
-        zipfile.ZipFile(io.BytesIO(data)).extractall(workdir)
+            data = r.read(MAX_ZIP + 1)
+        if len(data) > MAX_ZIP:
+            fail("the master zip is larger than expected")
+        safe_extract(zipfile.ZipFile(io.BytesIO(data)), workdir)
     elif source.endswith(".zip"):
-        zipfile.ZipFile(source).extractall(workdir)
+        safe_extract(zipfile.ZipFile(source), workdir)
     else:
         shutil.copytree(source, dest, ignore=shutil.ignore_patterns(".pbi", "cache.abf"))
     if not os.path.isfile(os.path.join(dest, "Contoso.pbip")):
@@ -118,6 +136,43 @@ def strip_strings(expr):
     return re.sub(r'"(?:[^"]|"")*"', '""', expr)
 
 
+# A line break inside a value that lands on one TMDL line ends the property and starts whatever
+# follows -- say, a partition whose Power Query source runs on the user's refresh. The spec is
+# written by an agent that may have read untrusted text, so these are refused, not escaped.
+LINE_BREAKS = "\r\n\v\f\x1c\x1d\x1e\x85  "
+
+
+def has_control(text, allowed=""):
+    return any((ord(c) < 32 or ord(c) == 127 or c in LINE_BREAKS) and c not in allowed
+               for c in text)
+
+
+def normalize_expression(expr):
+    """Every kind of line break becomes \\n, so every line gets the expression's indent."""
+    expr = expr.replace("\r\n", "\n")
+    for c in LINE_BREAKS:
+        expr = expr.replace(c, "\n")
+    return expr.strip()
+
+
+def check_fields(spec):
+    problems = []
+    for m in spec["measures"]:
+        label = repr(m.get("name"))
+        if not str(m.get("name") or "").strip() or not str(m.get("expression") or "").strip():
+            problems.append(f"{label}: every measure needs a name and an expression")
+            continue
+        for field in ("name", "formatString"):
+            if has_control(str(m.get(field) or "")):
+                problems.append(f"{label}: {field} contains a line break or control character")
+        if has_control(normalize_expression(m["expression"]), allowed="\n\t"):
+            problems.append(f"{label}: expression contains a control character")
+    if has_control(str(spec.get("rows", ""))):
+        problems.append("rows contains a line break or control character")
+    if problems:
+        fail("\n  " + "\n  ".join(problems))
+
+
 def check(spec, tables):
     all_measures = {m for t in tables.values() for m in t["measures"]}
     all_columns = {c for t in tables.values() for c in t["columns"]}
@@ -154,7 +209,7 @@ def tmdl_measure(m):
     lines = []
     for d in (m.get("description") or "").splitlines():
         lines.append(f"\t/// {d}".rstrip())
-    expr = m["expression"].strip().replace("\r\n", "\n")
+    expr = normalize_expression(m["expression"])
     if "\n" in expr:
         lines.append(f"\tmeasure {quote(m['name'])} =")
         lines += ["\t\t\t" + ln if ln.strip() else "" for ln in expr.split("\n")]
@@ -256,6 +311,7 @@ def main():
         fail("spec needs a title and at least one measure")
 
     work = tempfile.mkdtemp(prefix="dax-example-")
+    check_fields(spec)
     master = fetch_master(a.master, work)
     check(spec, read_model(os.path.join(master, MODEL)))
     inject_measures(os.path.join(master, MODEL), spec)

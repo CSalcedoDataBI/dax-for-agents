@@ -262,6 +262,7 @@ on its own.
 |---|---|---|
 | Any skill is used | Claude reads Markdown and JSON from the installed plugin folder | Nowhere: local reads only |
 | `dax-lib-install` installs a package you picked | Claude runs `gh api` to read that package's `functions.tmdl`, with **your own** GitHub CLI login, checks its declared licence, installs it in the model you are working on (through a modeling MCP if one is connected, otherwise as a TMDL edit) and runs one DAX query to confirm it executes | `api.github.com`, repository `daxlib/daxlib`, read-only |
+| You ask for an example `.pbip` that no lab page covers | Claude runs `skills/dax-reference/scripts/inject_example.py`: it takes the Contoso lab model (the local copy, or downloads `lab-contoso.zip` from this repository's latest release when there is none), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
 | You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
 
 The maintainer scripts in this repository are **not** run by the plugin. Each runs only when

