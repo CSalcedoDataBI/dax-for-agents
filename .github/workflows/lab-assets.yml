@@ -1,0 +1,55 @@
+name: lab-assets
+
+# Publica cada escenario de lab/ como un .zip en el release, para que una skill pueda
+# contestar "aqui esta el ejemplo" con un enlace que se descarga y se abre:
+#
+#   https://github.com/CSalcedoDataBI/dax-for-agents/releases/latest/download/lab-contoso.zip
+#
+# GitHub no deja descargar una subcarpeta del repo; un asset de release, si, y con una URL
+# `latest/download` que no cambia entre versiones.
+#
+# Solo workflow_dispatch. Un release creado con GITHUB_TOKEN no dispara `release:`, asi que
+# release-please.yml lo llama por nombre cuando crea uno -- el mismo truco que ya usa para
+# las compuertas. A mano sirve para rellenar un release existente.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to attach the lab zips to (e.g. v0.7.0)"
+        required: true
+
+permissions:
+  contents: write
+
+# R2, excepcion de release: no cancelar una subida a medias.
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    # R3 — cuatro git archive y una subida de ~1 MB.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
+
+      # git archive empaqueta solo lo versionado: el .pbi/ de cache que Desktop deja junto
+      # a cada .pbip no entra aunque exista. El prefijo hace que el zip se abra en una
+      # carpeta con el nombre del escenario, no derramado en Descargas.
+      - name: Zip each scenario
+        run: |
+          for dir in lab/*/; do
+            name=$(basename "$dir")
+            ls "$dir"*.pbip >/dev/null 2>&1 || continue
+            git archive --format=zip --prefix="$name/" -o "lab-$name.zip" "HEAD:lab/$name"
+            echo "lab-$name.zip: $(unzip -l "lab-$name.zip" | tail -1)"
+          done
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: gh release upload "$TAG" lab-*.zip --clobber
