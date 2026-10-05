@@ -1,6 +1,6 @@
 ---
 name: dax-reference
-description: Use when you need what a built-in DAX function does — signature, return type, where it is legal (measure, calculated column or table, visual calculation), whether it is discouraged or deprecated, or which of several similar functions to pick — or a DAX language concept — evaluation, filter and row context, context transition, EVALUATE/DEFINE query syntax, operators, data types, BLANK, VAR, Microsoft best practices. Also use when writing or reviewing a measure, calculated column or calculated table, including as one step of building a PBIP, TMDL file or report. Triggers on "what does X do in DAX", "DAX function signature", "which DAX function", "difference between two DAX functions", "is X deprecated", "can I use X in a calculated column", "context transition", "EVALUATE syntax", "BLANK in DAX", "write the measures for this model", "an example PBIP I can open".
+description: Use when you need what a built-in DAX function does — signature, where it is legal (measure, calculated column or table, visual calculation), whether it is deprecated, which of similar functions to pick — or a DAX concept — evaluation, filter and row context, context transition, EVALUATE/DEFINE, BLANK, operators. Also when writing DAX measures, including inside a PBIP or TMDL build, or when asked for an example PBIP to open. Triggers on "what does X do in DAX", "which DAX function", "difference between DAX functions", "is X deprecated", "context transition", "write the measures", "example PBIP".
 ---
 
 # DAX Reference
