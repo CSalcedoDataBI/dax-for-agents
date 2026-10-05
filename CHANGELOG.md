@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.0...v0.8.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* **dax-reference:** refuse spec fields that could inject TMDL into the example ([402478b](https://github.com/CSalcedoDataBI/dax-for-agents/commit/402478b5f31aba2cf92f5b7887be73a3ef187b56))
+* **dax-reference:** trim the always-on description from 872 to 602 chars ([5ad610c](https://github.com/CSalcedoDataBI/dax-for-agents/commit/5ad610c8b26b77eab85822e2952ee5d854253688))
+
 ## [0.8.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.7.0...v0.8.0) (2026-10-05)
 
 
