@@ -1,6 +1,6 @@
 ---
 name: dax-reference
-description: Use when you need what a built-in DAX function does — signature, return type, where it is legal (measure, calculated column or table, visual calculation), whether it is discouraged or deprecated, or which of several similar functions to pick — or a DAX language concept — evaluation, filter and row context, context transition, EVALUATE/DEFINE query syntax, operators, data types, BLANK, VAR, Microsoft best practices. Also use when writing or reviewing a measure, calculated column or calculated table, including as one step of building a PBIP, TMDL file or report. Triggers on "what does X do in DAX", "DAX function signature", "which DAX function", "difference between two DAX functions", "is X deprecated", "can I use X in a calculated column", "context transition", "EVALUATE syntax", "BLANK in DAX", "write the measures for this model".
+description: Use when you need what a built-in DAX function does — signature, return type, where it is legal (measure, calculated column or table, visual calculation), whether it is discouraged or deprecated, or which of several similar functions to pick — or a DAX language concept — evaluation, filter and row context, context transition, EVALUATE/DEFINE query syntax, operators, data types, BLANK, VAR, Microsoft best practices. Also use when writing or reviewing a measure, calculated column or calculated table, including as one step of building a PBIP, TMDL file or report. Triggers on "what does X do in DAX", "DAX function signature", "which DAX function", "difference between two DAX functions", "is X deprecated", "can I use X in a calculated column", "context transition", "EVALUATE syntax", "BLANK in DAX", "write the measures for this model", "an example PBIP I can open".
 ---
 
 # DAX Reference
@@ -65,6 +65,26 @@ In `catalog.md` the `Aplica` column abbreviates it: `M` measure, `C` calculated 
 `returns` (the catalogue's `Ret`) is `scalar` or `table`, or `modifier` for the functions
 that are neither — `REMOVEFILTERS` and `ALLCROSSFILTERED` only clear filters as a `CALCULATE`
 argument and return nothing usable, so never assign them to a `VAR` or iterate them.
+
+## When someone asks for an example to open
+
+"Show me X in a PBIP", "give me an example file", "a demo I can open in Power BI": **hand over
+what already exists before building anything.** Every scenario in
+[`lab/`](../../lab/README.md) is published on each release as a zip that downloads and opens
+— answer with the link, the page to look at and, if there is one, the query from the note.
+
+| download | open this when the question is about |
+|---|---|
+| [`lab-contoso.zip`](https://github.com/CSalcedoDataBI/dax-for-agents/releases/latest/download/lab-contoso.zip) | the model **every field note** was measured on — run the note's query in the DAX query view. Pages for `ALLSELECTED` with a slicer, a blank erasing a bar, `FORMAT` sorting wrong, `RANKX` returning 1 in a matrix, `SELECTEDVALUE` on a card, the `SUMX` total, and `WINDOW` / `MOVINGAVERAGE` |
+| [`lab-rendimiento.zip`](https://github.com/CSalcedoDataBI/dax-for-agents/releases/latest/download/lab-rendimiento.zip) | `CALCULATE` with a column predicate vs `FILTER` over the table, and what actually costs (context transition) — 2 M rows, pairs of measures that return the same number |
+| [`lab-blancos.zip`](https://github.com/CSalcedoDataBI/dax-for-agents/releases/latest/download/lab-blancos.zip) | blanks in a numeric column: who counts in `AVERAGE` / `AVERAGEX` / `COUNT`, and the `+ 0` that moves the denominator |
+| [`lab-claves-huerfanas.zip`](https://github.com/CSalcedoDataBI/dax-for-agents/releases/latest/download/lab-claves-huerfanas.zip) | the blank row a relationship adds for orphan keys, and why removing it loses units |
+
+Tell the user to unzip, open the `.pbip` and press **Refresh** — a PBIP opens without data, and
+the first refresh asks for the web source's privacy level (**Anonymous/Public** is enough).
+
+If none of the four covers the function, say so in one line, point to `notes/<function>.md` if
+it exists, and only then offer to build a new project.
 
 ## Layout
 

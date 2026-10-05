@@ -33,6 +33,8 @@ cases:
     expect: dax-reference
   - prompt: "write the DAX measures for this semantic model: total sales, % of total and sales last year"
     expect: dax-reference
+  - prompt: "give me an example PBIP file I can download and open to see how ALLSELECTED behaves"
+    expect: dax-reference
 
   # --- dax-lib ---
   - prompt: "is there an existing DAX library function for moving averages before I write one from scratch?"
