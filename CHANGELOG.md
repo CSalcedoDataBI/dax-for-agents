@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.8.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.7.0...v0.8.0) (2026-10-05)
+
+
+### Features
+
+* **dax-reference:** answer "show me an example" with the lab download link ([314cbce](https://github.com/CSalcedoDataBI/dax-for-agents/commit/314cbce6e7f98e3dbe589c4d93f92a430381a062))
+* **dax-reference:** inject an example into the Contoso master when no lab page covers it ([c69380f](https://github.com/CSalcedoDataBI/dax-for-agents/commit/c69380fca0563081bdfc4771db46c943173d6a1e))
+* **plugin:** directory listing icon ([4579f05](https://github.com/CSalcedoDataBI/dax-for-agents/commit/4579f05fb86d6bb97d0eeeb2a6f30eef396356e0)), closes [#21](https://github.com/CSalcedoDataBI/dax-for-agents/issues/21)
+
+
+### Bug Fixes
+
+* **dax-reference:** fire when DAX is written inside a larger build ([f3d26fe](https://github.com/CSalcedoDataBI/dax-for-agents/commit/f3d26febc5875b4c6410dbf6ee4bcebb71d2ce79))
+
 ## [0.7.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.6.0...v0.7.0) (2026-10-02)
 
 
