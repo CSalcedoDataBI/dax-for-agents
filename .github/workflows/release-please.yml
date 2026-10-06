@@ -63,3 +63,14 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TAG: ${{ steps.release.outputs.tag_name }}
         run: gh workflow run lab-assets.yml -f tag="$TAG"
+
+      # El directorio de plugins de claude.ai sigue la rama `stable`, no `main`: revisa cada
+      # commit que llega a la rama que sigue, y con `main` cada push reemplazaba la version en
+      # revision. `stable` avanza aqui y solo aqui, al commit de la release. Fast-forward sin
+      # force: si alguna vez no lo es, falla en vez de reescribir lo que el revisor ya leyo.
+      - name: Move stable to the new release
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ steps.release.outputs.sha }}
+        run: gh api -X PATCH "repos/${{ github.repository }}/git/refs/heads/stable" -f sha="$SHA" -F force=false

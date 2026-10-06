@@ -197,3 +197,17 @@ Content derived from `query-docs` is CC BY 4.0 and confined to the generated fol
 
 Conventional Commits, in English. `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`.
 Release notes and versioning are handled by release-please — do not edit `CHANGELOG.md` by hand.
+
+## Releases and the plugin directory
+
+The claude.ai plugin directory tracks the **`stable`** branch, not `main`. It scans every
+commit that lands on the branch it tracks and puts each one in review, replacing the one before
+— on 2026-10-05, seven pushes to `main` meant seven holds and a reviewer never given a still
+target. `stable` moves only when release-please publishes a release (the last step of
+`release-please.yml`), so `main` can take commits every day.
+
+- **Batch the work.** A release is a review cycle measured in days, not a deploy.
+- **Test before merging the release PR**, in Claude Code against the local plugin — what is
+  on claude.ai is only ever what the reviewer approved.
+- **Do not merge a release PR while a version is in review**, unless it carries a security fix.
+- Never push to `stable` by hand, and never force it.
