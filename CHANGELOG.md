@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.1...v0.8.2) (2026-10-06)
+
+
+### Bug Fixes
+
+* **dax-reference:** remove the injector's work folder when a spec is refused ([455c663](https://github.com/CSalcedoDataBI/dax-for-agents/commit/455c66355ec63603b7406190809b23cb3a4c423b))
+
 ## [0.8.1](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.0...v0.8.1) (2026-10-05)
 
 
