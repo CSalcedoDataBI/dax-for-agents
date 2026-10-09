@@ -4,14 +4,14 @@
 
 **Goal:** Add a fifth skill, `dax-lib-install`, that fetches a third-party DAX UDF `dax-lib` already found in the daxlib.org index, checks its license, installs it against a real model, proves it runs, and leaves it attributed — replacing `dax-lib`'s current "point at the install route, do a human copies it" step 4.
 
-**Architecture:** One new skill folder (`dax-lib-install/SKILL.md`), a small hand-off edit to `dax-lib/SKILL.md`, registration in `.claude-plugin/plugin.json` and `INDEX.md` (the two places that make a skill folder actually load and actually discoverable — both are gate-enforced, not optional), and reconciling every doc that currently states "4 skills" now that there are 5.
+**Architecture:** One new skill folder (`dax-lib-install/SKILL.md`), a small hand-off edit to `dax-lib/SKILL.md`, registration in `plugins/dax-for-agents/.claude-plugin/plugin.json` and `INDEX.md` (the two places that make a skill folder actually load and actually discoverable — both are gate-enforced, not optional), and reconciling every doc that currently states "4 skills" now that there are 5.
 
 **Tech Stack:** Markdown (skill prose), JSON (`plugin.json`), TMDL (the attribution format the installed function carries), `gh api` (fetching real package code from `daxlib/daxlib`), the `powerbi-modeling-mcp` `function_operations` tool (live install), Python (the repo's existing gate scripts — no new code is written for this task).
 
 ## Global Constraints
 
 - Every new/edited skill frontmatter needs `name` == folder name, kebab-case, and `description` starting with `"Use when"` — enforced by `scripts/validate_skills.py`.
-- Every skill folder must be listed in `.claude-plugin/plugin.json`'s `skills` array as `"./<folder>"` — enforced by `scripts/check_plugin_manifest.py`. A folder present on disk but missing from this list ships invisible with no error from Claude Code itself.
+- Every skill folder must be listed in `plugins/dax-for-agents/.claude-plugin/plugin.json`'s `skills` array as `"./<folder>"` — enforced by `scripts/check_plugin_manifest.py`. A folder present on disk but missing from this list ships invisible with no error from Claude Code itself.
 - Every skill folder's name must appear as plain text somewhere in `INDEX.md` — enforced by `scripts/validate_skills.py`.
 - Any prose sentence with a number immediately next to `skills?\b` (or its Spanish word forms, e.g. `cuatro`/`cinco`) is checked against the real skill count by `scripts/check_doc_claims.py`. A **historical** sentence describing a past, dated observation must be reworded to avoid the adjacency pattern rather than have its number changed — changing it would misstate what was actually true then.
 - Attribution for an installed third-party function lives on the function itself (TMDL `///` doc comment + `annotation` key/values), never in a separate notices file — per the approved spec.
@@ -195,11 +195,11 @@ So the table reads, in order: `dax-reference`, `dax-lib`, `dax-lib-install`, `da
 
 Change:
 ```markdown
-6. **Las cuatro skills van listadas por ruta en `.claude-plugin/plugin.json`.** Al estar
+6. **Las cuatro skills van listadas por ruta en `plugins/dax-for-agents/.claude-plugin/plugin.json`.** Al estar
 ```
 to:
 ```markdown
-6. **Las cinco skills van listadas por ruta en `.claude-plugin/plugin.json`.** Al estar
+6. **Las cinco skills van listadas por ruta en `plugins/dax-for-agents/.claude-plugin/plugin.json`.** Al estar
 ```
 
 - [ ] **Step 6: Run the structural validator — expect it to still fail (plugin.json not updated yet)**
@@ -219,7 +219,7 @@ git commit -m "feat(dax-lib-install): add the skill and index it"
 ### Task 2: Register the skill in the plugin manifest
 
 **Files:**
-- Modify: `.claude-plugin/plugin.json`
+- Modify: `plugins/dax-for-agents/.claude-plugin/plugin.json`
 
 **Interfaces:**
 - Consumes: the folder `dax-lib-install/` created in Task 1 (checked by path, not by any function signature).
@@ -227,7 +227,7 @@ git commit -m "feat(dax-lib-install): add the skill and index it"
 
 - [ ] **Step 1: Add the skill to the manifest**
 
-In `.claude-plugin/plugin.json`, change:
+In `plugins/dax-for-agents/.claude-plugin/plugin.json`, change:
 ```json
   "skills": [
     "./dax-reference",
@@ -260,7 +260,7 @@ Expected: exits 0, no error mentioning `dax-lib-install`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add .claude-plugin/plugin.json
+git add plugins/dax-for-agents/.claude-plugin/plugin.json
 git commit -m "feat(dax-lib-install): register in plugin.json"
 ```
 

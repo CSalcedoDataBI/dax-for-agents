@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Fail if the plugin manifest and the skills on disk disagree.
 
-The skills sit under `skills/`, which is also where the default scan looks, so a wrong
-list is no longer the difference between five skills and none. It is still worth
-checking: `.claude-plugin/plugin.json` names each one by path, and a skill missing from
+The plugin lives in `plugins/dax-for-agents/`, so that the directory ships that folder and
+not the lab, docs and tests beside it; its skills sit under its `skills/`, which is also
+where the default scan looks, so a wrong list is no longer the difference between five
+skills and none. It is still worth checking: the plugin's `.claude-plugin/plugin.json`
+names each one by path, and a skill missing from
 that list ships invisible without Claude Code complaining -- the docs are explicit that
 when none of the listed paths exist the default scan runs instead. Before the move to
 `skills/` that fallback found nothing at all, and the resulting plugin installed,
@@ -17,6 +19,9 @@ import json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MANIFEST_DIR = os.path.join(ROOT, ".claude-plugin")
+# The folder the directory submission and the marketplace entry both point at. Everything
+# inside it ships to every user; nothing outside it does.
+PLUGIN_DIR = "plugins/dax-for-agents"
 
 # Verified by bisection against the published CLI: 2.1.141 loads zero skills from these
 # paths, 2.1.142 loads all four. Below the floor the plugin installs and does nothing.
@@ -24,12 +29,12 @@ MIN_CLAUDE_CODE = "2.1.142"
 
 
 def skill_dirs(root):
-    """Every skills/ directory holding a SKILL.md, as a repo-relative posix path.
+    """Every skills/ directory holding a SKILL.md, as a plugin-relative posix path.
 
     Same rule validate_skills uses, and the same shape plugin.json spells: comparing
     a bare folder name against a "./skills/x" entry would report every skill missing.
     """
-    base = os.path.join(root, "skills")
+    base = os.path.join(root, PLUGIN_DIR, "skills")
     return sorted("skills/" + d for d in (os.listdir(base) if os.path.isdir(base) else [])
                   if os.path.isfile(os.path.join(base, d, "SKILL.md")))
 
@@ -37,19 +42,20 @@ def skill_dirs(root):
 def check(root):
     """Every disagreement between the manifest pair and the tree, as a list of strings."""
     errors = []
-    plugin_path = os.path.join(root, ".claude-plugin", "plugin.json")
+    plugin_path = os.path.join(root, PLUGIN_DIR, ".claude-plugin", "plugin.json")
     market_path = os.path.join(root, ".claude-plugin", "marketplace.json")
 
     plugin, market = None, None
     for path, label in ((plugin_path, "plugin"), (market_path, "marketplace")):
+        shown = os.path.relpath(path, root).replace(os.sep, "/")
         if not os.path.exists(path):
-            errors.append(f".claude-plugin/{label}.json is missing")
+            errors.append(f"{shown} is missing")
             continue
         try:
             with open(path, encoding="utf-8") as f:
                 loaded = json.load(f)
         except json.JSONDecodeError as e:
-            errors.append(f".claude-plugin/{label}.json is not valid JSON: {e}")
+            errors.append(f"{shown} is not valid JSON: {e}")
             continue
         if label == "plugin":
             plugin = loaded
@@ -76,7 +82,7 @@ def check(root):
             continue
         name = entry[2:].rstrip("/")
         listed.append(name)
-        if not os.path.isfile(os.path.join(root, name, "SKILL.md")):
+        if not os.path.isfile(os.path.join(root, PLUGIN_DIR, name, "SKILL.md")):
             errors.append(f"plugin.json lists './{name}' but {name}/SKILL.md does not "
                           f"exist. Claude Code falls back to the default scan instead of "
                           f"failing, so this goes unnoticed.")
@@ -97,10 +103,10 @@ def check(root):
                       f"marketplace entries {names!r}")
     for entry in entries:
         if isinstance(entry, dict) and entry.get("name") == plugin.get("name"):
-            if entry.get("source") != "./":
+            if entry.get("source") != "./" + PLUGIN_DIR:
                 errors.append(f"marketplace entry '{entry.get('name')}' has source "
-                              f"{entry.get('source')!r}; the plugin root is the repo "
-                              f"root, so it has to be './'")
+                              f"{entry.get('source')!r}; the plugin root is "
+                              f"{PLUGIN_DIR}/, so it has to be './{PLUGIN_DIR}'")
             if "skills" in entry:
                 errors.append("the marketplace entry also declares 'skills'. Keep the "
                               "list in plugin.json alone -- two sources of truth for the "

@@ -49,7 +49,7 @@ except ImportError:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-CATALOG = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
+CATALOG = os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "dax-reference", "generated", "catalog.json")
 QUESTIONS = os.path.join(HERE, "questions.yaml")
 
 # A name followed by `(` is a function call. Dots are part of the name: INFO.VIEW.TABLES

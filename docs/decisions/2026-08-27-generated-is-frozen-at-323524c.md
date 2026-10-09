@@ -1,6 +1,6 @@
 # `generated/` is frozen at `@323524c`, and stays a derived artifact
 
-**Date:** 2026-08-27 · **Status:** accepted · **Affects:** `skills/dax-reference/generated/`,
+**Date:** 2026-08-27 · **Status:** accepted · **Affects:** `plugins/dax-for-agents/skills/dax-reference/generated/`,
 `sync-check.yml`, `NOTICE`, and [issue #7](https://github.com/CSalcedoDataBI/dax-for-agents/issues/7)
 
 ## The problem

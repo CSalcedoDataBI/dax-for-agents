@@ -101,7 +101,7 @@ jobs:
       # el sync calcula del arbol propio y falla ante cualquier diferencia, incluida la que
       # a nadie se le ocurrio afirmar. Ver #8.
       - name: Cards and catalogue agree with notes/ and examples/
-        run: python skills/dax-reference/scripts/refresh_local_metadata.py --check
+        run: python plugins/dax-for-agents/skills/dax-reference/scripts/refresh_local_metadata.py --check
 
       # Las dos imagenes del README se generan del arbol. Si alguien anade una nota o un
       # ejemplo y no las regenera, el mapa dice una cobertura que ya no existe -- que es
@@ -115,7 +115,7 @@ jobs:
         run: python lab/add_thank_you.py --check
 
       - name: Unit tests (sync pipeline)
-        run: python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts -v
+        run: python -m unittest discover -s plugins/dax-for-agents/skills/dax-reference/scripts -t plugins/dax-for-agents/skills/dax-reference/scripts -v
 
       - name: Unit tests (repo scripts)
         run: python -m unittest discover -s scripts -t scripts -v

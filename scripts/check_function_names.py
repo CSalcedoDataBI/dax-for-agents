@@ -30,7 +30,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REF = os.path.join(ROOT, "skills", "dax-reference")
+REF = os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "dax-reference")
 GENERATED = os.path.join(REF, "generated")
 sys.path.insert(0, os.path.join(REF, "scripts"))
 

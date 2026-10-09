@@ -159,7 +159,7 @@ instead"* in a form an agent can consult without guessing.
   [daxpatterns.com](https://www.daxpatterns.com) and
   [daxformatter.com](https://www.daxformatter.com) by SQLBI. Better than anything here for a
   person reading with their own eyes.
-- **Ready-made UDFs** → [daxlib.org](https://daxlib.org). Indexed offline in `skills/dax-lib/`.
+- **Ready-made UDFs** → [daxlib.org](https://daxlib.org). Indexed offline in `plugins/dax-for-agents/skills/dax-lib/`.
 
 ## Skills
 
@@ -227,9 +227,10 @@ description is rewritten, because the number moves and nothing here checks it:
 claude plugin details dax-for-agents@dax-for-agents
 ```
 
-Or as a submodule, which also works before a marketplace entry exists. The skills live
-under `skills/`, so point the submodule at the repo and let the plugin root be the repo
-root — not at `.claude/skills`, which would nest them one level too deep:
+Or as a submodule, which also works before a marketplace entry exists. The plugin lives
+in `plugins/dax-for-agents/`, apart from the lab, docs and tests, so the plugin root is that
+folder — not the repo root, and not `.claude/skills`, which would nest the skills one level
+too deep:
 
 ```bash
 git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git vendor/dax-for-agents
@@ -239,7 +240,7 @@ git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git vendor/da
 
 The five skills sit under `skills/`, the same layout Microsoft ships in
 [`skills-for-fabric`](https://github.com/microsoft/skills-for-fabric): one folder per
-skill, and `.claude-plugin/plugin.json` naming each one by path. That list is not
+skill, and `plugins/dax-for-agents/.claude-plugin/plugin.json` naming each one by path. That list is not
 decoration — it is what makes the shipped set reviewable in a diff — but it is no longer
 the only thing standing between the plugin and an empty install, because `skills/` is
 also where the default scan looks.
@@ -262,14 +263,14 @@ on its own.
 |---|---|---|
 | Any skill is used | Claude reads Markdown and JSON from the installed plugin folder | Nowhere: local reads only |
 | `dax-lib-install` installs a package you picked | Claude runs `gh api` to read that package's `functions.tmdl`, with **your own** GitHub CLI login, checks its declared licence, installs it in the model you are working on (through a modeling MCP if one is connected, otherwise as a TMDL edit) and runs one DAX query to confirm it executes | `api.github.com`, repository `daxlib/daxlib`, read-only |
-| You ask for an example `.pbip` that no lab page covers | Claude runs `skills/dax-reference/scripts/inject_example.py`: it takes the Contoso lab model (the local copy, or downloads `lab-contoso.zip` from this repository's latest release when there is none), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
+| You ask for an example `.pbip` that no lab page covers | Claude runs `plugins/dax-for-agents/skills/dax-reference/scripts/inject_example.py`: it takes the Contoso lab model (the local copy, or downloads `lab-contoso.zip` from this repository's latest release when there is none), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
 | You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
 
 The maintainer scripts in this repository are **not** run by the plugin. Each runs only when
 someone types its command:
 
-- `skills/dax-lib/scripts/refresh-daxlib.ps1` clones `github.com/daxlib/daxlib` to rebuild the index.
-- `skills/dax-reference/scripts/fetch_from_learn.py` reads `learn.microsoft.com/en-us/dax/`.
+- `plugins/dax-for-agents/skills/dax-lib/scripts/refresh-daxlib.ps1` clones `github.com/daxlib/daxlib` to rebuild the index.
+- `plugins/dax-for-agents/skills/dax-reference/scripts/fetch_from_learn.py` reads `learn.microsoft.com/en-us/dax/`.
 - `evals/hallucination/run_ab.py` sends benchmark questions to the Anthropic or DeepSeek API, using a
   key the person running it sets in their own environment. Nothing in the plugin reads that key.
 
@@ -293,10 +294,10 @@ python scripts/check_eval_claims.py      # the invention table against the runs 
 python scripts/check_function_names.py   # every catalogue name is one you can type
 python scripts/check_dead_media.py       # no card points an image at the dead upstream host
 python scripts/check_examples.py         # 3 examples per covered function, each with a result
-python skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
+python plugins/dax-for-agents/skills/dax-reference/scripts/refresh_local_metadata.py --check  # the cards point at them
 python scripts/render_readme_assets.py --check   # the two images above against the tree
 python lab/add_thank_you.py --check      # every lab report opens on the same Thank You page
-python -m unittest discover -s skills/dax-reference/scripts -t skills/dax-reference/scripts
+python -m unittest discover -s plugins/dax-for-agents/skills/dax-reference/scripts -t plugins/dax-for-agents/skills/dax-reference/scripts
 python -m unittest discover -s scripts -t scripts
 python -m unittest discover -s evals -t evals
 ```
@@ -324,8 +325,8 @@ is a gate someone switches off.
 | What | Licence |
 |---|---|
 | Code, skills and hand-written content | [MIT](LICENSE) © 2026 CSalcedoDataBI |
-| `skills/dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from `MicrosoftDocs/query-docs` ([gone since 2026-08](#the-upstream-is-gone)). See [`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE) |
-| `skills/dax-lib/` | An offline index of [daxlib.org](https://daxlib.org). No package code is redistributed; licences vary per author. See [`skills/dax-lib/NOTICE`](skills/dax-lib/NOTICE) |
+| `plugins/dax-for-agents/skills/dax-reference/generated/` | **CC BY 4.0** © Microsoft — derived from `MicrosoftDocs/query-docs` ([gone since 2026-08](#the-upstream-is-gone)). See [`plugins/dax-for-agents/skills/dax-reference/NOTICE`](plugins/dax-for-agents/skills/dax-reference/NOTICE) |
+| `plugins/dax-for-agents/skills/dax-lib/` | An offline index of [daxlib.org](https://daxlib.org). No package code is redistributed; licences vary per author. See [`plugins/dax-for-agents/skills/dax-lib/NOTICE`](plugins/dax-for-agents/skills/dax-lib/NOTICE) |
 | The lab's Parquet data | MIT, and **synthetic** — generated, not sourced. It lives in [`CSalcedoDataBI/SampleDataSets`](https://github.com/CSalcedoDataBI/SampleDataSets) |
 
 "Contoso" is Microsoft's fictional-company name, used here the way its own samples use it.

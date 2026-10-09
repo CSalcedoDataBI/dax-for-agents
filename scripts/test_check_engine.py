@@ -86,7 +86,7 @@ class Baseline(unittest.TestCase):
         """The correlation the baseline claims, asserted against the tree rather than
         trusted. If a future sync gives one of them a category, this goes red and the note
         gets re-read instead of surviving as a story."""
-        path = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
+        path = os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "dax-reference", "generated", "catalog.json")
         with open(path, encoding="utf-8") as f:
             catalog = json.load(f)
         uncategorised = {f["name"] for f in catalog["functions"]
