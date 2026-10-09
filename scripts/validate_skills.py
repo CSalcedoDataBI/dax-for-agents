@@ -5,7 +5,7 @@ Checks, for every skill folder (a dir under `skills/` containing SKILL.md):
   1. Frontmatter: name == folder, name is kebab-case, description starts with "Use when".
   2. The skill is referenced in INDEX.md.
 Then, repo-wide:
-  3. Every Python script under skills/*/scripts/ and scripts/ compiles.
+  3. Every Python script under plugins/dax-for-agents/skills/*/scripts/ and scripts/ compiles.
   4. dax-reference integrity: catalog rows <-> library cards <-> notes all line up.
      Tolerates the pre-sync state where the library is still empty.
 
@@ -41,7 +41,7 @@ def frontmatter(path):
 
 
 # ---- 1 & 2: per-skill frontmatter + INDEX coverage ----
-SKILLS = os.path.join(ROOT, "skills")
+SKILLS = os.path.join(ROOT, "plugins", "dax-for-agents", "skills")
 skill_dirs = sorted(
     d for d in (os.listdir(SKILLS) if os.path.isdir(SKILLS) else [])
     if os.path.isfile(os.path.join(SKILLS, d, "SKILL.md"))
@@ -74,7 +74,7 @@ for d in skill_dirs:
         errors.append(f"{d}: not referenced in INDEX.md")
 
 # ---- 3: every Python script compiles ----
-py_scripts = glob.glob(os.path.join(ROOT, "skills", "*", "scripts", "*.py")) + \
+py_scripts = glob.glob(os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "*", "scripts", "*.py")) + \
     glob.glob(os.path.join(ROOT, "scripts", "*.py")) + \
     glob.glob(os.path.join(ROOT, "lab", "*.py"))
 for py in sorted(py_scripts):

@@ -1,6 +1,6 @@
 # The examples, as they were written in Spanish
 
-This is a frozen copy of `skills/dax-reference/examples/` as it stood on 2026-08-25, the day the
+This is a frozen copy of `plugins/dax-for-agents/skills/dax-reference/examples/` as it stood on 2026-08-25, the day the
 tree was translated to English.
 
 It is kept for one reason: the prose was written in Spanish first, and translating it is the only
@@ -22,6 +22,6 @@ If an example is corrected in the live tree, this copy is **not** updated to mat
 makes it a snapshot rather than a second copy to keep in step.
 
 The live, maintained examples are in
-[`skills/dax-reference/examples/`](../../skills/dax-reference/examples/). The reasoning behind
+[`plugins/dax-for-agents/skills/dax-reference/examples/`](../../skills/dax-reference/examples/). The reasoning behind
 the language decision is in
 [the decision record](../decisions/2026-08-25-english-as-the-repository-language.md).

@@ -11,7 +11,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from check_plugin_manifest import check, main, skill_dirs  # noqa: E402
+from check_plugin_manifest import PLUGIN_DIR, check, main, skill_dirs  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,7 +23,7 @@ PLUGIN = {
 MARKET = {
     "name": "dax-for-agents",
     "owner": {"name": "someone"},
-    "plugins": [{"name": "dax", "source": "./", "description": "x"}],
+    "plugins": [{"name": "dax", "source": "./plugins/dax-for-agents", "description": "x"}],
 }
 
 
@@ -32,18 +32,22 @@ class Fixture:
 
     def __init__(self, plugin=None, market=None, skills=("alpha-skill", "beta-skill")):
         self.dir = tempfile.mkdtemp()
+        # The marketplace sits at the repo root; the plugin, in its own folder.
+        self.plugin = os.path.join(self.dir, PLUGIN_DIR)
         os.mkdir(os.path.join(self.dir, ".claude-plugin"))
-        os.mkdir(os.path.join(self.dir, "skills"))
+        os.makedirs(os.path.join(self.plugin, ".claude-plugin"))
+        os.mkdir(os.path.join(self.plugin, "skills"))
         for name in skills:
-            os.mkdir(os.path.join(self.dir, "skills", name))
-            with open(os.path.join(self.dir, "skills", name, "SKILL.md"),
+            os.mkdir(os.path.join(self.plugin, "skills", name))
+            with open(os.path.join(self.plugin, "skills", name, "SKILL.md"),
                       "w", encoding="utf-8") as f:
                 f.write(f"---\nname: {name}\ndescription: Use when testing.\n---\n")
         self.write("plugin.json", PLUGIN if plugin is None else plugin)
         self.write("marketplace.json", MARKET if market is None else market)
 
     def write(self, name, obj):
-        path = os.path.join(self.dir, ".claude-plugin", name)
+        base = self.plugin if name == "plugin.json" else self.dir
+        path = os.path.join(base, ".claude-plugin", name)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(obj, f)
 
@@ -124,12 +128,15 @@ class TheTwoNames(unittest.TestCase):
             errors = check(f.dir)
         self.assertTrue(any("not among the marketplace entries" in e for e in errors))
 
-    def test_a_source_that_is_not_the_repo_root_fails(self):
+    def test_a_source_that_is_not_the_plugin_folder_fails(self):
+        # './' was right while the plugin was the repo root. Left there now, the
+        # marketplace would install the whole repository again.
         market = deep(MARKET)
-        market["plugins"][0]["source"] = "./plugins/dax"
+        market["plugins"][0]["source"] = "./"
         with Fixture(market=market) as f:
             errors = check(f.dir)
-        self.assertTrue(any("has to be './'" in e for e in errors), errors)
+        self.assertTrue(any("has to be './plugins/dax-for-agents'" in e for e in errors),
+                        errors)
 
     def test_skills_declared_twice_fails(self):
         market = deep(MARKET)
@@ -150,7 +157,7 @@ class TheTwoNames(unittest.TestCase):
 class MissingOrBroken(unittest.TestCase):
     def test_a_missing_plugin_json_fails(self):
         with Fixture() as f:
-            os.remove(os.path.join(f.dir, ".claude-plugin", "plugin.json"))
+            os.remove(os.path.join(f.plugin, ".claude-plugin", "plugin.json"))
             errors = check(f.dir)
         self.assertTrue(any("plugin.json is missing" in e for e in errors))
 
