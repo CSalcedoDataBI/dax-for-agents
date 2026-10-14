@@ -22,7 +22,7 @@ semantics, and the gotchas the documentation doesn't tell you.
 | **34 conceptual pages** | evaluation context, `EVALUATE`/`DEFINE`, operators, glossary |
 | **31 field notes** | hand-written. Each one carries the query that proves it and the number it returned |
 | **4 lab scenarios** | runnable `.pbip` models. Download, refresh, run the queries yourself |
-| **5 skills** | routed by `INDEX.md`, ~806 tokens of descriptions always on |
+| **6 skills** | routed by `INDEX.md`, ~806 tokens of descriptions always on |
 
 An agent reads `catalog.md` once, finds the function, opens **one** card. The other 376,000
 tokens never enter the context window.
@@ -170,6 +170,7 @@ instead"* in a form an agent can consult without guessing.
 | `dax-lib-install` | `dax-lib` found one and you want it *in* the model, licensed and attributed |
 | `dax-udf-authoring` | Writing your own `FUNCTION`: parameter types, `VAL` vs `EXPR`, GA limits |
 | `dax-window-functions` | `WINDOW` / `OFFSET` / `INDEX` / `RANK` — rolling, running totals, ranking |
+| `dax-feedback` | A card, note or example here proved wrong — files one sanitized issue, after you approve it |
 
 Full routing: **[INDEX.md](INDEX.md)**.
 
@@ -215,8 +216,8 @@ As a plugin — **needs Claude Code 2.1.142 or newer** (see below):
 ```
 
 The skills arrive as `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`,
-`dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring` and
-`dax-for-agents:dax-window-functions`. Until 0.6.0 the plugin was called `dax` and the prefix was
+`dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring`,
+`dax-for-agents:dax-window-functions` and `dax-for-agents:dax-feedback`. Until 0.6.0 the plugin was called `dax` and the prefix was
 `dax:`; an install made under the old name has to be removed and reinstalled under the new one.
 Around 589 tokens of descriptions are
 always on; everything else is read only when a question needs it. That figure is measured, not
@@ -237,7 +238,7 @@ git submodule add https://github.com/CSalcedoDataBI/dax-for-agents.git vendor/da
 
 ### Why the version floor
 
-The five skills sit under `skills/`, the same layout Microsoft ships in
+The six skills sit under `skills/`, the same layout Microsoft ships in
 [`skills-for-fabric`](https://github.com/microsoft/skills-for-fabric): one folder per
 skill, and `.claude-plugin/plugin.json` naming each one by path. That list is not
 decoration — it is what makes the shipped set reviewable in a diff — but it is no longer
@@ -264,6 +265,7 @@ on its own.
 | `dax-lib-install` installs a package you picked | Claude runs `gh api` to read that package's `functions.tmdl`, with **your own** GitHub CLI login, checks its declared licence, installs it in the model you are working on (through a modeling MCP if one is connected, otherwise as a TMDL edit) and runs one DAX query to confirm it executes | `api.github.com`, repository `daxlib/daxlib`, read-only |
 | You ask for an example `.pbip` that no lab page covers | Claude runs `skills/dax-reference/scripts/inject_example.py`: it takes the Contoso lab model (the local copy, or downloads `lab-contoso.zip` from this repository's latest release when there is none), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
 | You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
+| You ask `dax-feedback` to report a wrong card or note | Claude drafts an issue, rewrites table, measure and project names into generic ones, shows you the full text, and only after you say yes runs `gh issue create` with **your own** GitHub CLI login | `api.github.com`, a **public** issue on `CSalcedoDataBI/dax-for-agents`, under your GitHub account. It carries only the text you approved |
 
 The maintainer scripts in this repository are **not** run by the plugin. Each runs only when
 someone types its command:

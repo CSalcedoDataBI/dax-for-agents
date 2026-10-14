@@ -161,7 +161,7 @@ Each skill is one folder under `skills/` with a `SKILL.md`. Frontmatter needs:
 
 Keep the `dax-` prefix even though the plugin is already called `dax` and `skills/` already
 supplies the context. Renaming to `skills/reference/` would touch the cross-links in all
-five `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere. Four
+six `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere. Four
 characters do not buy that.
 
 Add the skill to [INDEX.md](INDEX.md), list its path in the `skills` array of
