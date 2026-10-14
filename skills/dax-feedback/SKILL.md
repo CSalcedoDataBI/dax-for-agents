@@ -22,10 +22,14 @@ the user's model, in Power BI or in another tool is not a finding for this repos
 
 - **The query that proves it**, standalone: `EVALUATE` with `DEFINE` and literals, so it runs
   on any model. A query that needs the user's tables is not evidence anyone else can rerun.
-- **What the engine returned**, as a small table.
-- **The engine:** Power BI Desktop version, or the service and its compatibility level.
-- **What the plugin says**: the card or note path inside the plugin and the plugin version
-  (`version` in its `.claude-plugin/plugin.json`).
+- **What the engine returned**, as a small table. Run the query yourself when a model is
+  open; when you cannot, relay the user's numbers and write "reported by the user".
+- **The engine:** Power BI Desktop version (or the service and its compatibility level) and
+  the storage mode, import or DirectQuery.
+- **What the plugin says**: search the installed plugin folder for the claim's own words to
+  find the card or note, then give its path inside the plugin and the plugin version
+  (`version` in its `.claude-plugin/plugin.json`). Do not propose an edit to a card under
+  `generated/`: those are copied from Microsoft Learn, and the fix lands as a field note.
 
 No query because it is a gap or a wrong skill step? Say what you had to measure or guess.
 
@@ -34,6 +38,7 @@ No query because it is a gap or a wrong skill step? Say what you had to measure 
 Rewrite, do not redact with `***`:
 
 - Tables, columns and measures become generic: `Sales[Amount]`, `'Date'[Date]`, `[Total]`.
+  That includes names that only hint at the client or the business, like `'SalesAcme'`.
 - No project, client or company names, no real values, no file paths, server names, ports,
   process ids, emails, tenant or workspace ids.
 
@@ -48,7 +53,13 @@ Any hit: rewrite and search again.
 gh issue list -R CSalcedoDataBI/dax-for-agents --state all --search "<function or note name>"
 ```
 
-An open issue on the same thing gets a comment with the new evidence, not a second issue.
+Search again with the claim's most specific term (a number, an error text) when the name is
+common, like `FILTER` or `CALCULATE`. Then read the candidate with `gh issue view <n>`:
+
+- **Same finding, new evidence** (another engine version, another storage mode, a case it
+  missed): a comment, `gh issue comment <n> -R CSalcedoDataBI/dax-for-agents --body-file <file>`,
+  shown and approved exactly like an issue in step 5.
+- **Same finding, nothing new:** post nothing. Give the user the link and stop.
 
 ## 5. Show it, then file it
 
@@ -60,11 +71,12 @@ Show the user the title and the full body, say it will be **public**, and wait f
 Then, with the user's own GitHub CLI login:
 
 ```bash
-gh issue create -R CSalcedoDataBI/dax-for-agents --title "<function>: <what is wrong, short>" --label <bug|documentation|enhancement> --body-file <file>
+gh issue create -R CSalcedoDataBI/dax-for-agents --title "<function>: <what is wrong, short>" --label bug --label documentation --body-file <file>
 ```
 
-`bug` when a card or note is wrong, `documentation` when something is missing or unclear,
-`enhancement` for a new capability. No `gh` or no login: give the user the title and body
+Labels: `bug` + `documentation` when a card or note says something the engine contradicts,
+`documentation` alone when something is missing or unclear, `enhancement` for a new
+capability. No `gh` or no login: give the user the title and body
 and the link `https://github.com/CSalcedoDataBI/dax-for-agents/issues/new`.
 
 ## 6. Close
