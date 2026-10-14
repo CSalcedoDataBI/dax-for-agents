@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.1...v0.9.0) (2026-10-14)
+
+
+### Features
+
+* **dax-feedback:** add a skill to report wrong cards back, sanitized ([#32](https://github.com/CSalcedoDataBI/dax-for-agents/issues/32)) ([583c1c1](https://github.com/CSalcedoDataBI/dax-for-agents/commit/583c1c1693881abb7caaab1db253ef81810b1239))
+
+
+### Bug Fixes
+
+* **dax-reference:** remove the injector's work folder when a spec is refused ([455c663](https://github.com/CSalcedoDataBI/dax-for-agents/commit/455c66355ec63603b7406190809b23cb3a4c423b))
+
 ## [0.8.1](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.0...v0.8.1) (2026-10-05)
 
 
