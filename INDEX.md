@@ -1,6 +1,6 @@
 # Skills — index and routing
 
-Five skills, one idea: **the DAX language**. No modeling, no visuals, no operations — there
+Six skills: five on one idea, **the DAX language**, and one to report back when they are wrong. No modeling, no visuals, no operations — there
 are better repos for those, linked from the [README](README.md).
 
 ---
@@ -13,7 +13,8 @@ A question about DAX
   ├─ does a UDF for this already exist?               → dax-lib
   ├─ that UDF exists: install it                      → dax-lib-install
   ├─ I am going to write a UDF                        → dax-udf-authoring
-  └─ rolling / running total / ranking                → dax-window-functions
+  ├─ rolling / running total / ranking                → dax-window-functions
+  └─ a card, note or example here is wrong             → dax-feedback
 
 Performance? → not here. Use data-goblin's plugin (see the README).
 ```
@@ -27,6 +28,7 @@ Performance? → not here. Use data-goblin's plugin (see the README).
 | **`dax-lib-install`** | Actually brings in the code of a UDF `dax-lib` already found: installs it against the model, tests it with a real query, and leaves it attributed (author, licence, URL) inside the `FUNCTION` itself. | ✅ |
 | **`dax-udf-authoring`** | The mechanics of a correct `FUNCTION`: parameter types, `VAL` vs `EXPR`, `TABLEOF`/`NAMEOF`, optional parameters, GA limits and parser bugs. | ✅ |
 | **`dax-window-functions`** | `WINDOW` / `OFFSET` / `INDEX` / `RANK` / `ROWNUMBER` / `MOVINGAVERAGE` / `RUNNINGSUM`. ABS vs REL, `MATCHBY`, the default-relation gotcha. | ✅ |
+| **`dax-feedback`** | The way back from another project: a card, note or example that the engine contradicts, or a gap the agent had to measure or guess, becomes one sanitized public issue here — shown to the user before it is filed. | ✅ |
 
 ## Conventions
 
@@ -41,13 +43,13 @@ Every skill follows the [agentskills.io](https://agentskills.io/specification) s
 4. **Cross-link by name** (`` `dax-lib` ``), never by path.
 5. **The `dax-` prefix stays**, even though the plugin name already starts with `dax` and `skills/`
    already supplies the context. Renaming to `skills/reference/` would touch the cross-links
-   in the five `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere;
+   in the six `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere;
    the prefix costs four characters and does not pay for itself. Installed, they are
-   `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`, `dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring` and
-   `dax-for-agents:dax-window-functions`.
-6. **All five skills are listed by path in `.claude-plugin/plugin.json`.** Under `skills/` the
+   `dax-for-agents:dax-reference`, `dax-for-agents:dax-lib`, `dax-for-agents:dax-lib-install`, `dax-for-agents:dax-udf-authoring`,
+   `dax-for-agents:dax-window-functions` and `dax-for-agents:dax-feedback`.
+6. **All six skills are listed by path in `.claude-plugin/plugin.json`.** Under `skills/` the
    default scan would find them anyway, so that list stopped being the difference between
-   five skills and none — but it is still what makes the published set reviewable in a diff.
+   six skills and none — but it is still what makes the published set reviewable in a diff.
    CI checks it.
 7. **The layout is [`microsoft/skills-for-fabric`](https://github.com/microsoft/skills-for-fabric)'s:**
    `skills/` as the single source, and the plugin manifest at the repo root. It is also what

@@ -28,6 +28,7 @@
     "./skills/dax-lib",
     "./skills/dax-lib-install",
     "./skills/dax-udf-authoring",
-    "./skills/dax-window-functions"
+    "./skills/dax-window-functions",
+    "./skills/dax-feedback"
   ]
 }

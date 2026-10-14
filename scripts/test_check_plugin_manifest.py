@@ -181,8 +181,9 @@ class TheRealRepo(unittest.TestCase):
         errors = check(ROOT)
         self.assertEqual(errors, [], "\n".join(errors or []))
 
-    def test_the_five_skills_are_the_ones_shipped(self):
-        self.assertEqual(skill_dirs(ROOT), ["skills/dax-lib",
+    def test_the_six_skills_are_the_ones_shipped(self):
+        self.assertEqual(skill_dirs(ROOT), ["skills/dax-feedback",
+                                            "skills/dax-lib",
                                             "skills/dax-lib-install",
                                             "skills/dax-reference",
                                             "skills/dax-udf-authoring",
