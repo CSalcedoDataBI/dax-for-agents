@@ -60,6 +60,20 @@ cases:
   - prompt: "difference between ABS and REL positioning in the DAX WINDOW function"
     expect: dax-window-functions
 
+  # --- dax-feedback ---
+  # The plugin is wrong, said from another project. The last case is the near miss:
+  # asking about a card is a reference question, not a report.
+  - prompt: "the REPT card in dax-for-agents says 32,767 characters max, but my measure returns 100,000 without error. the card is wrong, report it"
+    expect: dax-feedback
+  - prompt: "esto es de dax-for-agents: la ficha de DATEADD está mal, el motor devuelve otra cosa. repórtalo al plugin"
+    expect: dax-feedback
+  - prompt: "the dax-for-agents example for TOPN does not reproduce on my model, file an issue on the plugin repo"
+    expect: dax-feedback
+  - prompt: "I had to guess how INDEX treats blanks because the dax-for-agents field notes say nothing, send that gap back to the plugin"
+    expect: dax-feedback
+  - prompt: "what does the REPT function return in DAX, and is its 32,767 character limit real?"
+    expect: dax-reference
+
 # --- exactitud de la biblioteca (expectFunction / expectFlag) ---------------------------
 # Estos casos NO miden el enrutado entre skills: miden el catalogo. Que la funcion exista,
 # que se encuentre a partir de lo que alguien escribiria, y que sus flags digan la verdad.
