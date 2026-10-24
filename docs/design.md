@@ -24,6 +24,9 @@ The raw material is reusable: `MicrosoftDocs/query-docs` (CC BY 4.0 docs, MIT co
 include fragments are set aside (see
 [the decision](decisions/2026-08-13-concept-count-34-not-61.md)).
 
+The original spec counted 61 conceptual pages (540 minus 479, which also swept in the 15
+category indexes and 12 include fragments); the real number is 34.
+
 **Identity:** the canonical DAX language reference for AI agents — 479 functions with
 signature, semantics and the traps the documentation does not mention.
 
@@ -58,6 +61,9 @@ For a question about a specific function the agent reads `catalog.md` once, find
 function, then reads that function's card from `library/`. Conceptual questions go straight to
 `concepts/`. Hand-written field notes under `notes/` are never overwritten by the sync.
 
-The layout was later superseded: everything generated lives under
+The original layout put the skills flat at the repository root, with `dax-reference/` holding
+`catalog.md`, `catalog.json`, `library/` (cards), `concepts/`, `notes/` (hand-written, never
+touched by the sync), `overrides.json` and `scripts/sync_query_docs.py`. That layout was later
+superseded: everything generated lives under
 `dax-reference/generated/` — see
 [the decision](decisions/2026-08-11-generated-tree-single-swap.md).
