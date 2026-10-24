@@ -27,8 +27,8 @@ Lo que no se toca sin un paso del plan que lo nombre:
 
 - **Rama `stable` y `.claude-plugin/plugin.json` en la raíz** — el directorio de Anthropic rastrea
   `stable` y busca el manifiesto en la raíz; moverlo o tocar `stable` fuera de un release rompe la
-  revisión del directorio. Ver `.claude/rules/plugin-directory.md` y los PR #24/#26 (no se fusionan
-  hasta que Anthropic responda sobre la ruta del manifiesto).
+  revisión del directorio. Ver los PR #24/#26 (no se fusionan hasta que Anthropic responda sobre la
+  ruta del manifiesto).
 - **El conjunto publicado de skills, el prefijo `dax-` y el enlace cruzado por nombre** — renombrar
   una skill o un cross-link rompe las referencias ya instaladas (INDEX.md, convención 5). El
   manifiesto debe listar exactamente las skills en disco: lo verifica `check_plugin_manifest.py`.

@@ -47,8 +47,7 @@ unpublish it.
 touch, and how a change gets merged. Its reviewer, the [experto](.claude/agents/experto.md),
 reads the card against every PR and decides: merge, send back to fix, or propose. This repo is
 maintained under the maintainer's internal rules; `main` is for daily work, and merging to
-`main` is not publishing — the directory tracks `stable` (see
-[.claude/rules/plugin-directory.md](.claude/rules/plugin-directory.md)).
+`main` is not publishing — the Anthropic plugin directory tracks `stable`.
 
 ## Everything else
 
