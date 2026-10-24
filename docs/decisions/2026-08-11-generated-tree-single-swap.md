@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-11
 **Status:** accepted
-**Supersedes:** the layout drawn in [the design spec](../superpowers/specs/2026-08-06-dax-for-agents-design.md)
+**Supersedes:** the layout drawn in [the design spec](../design.md)
 
 ## Context
 

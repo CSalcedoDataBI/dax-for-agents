@@ -20,7 +20,7 @@ mix. It falls along a line so clean it is obviously an accident of who wrote wha
 | The 31 field notes | Spanish |
 | The example files | Spanish |
 | The `lab/` READMEs | Spanish |
-| `docs/decisions/`, `docs/superpowers/` | Spanish (one in English) |
+| `docs/decisions/` | Spanish (one in English) |
 
 **The public face speaks English and the knowledge speaks Spanish.** The README sells the
 repository on exactly the thing that is written in Spanish: *"what does this function do, when
@@ -141,7 +141,7 @@ state, not a half-finished migration. Each README says so at the top.
 
 ## What stays in Spanish, on purpose
 
-**`docs/decisions/` and `docs/superpowers/`.** These are dated records of what was decided and
+**`docs/decisions/`.** (The former `docs/superpowers/` specs were later condensed into an English `docs/design.md`.) These are dated records of what was decided and
 what was built, at the time it happened. Translating a record rewrites it: the reader can no
 longer tell whether a phrase is what was argued then or what someone reworded later. They are
 already exempt from the doc-claims gate for the same underlying reason — a number in a record
