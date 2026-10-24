@@ -7,9 +7,10 @@
 ## Qué es
 
 - **Qué construye y para quién:** un plugin de Claude Code que lleva el **lenguaje DAX** a un
-  agente — 479 fichas de función, 34 páginas conceptuales, notas de campo escritas a mano, el
-  catálogo de [daxlib.org](https://daxlib.org), autoría de UDF y la familia `WINDOW`. Seis skills,
-  cinco sobre el lenguaje y una para reportar cuando se equivocan.
+  agente — fichas de función, páginas conceptuales, notas de campo escritas a mano, el catálogo de
+  [daxlib.org](https://daxlib.org), autoría de UDF y la familia `WINDOW`. Las skills cubren el
+  lenguaje; una reporta de vuelta cuando una ficha, nota o ejemplo se equivoca. (Los tamaños
+  exactos del catálogo viven en el README, que CI verifica.)
 - **Papel** (`repo-roles`): tool (plugin del directorio de Anthropic).
 - **Gemelo público/privado:** `dax-for-agents-pro` (privado).
 
