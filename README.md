@@ -71,26 +71,35 @@ the count is a lookup:
 
 | | alone | with the catalogue |
 |---|---:|---:|
-| Claude Haiku 4.5 | 11 | 6 |
-| Claude Sonnet 5 | 8 | **0** |
+| Claude Opus 5.5 | 2 | 2 |
+| Claude Sonnet 5.5 | 2 | 3 |
+| Claude Haiku 5.5 | 7 | 2 |
 | DeepSeek V4-Pro | 4 | **0** |
 | DeepSeek V4-Flash | 3 | **0** |
 
-Three of the four stop inventing entirely, and the catalogue's list of names is enough to do it
-— they are never shown a card. **The weaker the model, the more there was to gain**, which is
-worth saying plainly rather than quoting the best row.
+**The weaker the model, the more there is to gain.** Haiku 5.5 invents seven names on its
+own and the catalogue cuts it to two; DeepSeek's two models fall to zero. Opus 5.5 and Sonnet 5.5
+start so close to zero that there is little left to remove — and what the counter still flags in
+them is mostly not invention at all. It is SQL written as an explicit analogy (`ROW_NUMBER() OVER`,
+offered as "just like SQL's…") and tokens the `NAME(` rule cannot tell from a call: a rank enum
+(`SKIP`), a window keyword (`REL`), a measure name with a space before its parenthesis
+(`Sales PY (…`). Those do not go away when the catalogue is added — which is why Sonnet 5.5 even
+ticks up by one. The counter is deliberately mechanical and not hand-corrected: the property that
+lets `check_eval_claims.py` recount it in CI is the same one that keeps this noise in.
 
-**It is also not uniform across the language.** In classic-model DAX no model invented anything,
-with the reference or without it. Every invention sat in `INFO.*`, the window functions and
-visual calculations — the three corners where this library carries Microsoft's card and no
-judgement of its own. Visual calculations is the one place the reference barely helped, and the
-reason is in the index: three of the functions an agent needs there are among the sixteen the
-catalogue leaves uncategorised, so the first hop has nothing to return.
+**It is also not uniform across the language.** No model invented anything in visual-calculation
+DAX this round, with the reference or without it, and classic DAX saw a single artifact. What is
+left sits in `INFO.*` and the window functions — the corners where this library carries
+Microsoft's card and no judgement of its own, and where a weaker model reaches for a function it
+half-remembers. Four of Haiku 5.5's seven fall in the `INFO.*` regime — three of them
+`INFO.*`-prefixed guesses (`INFO.HIERARCHYLEVELS`, `INFO.STORAGE_TABLE_COLUMNS`,
+`INFO.CALCULATION_ITEMS`) and one a `SELECTCOLUMNS` misspelling (`SELECT_COLUMNS`) — and the
+catalogue removes every one.
 
 The answers are kept, so the number can be checked rather than believed:
 
 ```bash
-python evals/hallucination/run_ab.py --replay evals/hallucination/runs/2026-08-29-claude-sonnet-5.json
+python evals/hallucination/run_ab.py --replay evals/hallucination/runs/2026-10-23-claude-haiku-5-5.json
 ```
 
 That re-counts a run offline, without an API call. Raw answers for every model are in

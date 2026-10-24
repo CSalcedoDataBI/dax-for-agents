@@ -1,0 +1,870 @@
+{
+  "model": "claude-sonnet-5-5",
+  "provider": "anthropic",
+  "records": [
+    {
+      "id": "previous-year",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "In DAX, which function gives me the same measure for the equivalent period of the previous year, so I can put this year and last year side by side? Name the function and show a short measure.",
+      "A": {
+        "text": "Use **SAMEPERIODLASTYEAR**, wrapped in **CALCULATE**.\n\n```dax\nSales LY =\nCALCULATE (\n    [Total Sales],\n    SAMEPERIODLASTYEAR ( 'Date'[Date] )\n)\n```\n\nPut `[Total Sales]` and `[Sales LY]` in the same visual, with a date-based field (month, quarter, etc.) from your Date table on the axis, and you'll get this year and last year side by side.\n\nRequirements:\n- You need a proper Date table with contiguous dates, marked as a date table (or at least related to your fact table on the date column).\n- Use the `'Date'[Date]` column, not a fact-table date column.\n\nOptional variance:\n\n```dax\nSales YoY % =\nDIVIDE ( [Total Sales] - [Sales LY], [Sales LY] )\n```"
+      },
+      "B": {
+        "text": "Use **SAMEPERIODLASTYEAR**, wrapped in **CALCULATE**:\n\n```dax\nSales LY =\nCALCULATE (\n    [Total Sales],\n    SAMEPERIODLASTYEAR ( 'Date'[Date] )\n)\n```\n\nPut `[Total Sales]` and `[Sales LY]` in the same visual, with a column from your Date table (month, quarter, etc.) on the axis, and you get this year vs. last year side by side.\n\nNotes:\n- It needs a proper, contiguous Date table, marked as a date table, with a relationship to your fact table.\n- Use `'Date'[Date]` from the Date table, not the date column in the fact table.\n- `DATEADD ( 'Date'[Date], -1, YEAR )` gives the same result and is the one to use if you want to shift by other intervals (e.g. -1 quarter)."
+      }
+    },
+    {
+      "id": "running-total-ytd",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "I need a year-to-date running total of Sales in DAX. Which function should I reach for, and is there more than one way? Show the measure.",
+      "A": {
+        "text": "Yes, there are two standard ways, and they're equivalent.\n\n**1. `TOTALYTD` (shortest)**\n```DAX\nSales YTD =\nTOTALYTD ( [Total Sales], 'Date'[Date] )\n```\n\n**2. `CALCULATE` + `DATESYTD` (same result, more flexible if you need to combine filters)**\n```DAX\nSales YTD =\nCALCULATE ( [Total Sales], DATESYTD ( 'Date'[Date] ) )\n```\n\nWhere `[Total Sales]` is a base measure like `SUM ( Sales[Amount] )`.\n\n**Notes**\n- You need a proper date table: contiguous dates, no gaps, marked as the date table, and related to your fact table.\n- For a non-calendar fiscal year, pass the year-end date as the last argument, e.g. `TOTALYTD ( [Total Sales], 'Date'[Date], \"6/30\" )`.\n- Put `'Date'[Date]` (or month) on the visual's axis, not a column from the Sales table, or the running total won't accumulate."
+      },
+      "B": {
+        "text": "Yes, there are two standard ways. Both need a proper Date table marked as a date table.\n\n**1. TOTALYTD (the shortcut)**\n\n```dax\nSales YTD =\nTOTALYTD ( SUM ( Sales[Amount] ), 'Date'[Date] )\n```\n\n**2. CALCULATE + DATESYTD (the explicit form)**\n\n```dax\nSales YTD =\nCALCULATE ( SUM ( Sales[Amount] ), DATESYTD ( 'Date'[Date] ) )\n```\n\nThese return the same result. `TOTALYTD` is just syntactic sugar over `CALCULATE` with `DATESYTD`. I'd use `CALCULATE` + `DATESYTD` if you need to combine it with other filters or modifiers, since it makes the filter logic more visible.\n\n**Fiscal year end:** both functions take an optional year-end date argument, e.g. `TOTALYTD ( SUM ( Sales[Amount] ), 'Date'[Date], \"6/30\" )`.\n\n**Gotchas:**\n- Use the Date table's date column, not the date column on the fact table.\n- If your visual has months on the axis, the measure resets each January, which is what you want for a YTD running total."
+      }
+    },
+    {
+      "id": "previous-row",
+      "regime": "classic",
+      "category": "filter",
+      "question": "In a DAX table sorted by date, how do I compare each row with the previous one without writing a self-join? Name the functions involved.",
+      "A": {
+        "text": "Use the window function **`OFFSET`**, with **`ORDERBY`** to define the sort and **`ALLSELECTED`** to supply the set of rows to walk through. Add **`PARTITIONBY`** if you need to restart per group, such as per product.\n\n```DAX\nPrev Sales =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Date] ),\n        ORDERBY ( 'Date'[Date], ASC )\n    )\n)\n\nChange vs Prev = [Total Sales] - [Prev Sales]\n```\n\nWith a partition, for example per product:\n\n```DAX\nPrev Sales by Product =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Date], Product[Category] ),\n        ORDERBY ( 'Date'[Date], ASC ),\n        PARTITIONBY ( Product[Category] )\n    )\n)\n```\n\n- The `-1` means one row back; use `1` for the next row.\n- The `ORDERBY` columns must uniquely identify a row within its partition, or the result will be wrong.\n- On the first row there is no previous row, so the result is blank.\n- If you're using visual calculations, `PREVIOUS([Total Sales])` does the same thing with less code."
+      },
+      "B": {
+        "text": "Use **OFFSET** with **ORDERBY** (and optionally **PARTITIONBY**) to reach the previous row. No self-join is needed.\n\n```DAX\nPrev Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Date] ),\n        ORDERBY ( 'Date'[Date], ASC )\n    )\n)\n\nChange vs Prev = [Total Sales] - [Prev Sales]\n```\n\nNotes:\n- `OFFSET(-1, ...)` returns the row immediately before the current one. Use `+1` for the next row.\n- `ALLSELECTED('Date'[Date])` defines the relation, so the offset respects the dates visible in the visual. Use `ALL` if you want it to ignore slicers.\n- To restart the comparison within groups, such as per product, add `PARTITIONBY ( Product[Name] )`.\n- The first row has no previous row, so `Prev Sales` returns blank there.\n\nIf you're working in a visual calculation, `PREVIOUS` is a simpler alternative, but it works only in that mode."
+      }
+    },
+    {
+      "id": "moving-window",
+      "regime": "window",
+      "category": "filter",
+      "question": "Which DAX function gives me a moving window of the last N rows relative to the current one, and what does it need to know about ordering? Show the syntax.",
+      "A": {
+        "text": "Use **`WINDOW`**. It returns a range of rows relative to the current row, and you wrap it in an iterator like `AVERAGEX` or `SUMX`. `OFFSET` and `INDEX` are its single-row siblings.\n\n**Ordering:** `WINDOW` needs a defined sort order, given by `ORDERBY`. The columns in `ORDERBY` must come from the `relation` table you pass in. You can add `PARTITIONBY` to restart the window within groups, such as per product.\n\n**Syntax:**\n```\nWINDOW(from, from_type, to, to_type, relation, orderBy, blanks, partitionBy)\n```\n\n`from_type` and `to_type` are `REL` (relative to the current row) or `ABS` (absolute position).\n\n**Example: 3-month moving average, current month plus the previous 2:**\n```DAX\n3M Moving Avg =\nAVERAGEX (\n    WINDOW (\n        -2, REL,\n        0, REL,\n        ALLSELECTED ( 'Date'[Month Start] ),\n        ORDERBY ( 'Date'[Month Start], ASC )\n    ),\n    [Total Sales]\n)\n```\n\nFor the last N rows, use `-(N-1)` to `0`. To exclude the current row, use `-N` to `-1`. The first rows return a shorter window because there is nothing earlier to include."
+      },
+      "B": {
+        "text": "Use **WINDOW**, with **ORDERBY** to define the sort. Without an order, \"previous rows\" has no meaning. **PARTITIONBY** is optional and restarts the window per group, such as per category. **MATCHBY** is only needed if the ordering columns don't uniquely identify a row.\n\n```dax\nSales 3M Moving Avg =\nAVERAGEX (\n    WINDOW (\n        -2, REL,          -- start: 2 rows before current\n         0, REL,          -- end: current row\n        ALLSELECTED ( 'Date'[Month Start] ),   -- relation (rows to walk over)\n        ORDERBY ( 'Date'[Month Start], ASC ),  -- sort order\n        PARTITIONBY ( 'Product'[Category] )    -- optional\n    ),\n    [Total Sales]\n)\n```\n\n- For the last N rows including the current one, use `-(N-1)` to `0`.\n- For the last N rows excluding the current one, use `-N` to `-1`.\n- The relation needs to contain the ordering columns, and it's usually wrapped in `ALLSELECTED` or `ALL` so the window can see the neighboring rows.\n\nIn visual calculations only, **RANGE** is a shorthand for WINDOW, and **MOVINGAVERAGE** is a ready-made version."
+      }
+    },
+    {
+      "id": "rank-in-partition",
+      "regime": "window",
+      "category": "filter",
+      "question": "How do I rank rows inside a partition in DAX using the newer window-function syntax, rather than RANKX? Name the function and show it.",
+      "A": {
+        "text": "Use **`RANK`** (or **`ROWNUMBER`** for unique, tie-free numbering) with **`ORDERBY`** and **`PARTITIONBY`**.\n\n```dax\nRank in Category =\nRANK(\n    DENSE,                                             -- ties: SKIP (default) or DENSE\n    ALLSELECTED(Product[Category], Product[Product]),  -- relation to rank over\n    ORDERBY([Total Sales], DESC),\n    PARTITIONBY(Product[Category])                     -- restart rank per category\n)\n```\n\nNotes:\n- The relation (2nd argument) must include the columns in your visual, otherwise the rank won't evaluate per row. `ALLSELECTED` respects slicers.\n- `ORDERBY` can take a measure in a measure context, or a column in a calculated column.\n- `ROWNUMBER` has the same signature, minus the ties argument. It returns a unique sequence and uses `MATCHBY` to break ties:\n\n```dax\nRow # in Category =\nROWNUMBER(\n    ALLSELECTED(Product[Category], Product[Product]),\n    ORDERBY([Total Sales], DESC),\n    PARTITIONBY(Product[Category]),\n    MATCHBY(Product[Product])\n)\n```"
+      },
+      "B": {
+        "text": "Use **RANK** (ties get the same rank) or **ROWNUMBER** (unique rank, no ties), with **ORDERBY** and **PARTITIONBY** to define the sort and the partition.\n\n```dax\nSales Rank =\nRANK(\n    DENSE,                                  // or SKIP (default)\n    ALLSELECTED(Product[Category], Product[Name]),\n    ORDERBY([Total Sales], DESC),\n    PARTITIONBY(Product[Category])\n)\n```\n\n- `ORDERBY` sets the ranking order within each partition.\n- `PARTITIONBY` restarts the ranking for each value of `Product[Category]`.\n- `ties` argument: `SKIP` gives 1, 1, 3. `DENSE` gives 1, 1, 2.\n- Swap `RANK` for `ROWNUMBER` (no ties argument) if you need a unique number per row. Add `MATCHBY` if the relation doesn't have a unique key and you need to define what identifies the current row."
+      }
+    },
+    {
+      "id": "running-sum-window",
+      "regime": "window",
+      "category": "filter",
+      "question": "Is there a DAX function that computes a running sum directly, without CALCULATE and a filter over dates? Name it if it exists.",
+      "A": {
+        "text": "Yes: **`RUNNINGSUM`**, but it only works in **visual calculations**, not in model measures.\n\n```dax\nRunning Sales = RUNNINGSUM([Sales Amount])\n```\n\nIt takes an optional axis and reset argument, e.g. `RUNNINGSUM([Sales Amount], ROWS)`. It also has a sibling, `MOVINGAVERAGE`.\n\nIn a regular model measure there is no dedicated running-sum function. The closest approach without `CALCULATE` and a date filter is `WINDOW` with `SUMX`:\n\n```dax\nRunning Sales =\nSUMX(\n    WINDOW(\n        1, ABS, 0, REL,\n        ALLSELECTED('Date'[Date]),\n        ORDERBY('Date'[Date])\n    ),\n    [Sales Amount]\n)\n```"
+      },
+      "B": {
+        "text": "Yes: **RUNNINGSUM**. It's a visual calculation function, so it only works inside a visual calculation (not in a regular model measure or calculated column).\n\n```dax\nRunning Total = RUNNINGSUM([Sales Amount])\n```\n\nIt runs along the visual matrix axis (default is ROWS), so the running total follows whatever sort order the visual uses, such as a Date column on the rows. To restart at each group, add the reset argument:\n\n```dax\nRunning Total by Year = RUNNINGSUM([Sales Amount], ROWS, LOWESTPARENT)\n```\n\nIf you need a running sum in a regular measure (outside visual calculations), there's no direct function. You'd use the `CALCULATE` + `FILTER` pattern, or window functions such as `WINDOW` with `ORDERBY`."
+      }
+    },
+    {
+      "id": "list-model-tables",
+      "regime": "info",
+      "category": "info",
+      "question": "From a DAX query, how do I list the tables in the model with their names and descriptions? Name the function.",
+      "A": {
+        "text": "Use **`INFO.TABLES()`**, one of the DAX INFO functions. It returns the model's table metadata, including `Name` and `Description`. Wrap it in `SELECTCOLUMNS` to keep only those two columns:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.TABLES(),\n    \"Name\", [Name],\n    \"Description\", [Description]\n)\n```\n\nYou can run this in DAX query view in Power BI Desktop, or from any tool that can send DAX queries to the model, such as DAX Studio or SSMS."
+      },
+      "B": {
+        "text": "Use **INFO.VIEW.TABLES** (it returns table name, description, storage mode, etc.). Wrap it in SELECTCOLUMNS to keep just the two columns you want:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.TABLES(),\n    \"Name\", [Name],\n    \"Description\", [Description]\n)\n```\n\n`INFO.TABLES()` also works and returns the raw table schema (name, description, visibility), but `INFO.VIEW.TABLES()` is the friendlier one for documenting a model."
+      }
+    },
+    {
+      "id": "list-model-measures",
+      "regime": "info",
+      "category": "info",
+      "question": "Which DAX function lets me read every measure in the model, with its expression, from a query? Name it and show the query.",
+      "A": {
+        "text": "Use **`INFO.MEASURES()`**, one of the `INFO.*` DAX functions. Run it in DAX query view (or DAX Studio / SSMS):\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.MEASURES(),\n    \"Measure\", [Name],\n    \"Expression\", [Expression]\n)\n```\n\n`INFO.MEASURES()` returns `TableID` rather than the table name. If you want the table name in the output, use **`INFO.VIEW.MEASURES()`** instead:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.MEASURES(),\n    \"Table\", [Table],\n    \"Measure\", [Name],\n    \"Expression\", [Expression]\n)\n```"
+      },
+      "B": {
+        "text": "**`INFO.MEASURES`** returns one row per measure, including its name and DAX expression.\n\n```dax\nEVALUATE INFO.MEASURES()\n```\n\nTo trim it to the useful columns:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.MEASURES(),\n    \"Name\", [Name],\n    \"Expression\", [Expression]\n)\n```\n\nRun it in DAX query view, DAX Studio, or SSMS.\n\nIf you want a friendlier, self-documenting version (name, description, DAX formula) that you can also use in a calculated table, use `INFO.VIEW.MEASURES()`."
+      }
+    },
+    {
+      "id": "list-relationships",
+      "regime": "info",
+      "category": "info",
+      "question": "I want to audit my model's relationships from a DAX query — which ones are active, what they join. Which function do I use?",
+      "A": {
+        "text": "Use **`INFO.VIEW.RELATIONSHIPS()`**. It returns table and column names directly. The plain `INFO.RELATIONSHIPS()` returns internal IDs, so you'd have to join to `INFO.TABLES()` and `INFO.COLUMNS()` to read it.\n\nRun this in DAX query view (or DAX Studio):\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.RELATIONSHIPS(),\n    \"From Table\", [FromTable],\n    \"From Column\", [FromColumn],\n    \"To Table\", [ToTable],\n    \"To Column\", [ToColumn],\n    \"Active\", [IsActive],\n    \"Cross filter\", [CrossFilteringBehavior],\n    \"From card.\", [FromCardinality],\n    \"To card.\", [ToCardinality]\n)\n```\n\nTo see only inactive relationships, wrap it in a filter:\n\n```dax\nEVALUATE\nFILTER(INFO.VIEW.RELATIONSHIPS(), NOT [IsActive])\n```"
+      },
+      "B": {
+        "text": "Use **INFO.VIEW.RELATIONSHIPS** for a readable audit. It returns relationship name, cardinality, and cross-filtering behavior, and it's designed for self-documenting the model (including in calculated tables).\n\n```dax\nEVALUATE INFO.VIEW.RELATIONSHIPS()\n```\n\nIf you need the raw metadata (e.g., the IDs behind the join columns), use **INFO.RELATIONSHIPS**:\n\n```dax\nEVALUATE INFO.RELATIONSHIPS()\n```\n\nThat version returns table/column IDs rather than names, so to resolve them to readable names you'd join against **INFO.TABLES** and **INFO.COLUMNS**. Here's a sketch:\n\n```dax\nEVALUATE\nVAR rels = INFO.RELATIONSHIPS()\nVAR tbls = SELECTCOLUMNS(INFO.TABLES(), \"TableID\", [ID], \"TableName\", [Name])\nRETURN\n    NATURALLEFTOUTERJOIN(\n        SELECTCOLUMNS(rels, \"FromTableID\", [FromTableID], \"ToTableID\", [ToTableID], \"IsActive\", [IsActive]),\n        SELECTCOLUMNS(tbls, \"FromTableID\", [TableID], \"FromTable\", [TableName])\n    )\n```\n\nI'd start with `INFO.VIEW.RELATIONSHIPS()` and check its output columns first. If it covers the active flag and the from/to tables and columns you need, you won't need the join. Run either in DAX query view or DAX Studio."
+      }
+    },
+    {
+      "id": "visual-axis-collapse",
+      "regime": "visual",
+      "category": "",
+      "question": "In a Power BI visual calculation, which functions move up and down the visual's axis — collapsing to a parent level or expanding to a lower one? Name them.",
+      "A": {
+        "text": "The hierarchy functions in visual calculations do this:\n\n- **`COLLAPSE`** moves up one level (or a given number of levels) to the parent.\n- **`COLLAPSEALL`** moves up to the top, the grand total.\n- **`EXPAND`** moves down one level (or a given number of levels) to the children.\n- **`EXPANDALL`** moves down to the lowest level.\n\nEach takes an expression and an optional axis, such as `ROWS` or `COLUMNS`.\n\n```DAX\nPct of parent = DIVIDE([Sales], COLLAPSE([Sales], ROWS))\nPct of total  = DIVIDE([Sales], COLLAPSEALL([Sales], ROWS))\n```\n\nThe visual needs a hierarchy on the axis, for example Year > Quarter > Month, for these to have a level to move to."
+      },
+      "B": {
+        "text": "The four functions that move along the axis hierarchy are:\n\n- **COLLAPSE**: goes up to a higher (parent) level relative to the current context.\n- **COLLAPSEALL**: goes up to the highest level (the grand total of the axis).\n- **EXPAND**: goes down to a more detailed level.\n- **EXPANDALL**: goes down to the most detailed (leaf) level.\n\nEach one takes an optional expression, which is evaluated in the new context. `ISATLEVEL` is a useful companion for checking which level you're at.\n\n```dax\n-- Share of parent level\nPct of Parent = DIVIDE([Sales], COLLAPSE([Sales], ROWS))\n\n-- Share of axis total\nPct of Total = DIVIDE([Sales], COLLAPSEALL([Sales], ROWS))\n\n-- Value at the leaf level, rolled up from the detail\nLeaf Sales = EXPANDALL([Sales], ROWS)\n```\n\nThe axis argument (`ROWS` or `COLUMNS`) specifies which axis to navigate. `COLLAPSE` and `EXPAND` also accept an optional step count to control how many levels to move."
+      }
+    },
+    {
+      "id": "visual-first-last",
+      "regime": "visual",
+      "category": "filter",
+      "question": "Inside a visual calculation, how do I refer to the first and the last value along the axis? Name the functions.",
+      "A": {
+        "text": "Use **`FIRST()`** and **`LAST()`**. They return the value of a field at the first or last row along the visual's axis, and they sit alongside `PREVIOUS()` and `NEXT()`.\n\n```DAX\nChange vs First = [Sales] - FIRST([Sales])\nChange vs Last  = [Sales] - LAST([Sales])\n```\n\n- By default they follow the visual's axis, which is the rows of a matrix or table.\n- The optional `axis` and `reset` arguments control the direction and where the calculation restarts. For example, `reset` lets you restart at each parent group, such as each year."
+      },
+      "B": {
+        "text": "Use **FIRST** and **LAST**, which are visual-calculation-only functions. They retrieve a value from the first or last row of an axis in the visual matrix.\n\n```DAX\n-- Difference from the first value\nChange vs First = [Sales] - FIRST([Sales])\n\n-- Percent of the last value\nPct of Last = DIVIDE([Sales], LAST([Sales]))\n```\n\nBy default they work along the `ROWS` axis. To use a different axis, pass it as an argument, for example `FIRST([Sales], COLUMNS)`.\n\nDon't confuse these with `FIRSTNONBLANK` and `LASTNONBLANK`. Those are regular DAX functions that work on column filter context, not on the visual matrix axis."
+      }
+    },
+    {
+      "id": "visual-is-at-level",
+      "regime": "visual",
+      "category": "",
+      "question": "In a visual calculation, how do I test whether the current row sits at a particular level of the axis hierarchy? Name the function.",
+      "A": {
+        "text": "Use **`ISATLEVEL`**. It takes a field from the visual's axis and returns TRUE when the current row is at that field's level of the hierarchy.\n\n```dax\nMonth Share =\nIF(\n    ISATLEVEL([Month]),\n    DIVIDE([Sales], COLLAPSE([Sales], ROWS)),\n    BLANK()\n)\n```\n\nHere the calculation only returns a value on rows at the `Month` level, and blanks out the Year and Total rows. `COLLAPSE(..., ROWS)` fetches the parent-level value to divide by."
+      },
+      "B": {
+        "text": "Use **ISATLEVEL**. It returns TRUE if the given column (or hierarchy level) is present at the current level of the visual's axis, so you can tell whether the row is a detail row or a subtotal/grand total.\n\n```dax\nLevel Label =\nIF (\n    ISATLEVEL ( [Year] ),\n    \"Year row\",\n    \"Total row\"\n)\n```\n\nA common pattern is to show a value only at a given level:\n\n```dax\nSales at Month Only =\nIF ( ISATLEVEL ( [Month] ), [Sales Amount], BLANK () )\n```\n\nPass the field as it appears in the visual's axis (the field name in brackets). The function takes only one argument.\n\nIf you then need to move up or down levels to compute something, that's what **COLLAPSE** and **EXPAND** are for, but ISATLEVEL is the one that does the test."
+      }
+    },
+    {
+      "id": "last-year-same-day",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "I need the value from the same day one year ago, not the same period. Which DAX function shifts the date context by a fixed interval? Show it.",
+      "A": {
+        "text": "Use **`DATEADD`** inside **`CALCULATE`**. It shifts the dates in the current filter context by a fixed interval.\n\n```dax\nSales Same Day LY =\nCALCULATE(\n    [Total Sales],\n    DATEADD('Date'[Date], -1, YEAR)\n)\n```\n\n- At day granularity, each date maps to the same calendar date one year earlier (Feb 29 maps to Feb 28).\n- `DATEADD` shifts whatever is in context. If a visual is at month level, it shifts the whole month, so put `'Date'[Date]` on the axis or in a table to see day-level values.\n- It requires a contiguous date table, ideally marked as the date table.\n\n`SAMEPERIODLASTYEAR` is shorthand for `DATEADD(..., -1, YEAR)`, so the result is the same."
+      },
+      "B": {
+        "text": "Use **DATEADD** inside **CALCULATE**. It shifts the dates in the current filter context by a fixed number of intervals (day, month, quarter, year).\n\n```dax\nSales Same Day LY =\nCALCULATE (\n    [Total Sales],\n    DATEADD ( 'Date'[Date], -1, YEAR )\n)\n```\n\nA few notes:\n\n- At day granularity, `-1, YEAR` moves each selected date back one year. For example, 15 Jun 2024 maps to 15 Jun 2023.\n- `SAMEPERIODLASTYEAR` is equivalent to `DATEADD ( 'Date'[Date], -1, YEAR )`. Use whichever you prefer.\n- `DATEADD` needs a contiguous date column from a proper date table marked as the date table.\n\nIf you wanted a fixed 365-day shift instead of a calendar-year shift, you'd use `DATEADD ( 'Date'[Date], -365, DAY )`. That drifts against leap years, so the YEAR version is usually what you want."
+      }
+    },
+    {
+      "id": "month-to-date",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "Month-to-date sales in DAX, and I want the shortest form. Which function?",
+      "A": {
+        "text": "Use **TOTALMTD**:\n\n```dax\nSales MTD = TOTALMTD ( SUM ( Sales[Amount] ), 'Date'[Date] )\n```\n\nIt needs a proper marked date table with contiguous dates. If you already have a base measure, it reads even shorter:\n\n```dax\nSales MTD = TOTALMTD ( [Total Sales], 'Date'[Date] )\n```\n\nThe equivalent long form is `CALCULATE ( [Total Sales], DATESMTD ( 'Date'[Date] ) )`, which is worth switching to if you need to combine it with other filter arguments."
+      },
+      "B": {
+        "text": "Use **TOTALMTD**. It's the shortest form because it wraps the aggregation and the date filter in one call:\n\n```dax\nSales MTD =\nTOTALMTD ( SUM ( Sales[Amount] ), 'Date'[Date] )\n```\n\nThe longer equivalent uses **CALCULATE** with **DATESMTD**:\n\n```dax\nSales MTD =\nCALCULATE ( SUM ( Sales[Amount] ), DATESMTD ( 'Date'[Date] ) )\n```\n\nBoth need a proper date table, marked as a date table, with the `'Date'[Date]` column related to your sales table."
+      }
+    },
+    {
+      "id": "closing-balance",
+      "regime": "classic",
+      "category": "time-intelligence",
+      "question": "I need the inventory value at the last date of each quarter. Which DAX function is built for that? Name it.",
+      "A": {
+        "text": "**`CLOSINGBALANCEQUARTER`** is the function built for this.\n\n```dax\nInventory Value EoQ =\nCLOSINGBALANCEQUARTER(\n    SUM ( Inventory[Value] ),\n    'Date'[Date]\n)\n```\n\nIt evaluates the expression at the last date of the quarter in the current filter context. It's the shorthand for:\n\n```dax\nCALCULATE ( SUM ( Inventory[Value] ), LASTDATE ( 'Date'[Date] ) )\n```\n\nNotes:\n- You need a proper date table, with a continuous date column marked as the date table.\n- Inventory is semi-additive, so you want this rather than a plain `SUM`, which would add up every day in the quarter.\n- If your snapshots don't exist on the calendar quarter-end date, `LASTDATE` returns blank. In that case, use `LASTNONBLANK`:\n\n```dax\nInventory Value EoQ =\nCALCULATE(\n    SUM ( Inventory[Value] ),\n    LASTNONBLANK ( 'Date'[Date], CALCULATE ( COUNTROWS ( Inventory ) ) )\n)\n```"
+      },
+      "B": {
+        "text": "**CLOSINGBALANCEQUARTER** is the function built for this. It evaluates an expression at the last date of the quarter in the current filter context.\n\n```dax\nInventory Value EOQ =\nCLOSINGBALANCEQUARTER (\n    SUM ( Inventory[Value] ),\n    'Date'[Date]\n)\n```\n\nNotes:\n- You need a proper date table marked as the date table, or at least a contiguous date column.\n- If inventory is a snapshot, as stock levels usually are, `SUM` is fine here because the function picks a single date. If your snapshots aren't recorded on every date, the last date of the quarter may have no rows and the result will be blank. In that case, use `CALCULATE ( [Inventory Value], LASTNONBLANK ( 'Date'[Date], [Inventory Value] ) )` instead. `LASTNONBLANK` isn't in the list you gave me, but it is the standard fix for this gap."
+      }
+    },
+    {
+      "id": "remove-all-filters",
+      "regime": "classic",
+      "category": "filter",
+      "question": "In a measure, how do I ignore every filter coming from the visual? Name the function and any alternative that does the same thing more explicitly.",
+      "A": {
+        "text": "Use **`ALL`** inside `CALCULATE` to strip filters:\n\n```dax\nTotal Sales (All) =\nCALCULATE ( [Total Sales], ALL ( Sales ) )\n```\n\n`ALL ( Sales )` removes filters on every column of the `Sales` table. Note that it only clears filters on that table. If the visual is filtering through a related dimension (e.g., `Product[Category]`), those filters won't be removed unless you include those tables too:\n\n```dax\nTotal Sales (All) =\nCALCULATE ( [Total Sales], ALL ( Sales ), ALL ( Product ), ALL ( 'Date' ) )\n```\n\n**The more explicit alternative is `REMOVEFILTERS`**, which does the same thing but only works as a `CALCULATE` modifier, so the intent is clearer:\n\n```dax\nTotal Sales (All) =\nCALCULATE ( [Total Sales], REMOVEFILTERS ( Sales ), REMOVEFILTERS ( Product ), REMOVEFILTERS ( 'Date' ) )\n```\n\nCalling `REMOVEFILTERS()` with no arguments clears filters from the entire model:\n\n```dax\nTotal Sales (All) =\nCALCULATE ( [Total Sales], REMOVEFILTERS () )\n```\n\nUse `ALL` when you need a table or column of values returned (e.g., inside `SUMX` or `VALUES`-style iterators), and `REMOVEFILTERS` when you only want to clear filters."
+      },
+      "B": {
+        "text": "Use **ALL** inside **CALCULATE** to clear filters on a table (or column). The more explicit alternative is **REMOVEFILTERS**, which does the same job but reads as \"remove filters\" and can only be used as a CALCULATE modifier.\n\n```dax\nTotal Sales (All) =\nCALCULATE ( SUM ( Sales[Amount] ), ALL ( Sales ) )\n```\n\n```dax\nTotal Sales (All) =\nCALCULATE ( SUM ( Sales[Amount] ), REMOVEFILTERS ( Sales ) )\n```\n\nNotes:\n- Filters from the visual on other tables (e.g. `Date`, `Product`) are only cleared if you name those tables too: `REMOVEFILTERS ( Date ), REMOVEFILTERS ( Product )`.\n- Calling `REMOVEFILTERS()` with no arguments clears filters on the whole model, which is the most literal way to say \"ignore everything from the visual.\"\n- If you want to keep slicer or page-level filters but ignore only the visual's own row/column grouping, use **ALLSELECTED** instead."
+      }
+    },
+    {
+      "id": "keep-one-filter",
+      "regime": "classic",
+      "category": "filter",
+      "question": "I want CALCULATE to add my filter to the existing one instead of replacing it. Which modifier do I use?",
+      "A": {
+        "text": "Use **KEEPFILTERS**. By default, a column filter in `CALCULATE` overwrites any existing filter on that same column. Wrapping it in `KEEPFILTERS` intersects the new filter with the existing one instead.\n\n```DAX\nRed Sales =\nCALCULATE (\n    [Total Sales],\n    KEEPFILTERS ( 'Product'[Color] = \"Red\" )\n)\n```\n\nIf a slicer already filters `Color` to Blue, this returns blank, since Blue ∩ Red is empty. Without `KEEPFILTERS`, the slicer would be replaced and you'd get Red sales.\n\nFilters on *different* columns already combine (AND) without any modifier. `KEEPFILTERS` only matters when you're filtering a column that is already filtered."
+      },
+      "B": {
+        "text": "Use **KEEPFILTERS** inside CALCULATE. By default, a column filter in CALCULATE overwrites any existing filter on that column. KEEPFILTERS makes it intersect with the existing filter instead.\n\n```dax\nRed Sales =\nCALCULATE (\n    [Total Sales],\n    KEEPFILTERS ( Product[Color] = \"Red\" )\n)\n```\n\nIf a slicer already filters `Product[Color]` to Blue, this returns blank (Blue ∩ Red = nothing). Without KEEPFILTERS, it would return Red sales and ignore the slicer.\n\nIt also works with a FILTER table expression:\n\n```dax\nCALCULATE (\n    [Total Sales],\n    KEEPFILTERS ( FILTER ( ALL ( Product[Color] ), Product[Color] = \"Red\" ) )\n)\n```"
+      }
+    },
+    {
+      "id": "relate-inactive",
+      "regime": "classic",
+      "category": "relationship",
+      "question": "My model has an inactive relationship between Sales and Dates. How do I use it for one measure only? Name the function.",
+      "A": {
+        "text": "Use **USERELATIONSHIP** inside **CALCULATE**:\n\n```dax\nSales by Ship Date =\nCALCULATE (\n    [Total Sales],\n    USERELATIONSHIP ( Sales[ShipDate], 'Dates'[Date] )\n)\n```\n\nThis activates the inactive relationship only for that measure's evaluation. Your other measures keep using the active relationship.\n\nNotes:\n- Reference the exact columns that define the inactive relationship (the many-side column in Sales and the key column in Dates).\n- If the model has row-level security on the Dates table, USERELATIONSHIP can behave differently, so test it if you use RLS."
+      },
+      "B": {
+        "text": "Use **USERELATIONSHIP** inside **CALCULATE**. It activates the inactive relationship for that measure only, and the model's default stays unchanged.\n\n```dax\nSales by Ship Date =\nCALCULATE(\n    [Total Sales],\n    USERELATIONSHIP( Sales[ShipDate], Dates[Date] )\n)\n```\n\nNotes:\n- The two columns must be the ones that define the existing inactive relationship (the many-side column in `Sales` and the one-side column in `Dates`).\n- `USERELATIONSHIP` can only be used as a filter argument of a function that accepts one, such as `CALCULATE` or `CALCULATETABLE`."
+      }
+    },
+    {
+      "id": "divide-safely",
+      "regime": "classic",
+      "category": "math-and-trig",
+      "question": "Dividing two measures and I do not want an error when the denominator is zero. What is the DAX way?",
+      "A": {
+        "text": "Use `DIVIDE`, which handles zero (and blank) denominators for you:\n\n```DAX\nMargin % =\nDIVIDE ( [Profit], [Revenue] )\n```\n\nIf `[Revenue]` is 0 or blank, it returns BLANK by default. To return something else, pass an alternate result as the third argument:\n\n```DAX\nMargin % =\nDIVIDE ( [Profit], [Revenue], 0 )\n```\n\nPrefer `DIVIDE` over `IF ( [Revenue] = 0, BLANK(), [Profit] / [Revenue] )`. It's shorter and is optimized by the engine.\n\nUse the BLANK default when the result feeds visuals, since blanks are dropped from charts. Use `0` only if you really want zeros displayed."
+      },
+      "B": {
+        "text": "Use **DIVIDE**. It handles a zero (or BLANK) denominator without raising an error.\n\n```dax\nMargin % =\nDIVIDE ( [Total Profit], [Total Sales] )\n```\n\nBy default it returns BLANK when the denominator is 0. To return a different value, pass it as the optional third argument:\n\n```dax\nMargin % =\nDIVIDE ( [Total Profit], [Total Sales], 0 )\n```\n\nDIVIDE is preferable to `IF ( [Total Sales] = 0, BLANK(), [Total Profit] / [Total Sales] )` because it is shorter and is optimized for this case."
+      }
+    },
+    {
+      "id": "count-distinct-no-blank",
+      "regime": "classic",
+      "category": "aggregation",
+      "question": "I need a distinct count that does NOT count the blank row the engine adds. Which function?",
+      "A": {
+        "text": "Use **DISTINCTCOUNTNOBLANK**. It works like `DISTINCTCOUNT` but skips BLANK, including the virtual blank row the engine adds when a fact table has values with no match in the related dimension.\n\n```dax\nCustomers = DISTINCTCOUNTNOBLANK ( Sales[CustomerID] )\n```\n\n`DISTINCTCOUNT` counts that blank as a value, so it returns one more than `DISTINCTCOUNTNOBLANK` whenever the blank is present."
+      },
+      "B": {
+        "text": "Use **DISTINCTCOUNTNOBLANK**. It counts distinct values in a column and ignores blanks, including the blank row the engine adds for unmatched relationships. `DISTINCTCOUNT` includes that blank as a value.\n\n```dax\nDistinct Customers =\nDISTINCTCOUNTNOBLANK ( Sales[CustomerID] )\n```\n\nIf you ever need the same result with more control, this is equivalent:\n\n```dax\nDistinct Customers =\nCOUNTROWS ( FILTER ( VALUES ( Sales[CustomerID] ), NOT ISBLANK ( Sales[CustomerID] ) ) )\n```\n\nThe first one is simpler, so I'd go with that."
+      }
+    },
+    {
+      "id": "concat-column",
+      "regime": "classic",
+      "category": "text",
+      "question": "Join every value of a column into one comma-separated string in a measure. Which DAX function, and what does it need?",
+      "A": {
+        "text": "Use **CONCATENATEX**. It iterates a table and joins an expression for each row with a delimiter.\n\n```dax\nNames List =\nCONCATENATEX(\n    VALUES( Customer[Name] ),\n    Customer[Name],\n    \", \",\n    Customer[Name], ASC\n)\n```\n\n**What it needs:**\n1. **Table**: the rows to iterate. Use `VALUES()` (or `DISTINCT()`) to get unique values and respect filter context. Use the table itself if you want duplicates.\n2. **Expression**: what to output per row (must evaluate to text, or something implicitly convertible).\n3. **Delimiter** (optional): `\", \"` here.\n4. **OrderBy / Order** (optional): without it, order isn't guaranteed, so specify it if you want a stable result.\n\n**Notes:**\n- The result respects the current filter context, so it changes with slicers and visuals.\n- `CONCATENATE` and `&` only join two values; they don't aggregate a column.\n- For long lists, consider wrapping with `TOPN` to limit the number of items, since the string can get very long."
+      },
+      "B": {
+        "text": "Use **CONCATENATEX**. It's an iterator, so it needs:\n\n1. **A table** to iterate (use `VALUES` to get distinct values, or the table itself for every row)\n2. **An expression** to evaluate per row (the column)\n3. **A delimiter** (optional, but you need it for commas)\n4. Optionally an **order-by** expression and direction\n\n```dax\nProduct List =\nCONCATENATEX (\n    VALUES ( Product[Name] ),\n    Product[Name],\n    \", \",\n    Product[Name], ASC\n)\n```\n\nNotes:\n- `VALUES` returns distinct values in the current filter context. Use `Product` instead if you want one entry per row, including duplicates.\n- Without the order-by argument, the sort order isn't guaranteed, so add it if order matters.\n- `CONCATENATE` and `COMBINEVALUES` won't work here. They join a fixed number of strings, not a column's values."
+      }
+    },
+    {
+      "id": "find-substring",
+      "regime": "classic",
+      "category": "text",
+      "question": "Find where a substring starts inside a text column, case-insensitively. Which DAX function, and how does it differ from the case-sensitive one?",
+      "A": {
+        "text": "Use **`SEARCH`**. It's case-insensitive, while **`FIND`** is case-sensitive.\n\n```DAX\nPos_Insensitive = SEARCH(\"power\", 'Table'[Text], 1, 0)   -- matches \"Power\", \"POWER\", \"power\"\nPos_Sensitive   = FIND(\"power\", 'Table'[Text], 1, 0)     -- matches only lowercase \"power\"\n```\n\nBoth share the signature `(find_text, within_text, [start_num], [not_found_value])`:\n\n- They return a 1-based position.\n- If there's no match and you omit `not_found_value`, they return an error, so pass `0` or `BLANK()` as the fourth argument.\n- `SEARCH` also supports the wildcards `?` and `*` in `find_text`. `FIND` treats them as literal characters."
+      },
+      "B": {
+        "text": "Use **SEARCH** for a case-insensitive match. **FIND** is the case-sensitive one.\n\nBoth return the 1-based starting position of the substring. They differ in two ways:\n\n- **Case:** `SEARCH` ignores case, while `FIND` respects it.\n- **Wildcards:** `SEARCH` supports wildcards (`?`, `*`, `~`), while `FIND` treats them as literal characters.\n\nBoth take the same arguments: `(<find_text>, <within_text>, [<start_num>], [<NotFoundValue>])`. If you leave out `NotFoundValue`, a miss raises an error, so pass one to avoid that.\n\n```dax\nPos Insensitive =\nSEARCH ( \"bike\", Products[Name], 1, 0 )   -- matches \"Mountain BIKE\"\n\nPos Sensitive =\nFIND ( \"bike\", Products[Name], 1, 0 )     -- does not match \"Mountain BIKE\"\n```\n\nHere `0` is returned when the text isn't found."
+      }
+    },
+    {
+      "id": "multiple-conditions",
+      "regime": "classic",
+      "category": "logical",
+      "question": "I have five mutually exclusive conditions. What is the idiomatic DAX instead of nested IFs?",
+      "A": {
+        "text": "Use `SWITCH(TRUE(), ...)`. It evaluates each condition in order and returns the result for the first one that is true.\n\n```dax\nCategory =\nSWITCH (\n    TRUE (),\n    [Sales] < 1000,   \"Low\",\n    [Sales] < 5000,   \"Medium\",\n    [Sales] < 10000,  \"High\",\n    [Sales] < 50000,  \"Very High\",\n    \"Enterprise\"      -- final else\n)\n```\n\n- The last argument without a condition is the default. Always include it, or unmatched rows return BLANK.\n- Because evaluation stops at the first match, ordering matters. For truly mutually exclusive conditions this is not a concern, but it lets you write ranges like the above without repeating lower bounds.\n- If you are comparing one expression to discrete values, skip `TRUE()` and use the simpler form: `SWITCH ( Table[Code], \"A\", \"Alpha\", \"B\", \"Beta\", \"Other\" )`."
+      },
+      "B": {
+        "text": "Use **SWITCH** with `TRUE()` as the first argument. It evaluates each condition in order and returns the result for the first one that's true.\n\n```dax\nCategory =\nSWITCH (\n    TRUE (),\n    [Score] < 20, \"Very Low\",\n    [Score] < 40, \"Low\",\n    [Score] < 60, \"Medium\",\n    [Score] < 80, \"High\",\n    \"Very High\"   -- default (else)\n)\n```\n\nNotes:\n- Conditions are checked top to bottom and evaluation stops at the first match. Since yours are mutually exclusive, order doesn't matter for correctness, but it does for range-style tests like the one above.\n- The last argument with no condition is the default. Leave it out and unmatched rows return BLANK.\n- If you're comparing one expression to five discrete values, skip `TRUE()` and use the simpler form: `SWITCH ([Status], \"A\", 1, \"B\", 2, \"C\", 3, 0)`."
+      }
+    },
+    {
+      "id": "first-non-blank",
+      "regime": "classic",
+      "category": "statistical",
+      "question": "The first date on which a measure has a value, evaluating the measure rather than just scanning the column. Which function?",
+      "A": {
+        "text": "Use **`FIRSTNONBLANK`**. It evaluates the expression for each value in the column, in ascending order, and returns the first one where the result isn't blank. The measure is evaluated per date through context transition.\n\n```DAX\nFirst Date With Value =\nMAXX(\n    FIRSTNONBLANK( 'Date'[Date], [My Measure] ),\n    'Date'[Date]\n)\n```\n\n`FIRSTNONBLANK` returns a one-row table, so wrapping it in `MAXX` (or `MINX`) gives a clean scalar.\n\nTo ignore date slicers and search the whole calendar, use `ALL('Date'[Date])` as the first argument instead of `'Date'[Date]`.\n\nA `MINX( FILTER( VALUES('Date'[Date]), NOT ISBLANK([My Measure]) ), 'Date'[Date] )` pattern gives the same result, but `FIRSTNONBLANK` is the purpose-built function."
+      },
+      "B": {
+        "text": "Use **FIRSTNONBLANK**. It isn't in the statistical list you pasted, since it's a filter/time-intelligence function. It evaluates the expression (your measure) for each value in the column, in that value's filter context, and returns the first column value where the result isn't blank.\n\n```dax\nFirst Sales Date =\nMINX (\n    FIRSTNONBLANK ( 'Date'[Date], [Total Sales] ),\n    'Date'[Date]\n)\n```\n\nFIRSTNONBLANK returns a one-column table, so the `MINX` wrapper makes it a reliable scalar. Use a proper date table column, and make sure `[Total Sales]` returns BLANK (not 0) for dates with no activity.\n\nDon't confuse it with **FIRSTNONBLANKVALUE**, which returns the measure's value at that first date, not the date itself."
+      }
+    },
+    {
+      "id": "table-from-values",
+      "regime": "classic",
+      "category": "table-manipulation",
+      "question": "Build a small literal table inside a DAX query, with typed columns. Which construct?",
+      "A": {
+        "text": "Use **`DATATABLE`**. It declares column names and data types explicitly, then takes the rows as constants.\n\n```dax\nEVALUATE\nDATATABLE(\n    \"Product\", STRING,\n    \"Qty\",     INTEGER,\n    \"Price\",   CURRENCY,\n    \"Shipped\", DATETIME,\n    {\n        { \"Bike\",   5, 199.99, \"2024-01-15\" },\n        { \"Helmet\", 20, 39.50, \"2024-02-01\" }\n    }\n)\n```\n\n- Supported types: `STRING`, `INTEGER`, `DOUBLE`, `BOOLEAN`, `DATETIME`, `CURRENCY`.\n- Row values must be literals, not expressions.\n- The `{ ... }` table constructor, e.g. `{ (\"Bike\", 5) }`, also works, but its columns are auto-named `Value1`, `Value2`, and so on, with inferred types. Use `DATATABLE` when you need names and types."
+      },
+      "B": {
+        "text": "Use **DATATABLE**. It declares an inline table with explicit column names and types, followed by the rows as a literal array.\n\n```dax\nEVALUATE\nDATATABLE(\n    \"Product\", STRING,\n    \"Qty\",     INTEGER,\n    \"Price\",   CURRENCY,\n    \"Launch\",  DATETIME,\n    {\n        { \"Apple\",  10, 1.25, \"2024-01-15\" },\n        { \"Banana\", 25, 0.40, \"2024-03-01\" }\n    }\n)\n```\n\nSupported types are `INTEGER`, `DOUBLE`, `STRING`, `BOOLEAN`, `CURRENCY`, and `DATETIME`.\n\nNotes:\n- Values must be constants. You can't put expressions or measure references in the rows.\n- If you only need a single row with computed values, `ROW(\"Name\", <expr>, ...)` is the right tool instead."
+      }
+    },
+    {
+      "id": "rank-classic",
+      "regime": "classic",
+      "category": "statistical",
+      "question": "Rank products by sales inside a measure, the classic way that existed before window functions. Name the function and its ordering argument.",
+      "A": {
+        "text": "Use **`RANKX`**. Its ordering argument is the fourth one, `Order`, which takes `DESC` (the default, so the highest sales gets rank 1) or `ASC`.\n\n```dax\nProduct Rank =\nRANKX(\n    ALLSELECTED( Product[ProductName] ),  -- table to rank over\n    [Total Sales],                        -- expression evaluated per product\n    ,                                     -- value (omit; defaults to the current row's expression)\n    DESC,                                 -- order\n    Dense                                 -- ties: Dense or Skip\n)\n```\n\n- Use `ALL( Product[ProductName] )` instead of `ALLSELECTED` if the rank should ignore slicers and filters.\n- The fifth argument, `Ties`, controls whether tied products leave gaps in the ranking (`Skip`, the default) or not (`Dense`)."
+      },
+      "B": {
+        "text": "Use **RANKX**. Its signature is `RANKX(<table>, <expression>[, <value>[, <order>[, <ties>]]])`, and the ordering argument is `<order>`, which takes `DESC` (the default, so the highest value gets rank 1) or `ASC`.\n\n```dax\nProduct Sales Rank =\nRANKX(\n    ALLSELECTED( Product[ProductName] ),\n    [Total Sales],\n    ,\n    DESC,\n    DENSE\n)\n```\n\n- `ALLSELECTED( Product[ProductName] )` removes the row-level filter on the product, so every product in the current slicer or filter context gets ranked.\n- `[Total Sales]` is the measure that is evaluated for each product.\n- The empty third argument (`<value>`) means the rank is computed for the current product.\n- `DESC` gives the highest sales rank 1.\n- `DENSE` keeps rank numbers consecutive when there are ties. The default, `SKIP`, leaves gaps after them.\n\n`RANK.EQ` is in the same list, but it ranks a value in a column of a table, not the result of a measure, so `RANKX` is the right choice here."
+      }
+    },
+    {
+      "id": "selected-one-value",
+      "regime": "classic",
+      "category": "information",
+      "question": "Return a slicer's value when exactly one item is selected and a fallback otherwise, without writing HASONEVALUE plus IF. Which function?",
+      "A": {
+        "text": "Use **SELECTEDVALUE**. It returns the value when the column has exactly one distinct value in the current filter context, and the alternate result otherwise.\n\n```dax\nSelected Region =\nSELECTEDVALUE ( Geography[Region], \"Multiple or none\" )\n```\n\n- Signature: `SELECTEDVALUE ( <columnName> [, <alternateResult>] )`\n- If you omit the second argument, it returns BLANK when there are zero or multiple values.\n- It's equivalent to `IF ( HASONEVALUE ( col ), VALUES ( col ), alternate )`, but shorter.\n\nCommon use is driving a disconnected slicer table, e.g. a what-if parameter:\n\n```dax\nDiscount Rate =\nSELECTEDVALUE ( 'Discount'[Discount Value], 0.05 )\n```\n\nOne note: SELECTEDVALUE also returns the alternate result when a slicer has multiple items selected, not only when nothing is selected. If you need to distinguish those cases, you'd need to add a `COUNTROWS ( VALUES ( col ) )` check."
+      },
+      "B": {
+        "text": "Use **SELECTEDVALUE**. It returns the column's value when exactly one is in the filter context, and the alternate result otherwise (no HASONEVALUE plus IF needed):\n\n```dax\nSelected Region =\nSELECTEDVALUE ( Geography[Region], \"Multiple or none\" )\n```\n\nIt's not in the list you pasted, because that list is the information functions and SELECTEDVALUE is in the filter functions group. Of the functions in your list, only HASONEVALUE does the single-value test, which is why it needs IF."
+      }
+    },
+    {
+      "id": "window-nth-row",
+      "regime": "window",
+      "category": "filter",
+      "question": "Get the value from the Nth row of an ordered table relative to the current row, using the window-function family. Name the function.",
+      "A": {
+        "text": "Use **`OFFSET`**. It returns the row at a relative position (`delta`) from the current row in an ordered relation. A negative delta looks back and a positive one looks forward.\n\n```DAX\nSales 2 Months Ago =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        -2,\n        ALLSELECTED ( 'Date'[Year Month] ),\n        ORDERBY ( 'Date'[Year Month], ASC )\n    )\n)\n```\n\n- Use `-1` for the previous row, `1` for the next row, and so on.\n- Add `PARTITIONBY ( 'Date'[Year] )` to restart the offset within each year.\n- `'Date'[Year Month]` must be in the visual's filter context, such as on an axis or a matrix row.\n\nFor an absolute position (for example, the 3rd row) rather than a relative one, use `INDEX`."
+      },
+      "B": {
+        "text": "Use **OFFSET**. It returns a single row positioned a given number of rows before (negative) or after (positive) the current row, based on the order you specify with **ORDERBY** (and optionally **PARTITIONBY**).\n\nExample: previous month's sales:\n\n```dax\nPrev Month Sales =\nCALCULATE(\n    [Total Sales],\n    OFFSET(\n        -1,\n        ALLSELECTED('Date'[Year], 'Date'[Month]),\n        ORDERBY('Date'[Year], ASC, 'Date'[Month], ASC)\n    )\n)\n```\n\n- `-1` is the previous row, `-2` is two rows back, and `+N` looks forward.\n- Add `PARTITIONBY('Date'[Year])` if the offset should restart within each year.\n\nIf you need an absolute position (e.g. the 3rd row overall) rather than one relative to the current row, use **INDEX** instead."
+      }
+    },
+    {
+      "id": "window-absolute-position",
+      "regime": "window",
+      "category": "filter",
+      "question": "I want an absolute position in an ordered partition, not a relative one — the third row, always. Which window function?",
+      "A": {
+        "text": "Use **`INDEX`**. It returns the row at an absolute position (1-based) within each partition after ordering. `OFFSET` is the relative one. A negative position counts from the end, so `-1` is the last row.\n\n```dax\nThird Month Sales =\nCALCULATE (\n    [Total Sales],\n    INDEX (\n        3,\n        ALLSELECTED ( 'Date'[Year], 'Date'[MonthNumber], 'Date'[Month] ),\n        ORDERBY ( 'Date'[MonthNumber], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\nThis gives each year's third month's sales, regardless of which row the measure is evaluated on. Every column in `ORDERBY` and `PARTITIONBY` must be in the relation you pass in."
+      },
+      "B": {
+        "text": "Use **INDEX**. It returns the row at an absolute position within an ordered partition, unlike OFFSET, which is relative to the current row.\n\n```dax\nThird Row Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    INDEX (\n        3,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month] ),\n        ORDERBY ( 'Date'[Month], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\n- The first argument is the position. `3` is the third row, and a negative value counts from the end (`-1` is the last row).\n- `ORDERBY` sets the sort order, and `PARTITIONBY` restarts the count within each partition (here, each year).\n- If the order doesn't uniquely identify rows, add `MATCHBY` so the position is deterministic."
+      }
+    },
+    {
+      "id": "window-row-number",
+      "regime": "window",
+      "category": "filter",
+      "question": "A sequential number per row inside a partition, like SQL's ROW_NUMBER. Does DAX have one? Name it.",
+      "A": {
+        "text": "Yes, **`ROWNUMBER`**. It is a window function, in the same family as `INDEX`, `OFFSET`, and `WINDOW`.\n\n```DAX\nRowNum =\nROWNUMBER (\n    Sales,\n    ORDERBY ( Sales[OrderDate], ASC, Sales[OrderID], ASC ),\n    DEFAULT,\n    PARTITIONBY ( Sales[CustomerID] )\n)\n```\n\nThis is a calculated column that numbers each customer's rows by date. Ties are broken by `OrderID`.\n\n- `ORDERBY` should include enough columns to make each row unique. Otherwise `ROWNUMBER` can't assign a distinct number and may return an error.\n- `PARTITIONBY` is the equivalent of SQL's `PARTITION BY`.\n- In a measure, pass a relation like `ALLSELECTED ( Sales[CustomerID], Sales[OrderID] )` instead of `Sales`.\n- If your environment predates `ROWNUMBER`, use `RANKX` with `ROW` as the tiebreaker, e.g. `RANKX ( FILTER ( Sales, Sales[CustomerID] = EARLIER ( Sales[CustomerID] ) ), Sales[OrderID], , ASC, DENSE )`. This is only a fallback for a unique key."
+      },
+      "B": {
+        "text": "Yes: **ROWNUMBER**. It returns a unique sequential position for each row within a partition, like SQL's `ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)`.\n\nYou use it with **ORDERBY** (sort order) and **PARTITIONBY** (the partition). Add **MATCHBY** if the sort columns don't uniquely identify a row, so ties are broken deterministically.\n\nAs a calculated column:\n\n```dax\nRow Num =\nROWNUMBER(\n    Sales,\n    ORDERBY(Sales[OrderDate], ASC),\n    PARTITIONBY(Sales[CustomerID]),\n    MATCHBY(Sales[OrderID])\n)\n```\n\nAs a measure, you pass a table with the relevant columns, for example `ALLSELECTED(Sales[CustomerID], Sales[OrderID], Sales[OrderDate])`, as the first argument.\n\nIf you want ties to share a rank rather than get unique numbers, use **RANK** instead."
+      }
+    },
+    {
+      "id": "window-moving-average",
+      "regime": "window",
+      "category": "filter",
+      "question": "A moving average over the last N rows, without writing the CALCULATE and DATESINPERIOD pattern. Is there a dedicated function?",
+      "A": {
+        "text": "Yes, two options, depending on where you're working.\n\n**1. Visual calculations** have a dedicated `MOVINGAVERAGE` function:\n\n```dax\nMA3 = MOVINGAVERAGE([Total Sales], 3)\n```\n\nThe signature is `MOVINGAVERAGE(column, windowSize, includeCurrent, ...)`, and the window follows the visual's axis.\n\n**2. In a model measure**, use the `WINDOW` function with `AVERAGEX`:\n\n```dax\nMA3 =\nAVERAGEX (\n    WINDOW ( -2, REL, 0, REL, ALLSELECTED ( 'Date'[Year Month] ) ),\n    [Total Sales]\n)\n```\n\n`-2` to `0` relative gives the current row plus the two before it, so a 3-row window.\n\nBoth work on rows as they appear on the axis, not calendar days. If a period is missing from the axis, it won't be filled in, whereas `DATESINPERIOD` is calendar-based."
+      },
+      "B": {
+        "text": "Yes: **MOVINGAVERAGE**, but it only works in **visual calculations**, not in regular model measures.\n\n```dax\nMoving Avg = MOVINGAVERAGE([Sales], 3)\n```\n\nThis averages the current row and the 2 before it along the visual's axis.\n\nIn a regular measure there's no dedicated function. The closest equivalent is **WINDOW** (with **ORDERBY**), which replaces the CALCULATE/DATESINPERIOD pattern with a row-based window:\n\n```dax\nMoving Avg 3 Rows =\nAVERAGEX (\n    WINDOW (\n        -2, REL, 0, REL,\n        ALLSELECTED ( 'Date'[Date] ),\n        ORDERBY ( 'Date'[Date] )\n    ),\n    [Total Sales]\n)\n```\n\nNote that WINDOW counts rows (whatever exists in the visual), not calendar days, so gaps in the dates will change the result."
+      }
+    },
+    {
+      "id": "window-partition",
+      "regime": "window",
+      "category": "filter",
+      "question": "How do I tell a window function which columns define the partition? Name the modifier.",
+      "A": {
+        "text": "Use **`PARTITIONBY`**. It's passed as an argument to window functions such as `WINDOW`, `OFFSET`, `INDEX`, `RANK`, and `ROWNUMBER`, alongside `ORDERBY` (and optionally `MATCHBY`).\n\n```dax\nRunning Sales by Year =\nCALCULATE(\n    [Total Sales],\n    WINDOW(\n        1, ABS, 0, REL,\n        ALLSELECTED(Date[Year], Date[Month]),\n        ORDERBY(Date[Month], ASC),\n        PARTITIONBY(Date[Year])\n    )\n)\n```\n\nThis restarts the running total for each `Year`. The partition columns must be present in the relation table you pass in (here, `ALLSELECTED(Date[Year], Date[Month])`)."
+      },
+      "B": {
+        "text": "Use **PARTITIONBY**. It defines the columns that partition the window function's `relation` argument. It is typically paired with **ORDERBY** (sort order within each partition) and optionally **MATCHBY** (columns that identify the current row).\n\n```dax\nSales Running Total =\nSUMX (\n    WINDOW (\n        1, ABS,\n        0, REL,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month Number] ),\n        ORDERBY ( 'Date'[Month Number], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    ),\n    [Total Sales]\n)\n```\n\nHere the window restarts for each `'Date'[Year]`, so the running total resets every year. The same `PARTITIONBY ( ... )` argument works in `OFFSET`, `INDEX`, `RANK`, `ROWNUMBER`, and `WINDOW`."
+      }
+    },
+    {
+      "id": "window-order",
+      "regime": "window",
+      "category": "filter",
+      "question": "And how do I tell it the order inside the partition, with a direction? Name the modifier and show the direction keywords.",
+      "A": {
+        "text": "The modifier is **`ORDERBY`**, used alongside `PARTITIONBY` in the window functions (`OFFSET`, `WINDOW`, `INDEX`, `RANK`, `ROWNUMBER`). The direction keywords are **`ASC`** (the default) and **`DESC`**, placed after each sort expression:\n\n```DAX\nRunning Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    WINDOW (\n        1, ABS, 0, REL,\n        ALLSELECTED ( Sales[Category], Sales[Date] ),\n        ORDERBY ( Sales[Date], ASC ),\n        PARTITIONBY ( Sales[Category] )\n    )\n)\n```\n\nFor multiple sort keys, give each its own direction:\n\n```DAX\nORDERBY ( Sales[Date], DESC, Sales[OrderID], ASC )\n```\n\n`PARTITIONBY` defines the groups, and `ORDERBY` sets the sequence within each group."
+      },
+      "B": {
+        "text": "Use **ORDERBY**, which defines the sort order inside each partition of a window function (OFFSET, INDEX, WINDOW, RANK, ROWNUMBER). It pairs with **PARTITIONBY**, which defines the partitions.\n\nDirection keywords are **ASC** (the default) and **DESC**, placed after each column:\n\n```dax\nPrev Month Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[MonthNum] ),\n        ORDERBY ( 'Date'[MonthNum], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\nTo sort by several columns, list them as pairs:\n\n```dax\nORDERBY ( Sales[Amount], DESC, Sales[OrderDate], ASC )\n```\n\nUse `DESC` to reverse the direction, for example for a descending rank:\n\n```dax\nSales Rank =\nRANK (\n    DENSE,\n    ALLSELECTED ( Product[Name] ),\n    ORDERBY ( [Total Sales], DESC )\n)\n```\n\nIf ORDERBY doesn't uniquely identify rows, add **MATCHBY** so the current row can be identified correctly."
+      }
+    },
+    {
+      "id": "window-match-rows",
+      "regime": "window",
+      "category": "filter",
+      "question": "Window functions need to know which columns identify a row when the relation is not a plain table. Which modifier expresses that?",
+      "A": {
+        "text": "**`MATCHBY`**. It tells window functions (`OFFSET`, `INDEX`, `WINDOW`, `RANK`, `ROWNUMBER`) which columns uniquely identify the current row. It's needed when the relation is a derived table rather than a physical one, and `ORDERBY` and `PARTITIONBY` alone don't make rows unique.\n\n```dax\nProduct Rank =\nRANK (\n    DENSE,\n    ALLSELECTED ( Product[ProductKey], Product[Name] ),\n    ORDERBY ( [Total Sales], DESC ),\n    MATCHBY ( Product[ProductKey] )\n)\n```\n\nThe same pattern works in `OFFSET`:\n\n```dax\nPrev Sales =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month] ),\n        ORDERBY ( 'Date'[Year], ASC, 'Date'[Month], ASC ),\n        MATCHBY ( 'Date'[Year], 'Date'[Month] )\n    )\n)\n```\n\nWithout `MATCHBY`, DAX falls back to the `ORDERBY` and `PARTITIONBY` columns. If those aren't unique, you get wrong results or an error about being unable to identify the current row."
+      },
+      "B": {
+        "text": "**MATCHBY** is the modifier. It defines the columns used to match data and identify the current row in a window function, which matters when the relation isn't a plain table and DAX can't infer the row's key.\n\nInside a window function, it's used alongside `ORDERBY` and `PARTITIONBY`:\n\n```dax\nPrev Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month] ),\n        ORDERBY ( 'Date'[Year], ASC, 'Date'[Month], ASC ),\n        PARTITIONBY ( 'Date'[Year] ),\n        MATCHBY ( 'Date'[Year], 'Date'[Month] )\n    )\n)\n```\n\n- `ORDERBY` sets the sort order.\n- `PARTITIONBY` splits the relation into partitions.\n- `MATCHBY` identifies which columns make a row unique, so the current row can be located.\n\nNote that if `ORDERBY` is given and `MATCHBY` is omitted, the `ORDERBY` columns are used for matching, which is why `MATCHBY` is only needed when those columns don't uniquely identify a row."
+      }
+    },
+    {
+      "id": "window-first-last-rows",
+      "regime": "window",
+      "category": "filter",
+      "question": "The first and the last row of an ordered partition, using the window family rather than FIRSTDATE and LASTDATE. Name them.",
+      "A": {
+        "text": "Use **INDEX**, with `ORDERBY` and `PARTITIONBY` to define the ordered partition. Position `1` gives the first row and `-1` gives the last.\n\n```DAX\nFirst Month Sales =\nCALCULATE (\n    [Total Sales],\n    INDEX (\n        1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month Number] ),\n        ORDERBY ( 'Date'[Month Number], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n\nLast Month Sales =\nCALCULATE (\n    [Total Sales],\n    INDEX (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[Month Number] ),\n        ORDERBY ( 'Date'[Month Number], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\nUnlike FIRSTDATE and LASTDATE, this isn't tied to a date column. It works on any ordering you give it, and the partition resets per `PARTITIONBY` group.\n\nThe rest of the family is **OFFSET** (relative position), **WINDOW** (a range of rows), **ROWNUMBER**, and **RANK**. `WINDOW(1, ABS, -1, ABS, ...)` returns the whole partition from first to last row."
+      },
+      "B": {
+        "text": "Use **INDEX**, with position `1` for the first row and `-1` for the last. Pair it with **ORDERBY** to set the sort and **PARTITIONBY** to define the partition.\n\n```DAX\nFirst Amount =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    INDEX (\n        1,\n        ALLSELECTED ( Sales[Region], Sales[Date] ),\n        ORDERBY ( Sales[Date], ASC ),\n        PARTITIONBY ( Sales[Region] )\n    )\n)\n\nLast Amount =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    INDEX (\n        -1,\n        ALLSELECTED ( Sales[Region], Sales[Date] ),\n        ORDERBY ( Sales[Date], ASC ),\n        PARTITIONBY ( Sales[Region] )\n    )\n)\n```\n\n`FIRST` and `LAST` are not the answer here, because they only work in visual calculations. Also, the relation you pass to INDEX must include every column used in `ORDERBY` and `PARTITIONBY`."
+      }
+    },
+    {
+      "id": "window-next-previous",
+      "regime": "window",
+      "category": "filter",
+      "question": "The next and previous row in an ordered partition, as window functions rather than as time intelligence. Name them.",
+      "A": {
+        "text": "Use **`OFFSET`**, with a negative delta for the previous row and a positive one for the next. `ORDERBY` sets the order and `PARTITIONBY` sets the partition. Both are passed as arguments to `OFFSET`.\n\n```DAX\nPrev Sales =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[MonthNum], 'Date'[Month] ),\n        ORDERBY ( 'Date'[MonthNum], ASC ),\n        ,                                  -- blanks (default)\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n\nNext Sales =\nCALCULATE (\n    [Total Sales],\n    OFFSET (\n        1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[MonthNum], 'Date'[Month] ),\n        ORDERBY ( 'Date'[MonthNum], ASC ),\n        ,\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\nThe first row in each partition has no previous row, so `Prev Sales` returns blank there. The same applies to `Next Sales` on the last row.\n\nRelated window functions are `INDEX` (absolute position, e.g. first or last) and `WINDOW` (a range of rows)."
+      },
+      "B": {
+        "text": "**OFFSET** is the window function for this. Use `-1` for the previous row and `+1` for the next row. `ORDERBY` sets the sort order and `PARTITIONBY` sets the partition.\n\n```dax\nPrev Sales =\nCALCULATE (\n    SUM ( Sales[Amount] ),\n    OFFSET (\n        -1,\n        ALLSELECTED ( 'Date'[Year], 'Date'[MonthNum] ),\n        ORDERBY ( 'Date'[MonthNum], ASC ),\n        PARTITIONBY ( 'Date'[Year] )\n    )\n)\n```\n\nChange `-1` to `1` for the next row.\n\n`PREVIOUS` and `NEXT` are also in the list, but they work only in visual calculations, not in model measures."
+      }
+    },
+    {
+      "id": "window-range",
+      "regime": "window",
+      "category": "filter",
+      "question": "A window bounded by VALUES of the ordering column rather than by a row count — all rows within 7 days. Which function?",
+      "A": {
+        "text": "Use `DATESINPERIOD` (or `DATESBETWEEN`) inside `CALCULATE`. `WINDOW`, `OFFSET` and `INDEX` are positional (row-count) only, so they can't do value-based ranges.\n\n```dax\nSales 7d =\nCALCULATE(\n    [Total Sales],\n    DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -7, DAY)\n)\n```\n\nThis covers the current day plus the previous 6 days. It needs a proper, contiguous date table.\n\nIf the ordering column isn't a date (e.g. a numeric value), use `FILTER` over `ALL`:\n\n```dax\nSum 7 =\nVAR x = MAX(T[col])\nRETURN\nCALCULATE(\n    [Measure],\n    FILTER(ALL(T[col]), T[col] > x - 7 && T[col] <= x)\n)\n```"
+      },
+      "B": {
+        "text": "None of the window functions do this. WINDOW, OFFSET, INDEX and RANGE are all positional (row counts), so they can't bound by the value of the ordering column. For \"all rows within 7 days\", use **CALCULATE** with a filter on the value, either **FILTER** over **ALL**, or a date function such as DATESBETWEEN, which is not in your list.\n\n```DAX\nSales 7d =\nVAR d = MAX('Date'[Date])\nRETURN\nCALCULATE(\n    [Total Sales],\n    FILTER(\n        ALL('Date'[Date]),\n        'Date'[Date] > d - 7 && 'Date'[Date] <= d\n    )\n)\n```\n\nThe same works with `DATESBETWEEN('Date'[Date], d - 6, d)` if you have a proper date table.\n\nIf your dates are contiguous with one row per day, `WINDOW(-6, REL, 0, REL, ...)` gives the same result. That's only because 1 row equals 1 day, and it breaks if days are missing."
+      }
+    },
+    {
+      "id": "window-running-sum",
+      "regime": "window",
+      "category": "filter",
+      "question": "A cumulative total from the start of the partition to the current row, as a single dedicated function. Name it.",
+      "A": {
+        "text": "**`RUNNINGSUM`**, a visual calculation function (Power BI visual calculations only, not usable in model measures).\n\n```DAX\nRunning Total = RUNNINGSUM([Sales Amount])\n```\n\nIt accumulates from the first row of the partition to the current row along the axis. To restart at each parent level, such as each year, use the reset argument:\n\n```DAX\nRunning Total by Year = RUNNINGSUM([Sales Amount], ROWS, , HIGHESTPARENT)\n```\n\nIn a regular model measure there is no dedicated function. The equivalent is `WINDOW` with `SUMX`:\n\n```DAX\nRunning Total =\nSUMX(\n    WINDOW(1, ABS, 0, REL, ALLSELECTED('Date'[Date])),\n    [Total Sales]\n)\n```"
+      },
+      "B": {
+        "text": "**RUNNINGSUM** is the dedicated function. It returns a running total along an axis of the visual matrix, from the first row of the axis (or partition) to the current row.\n\nIt is for **visual calculations only**, so you can't use it in a regular model measure or calculated column.\n\n```dax\nRunning Sales = RUNNINGSUM([Sales Amount])\n```\n\nTo restart the total within each partition, such as each year, pass the reset argument:\n\n```dax\nRunning Sales = RUNNINGSUM([Sales Amount], ROWS)\n```\n\nFor a model measure, you need a different approach. Use `CALCULATE` with a `FILTER` over dates, or a `WINDOW` function."
+      }
+    },
+    {
+      "id": "window-rank-dense",
+      "regime": "window",
+      "category": "filter",
+      "question": "Ranking with the window family, and I need to control how ties are handled. Name the function and the tie argument.",
+      "A": {
+        "text": "Use **`RANK`**, whose first argument is `ties`:\n\n- `SKIP` (default): 1, 1, 3\n- `DENSE`: 1, 1, 2\n\n```dax\nSales Rank =\nRANK(\n    DENSE,\n    ALLSELECTED(Product[Product Name]),\n    ORDERBY([Total Sales], DESC)\n)\n```\n\nIf you want ties broken into unique ranks (1, 2, 3), use **`ROWNUMBER`** instead. It has no `ties` argument, but you can add `MATCHBY` or extra `ORDERBY` columns to make the ordering deterministic."
+      },
+      "B": {
+        "text": "Use **RANK**. Its first argument, `ties`, accepts:\n\n- `SKIP` (default): tied rows share a rank and the next rank is skipped (1, 1, 3).\n- `DENSE`: tied rows share a rank and no ranks are skipped (1, 1, 2).\n\n```dax\nSales Rank =\nRANK(\n    DENSE,\n    ALLSELECTED(Product[Name]),\n    ORDERBY([Total Sales], DESC)\n)\n```\n\nIf you want no ties at all (every row gets a unique rank), use **ROWNUMBER** instead. You can add **MATCHBY** to control how rows are identified, which also helps break ties."
+      }
+    },
+    {
+      "id": "window-sample",
+      "regime": "window",
+      "category": "filter",
+      "question": "Take an evenly spaced sample of rows from an ordered partition. Does DAX have a function for that?",
+      "A": {
+        "text": "Yes, `SAMPLE` returns N rows evenly spaced across a table ordered by the expression you give it:\n\n```dax\nEVALUATE\nSAMPLE ( 100, Sales, Sales[Date], ASC )\n```\n\nFor a sample per partition, iterate the partition values with `GENERATE`. `CALCULATETABLE` applies the context transition so each call sees only that partition's rows:\n\n```dax\nEVALUATE\nGENERATE (\n    VALUES ( Sales[Region] ),\n    SAMPLE ( 10, CALCULATETABLE ( Sales ), Sales[Date], ASC )\n)\n```\n\nIf you want every *n*th row instead of a fixed count N, `SAMPLE` doesn't do that. Rank the rows and filter with `MOD`:\n\n```dax\nFILTER (\n    ADDCOLUMNS ( Sales, \"@Rank\", RANKX ( ALL ( Sales ), Sales[Date], , ASC, Dense ) ),\n    MOD ( [@Rank] - 1, 5 ) = 0\n)\n```\n\nFor a per-partition version, use `ROWNUMBER` or `RANK` with `PARTITIONBY`."
+      },
+      "B": {
+        "text": "No, DAX has no built-in \"every nth row\" sampler. You build it by numbering rows with `ROWNUMBER` and filtering with `MOD`:\n\n```DAX\nEVALUATE\nVAR n = 5\nVAR numbered =\n    ADDCOLUMNS (\n        ALLSELECTED ( Sales ),\n        \"@rn\",\n            ROWNUMBER (\n                ALLSELECTED ( Sales ),\n                ORDERBY ( Sales[Date], ASC, Sales[ID], ASC ),\n                PARTITIONBY ( Sales[Region] )\n            )\n    )\nRETURN\n    FILTER ( numbered, MOD ( [@rn], n ) = 0 )\n```\n\n- `ORDERBY` defines the order, and `PARTITIONBY` restarts the numbering per partition.\n- `ROWNUMBER` needs a unique ordering, which is why `Sales[ID]` is included as a tiebreaker.\n- `MOD([@rn], n) = 0` keeps every nth row. Use `= 1` to start with the first row of each partition.\n- If you only need a few fixed positions, such as the first, middle, or last, `INDEX` can fetch them directly."
+      }
+    },
+    {
+      "id": "window-visual-shape",
+      "regime": "window",
+      "category": "filter",
+      "question": "Which argument tells OFFSET whether to work over the whole table or only the rows visible in the current filter context? Name it and its values.",
+      "A": {
+        "text": "No single argument does that. OFFSET has no \"whole table vs. visible rows\" switch. The scope comes from the table expression you pass as **`<relation>`**:\n\n- `ALL(...)` gives the whole table, ignoring filters.\n- `ALLSELECTED(...)` gives only the rows visible in the current filter context (slicers and visual filters, but not the visual's own grouping).\n\n```DAX\n-- Previous month's sales over ALL months, ignoring slicers\nPrev Sales All =\nCALCULATE (\n    [Total Sales],\n    OFFSET ( -1, ALL ( 'Date'[Month] ), ORDERBY ( 'Date'[Month], ASC ) )\n)\n\n-- Previous month's sales, but only among months left visible by slicers\nPrev Sales Visible =\nCALCULATE (\n    [Total Sales],\n    OFFSET ( -1, ALLSELECTED ( 'Date'[Month] ), ORDERBY ( 'Date'[Month], ASC ) )\n)\n```\n\nTwo other arguments are easy to confuse with this one:\n- `<blanks>` (`DEFAULT`, `KEEP`, `SKIP`) controls how blank values are handled in ordering.\n- `<reset>` (`NONE`, `LOWESTPARENT`, `HIGHESTPARENT`, or an integer) controls restarting at hierarchy levels in a visual. It doesn't control filter scope."
+      },
+      "B": {
+        "text": "No dedicated argument does this. OFFSET's `relation` argument controls it, based on the table expression you pass in:\n\n- `ALL(...)` works over the whole table, ignoring filters.\n- `ALLSELECTED(...)` works only over the rows visible in the current query or visual.\n\n```dax\n-- Previous year over all years\nPrev Sales (All) =\nCALCULATE(\n    [Sales],\n    OFFSET(-1, ALL('Date'[Year]), ORDERBY('Date'[Year]))\n)\n\n-- Previous year among only the visible years\nPrev Sales (Visible) =\nCALCULATE(\n    [Sales],\n    OFFSET(-1, ALLSELECTED('Date'[Year]), ORDERBY('Date'[Year]))\n)\n```\n\nIf you omit `relation`, it is inferred from the `ORDERBY`, `PARTITIONBY` and `MATCHBY` columns, so passing it explicitly is clearer. The `blankRow` argument is only about how blank rows are handled, not about which rows are in scope."
+      }
+    },
+    {
+      "id": "window-lookup-totals",
+      "regime": "window",
+      "category": "filter",
+      "question": "Look up a value in a table and have it work at the total level too, not just per row. Which function is built for that?",
+      "A": {
+        "text": "There's no single lookup function that handles totals on its own. The pattern is **LOOKUPVALUE** for the lookup, wrapped in an iterator (**SUMX** over **VALUES**) so the total sums the per-row results instead of trying to look up one key for the whole set.\n\n```DAX\nTotal Converted =\nSUMX(\n    VALUES( Sales[Currency] ),\n    CALCULATE( SUM( Sales[Amount] ) )\n        * LOOKUPVALUE( Rates[Rate], Rates[Currency], Sales[Currency] )\n)\n```\n\nAt the row level, `VALUES` returns one currency, so the lookup works. At the total level, `SUMX` iterates each currency, does the lookup per currency, and adds them up. A bare `LOOKUPVALUE` in a measure would return blank at the total because there are multiple keys in filter context.\n\nIf there's a relationship between the tables, iterate the fact table and use `RELATED( Rates[Rate] )` instead of `LOOKUPVALUE`."
+      },
+      "B": {
+        "text": "**LOOKUPWITHTOTALS**, but it only works in visual calculations, not in regular model measures.\n\nIt looks up a value by column/value pairs and, unlike LOOKUP, doesn't infer filters you didn't specify, so it still returns a result on total rows.\n\n```DAX\nSales 2018 = LOOKUPWITHTOTALS([Sales Amount], [Year], 2018)\n```\n\nThis repeats the 2018 value on every row, including the grand total, so you can use it in comparisons:\n\n```DAX\n% of 2018 = DIVIDE([Sales Amount], LOOKUPWITHTOTALS([Sales Amount], [Year], 2018))\n```\n\nIf you're writing a normal measure instead, LOOKUPVALUE is the model-table lookup, but it's row-oriented. At the total level it needs a single matching row, so you'd wrap the logic in CALCULATE and handle totals yourself."
+      }
+    },
+    {
+      "id": "info-columns",
+      "regime": "info",
+      "category": "info",
+      "question": "From a DAX query, list every column in the model with its data type. Which function?",
+      "A": {
+        "text": "Use the DAX INFO functions, in DAX query view or any DAX query tool such as SSMS or DAX Studio.\n\n```DAX\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.COLUMNS(),\n    \"Table\", [Table],\n    \"Column\", [Name],\n    \"DataType\", [DataType]\n)\n```\n\n- **`INFO.VIEW.COLUMNS()`** returns user-facing columns with a readable data type name, such as `Int64` or `String`.\n- **`INFO.COLUMNS()`** is the raw metadata version (the `TMSCHEMA_COLUMNS` DMV). It returns data types as numeric codes (`ExplicitDataType`) and includes internal `RowNumber` columns, so you need to filter and decode it. It also gives you the `TableID`, so you need to join it to `INFO.TABLES()` to get table names.\n\nFor a simple \"every column plus its type\" list, use `INFO.VIEW.COLUMNS()`."
+      },
+      "B": {
+        "text": "Use **`INFO.VIEW.COLUMNS()`**. It returns the table name, column name, and data type in one table:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.COLUMNS(),\n    \"Table\", [Table],\n    \"Column\", [Name],\n    \"DataType\", [DataType]\n)\n```\n\nIf you need the raw engine-level metadata, `INFO.COLUMNS()` also works. It exposes `ExplicitDataType` but only gives a `TableID`, so you'd have to join it to `INFO.TABLES()` to get table names."
+      }
+    },
+    {
+      "id": "info-partitions",
+      "regime": "info",
+      "category": "info",
+      "question": "I want to audit refresh: which partitions exist and when each last refreshed. Which DAX function?",
+      "A": {
+        "text": "Use **`INFO.PARTITIONS()`**, which returns the `TMSCHEMA_PARTITIONS` data, including `RefreshedTime`, `ModifiedTime`, `State`, and the range start/end for incremental refresh partitions. Pair it with **`INFO.TABLES()`** to get table names.\n\n```dax\nEVALUATE\nVAR Tbl =\n    SELECTCOLUMNS ( INFO.TABLES (), \"TableID\", [ID], \"Table\", [Name] )\nVAR Part =\n    SELECTCOLUMNS (\n        INFO.PARTITIONS (),\n        \"TableID\", [TableID],\n        \"Partition\", [Name],\n        \"State\", [State],\n        \"RangeStart\", [RangeStart],\n        \"RangeEnd\", [RangeEnd],\n        \"RefreshedTime\", [RefreshedTime]\n    )\nRETURN\n    NATURALLEFTOUTERJOIN ( Part, Tbl )\nORDER BY [Table], [Partition]\n```\n\nRun it in DAX query view, DAX Studio, or SSMS. Note that the partitions only show up as separate rows once the model is published with incremental refresh and has been refreshed in the service. In Desktop you'll see one partition per table."
+      },
+      "B": {
+        "text": "Use **INFO.PARTITIONS**. It lists each partition (name, table, query/source, mode, and the `RefreshedTime` column), so it covers both the existence and last-refresh questions.\n\n```dax\nEVALUATE INFO.PARTITIONS()\n```\n\nTo make it readable, join to table names with **INFO.TABLES** (partitions only carry a TableID):\n\n```dax\nEVALUATE\nVAR p = INFO.PARTITIONS()\nVAR t = SELECTCOLUMNS(INFO.TABLES(), \"TableID\", [ID], \"TableName\", [Name])\nRETURN\n    SELECTCOLUMNS(\n        NATURALLEFTOUTERJOIN(p, t),\n        \"Table\", [TableName],\n        \"Partition\", [Name],\n        \"Refreshed\", [RefreshedTime]\n    )\n```\n\nRun it in DAX query view or DAX Studio. Column names can differ slightly by engine version, so check the output of `INFO.PARTITIONS()` first and adjust the names if needed.\n\nIf you also want storage details (e.g., size or segment info) per partition, **INFO.PARTITIONSTORAGES** is the companion function, but it isn't needed for the refresh audit."
+      }
+    },
+    {
+      "id": "info-roles",
+      "regime": "info",
+      "category": "info",
+      "question": "List the security roles defined in the model, from a query. Name the function.",
+      "A": {
+        "text": "Use **`INFO.ROLES()`**, run in DAX query view (or DAX Studio / SSMS):\n\n```dax\nEVALUATE INFO.ROLES()\n```\n\nTo return just the names:\n\n```dax\nEVALUATE\nSELECTCOLUMNS ( INFO.ROLES(), \"Role\", [Name] )\n```\n\nIf you also need members or the RLS filter expressions, `INFO.ROLEMEMBERSHIPS()` and `INFO.TABLEPERMISSIONS()` cover those the same way."
+      },
+      "B": {
+        "text": "Use **`INFO.ROLES`**. It returns one row per security role defined in the model.\n\n```dax\nEVALUATE INFO.ROLES()\n```\n\nRun it in DAX query view or DAX Studio.\n\nIf you also want the members or the row-level filters, these are the related functions:\n\n- `INFO.ROLEMEMBERSHIPS()` shows who is in each role.\n- `INFO.TABLEPERMISSIONS()` shows the table filter expressions (RLS) for each role."
+      }
+    },
+    {
+      "id": "info-calc-dependency",
+      "regime": "info",
+      "category": "info",
+      "question": "I need the dependency graph: which measures reference which columns. Which DAX function exposes it?",
+      "A": {
+        "text": "Use **`INFO.CALCDEPENDENCY()`**, which is the DAX wrapper over the `DISCOVER_CALC_DEPENDENCY` DMV. Run it in DAX query view (or SSMS/DAX Studio):\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    FILTER(\n        INFO.CALCDEPENDENCY(),\n        [OBJECT_TYPE] = \"MEASURE\"\n            && [REFERENCED_OBJECT_TYPE] IN { \"COLUMN\", \"CALC_COLUMN\" }\n    ),\n    \"Measure Table\", [TABLE],\n    \"Measure\", [OBJECT],\n    \"Column Table\", [REFERENCED_TABLE],\n    \"Column\", [REFERENCED_OBJECT]\n)\n```\n\nNotes:\n- It returns **direct** references only. If measure A calls measure B, which uses a column, A won't list that column. You'll see an A → B row (`REFERENCED_OBJECT_TYPE = \"MEASURE\"`) and a separate B → column row, so you need to walk the chain for transitive dependencies.\n- Measure-to-measure edges are in the same output, so you can build the full graph by dropping the `REFERENCED_OBJECT_TYPE` filter."
+      },
+      "B": {
+        "text": "Use **INFO.CALCDEPENDENCY**. It returns one row per calculation dependency in the model, and you can filter it down to measure → column.\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    FILTER(\n        INFO.CALCDEPENDENCY(),\n        [OBJECT_TYPE] = \"MEASURE\"\n            && [REFERENCED_OBJECT_TYPE] = \"COLUMN\"\n    ),\n    \"Measure Table\",    [TABLE],\n    \"Measure\",          [OBJECT],\n    \"Referenced Table\", [REFERENCED_TABLE],\n    \"Referenced Column\",[REFERENCED_OBJECT]\n)\n```\n\nRun it in DAX query view. If you want extra detail like measure expressions or column data types, join the result with **INFO.MEASURES** and **INFO.COLUMNS**."
+      }
+    },
+    {
+      "id": "info-calculation-groups",
+      "regime": "info",
+      "category": "info",
+      "question": "List the calculation groups and their items from a DAX query. Which functions?",
+      "A": {
+        "text": "Use the DAX INFO functions `INFO.CALCULATIONGROUPS()` and `INFO.CALCULATIONITEMS()`. Add `INFO.TABLES()` if you want the calculation group's table name.\n\nQuick look at each:\n\n```dax\nEVALUATE INFO.CALCULATIONGROUPS()\nEVALUATE INFO.CALCULATIONITEMS()\n```\n\nGroups with their items in one result:\n\n```dax\nEVALUATE\nVAR Tbl = SELECTCOLUMNS(INFO.TABLES(),\n    \"TableID\", [ID], \"CalculationGroup\", [Name])\nVAR Grp = SELECTCOLUMNS(INFO.CALCULATIONGROUPS(),\n    \"CalculationGroupID\", [ID], \"TableID\", [TableID], \"Precedence\", [Precedence])\nVAR Itm = SELECTCOLUMNS(INFO.CALCULATIONITEMS(),\n    \"CalculationGroupID\", [CalculationGroupID],\n    \"Item\", [Name], \"Ordinal\", [Ordinal], \"Expression\", [Expression])\nRETURN\n    NATURALJOIN(NATURALJOIN(Itm, Grp), Tbl)\nORDER BY [CalculationGroup], [Ordinal]\n```\n\nRun it in DAX query view or DAX Studio. `NATURALJOIN` matches on the shared `CalculationGroupID` and `TableID` columns, so the renamed columns line up."
+      },
+      "B": {
+        "text": "Use **INFO.CALCULATIONGROUPS** for the groups and **INFO.CALCULATIONITEMS** for the items. Run them in DAX query view (or DAX Studio):\n\n```dax\nEVALUATE INFO.CALCULATIONGROUPS()\n\nEVALUATE INFO.CALCULATIONITEMS()\n```\n\nTo get the items alongside their group, join them. Calculation groups are stored as tables, so the group's `TableID` links to the item's `CalculationGroupID`, and you can pull the group name from `INFO.TABLES`:\n\n```dax\nEVALUATE\nVAR _Groups = SELECTCOLUMNS(\n    INFO.CALCULATIONGROUPS(),\n    \"GroupID\", [ID],\n    \"TableID\", [TableID]\n)\nVAR _Tables = SELECTCOLUMNS(INFO.TABLES(), \"TableID\", [ID], \"GroupName\", [Name])\nVAR _Items = SELECTCOLUMNS(\n    INFO.CALCULATIONITEMS(),\n    \"GroupID\", [CalculationGroupID],\n    \"Item\", [Name],\n    \"Ordinal\", [Ordinal]\n)\nRETURN\nSELECTCOLUMNS(\n    NATURALLEFTOUTERJOIN(NATURALLEFTOUTERJOIN(_Items, _Groups), _Tables),\n    \"Group\", [GroupName],\n    \"Item\", [Item],\n    \"Ordinal\", [Ordinal]\n)\n```\n\nI'm going from memory on the exact column names (`ID`, `TableID`, `CalculationGroupID`). Run each `INFO` function on its own first to confirm the columns in your model, and adjust the `SELECTCOLUMNS` if they differ."
+      }
+    },
+    {
+      "id": "info-hierarchies",
+      "regime": "info",
+      "category": "info",
+      "question": "Which DAX function lists the hierarchies in the model and their levels?",
+      "A": {
+        "text": "Use the DAX INFO functions: **`INFO.HIERARCHIES()`** lists the hierarchies, and **`INFO.LEVELS()`** lists their levels.\n\n```dax\nEVALUATE INFO.HIERARCHIES()\n\nEVALUATE INFO.LEVELS()\n```\n\nRun them in DAX query view in Power BI Desktop, or in DAX Studio. `INFO.LEVELS()` returns a `HierarchyID` column, so you can relate each level to its hierarchy's `ID` from `INFO.HIERARCHIES()`. `INFO.TABLES()` resolves the `TableID` to a table name."
+      },
+      "B": {
+        "text": "Use **INFO.HIERARCHIES** for the hierarchies and **INFO.LEVELS** for their levels. Run them in a DAX query view, or wrap them in a calculated table.\n\n```dax\nEVALUATE INFO.HIERARCHIES()\nEVALUATE INFO.LEVELS()\n```\n\nTo get one row per level with its hierarchy name, join the two on the hierarchy ID. Check the column names in your output first, since they follow the schema rowset (typically `[ID]` in hierarchies and `[HierarchyID]` in levels):\n\n```dax\nEVALUATE\nNATURALLEFTOUTERJOIN(\n    SELECTCOLUMNS(\n        INFO.LEVELS(),\n        \"HierarchyID\", [HierarchyID],\n        \"Level\", [Name],\n        \"Ordinal\", [Ordinal]\n    ),\n    SELECTCOLUMNS(\n        INFO.HIERARCHIES(),\n        \"HierarchyID\", [ID],\n        \"Hierarchy\", [Name]\n    )\n)\n```\n\nIf you only care about hierarchies exposed in a perspective, there's also INFO.PERSPECTIVEHIERARCHIES."
+      }
+    },
+    {
+      "id": "info-view-friendly",
+      "regime": "info",
+      "category": "info",
+      "question": "The INFO functions return raw IDs. Is there a friendlier variant that resolves the names for me? Name one.",
+      "A": {
+        "text": "Use the **`INFO.VIEW.*`** family, such as `INFO.VIEW.RELATIONSHIPS()`. It returns table and column names instead of the raw IDs that `INFO.RELATIONSHIPS()` gives you.\n\n```dax\nEVALUATE INFO.VIEW.RELATIONSHIPS()\n```\n\nThe same pattern works for `INFO.VIEW.TABLES()`, `INFO.VIEW.COLUMNS()`, and `INFO.VIEW.MEASURES()`. Run them in DAX query view or any DAX query tool."
+      },
+      "B": {
+        "text": "Yes, use the **INFO.VIEW.*** family. Those return friendly, name-resolved output instead of raw IDs. For example, `INFO.VIEW.RELATIONSHIPS` gives you table and column names rather than TableID/ColumnID.\n\nSnippet:\n\n```dax\nEVALUATE INFO.VIEW.RELATIONSHIPS()\n```\n\nOr as a calculated table for self-documentation:\n\n```dax\nModel Relationships = INFO.VIEW.RELATIONSHIPS()\n```\n\nThe others in the family are `INFO.VIEW.TABLES`, `INFO.VIEW.COLUMNS`, and `INFO.VIEW.MEASURES`."
+      }
+    },
+    {
+      "id": "info-storage",
+      "regime": "info",
+      "category": "info",
+      "question": "I want to see how much memory each column takes in the VertiPaq store, from DAX. Which function?",
+      "A": {
+        "text": "Use the `INFO.STORAGE*` DAX functions, which expose the VertiPaq storage DMVs:\n\n- `INFO.STORAGETABLECOLUMNS()` gives dictionary size per column (`DICTIONARY_SIZE`).\n- `INFO.STORAGETABLECOLUMNSEGMENTS()` gives data size per column segment (`USED_SIZE`).\n\nRun these in DAX query view, DAX Studio, or SSMS:\n\n```dax\n// Dictionary size per column\nEVALUATE INFO.STORAGETABLECOLUMNS()\n\n// Data size per column, summed over segments\nEVALUATE\nGROUPBY(\n    INFO.STORAGETABLECOLUMNSEGMENTS(),\n    [TABLE_ID], [COLUMN_ID],\n    \"DataBytes\", SUMX(CURRENTGROUP(), [USED_SIZE])\n)\n```\n\nA column's total memory is roughly dictionary + segment data (+ hierarchy structures). Use `INFO.STORAGETABLES()` to map the table IDs to table names. If you want it already joined and summarized, DAX Studio's VertiPaq Analyzer (or Best Practice Analyzer in Tabular Editor) does this for you."
+      },
+      "B": {
+        "text": "Use **`INFO.STORAGETABLECOLUMNSEGMENTS`** for the data size and **`INFO.STORAGETABLECOLUMNS`** for the dictionary size. They correspond to the `DISCOVER_STORAGE_TABLE_COLUMN_SEGMENTS` and `DISCOVER_STORAGE_TABLE_COLUMNS` DMVs. Run these in DAX query view.\n\nData size per column, summed over segments:\n\n```dax\nEVALUATE\nGROUPBY(\n    INFO.STORAGETABLECOLUMNSEGMENTS(),\n    [TABLE_ID],\n    [COLUMN_ID],\n    \"SegmentBytes\", SUMX(CURRENTGROUP(), [USED_SIZE])\n)\n```\n\nDictionary size per column:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.STORAGETABLECOLUMNS(),\n    [TABLE_ID],\n    [COLUMN_ID],\n    [DICTIONARY_SIZE]\n)\n```\n\nTotal column memory is the segment bytes plus the dictionary size. Hierarchy and relationship structures show up as separate rows, which you can filter on `COLUMN_ID`. I'm going by the DMV column names here, so check the output of the bare `INFO.…()` call if a name differs in your model."
+      }
+    },
+    {
+      "id": "info-expressions",
+      "regime": "info",
+      "category": "info",
+      "question": "List the Power Query expressions (named M queries) stored in the model, from a DAX query. Which function?",
+      "A": {
+        "text": "Use `INFO.EXPRESSIONS()`, which mirrors the `TMSCHEMA_EXPRESSIONS` DMV:\n\n```dax\nEVALUATE INFO.EXPRESSIONS()\n```\n\nIt returns the model's named expressions (shared M queries, parameters, functions), with the M code in the `Expression` column.\n\nTo pull just the name and code:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.EXPRESSIONS(),\n    \"Name\", [Name],\n    \"M\", [Expression]\n)\n```\n\nM queries that load a table are stored on the table's partition rather than as named expressions. To see those, use `INFO.PARTITIONS()` and read the `QueryDefinition` column."
+      },
+      "B": {
+        "text": "Use **INFO.EXPRESSIONS**. It returns the named expressions in the model (shared M queries, parameters, and so on), including their M code.\n\n```dax\nEVALUATE INFO.EXPRESSIONS()\n```\n\nRun it in DAX query view or DAX Studio. The M code is in the `Expression` column. To trim the output:\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.EXPRESSIONS(),\n    \"Name\", [Name],\n    \"M Expression\", [Expression]\n)\n```\n\nNote that this covers named expressions such as parameters and standalone queries. The M code for each table's own partition source is exposed through `INFO.PARTITIONS` (its `QueryDefinition` column)."
+      }
+    },
+    {
+      "id": "info-cultures",
+      "regime": "info",
+      "category": "info",
+      "question": "Which DAX function lists the cultures and translations defined in the model?",
+      "A": {
+        "text": "There are two INFO functions, one for each:\n\n- **`INFO.CULTURES()`** lists the cultures (locales) defined in the model.\n- **`INFO.OBJECTTRANSLATIONS()`** lists the translations for model objects (captions, descriptions, display folders) per culture.\n\nRun them in DAX query view, DAX Studio, or SSMS:\n\n```dax\nEVALUATE INFO.CULTURES()\n\nEVALUATE INFO.OBJECTTRANSLATIONS()\n```\n\nThe translations table references cultures by ID, so you can join the two on that column if you want one combined view."
+      },
+      "B": {
+        "text": "Use two functions together:\n\n- **INFO.CULTURES** lists the cultures (locales) defined in the model.\n- **INFO.OBJECTTRANSLATIONS** lists the translations for model objects (captions, descriptions, and so on).\n\nRun them in a DAX query view, or wrap them in a calculated table:\n\n```dax\nEVALUATE INFO.CULTURES()\n\nEVALUATE INFO.OBJECTTRANSLATIONS()\n```\n\nAs a calculated table:\n\n```dax\nCultures = INFO.CULTURES()\n```\n\nThe translations table references cultures by ID, so you can join the two on the culture ID column if you want translations labeled by culture name."
+      }
+    },
+    {
+      "id": "info-relationships-audit",
+      "regime": "info",
+      "category": "info",
+      "question": "From a query, which relationships exist and which of them are active? Name the function and the column that tells you.",
+      "A": {
+        "text": "Use `INFO.VIEW.RELATIONSHIPS()`. The **`[IsActive]`** column tells you which relationships are active.\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.RELATIONSHIPS(),\n    \"From Table\",  [FromTable],\n    \"From Column\", [FromColumn],\n    \"To Table\",    [ToTable],\n    \"To Column\",   [ToColumn],\n    \"Active\",      [IsActive]\n)\n```\n\n`INFO.RELATIONSHIPS()` also has `[IsActive]`, but it returns table and column IDs rather than names. The `INFO.VIEW.*` version is easier to read."
+      },
+      "B": {
+        "text": "Use **INFO.VIEW.RELATIONSHIPS**. The **`[IsActive]`** column tells you whether each relationship is active.\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.VIEW.RELATIONSHIPS(),\n    \"From\", [FromTable] & \"[\" & [FromColumn] & \"]\",\n    \"To\",   [ToTable]   & \"[\" & [ToColumn]   & \"]\",\n    \"IsActive\", [IsActive]\n)\n```\n\nTo see only the inactive ones, wrap it in a filter:\n\n```dax\nEVALUATE\nFILTER( INFO.VIEW.RELATIONSHIPS(), [IsActive] = FALSE() )\n```\n\n`INFO.RELATIONSHIPS()` also has `[IsActive]`, but it returns table IDs rather than names, so the VIEW version is easier to read."
+      }
+    },
+    {
+      "id": "info-kpis",
+      "regime": "info",
+      "category": "info",
+      "question": "Are the KPIs defined on measures visible from DAX? Which function lists them?",
+      "A": {
+        "text": "Yes. `INFO.KPIS()` returns the KPI definitions in the model. It is the DAX equivalent of the `TMSCHEMA_KPIS` DMV.\n\n```DAX\nEVALUATE INFO.KPIS()\n```\n\nEach row has a `MeasureID` that points to the base measure, along with the target and status expressions and the graphics settings. To get the measure names, use `INFO.MEASURES()` and match `MeasureID` to its `[ID]` column:\n\n```DAX\nEVALUATE\nSELECTCOLUMNS(\n    INFO.MEASURES(),\n    \"MeasureID\", [ID],\n    \"Measure\", [Name]\n)\n```\n\nPower BI Desktop has no UI for creating KPIs, so this will usually only return rows for models that define them through external tools, such as Tabular Editor, or that were authored in Analysis Services."
+      },
+      "B": {
+        "text": "Yes. `INFO.KPIS()` returns one row per KPI defined in the semantic model.\n\n```dax\nEVALUATE INFO.KPIS()\n```\n\nYou can run that in DAX query view, or wrap it in a calculated table to keep it in the model:\n\n```dax\nKPI Catalog = INFO.KPIS()\n```\n\nA KPI is attached to a base measure, so to see the measure's name and expression, join to `INFO.MEASURES()` on the measure ID:\n\n```dax\nEVALUATE\nVAR k = INFO.KPIS()\nVAR m = SELECTCOLUMNS(\n    INFO.MEASURES(),\n    \"MeasureID\", [ID],\n    \"MeasureName\", [Name],\n    \"Expression\", [Expression]\n)\nRETURN\nNATURALLEFTOUTERJOIN(k, m)\n```\n\nThe join key column names can differ from what I wrote (the KPI table links to its measure through a `MeasureID` column). Run `EVALUATE INFO.KPIS()` first and check the column names before you rely on the join."
+      }
+    },
+    {
+      "id": "info-annotations",
+      "regime": "info",
+      "category": "info",
+      "question": "Tools like Tabular Editor store annotations on model objects. Can I read them from a DAX query? Which function?",
+      "A": {
+        "text": "Yes, use **`INFO.ANNOTATIONS()`**, one of the `INFO.*` DAX functions. It maps to the `TMSCHEMA_ANNOTATIONS` DMV and returns `ID`, `ObjectID`, `ObjectType`, `Name`, `Value`, and `ModifiedTime`.\n\n```dax\nEVALUATE INFO.ANNOTATIONS()\n```\n\nTo see which measure an annotation belongs to, join on `ObjectID` against `INFO.MEASURES()` (`ObjectType = 8` is a measure):\n\n```dax\nEVALUATE\nNATURALINNERJOIN(\n    SELECTCOLUMNS(\n        FILTER(INFO.ANNOTATIONS(), [ObjectType] = 8),\n        \"ObjectID\", [ObjectID],\n        \"Annotation\", [Name],\n        \"Value\", [Value]\n    ),\n    SELECTCOLUMNS(\n        INFO.MEASURES(),\n        \"ObjectID\", [ID],\n        \"Measure\", [Name]\n    )\n)\n```\n\nThis works in DAX query view, DAX Studio, or SSMS. For tables or columns, join to `INFO.TABLES()` or `INFO.COLUMNS()` the same way, using their object type codes."
+      },
+      "B": {
+        "text": "Yes, use **INFO.ANNOTATIONS**. It returns one row per annotation in the semantic model, including the annotations Tabular Editor writes.\n\n```dax\nEVALUATE INFO.ANNOTATIONS()\n```\n\nRun it in DAX query view or DAX Studio. The result includes the annotation name and value, plus the ID and type of the object it's attached to. To get the object's name, join those IDs to the matching INFO function, such as `INFO.TABLES()`, `INFO.COLUMNS()` or `INFO.MEASURES()`.\n\nTo filter for a specific annotation:\n\n```dax\nEVALUATE\nFILTER(\n    INFO.ANNOTATIONS(),\n    [Name] = \"MyAnnotationName\"\n)\n```\n\nCheck the exact column names in your own output, since they follow the TMSCHEMA annotation schema."
+      }
+    },
+    {
+      "id": "info-datasources",
+      "regime": "info",
+      "category": "info",
+      "question": "Which data sources does the model connect to? Is that readable from DAX?",
+      "A": {
+        "text": "I can't see your model, so I can't tell you which sources it uses. DAX can't read them from inside a measure, but you can query the model metadata.\n\nDAX has no function that returns connection details from within a measure or column. The `INFO.*` functions expose the model's metadata, including the M query behind each table. Run this in DAX query view (or DAX Studio):\n\n```dax\nEVALUATE\nSELECTCOLUMNS(\n    INFO.PARTITIONS(),\n    \"Partition\", [Name],\n    \"Mode\", [Mode],\n    \"M or SQL\", [QueryDefinition]\n)\n```\n\nThe `QueryDefinition` column contains the M `Source = Sql.Database(...)`, `Excel.Workbook(...)`, `SharePoint.Files(...)`, etc. That shows the server, database, or file path for each table.\n\nFor shared queries and parameters (for example a `ServerName` parameter), also run:\n\n```dax\nEVALUATE INFO.EXPRESSIONS()\n```\n\n`INFO.DATASOURCES()` only lists legacy-style provider data sources, so for most Power Query models it will be empty or unhelpful. `INFO.PARTITIONS()` is the one to use."
+      },
+      "B": {
+        "text": "Yes. Use **INFO.DATASOURCES**, which returns one row per data source in the semantic model.\n\n```dax\nEVALUATE INFO.DATASOURCES()\n```\n\nRun it in DAX query view or DAX Studio. It works as a query, not as a measure, though you can also wrap it in a calculated table to keep the result in the model.\n\nTo see which tables load from which source, join in **INFO.PARTITIONS**, which holds the partition definitions (the M query or source expression) per table:\n\n```dax\nEVALUATE INFO.PARTITIONS()\n```\n\nIf you use shared Power Query parameters or queries, **INFO.EXPRESSIONS** lists those too.\n\nNote that for Power Query (M) sources, INFO.DATASOURCES often shows only a generic or structured entry. The actual server, file path, or URL is usually in the M code in the partition's query definition."
+      }
+    },
+    {
+      "id": "info-format-strings",
+      "regime": "info",
+      "category": "info",
+      "question": "Dynamic format strings are defined per measure or calculation item. Which INFO function exposes those definitions?",
+      "A": {
+        "text": "Use **`INFO.FORMATSTRINGDEFINITIONS()`**. It returns one row per dynamic format string definition, including the DAX expression. The `ObjectID` column points to the owning object, either a measure or a calculation item.\n\n```DAX\nEVALUATE INFO.FORMATSTRINGDEFINITIONS()\n```\n\nTo see the measure names, match `ObjectID` against the `ID` column of `INFO.MEASURES()`:\n\n```DAX\nEVALUATE\nADDCOLUMNS(\n    INFO.FORMATSTRINGDEFINITIONS(),\n    \"Measure\",\n        VAR id = [ObjectID]\n        RETURN MAXX(FILTER(INFO.MEASURES(), [ID] = id), [Name])\n)\n```\n\nFor calculation items, do the same lookup against `INFO.CALCULATIONITEMS()`."
+      },
+      "B": {
+        "text": "Use **INFO.FORMATSTRINGDEFINITIONS**. It returns one row per format string definition in the model, which covers the dynamic format string expressions on measures and calculation items.\n\n```dax\nEVALUATE INFO.FORMATSTRINGDEFINITIONS()\n```\n\nThe rows only contain object IDs (the owning measure or calculation item, plus the expression). To get readable names, join to the parent object's INFO function, for example **INFO.MEASURES** for measures or **INFO.CALCULATIONITEMS** for calculation items:\n\n```dax\nEVALUATE\nVAR fs = INFO.FORMATSTRINGDEFINITIONS()\nVAR m  = SELECTCOLUMNS(INFO.MEASURES(), \"MeasureID\", [ID], \"MeasureName\", [Name])\nRETURN\nNATURALLEFTOUTERJOIN(fs, m)\n```\n\nRun `EVALUATE INFO.FORMATSTRINGDEFINITIONS()` first and check the column names in your model. The join column in the snippet (here, the owner ID matching `[ID]`) may need to be renamed to match what is actually returned."
+      }
+    },
+    {
+      "id": "visual-running-total",
+      "regime": "visual",
+      "category": "filter",
+      "question": "A running total inside a Power BI visual calculation, along the visual's axis. Which function, and does it need an axis argument?",
+      "A": {
+        "text": "Use **`RUNNINGSUM`**. The axis argument is optional, and it defaults to the first axis of the visual (`ROWS`).\n\n```DAX\nRunning Total = RUNNINGSUM([Sales Amount])\n```\n\nTo run along a different axis, such as across the columns of a matrix, pass it explicitly:\n\n```DAX\nRunning Total = RUNNINGSUM([Sales Amount], COLUMNS)\n```\n\nThere is also an optional `reset` argument if you want the total to restart at a higher level of the hierarchy:\n\n```DAX\nRunning Total = RUNNINGSUM([Sales Amount], ROWS, , HIGHESTPARENT)\n```"
+      },
+      "B": {
+        "text": "Use **RUNNINGSUM**. It's the visual-calculation function for this, and the axis argument is optional. If you leave it out, it defaults to the first axis of the visual (typically ROWS).\n\n```dax\nRunning Total = RUNNINGSUM([Sales Amount])\n```\n\nIf you need to specify the axis explicitly, or reset the sum at a level of the hierarchy:\n\n```dax\nRunning Total = RUNNINGSUM([Sales Amount], COLUMNS)\nRunning Total by Year = RUNNINGSUM([Sales Amount], ROWS, HIGHESTPARENT)\n```\n\nThe signature is `RUNNINGSUM(<column>[, <axis>][, <blanks>][, <reset>])`. Only the column is required."
+      }
+    },
+    {
+      "id": "visual-percent-of-parent",
+      "regime": "visual",
+      "category": "",
+      "question": "Percentage of the parent level inside a visual calculation. Which function gives me the parent's value?",
+      "A": {
+        "text": "Use **`COLLAPSE`**, which moves up one level in the visual's hierarchy on the given axis and evaluates the expression there. Wrap it in `DIVIDE` for the ratio:\n\n```dax\nPercent of parent =\nDIVIDE(\n    [Sales Amount],\n    COLLAPSE([Sales Amount], ROWS)\n)\n```\n\nFormat the result as a percentage.\n\nFor percent of grand total, use `COLLAPSEALL` instead, which goes straight to the top level:\n\n```dax\nPercent of total =\nDIVIDE([Sales Amount], COLLAPSEALL([Sales Amount], ROWS))\n```\n\nUse `COLUMNS` instead of `ROWS` if your hierarchy is on the column axis, such as in a matrix."
+      },
+      "B": {
+        "text": "Use **COLLAPSE**. It evaluates an expression one level up the visual's hierarchy on the given axis, which gives you the parent's value.\n\n```DAX\nPercent of parent = DIVIDE([Sales Amount], COLLAPSE([Sales Amount], ROWS))\n```\n\n- `ROWS` is the axis that holds the hierarchy. Use `COLUMNS` if the hierarchy is on columns.\n- By default it moves up one level. An optional third argument sets how many levels to go up.\n- For percent of grand total, use **COLLAPSEALL** instead, which goes to the top level:\n\n```DAX\nPercent of total = DIVIDE([Sales Amount], COLLAPSEALL([Sales Amount], ROWS))\n```"
+      }
+    },
+    {
+      "id": "visual-moving-average",
+      "regime": "visual",
+      "category": "filter",
+      "question": "A moving average across the visual's axis in a visual calculation. Which function?",
+      "A": {
+        "text": "Use the visual calculations function `MOVINGAVERAGE`:\n\n```DAX\n3-Period MA = MOVINGAVERAGE([Sales Amount], 3)\n```\n\nSignature: `MOVINGAVERAGE(<column>, <windowSize> [, <includeCurrent> [, <axis> [, <blanks> [, <reset>]]]])`\n\n- `windowSize` is the number of points in the window. With `includeCurrent` left at its default (TRUE), it covers the current point plus the preceding ones.\n- `axis` defaults to the first axis of the visual. Set it explicitly if you need a different one, e.g. `MOVINGAVERAGE([Sales Amount], 3, TRUE, ROWS)`.\n- `reset` controls whether the window restarts at a higher level of the hierarchy, e.g. per year.\n\nThe average runs over whatever is on the visual's axis, so make sure the axis is sorted the way you want (typically by date)."
+      },
+      "B": {
+        "text": "Use **MOVINGAVERAGE**, which is built for visual calculations and works along the visual's axis.\n\n```dax\nMoving Avg = MOVINGAVERAGE([Sales], 3)\n```\n\nThis averages the current row and the two before it (a window of 3) along the default ROWS axis. Add an axis argument if you need a different direction, for example `MOVINGAVERAGE([Sales], 3, 1, COLUMNS)`. In that call, the third argument is the number of rows to include, and the fourth selects the axis.\n\nI'm less sure of the exact positional signature beyond the first two arguments, so check the function's reference page before using the extended form.\n\nIf you need a custom window, such as centered or forward-looking, **WINDOW** or **RANGE** with **AVERAGEX** gives you full control, but MOVINGAVERAGE is the simpler choice for a standard trailing average."
+      }
+    },
+    {
+      "id": "visual-difference-previous",
+      "regime": "visual",
+      "category": "filter",
+      "question": "The difference against the previous point on the axis, inside a visual calculation. Which function do I reach for?",
+      "A": {
+        "text": "Use `PREVIOUS()`. It returns the value from the previous point on the visual's axis, so the difference is:\n\n```dax\nSales Diff = [Sales] - PREVIOUS([Sales])\n```\n\nOn the first point there is no previous value, so you'd just get `[Sales]` back. To leave it blank instead:\n\n```dax\nSales Diff =\nIF (\n    ISBLANK ( PREVIOUS ( [Sales] ) ),\n    BLANK (),\n    [Sales] - PREVIOUS ( [Sales] )\n)\n```\n\nBy default it walks the first axis. If your matrix has several, pass the axis explicitly, e.g. `PREVIOUS([Sales], 1, ROWS)`."
+      },
+      "B": {
+        "text": "Use **PREVIOUS**, which is visual-calculation-only and returns the value from the previous row along the axis.\n\n```DAX\nDiff vs Previous = [Sales] - PREVIOUS([Sales])\n```\n\nThe first point has no previous value, so PREVIOUS returns blank there and the difference will just equal `[Sales]`. If you'd rather show blank on that row:\n\n```DAX\nDiff vs Previous = IF(ISBLANK(PREVIOUS([Sales])), BLANK(), [Sales] - PREVIOUS([Sales]))\n```\n\nBy default it runs down the rows axis. Pass `COLUMNS` as the axis argument if your visual is laid out across columns: `PREVIOUS([Sales], COLUMNS)`."
+      }
+    },
+    {
+      "id": "visual-hide-column",
+      "regime": "visual",
+      "category": "",
+      "question": "I need a column in the visual for the calculation but I do not want it displayed. Which visual-calculation modifier?",
+      "A": {
+        "text": "There isn't a DAX modifier for this. Hiding is a UI setting, not part of the visual calculation expression.\n\nIn the visual calculations edit mode, use the **eye icon** next to the field in the visual matrix (or the field's context menu → **Hide**). The field stays available to your calculations but isn't rendered in the visual.\n\nExample:\n\n```DAX\nRunning Total = RUNNINGSUM([Sales Amount])\nPct of Total  = DIVIDE([Sales Amount], COLLAPSEALL([Sales Amount], ROWS))\n```\n\nThen hide `Sales Amount` with the eye icon, and the visual shows only `Running Total` and `Pct of Total`.\n\nThe DAX modifiers you do have, such as the `ROWS`/`COLUMNS` axis, `HIGHESTPARENT`, `LOWESTPARENT`, and `RESET`, control how the calculation traverses the visual matrix. They don't control visibility."
+      },
+      "B": {
+        "text": "There isn't a DAX modifier for this, and none of the functions in that list do it (COLLAPSE, EXPAND, ISATLEVEL and the rest control context or filters, not visibility). Hiding is a UI setting in the visual calculations editing mode.\n\n**How to do it:**\n1. Open the visual and choose **New calculation** (or **Edit calculation**) to enter the visual calculations window.\n2. In the visual's preview matrix, or in the Visual Matrix/Fields area, click the **eye icon** next to the field you don't want shown.\n\nThe hidden field stays in the visual's data and is still usable by your calculations, but it isn't displayed.\n\n**Example:**\n```DAX\nRunning Sales = RUNNINGSUM([Sales Amount])\n```\nHere `[Sales Amount]` can be hidden with the eye icon while `Running Sales` is still calculated and displayed."
+      }
+    },
+    {
+      "id": "visual-total-row",
+      "regime": "visual",
+      "category": "information",
+      "question": "Inside a visual calculation, how do I test whether the current row is a subtotal? Name the function.",
+      "A": {
+        "text": "Use **`ISATLEVEL`**. It returns TRUE when the given field is present at the current row's level, so it returns FALSE on a subtotal or grand total row where that field has been aggregated away.\n\n```DAX\nRow Type = IF ( ISATLEVEL ( [Product] ), \"Detail\", \"Subtotal\" )\n```\n\nPass the **lowest-level field** on the axis. With a Category > Product hierarchy, `ISATLEVEL([Product])` is FALSE on both the Category subtotals and the grand total. To tell those two apart, also test `ISATLEVEL([Category])`:\n\n```DAX\nRow Type =\nSWITCH (\n    TRUE (),\n    ISATLEVEL ( [Product] ),  \"Detail\",\n    ISATLEVEL ( [Category] ), \"Category subtotal\",\n    \"Grand total\"\n)\n```\n\nThe field you reference must be in the visual, because visual calculations can only see fields that are on it."
+      },
+      "B": {
+        "text": "Use **ISATLEVEL**. It isn't in the list you pasted, but it is the visual calculation function for this. It returns TRUE when the given field is present at the current row's level of the visual's axis, so a subtotal for that field is `NOT ISATLEVEL(...)`.\n\n```DAX\nIs Subtotal = NOT ISATLEVEL([Category])\n```\n\nOr, in use:\n\n```DAX\nSales Detail Only = IF(ISATLEVEL([Category]), [Sales Amount], BLANK())\n```\n\nFrom your list, `ISSUBTOTAL` only works with `SUMMARIZE`, and `ISINSCOPE` is for regular measures. Neither is the right tool inside a visual calculation."
+      }
+    },
+    {
+      "id": "visual-scope-level",
+      "regime": "visual",
+      "category": "information",
+      "question": "How do I test which level of a hierarchy the current row is at, in a visual? Name the function.",
+      "A": {
+        "text": "Use **`ISINSCOPE`**. It returns TRUE when a column is a grouping level in the current row of the visual. It isn't fooled by slicers or filters, which is why it's better than `ISFILTERED` here.\n\nTest from the deepest level up, inside `SWITCH(TRUE(), ...)`:\n\n```dax\nHierarchy Level =\nSWITCH(\n    TRUE(),\n    ISINSCOPE('Product'[Product]),     \"Product\",\n    ISINSCOPE('Product'[Subcategory]), \"Subcategory\",\n    ISINSCOPE('Product'[Category]),    \"Category\",\n    \"Grand Total\"\n)\n```\n\n`ISINSCOPE` takes a column, not the hierarchy itself. Deeper levels also return TRUE for their parent levels, which is why the order matters."
+      },
+      "B": {
+        "text": "Use **ISINSCOPE**. It returns TRUE when the given column is the level currently being grouped by in the visual, so you can tell which level of the hierarchy a row is on.\n\nTest from the lowest level up:\n\n```dax\nLevel Label =\nSWITCH(\n    TRUE(),\n    ISINSCOPE('Date'[Month]),  \"Month level\",\n    ISINSCOPE('Date'[Quarter]), \"Quarter level\",\n    ISINSCOPE('Date'[Year]),    \"Year level\",\n    \"Grand total\"\n)\n```\n\nCheck the deepest level first. When a row is at Month, the Quarter and Year columns are also in scope, so testing from the top would match the wrong level.\n\nA common use is blanking or changing a measure at certain levels:\n\n```dax\nSales % of Parent =\nIF(\n    ISINSCOPE('Date'[Month]),\n    DIVIDE([Sales], CALCULATE([Sales], ALLSELECTED('Date'[Month])))\n)\n```\n\nDon't use `HASONEVALUE` or `ISFILTERED` for this. They can return TRUE for reasons unrelated to the hierarchy level, for example slicers or a single-value filter, so they don't reliably tell you the row's level."
+      }
+    },
+    {
+      "id": "visual-selected-measure",
+      "regime": "visual",
+      "category": "",
+      "question": "Inside a calculation item, how do I refer to the measure the item is being applied to? Name the function.",
+      "A": {
+        "text": "Use **`SELECTEDMEASURE()`**. It returns the measure currently being evaluated in the calculation group's filter context, so the calculation item wraps or modifies it.\n\n```dax\n-- Calculation item: \"YTD\"\nCALCULATE ( SELECTEDMEASURE (), DATESYTD ( 'Date'[Date] ) )\n```\n\n```dax\n-- Calculation item: \"PY\"\nCALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( 'Date'[Date] ) )\n```\n\nRelated helpers, if you need them:\n- `SELECTEDMEASURENAME()` returns the measure's name as a string.\n- `ISSELECTEDMEASURE( [Measure1], [Measure2] )` tests whether the current measure is one of those listed, which is useful for applying an item only to certain measures.\n- `SELECTEDMEASUREFORMATSTRING()` returns the measure's format string, used in a calculation item's format string expression."
+      },
+      "B": {
+        "text": "Use **`SELECTEDMEASURE()`**. It's not in the list you pasted, but it's the function for this. It returns the measure currently being evaluated, so the calculation item can wrap it.\n\n```dax\n-- Calculation item \"YTD\"\nCALCULATE ( SELECTEDMEASURE (), DATESYTD ( 'Date'[Date] ) )\n```\n\nRelated helpers are `SELECTEDMEASURENAME()` (returns the measure's name as text) and `ISSELECTEDMEASURE( [Measure1], [Measure2] )` (applies the item only to specific measures)."
+      }
+    },
+    {
+      "id": "visual-measure-name",
+      "regime": "visual",
+      "category": "",
+      "question": "And how do I get the NAME of that measure as text, to branch on it?",
+      "A": {
+        "text": "I'm assuming \"that measure\" is the one picked through a field parameter. Read the selection with `SELECTEDVALUE` on the parameter's display-name column:\n\n```DAX\nBranching Measure =\nVAR _name = SELECTEDVALUE ( 'Metric'[Metric] )   -- display name, e.g. \"Total Sales\"\nRETURN\n    SWITCH (\n        _name,\n        \"Total Sales\", [Total Sales],\n        \"Total Cost\",  [Total Cost],\n        BLANK ()\n    )\n```\n\nThe parameter table also has a hidden `Fields` column. It holds the `NAMEOF` reference, such as `'Sales'[Total Sales]`, if you'd rather branch on that.\n\nIf it's a **calculation group** instead, use `SELECTEDMEASURENAME()` inside the calculation item:\n\n```DAX\nIF ( SELECTEDMEASURENAME () = \"Total Sales\", SELECTEDMEASURE () * 1.1, SELECTEDMEASURE () )\n```\n\n`SELECTEDMEASURENAME()` only works inside calculation items. A regular measure can't read its own name, so use the field parameter approach there."
+      },
+      "B": {
+        "text": "Use `SELECTEDMEASURENAME()`. It returns the name of the measure currently being evaluated as text, and it works inside a calculation group's calculation item. None of the functions in the list you pasted do this.\n\n```dax\n-- Calculation item expression\nSWITCH(\n    SELECTEDMEASURENAME(),\n    \"Sales Amount\", SELECTEDMEASURE(),\n    \"Margin %\",     SELECTEDMEASURE() * 100,\n    BLANK()\n)\n```\n\nIf you only need to test against specific measures, `ISSELECTEDMEASURE([Sales Amount], [Margin %])` is safer than comparing strings, because it doesn't break when a measure is renamed.\n\nI'm assuming you're working in a calculation group. If you meant a field parameter, I'd need to see how it's set up."
+      }
+    },
+    {
+      "id": "visual-format-string",
+      "regime": "visual",
+      "category": "",
+      "question": "A calculation item needs to override the format string of the measure it wraps. Which function returns the original one?",
+      "A": {
+        "text": "`SELECTEDMEASUREFORMATSTRING()` returns the format string of the measure the calculation item is currently wrapping. You use it in the calculation item's **Format String Expression**, which is separate from its main DAX expression.\n\n```dax\n-- Calculation item expression\nSELECTEDMEASURE()\n\n-- Format string expression: keep the original\nSELECTEDMEASUREFORMATSTRING()\n```\n\nTo override it for some measures only, pair it with `ISSELECTEDMEASURE`:\n\n```dax\n-- Format string expression\nIF(\n    ISSELECTEDMEASURE( [Margin %] ),\n    \"0.0%\",\n    SELECTEDMEASUREFORMATSTRING()\n)\n```\n\nFor an item like \"YoY %\" that should always display as a percentage, skip the function and return a literal format string such as `\"0.0%;-0.0%;0.0%\"`."
+      },
+      "B": {
+        "text": "The function you want is **SELECTEDMEASUREFORMATSTRING**. It isn't in the list you pasted, which only covers a different group of functions.\n\nSet it in the calculation item's **format string expression**, not in the item's main expression:\n\n```dax\n-- Calculation item expression\nSELECTEDMEASURE()\n\n-- Format string expression\nSELECTEDMEASUREFORMATSTRING()\n```\n\nTo override it conditionally, for example forcing a percentage for one item:\n\n```dax\n-- Format string expression\nIF(\n    SELECTEDMEASURENAME() = \"Margin %\",\n    SELECTEDMEASUREFORMATSTRING(),\n    \"#,0.00\"\n)\n```\n\nThe related functions are `SELECTEDMEASURE()` for the value and `SELECTEDMEASURENAME()` for the name of the wrapped measure."
+      }
+    },
+    {
+      "id": "visual-expand-all",
+      "regime": "visual",
+      "category": "",
+      "question": "Expand a visual calculation to every level of the axis at once, not one level. Which function?",
+      "A": {
+        "text": "Use **`EXPANDALL`**. `EXPAND` goes down one level (or a set number of levels), while `EXPANDALL` evaluates the expression down to the leaf level of the axis in one go.\n\n```DAX\nLeaf Total = EXPANDALL(SUM([Sales Amount]), ROWS)\n```\n\nThe axis argument is optional and defaults to the first axis of the visual. The matching functions for going the other way are `COLLAPSE` and `COLLAPSEALL`.\n\nNote that these functions only work in **visual calculations**, not in model measures, and the visual needs a hierarchy or multiple fields on the axis."
+      },
+      "B": {
+        "text": "Use **EXPANDALL**. `EXPAND` goes down one level at a time, while `EXPANDALL` jumps straight to the most detailed level of the axis.\n\n```DAX\nLeaf Total = EXPANDALL(SUM([Sales]), ROWS)\n```\n\nThe signature is `EXPANDALL([<expression>], [<axis>], [<reset>])`. The axis defaults to the first axis, and `ROWS` is the usual choice for a matrix. This returns the expression evaluated at the leaf level of that axis.\n\nFor comparison, `EXPAND(SUM([Sales]), ROWS, 2)` would only go down 2 levels. `COLLAPSEALL` is the opposite, since it goes up to the highest level (the grand total)."
+      }
+    },
+    {
+      "id": "visual-collapse-all",
+      "regime": "visual",
+      "category": "",
+      "question": "And the opposite: collapse all the way to the top of the axis. Name it.",
+      "A": {
+        "text": "I can't see the earlier message, so I'm assuming you mean a measure that ignores the axis levels and returns the top-level (grand total) value on every row. That's **`REMOVEFILTERS`**, the clearer modern form of `ALL` when used as a `CALCULATE` filter modifier.\n\n```DAX\nSales at Top Level =\nCALCULATE ( [Sales], REMOVEFILTERS ( 'Date'[Year], 'Date'[Month] ) )\n```\n\nPass the whole table (`REMOVEFILTERS ( 'Date' )`) to clear every level at once.\n\nIf you meant the opposite of a \"drill down one level\" test with `ISINSCOPE`, the top-of-axis check is when no level is in scope:\n\n```DAX\nIs Top Level =\nNOT ISINSCOPE ( 'Date'[Year] )\n```\n\nIf you meant the visual's UI action rather than DAX, that's **Drill up**, or **Collapse all** on a matrix."
+      },
+      "B": {
+        "text": "**COLLAPSEALL** is the one you want. It's the counterpart to `EXPANDALL`, and it moves the evaluation context to the highest level of the axis (the top of the hierarchy). `COLLAPSE` only moves up one level at a time.\n\n```dax\nSales at Top Level =\nCALCULATE(\n    SUM(Sales[Amount]),\n    COLLAPSEALL(Axis)\n)\n```\n\nOr, using the expression form:\n\n```dax\nSales at Top Level =\nCOLLAPSEALL(Axis, SUM(Sales[Amount]))\n```\n\nHere `Axis` is the visual's axis (hierarchy) reference. Both forms follow the signature pattern in the language reference description, but check the exact parameter syntax there, since these functions are mainly meant for visual calculations."
+      }
+    },
+    {
+      "id": "visual-first-on-axis",
+      "regime": "visual",
+      "category": "filter",
+      "question": "Reference the first value along the visual's axis to index everything against it. Which function?",
+      "A": {
+        "text": "**`FIRST()`**, a visual calculation function (not available in regular model measures).\n\n```DAX\nSales Index = DIVIDE([Sales], FIRST([Sales])) * 100\n```\n\nThis returns the first row's value along the visual's axis, so the first point is 100 and every later point is indexed against it. By default it uses the `ROWS` axis. Pass a different axis or a reset argument if you need something else, for example `FIRST([Sales], COLUMNS)`."
+      },
+      "B": {
+        "text": "Use **FIRST**, which is a visual calculation function. It retrieves the value from the first row of the axis, so you can index each value against it.\n\n```DAX\nIndexed = DIVIDE([Sales], FIRST([Sales])) * 100\n```\n\nEach row is then expressed relative to the first row on the axis, which is 100. Note that `FIRST` only works in visual calculations, not in regular measures or calculated columns.\n\nIf you need this in a regular measure instead, `INDEX(1, ...)` with `ORDERBY` is the equivalent. `FIRST` is simpler when visual calculations are available."
+      }
+    },
+    {
+      "id": "visual-is-selected-measure",
+      "regime": "visual",
+      "category": "",
+      "question": "In a calculation item, branch on WHICH measure is being evaluated without comparing strings. Is there a function for that?",
+      "A": {
+        "text": "Yes, use **`ISSELECTEDMEASURE`**. It takes one or more measure references and returns TRUE if the measure currently being evaluated is one of them, so no string comparison is needed (unlike `SELECTEDMEASURENAME()`).\n\n```dax\n-- Calculation item: YoY, applied only to specific measures\nSWITCH(\n    TRUE(),\n    ISSELECTEDMEASURE([Sales Amount], [Total Cost]),\n        CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date])),\n    ISSELECTEDMEASURE([Margin %]),\n        SELECTEDMEASURE(),   -- leave ratios unchanged\n    BLANK()\n)\n```\n\nNotes:\n- Arguments must be measure references, such as `[Sales Amount]`, not columns or expressions.\n- It only works in calculation group contexts, including calculation item expressions and format string expressions.\n- Use `SELECTEDMEASURE()` for the actual value of the measure being evaluated."
+      },
+      "B": {
+        "text": "Yes: `ISSELECTEDMEASURE`. It isn't in the list you pasted, but it's the function for this. It takes one or more measure references and returns TRUE if the measure currently being evaluated is one of them. No string comparison is needed.\n\n```dax\n-- Calculation item expression\nIF (\n    ISSELECTEDMEASURE ( [Sales Amount], [Total Cost] ),\n    CALCULATE ( SELECTEDMEASURE (), DATESYTD ( 'Date'[Date] ) ),\n    SELECTEDMEASURE ()\n)\n```\n\nFor a multi-way branch, use `SWITCH ( TRUE (), ISSELECTEDMEASURE ( [A] ), ..., ISSELECTEDMEASURE ( [B] ), ..., SELECTEDMEASURE () )`.\n\n`SELECTEDMEASURENAME()` also exists, but it returns a string, so it's the approach you're trying to avoid. `ISSELECTEDMEASURE` is also safer against renames, because the measure reference is checked by the engine."
+      }
+    },
+    {
+      "id": "visual-lookup-on-axis",
+      "regime": "visual",
+      "category": "filter",
+      "question": "Inside a visual calculation, look up a value at a specific position on the axis. Which function?",
+      "A": {
+        "text": "Use **`INDEX`**, a window function that returns the row at an absolute position along the axis. Wrap it in `CALCULATE` to pull a value from that row.\n\n```DAX\nSales at position 2 = CALCULATE(SUM([Sales]), INDEX(2, ROWS))\n```\n\n- `INDEX(2, ROWS)` picks the 2nd row on the visual's row axis. A negative position counts from the end, so `INDEX(-1, ROWS)` is the last row.\n- Add `, COLUMNS` instead of `ROWS` if you want to move along the column axis of a matrix.\n- For first and last specifically, `FIRST()` and `LAST()` are shorthand.\n\nI'm less sure of the exact `INDEX` argument defaults inside visual calculations, so check the signature in the formula bar's IntelliSense."
+      },
+      "B": {
+        "text": "Use **LOOKUP**, a visual-calculation-only function that returns a value at a specific position on the axis. Pass the expression and the position of the row on the axis, using the column that identifies that position.\n\n```dax\nSales at Mar = LOOKUP([Sales], [Month], \"Mar\")\n```\n\nIt evaluates `[Sales]` for the row where `[Month]` is \"Mar\". If you need totals handled explicitly, use **LOOKUPWITHTOTALS**, which doesn't infer filters you don't specify.\n\nIf you just need the first or last row of the axis, use **FIRST()** or **LAST()** instead, for example `[Sales] - FIRST([Sales])`."
+      }
+    }
+  ]
+}

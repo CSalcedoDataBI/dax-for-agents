@@ -18,8 +18,9 @@ TABLE = """Some prose.
 
 | | alone | with the catalogue |
 |---|---:|---:|
-| Claude Haiku 4.5 | 11 | 6 |
-| Claude Sonnet 5 | 8 | **0** |
+| Claude Opus 5.5 | 2 | 2 |
+| Claude Sonnet 5.5 | 2 | 3 |
+| Claude Haiku 5.5 | 7 | 2 |
 | DeepSeek V4-Pro | 4 | **0** |
 | DeepSeek V4-Flash | 3 | **0** |
 
@@ -42,21 +43,21 @@ class Parsing(unittest.TestCase):
     def test_it_reads_every_row(self):
         self.write(TABLE)
         self.assertEqual(gate.table_rows(self.path),
-                         [("Claude Haiku 4.5", 11, 6), ("Claude Sonnet 5", 8, 0),
+                         [("Claude Opus 5.5", 2, 2), ("Claude Sonnet 5.5", 2, 3),
+                          ("Claude Haiku 5.5", 7, 2),
                           ("DeepSeek V4-Pro", 4, 0), ("DeepSeek V4-Flash", 3, 0)])
 
     def test_the_bold_on_a_zero_is_emphasis_and_not_data(self):
-        """Three of the four rows end in **0** because it is the result worth seeing. A
+        """The two DeepSeek rows end in **0** because it is the result worth seeing. A
         parser that choked on the asterisks would read the table as half missing."""
-        rows = dict((m, (a, b)) for m, a, b in gate.table_rows(self.path)) if False else None
         self.write(TABLE)
-        self.assertIn(("Claude Sonnet 5", 8, 0), gate.table_rows(self.path))
+        self.assertIn(("DeepSeek V4-Pro", 4, 0), gate.table_rows(self.path))
 
     def test_a_row_about_something_else_is_ignored(self):
         """The README has other tables. Only rows naming a model this gate has a run for
         are claims about inventions."""
         self.write(TABLE + "\n| **479 function cards** | derived from upstream | x |\n")
-        self.assertEqual(len(gate.table_rows(self.path)), 4)
+        self.assertEqual(len(gate.table_rows(self.path)), 5)
 
     def test_no_table_at_all_is_an_error_not_a_pass(self):
         """Deleting the table would otherwise silently retire the gate: nothing to compare

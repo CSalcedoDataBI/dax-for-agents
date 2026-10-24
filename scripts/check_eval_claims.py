@@ -34,8 +34,9 @@ _ROW = re.compile(r"^\|\s*([A-Za-z][A-Za-z0-9.\- ]+?)\s*\|\s*\**(\d+)\**\s*\|"
 # The README names models the way a person says them; the run files name them the way an API
 # does. One table, written here, rather than a guess at the transformation between the two.
 MODEL_FILES = {
-    "Claude Haiku 4.5": "2026-08-29-claude-haiku-4-5.json",
-    "Claude Sonnet 5": "2026-08-29-claude-sonnet-5.json",
+    "Claude Opus 5.5": "2026-10-23-claude-opus-5-5.json",
+    "Claude Sonnet 5.5": "2026-10-23-claude-sonnet-5-5.json",
+    "Claude Haiku 5.5": "2026-10-23-claude-haiku-5-5.json",
     "DeepSeek V4-Pro": "2026-08-29-deepseek-v4-pro.json",
     "DeepSeek V4-Flash": "2026-08-29-deepseek-v4-flash.json",
 }
