@@ -91,9 +91,10 @@ lets `check_eval_claims.py` recount it in CI is the same one that keeps this noi
 DAX this round, with the reference or without it, and classic DAX saw a single artifact. What is
 left sits in `INFO.*` and the window functions — the corners where this library carries
 Microsoft's card and no judgement of its own, and where a weaker model reaches for a function it
-half-remembers. Four of Haiku 5.5's seven are in `INFO.*` (`INFO.HIERARCHYLEVELS`,
-`INFO.STORAGE_TABLE_COLUMNS`, `INFO.CALCULATION_ITEMS`, `SELECT_COLUMNS`), and the catalogue
-removes every one.
+half-remembers. Four of Haiku 5.5's seven fall in the `INFO.*` regime — three of them
+`INFO.*`-prefixed guesses (`INFO.HIERARCHYLEVELS`, `INFO.STORAGE_TABLE_COLUMNS`,
+`INFO.CALCULATION_ITEMS`) and one a `SELECTCOLUMNS` misspelling (`SELECT_COLUMNS`) — and the
+catalogue removes every one.
 
 The answers are kept, so the number can be checked rather than believed:
 
