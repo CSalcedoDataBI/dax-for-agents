@@ -4,7 +4,7 @@
 
 ## El problema
 
-El [spec de diseño](../superpowers/specs/2026-08-06-dax-for-agents-design.md) y los
+El [spec de diseño](../design.md) y los
 entregables del épico dicen **61 páginas conceptuales**. El árbol generado tiene **34**, y
 nada en el repo reconciliaba las dos cifras. Quien leyera el spec contra el artefacto
 encontraba 27 páginas de diferencia y ninguna explicación.

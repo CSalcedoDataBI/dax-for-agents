@@ -1,7 +1,7 @@
 # Ficha — dax-for-agents
 
 > Ficha de esta herramienta. La lee su experto (`.claude/agents/experto.md`) en cada PR.
-> Se mantiene con las reglas internas del mantenedor.
+> Se mantiene con las reglas del mantenedor.
 > La aprueba el mantenedor (línea `Aprobada:`); cambiarla exige una nueva aprobación.
 
 ## Qué es
@@ -12,7 +12,7 @@
   lenguaje; una reporta de vuelta cuando una ficha, nota o ejemplo se equivoca. (Los tamaños
   exactos del catálogo viven en el README, que CI verifica.)
 - **Papel** (`repo-roles`): tool (plugin del directorio de Anthropic).
-- **Gemelo público/privado:** `dax-for-agents-pro` (privado).
+- **Gemelo público/privado:** tiene un gemelo privado.
 
 ## Norte
 
@@ -40,7 +40,7 @@ Lo que no se toca sin un paso del plan que lo nombre:
 
 ## Capa y feedback
 
-- **Capa de nodo** (ADR 0023): `dax` (pendiente de declarar `node.json`: issue
+- **Capa de nodo** (modelo de capas de los plugins): `dax` (pendiente de declarar `node.json`: issue
   [#34](https://github.com/CSalcedoDataBI/dax-for-agents/issues/34)).
 - **Skill de feedback:** `dax-for-agents:dax-feedback` (reporta de vuelta una ficha, nota o ejemplo
   equivocado como un issue público saneado en este mismo repo).
@@ -51,11 +51,11 @@ Lo que no se toca sin un paso del plan que lo nombre:
 - **Suite de pruebas:** `validate` (workflow *Validate skills* → `scripts/validate_skills.py`, las
   compuertas de `scripts/` y `python -m unittest discover` sobre `skills/dax-reference/scripts`,
   `scripts` y `evals`) y `static` (workflow *Evals* → `python evals/run_evals.py`).
-- **Runner:** GitHub (repo público — minutos gratis, R8; no hay runner local).
+- **Runner:** GitHub (repo público — minutos gratis; no hay runner local).
 - **Formato de tag:** `vX.Y.Z` (un solo componente; gestionado por `release-please`).
 - **Experto:** `.claude/agents/experto.md`
 - **¿Plugin del directorio?:** sí — `stable` no se toca y fusionar en `main` no es publicar;
-  publicar sigue R5 (skill `plugin-directory-submit` y OK de Cristóbal).
+  publicar sigue el protocolo de publicación (skill `plugin-directory-submit` y OK de Cristóbal).
 - **Partes visibles que aprueba Cristóbal:** ninguna pieza desplegada; el README y los informes de
   `lab/` se regeneran del árbol y CI los verifica (no se aprueban mirándolos).
 
