@@ -41,6 +41,15 @@ When in doubt, file it as a draft on #39 and say so. Moving a draft up to a publ
 later costs nothing. The other direction is a one-way door: deleting an issue does not
 unpublish it.
 
+## The norte of this repo
+
+[FICHA.md](FICHA.md) is this tool's card — what it is, the plan it serves, the zones not to
+touch, and how a change gets merged. Its reviewer, the [experto](.claude/agents/experto.md),
+reads the card against every PR and decides: merge, send back to fix, or propose. This repo is
+maintained under the maintainer's internal rules; `main` is for daily work, and merging to
+`main` is not publishing — the directory tracks `stable` (see
+[.claude/rules/plugin-directory.md](.claude/rules/plugin-directory.md)).
+
 ## Everything else
 
 Conventions live in [INDEX.md](INDEX.md#conventions); the language decision and what stays
