@@ -71,6 +71,7 @@ HISTORICAL = [
     os.path.join("docs", "decisions"),                # what was true when decided
     os.path.join("docs", "design.md"),               # the design record, dated
     os.path.join("docs", "examples-es"),              # frozen Spanish snapshot of examples/
+    os.path.join("docs", "proposals", "2026-10-25-plan-b-under-512-files.md"),  # dated measurement
     "HANDOFF.md",                                     # a session snapshot, true when written
     ".handoffs",                                      # the archived ones, same reason
 ]
