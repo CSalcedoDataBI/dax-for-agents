@@ -92,26 +92,35 @@ def read(root, path):
 # Bundles go in a NEW directory (generated/bundles/), so a stale 'library/<fn>.md' path fails
 # loudly instead of opening a category file that happens to share a function's name (FILTER).
 BEGIN = '<a id="{0}"></a>\n<!-- card: {0} -->\n'
+# Six cards have no final newline. The bundle adds one before END and says so in the marker,
+# so the split drops exactly that newline and the round trip compares bytes, not rstrip().
+BEGIN_NONL = '<a id="{0}"></a>\n<!-- card: {0} no-final-newline -->\n'
 END = "<!-- /card -->\n\n"
-LINK = re.compile(r"\]\(((?:\.\./)*\.?\.?/?(?:library/|concepts/)?)([a-z0-9][a-z0-9.-]*)\.md\)")
-BACK = re.compile(r"\]\(\./([a-z0-9-]+)\.md#([a-z0-9][a-z0-9.-]*)\)")
+# A section anchor ('./if.md#examples') cannot stay an anchor: every card in a bundle has its
+# own "Examples". It rides along as the link title, and the split turns it back.
+LINK = re.compile(r"\]\(((?:\.\./)*\.?\.?/?(?:library/|concepts/)?)([a-z0-9][a-z0-9.-]*)\.md(#[^)\s]*)?\)")
+BACK = re.compile(r'\]\(\./([a-z0-9-]+)\.md#([a-z0-9][a-z0-9.-]*)(?: "section:([^"]+)")?\)')
 
 
 def rewrite(text, bundle_of, here):
     def sub(m):
-        pre, stem = m.groups()
-        b = bundle_of.get(("library" if pre.endswith("library/") else here, stem))
-        return m.group(0) if b is None else f"](./{b}.md#{stem})"
+        pre, stem, anchor = m.groups()
+        d = "library" if "library/" in pre else "concepts" if "concepts/" in pre else here
+        b = bundle_of.get((d, stem))
+        if b is None:
+            return m.group(0)
+        return f"](./{b}.md#{stem}" + (f' "section:{anchor[1:]}"' if anchor else "") + ")"
     return LINK.sub(sub, text)
 
 
 def unrewrite(text, dir_of, here):
     def sub(m):
-        b, stem = m.groups()
+        b, stem, section = m.groups()
         d = dir_of.get(b, {}).get(stem)
         if d is None:
             return m.group(0)
-        return f"](./{stem}.md)" if d == here else f"](../{d}/{stem}.md)"
+        tail = f"#{section})" if section else ")"
+        return f"](./{stem}.md{tail}" if d == here else f"](../{d}/{stem}.md{tail}"
     return BACK.sub(sub, text)
 
 
@@ -126,21 +135,31 @@ def build(root, groups, kind, links=None):
             card = read(root, path)
             card = rewrite(card, links, d) if links else card
             start = text.count("\n") + 1
-            text += BEGIN.format(slug) + card + ("" if card.endswith("\n") else "\n") + END
+            nl = card.endswith("\n")
+            text += (BEGIN if nl else BEGIN_NONL).format(slug) + card + ("" if nl else "\n") + END
             ranges[slug] = (start, text.count("\n") - 1)
         out[name] = (len(text.encode("utf-8")), ranges, text)
     return out
 
 
 def fit(root, groups):
-    """Split any group whose cards exceed TARGET alphabetically into name-1, name-2, ..."""
+    """Split any group whose cards exceed TARGET, in order and by bytes, into name-1, name-2, ...
+    By bytes, not by count: each part aims at an even share of the group, never goes over
+    TARGET, and none is empty."""
     final = {}
     for name, members in groups.items():
-        size = sum(os.path.getsize(os.path.join(root, p)) + 80 for _, p, _ in members)
-        parts = -(-size // TARGET)
-        step = -(-len(members) // parts)
-        for i in range(parts):
-            final[name if parts == 1 else f"{name}-{i + 1}"] = members[i * step:(i + 1) * step]
+        sizes = [os.path.getsize(os.path.join(root, m[1])) + 80 for m in members]
+        goal = sum(sizes) / -(-sum(sizes) // TARGET)
+        parts, cur, size = [], [], 0
+        for m, s in zip(members, sizes):
+            if cur and (size + s > TARGET or size >= goal):
+                parts.append(cur)
+                cur, size = [], 0
+            cur.append(m)
+            size += s
+        parts.append(cur)
+        for i, part in enumerate(parts):
+            final[name if len(parts) == 1 else f"{name}-{i + 1}"] = part
     return final
 
 
@@ -152,10 +171,22 @@ def roundtrip(root, built, groups, links):
     bad = 0
     for name, (_, _, text) in built.items():
         for slug, path, d in groups[name]:
-            i = text.index(BEGIN.format(slug)) + len(BEGIN.format(slug))
+            nl = BEGIN.format(slug) in text
+            mark = (BEGIN if nl else BEGIN_NONL).format(slug)
+            i = text.index(mark) + len(mark)
             card = unrewrite(text[i:text.index(END, i)], dir_of, d)
-            bad += card.rstrip("\n") != read(root, path).rstrip("\n")
+            bad += (card if nl else card[:-1]) != read(root, path)
     return bad
+
+
+def alpha_name(taken, cur):
+    """functions-<first>-<last> letter, with -2, -3 ... when one letter spans two bundles."""
+    base = f"functions-{cur[0][0][0]}-{cur[-1][0][0]}"
+    name, n = base, 1
+    while name in taken:
+        n += 1
+        name = f"{base}-{n}"
+    return name
 
 
 def plan_bundles(root, files):
@@ -174,10 +205,10 @@ def plan_bundles(root, files):
     for m in sorted((f["file"], p, "library") for p, f in lib.items()):   # greedy, A to Z
         s = os.path.getsize(os.path.join(root, m[1])) + 80
         if cur and size + s > TARGET:
-            alpha[f"functions-{cur[0][0][0]}-{cur[-1][0][0]}"], cur, size = cur, [], 0
+            alpha[alpha_name(alpha, cur)], cur, size = cur, [], 0
         cur.append(m)
         size += s
-    alpha[f"functions-{cur[0][0][0]}-{cur[-1][0][0]}"] = cur
+    alpha[alpha_name(alpha, cur)] = cur
 
     links = {(d, slug): b for b, ms in groups.items() for slug, _, d in ms}
     built = build(root, groups, "DAX reference", links)

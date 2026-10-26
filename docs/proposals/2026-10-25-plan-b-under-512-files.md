@@ -53,7 +53,7 @@ copy is older than `@323524c` (decision of 2026-08-27). So bundling is a **re-la
 tree as it is**, not a regeneration, and it has to be provably lossless.
 
 - **Grouping:** by `catalog.json` `primaryCategory`, 16 empty → `uncategorized`; any group
-  over 230 KiB (90 % of 256 KiB) splits alphabetically. That gives **17 function bundles**
+  over 230 KiB (90 % of 256 KiB) splits, in alphabetical order and by bytes, into even parts that each stay under 230 KiB. That gives **17 function bundles**
   (`info` splits in two, largest `functions-financial` 177.6 KiB) + **2 concept bundles**
   (one would be 241 KiB, too close). Alphabetical packing gives 7 files but the largest is at
   230 KiB, with no headroom. Category wins: it matches the catalog's `Cat` column, and a wrong
@@ -63,12 +63,16 @@ tree as it is**, not a regeneration, and it has to be provably lossless.
   instead of opening the whole *filter category* in place of the FILTER card.
 - **Format:** each card is copied **verbatim** between `<a id="<slug>"></a>` +
   `<!-- card: <slug> -->` and `<!-- /card -->`. The only edit is a card-to-card link,
-  `./abs.md` → `./functions-math-and-trig.md#abs` (1,231 such links: 1,117 `./x.md` +
+  `./abs.md` → `./functions-math-and-trig.md#abs` (1,232 such links: 1,118 `./x.md` +
   114 `../library/x.md`; the 99 `../../examples/…` links are untouched), which reverses on
-  split. **Simulated round trip: 0 of 513 cards differ.**
+  split. A section anchor (one link, `./if.md#examples`) rides along as the link title
+  (`"section:examples"`), since every card in a bundle has its own Examples heading. Six cards
+  have no final newline; their marker says `no-final-newline`, so the split drops exactly the
+  newline the bundle added. **Simulated round trip, compared byte for byte: 0 of 513 cards
+  differ.**
 - **Catalog pointer:** `catalog.md` gets a `Card` column holding `bundle:first-last`
   (CALCULATE → `functions-filter:587-757`). The agent does `Read offset=587 limit=171`, the
-  same one hop as today. Cost: +15,657 chars (~3.9k tokens) on a 72.5 KB catalog. The longest
+  same one hop as today. Cost: +15,661 chars (~3.9k tokens) on a 72.5 KB catalog. The longest
   card is 374 lines. `concepts.md` gets the same pointer. Fallback documented in SKILL.md:
   `Grep "card: <slug>"` in `generated/bundles/`. A bundle is never read whole (the largest is
   5,093 lines).
@@ -169,7 +173,7 @@ bundle, and an eval case that checks the read stays under ~400 lines.
 <details><summary><code>python -X utf8 scripts/simulate_plan_b.py</code> (2026-10-25, main @ cfbf703)</summary>
 
 ```text
-## 1. Tracked files at the repo root (all ship today): 1056
+## 1. Tracked files at the repo root (all ship today): 1058
 
 | folder         | files | runtime | keep (listing/CI/release) | dev only |
 |----------------|-------|---------|---------------------------|----------|
@@ -178,12 +182,12 @@ bundle, and an eval case that checks the read stays under ~400 lines.
 | .claude        | 1     | 0       | 0                         | 1        |
 | .claude-plugin | 3     | 3       | 0                         | 0        |
 | .github        | 7     | 0       | 7                         | 0        |
-| docs           | 114   | 0       | 0                         | 114      |
+| docs           | 115   | 0       | 0                         | 115      |
 | evals          | 16    | 0       | 0                         | 16       |
 | lab            | 203   | 0       | 0                         | 203      |
-| scripts        | 30    | 0       | 0                         | 30       |
+| scripts        | 31    | 0       | 0                         | 31       |
 | skills         | 669   | 658     | 0                         | 11       |
-| TOTAL          | 1056  | 661     | 15                        | 380      |
+| TOTAL          | 1058  | 661     | 15                        | 382      |
 
 ## 2. Inside skills/, by rule
 
@@ -208,22 +212,22 @@ bundle, and an eval case that checks the read stays under ~400 lines.
 |----------------------|-------|-------|-------------|------------|
 | library_by_category  | 17    | 479   | 177.6       | OK         |
 | library_alphabetical | 7     | 479   | 230.1       | OK         |
-| concepts             | 2     | 34    | 143.1       | OK         |
+| concepts             | 2     | 34    | 124.2       | OK         |
 | examples             | 4     | 99    | 100.9       | OK         |
 | notes                | 1     | 31    | 77.1        | OK         |
 
 | generated/bundles/<file>.md  | cards | KiB   | lines |
 |------------------------------|-------|-------|-------|
-| concepts-1                   | 17    | 143.1 | 2091  |
-| concepts-2                   | 17    | 104.8 | 2155  |
+| concepts-1                   | 14    | 124.2 | 1797  |
+| concepts-2                   | 20    | 123.7 | 2449  |
 | functions-aggregation        | 22    | 49.2  | 1519  |
 | functions-date-and-time      | 24    | 63.3  | 1694  |
 | functions-filter             | 35    | 166.5 | 3435  |
 | functions-financial          | 51    | 177.6 | 5093  |
-| functions-info-1             | 36    | 134.6 | 4126  |
-| functions-info-2             | 36    | 154.0 | 4410  |
+| functions-info-1             | 39    | 145.6 | 4424  |
+| functions-info-2             | 33    | 143.0 | 4112  |
 | functions-information        | 43    | 93.7  | 2993  |
-| functions-logical            | 15    | 39.9  | 1269  |
+| functions-logical            | 15    | 40.0  | 1269  |
 | functions-math-and-trig      | 49    | 95.7  | 3293  |
 | functions-other              | 6     | 17.4  | 536   |
 | functions-parent-and-child   | 5     | 12.7  | 311   |
@@ -237,19 +241,19 @@ bundle, and an eval case that checks the read stays under ~400 lines.
 round trip (split each bundle, compare with the card on disk): 0 card(s) differ
 catalog pointer: CALCULATE -> `functions-filter:587-757`  (Read offset=587 limit=171)
 catalog pointer: ABS -> `functions-math-and-trig:5-67`  (Read offset=5 limit=63)
-extra catalog.md size of a 'bundle:first-last' column: 15657 chars (~3914 tokens); longest card 374 lines
-card-to-card links rewritten on bundle, reversed on split: 1231 ('../library/x.md' 114, './x.md' 1117)
-hand-written links that name a card path: 0 ()
+extra catalog.md size of a 'bundle:first-last' column: 15661 chars (~3915 tokens); longest card 374 lines
+card-to-card links rewritten on bundle, reversed on split: 1232 ('../library/x.md' 114, './x.md' 1118)
+hand-written links that name a card path: 3 (docs 3)
 
 ## 4. Scenarios
 
 | scenario                                         | files shipped | margin to 512 |
 |--------------------------------------------------|---------------|---------------|
-| NOW: root (main)                                 | 1056          | -544          |
-| B-root 1: bundle library+concepts                | 562           | -50           |
-| B-root 2: 1 + move docs/examples-es              | 462           | 50            |
-| B-root 3: 2 + bundle examples  <- proposed       | 367           | 145           |
-| B-root 4: 3 + bundle notes                       | 337           | 175           |
+| NOW: root (main)                                 | 1058          | -546          |
+| B-root 1: bundle library+concepts                | 564           | -52           |
+| B-root 2: 1 + move docs/examples-es              | 464           | 48            |
+| B-root 3: 2 + bundle examples  <- proposed       | 369           | 143           |
+| B-root 4: 3 + bundle notes                       | 339           | 173           |
 | B-root 5: 1 + move every dev folder (rejected)   | 193           | 319           |
 | B-sub: origin/refactor/plugin-subfolder as it is | 673           | -161          |
 | B-sub model: main's skills/ + 5 PR files         | 674           | -162          |
