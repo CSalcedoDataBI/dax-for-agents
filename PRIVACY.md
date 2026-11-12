@@ -25,8 +25,9 @@ read and approve through `dax-feedback`, which is filed in public under your own
 Your semantic models, queries and conversations stay between you, Claude and the tools you
 already use. The plugin keeps no copy of them and retains no data.
 
-Maintainer scripts in this repository (for example the evaluation runner under `evals/`)
-are **not** run by the plugin; they run only when a maintainer starts them by hand.
+Maintainer scripts in this repository (for example the evaluation runners under `evals/`)
+are **not** run by the plugin; they run only when a maintainer starts them by hand. The
+evaluation runners ask Claude through the maintainer's own Claude Code login and read no API key.
 
 ## Children
 

@@ -281,8 +281,9 @@ someone types its command:
 
 - `skills/dax-lib/scripts/refresh-daxlib.ps1` clones `github.com/daxlib/daxlib` to rebuild the index.
 - `skills/dax-reference/scripts/fetch_from_learn.py` reads `learn.microsoft.com/en-us/dax/`.
-- `evals/hallucination/run_ab.py` sends benchmark questions to the Anthropic or DeepSeek API, using a
-  key the person running it sets in their own environment. Nothing in the plugin reads that key.
+- `evals/run_evals.py --model` and `evals/hallucination/run_ab.py` send benchmark questions to a
+  Claude model through the Claude Code CLI (`claude -p`), with the login the person running them
+  already has. No file in this repository reads an API key.
 
 No personal data is collected, stored or sent anywhere.
 
@@ -315,7 +316,8 @@ python -m unittest discover -s evals -t evals
 `check_documented_gates.py` is why that list can be trusted to stay complete: it reads every
 python command CI runs unconditionally on a pull request and fails if this block and that set
 differ. Routing accuracy is checked too, in its own workflow — `python evals/run_evals.py`,
-free and static; the LLM-judge variant is manual because it spends tokens.
+free and static; the model-graded variant (`--model`) runs only on your own machine, because it
+spends tokens.
 
 `check_doc_claims.py` is the one worth knowing about: it reads a number written next to a
 noun this repository counts — cards, functions with runnable examples, concepts, notes,

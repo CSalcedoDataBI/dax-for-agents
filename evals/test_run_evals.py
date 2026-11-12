@@ -145,5 +145,22 @@ class MissingCatalog(unittest.TestCase):
         self.assertEqual(accuracy_eval(None, []), (0, []))
 
 
+class ModelModeSetup(unittest.TestCase):
+    """A setup problem must stop the run, not print a 0% accuracy and exit 0."""
+
+    def test_a_missing_cli_stops_with_exit_2(self):
+        import claude_cli
+        from unittest import mock
+        with mock.patch("claude_cli.shutil.which", return_value=None), \
+                mock.patch("claude_cli.subprocess.run") as run:
+            self.assertEqual(run_evals.model_eval({"a": {"description": "x"}},
+                                                  [{"prompt": "p", "expect": "a"}]), 2)
+        run.assert_not_called()
+
+    def test_a_non_claude_model_stops_with_exit_2(self):
+        from unittest import mock
+        with mock.patch.dict(os.environ, {"EVAL_MODEL": "deepseek-v4-pro"}):
+            self.assertEqual(run_evals.model_eval({}, []), 2)
+
 if __name__ == "__main__":
     unittest.main()

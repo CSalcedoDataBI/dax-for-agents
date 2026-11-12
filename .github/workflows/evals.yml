@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "static (free) or model (LLM-judge, uses ANTHROPIC_API_KEY, costs tokens)"
+        description: "static (free). The model-graded run is local: python evals/run_evals.py --model"
         type: choice
-        options: [static, model]
+        options: [static]
         default: static
 
 permissions:
@@ -53,19 +53,3 @@ jobs:
         run: |
           gh api -X POST "repos/${{ github.repository }}/statuses/${{ github.sha }}"             -f state="${{ job.status == 'success' && 'success' || 'failure' }}"             -f context="static"             -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"             -f description="los evals corrieron sobre esta rama"
 
-  llm-judge:
-    # Manual only — real routing accuracy, spends tokens.
-    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'model'
-    runs-on: ubuntu-latest
-    # R3 — una llamada por caso a la API. Sin limite, una respuesta que no llega
-    # deja el job colgado con la factura corriendo.
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - run: pip install pyyaml
-      - run: python evals/run_evals.py --model
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

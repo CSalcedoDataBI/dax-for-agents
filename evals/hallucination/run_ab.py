@@ -30,10 +30,9 @@ it costs nothing, and it can be re-run on a saved transcript forever.
     python evals/hallucination/run_ab.py --replay out.json  # re-count, no API calls
     python evals/hallucination/run_ab.py --out r.json --resume   # finish an interrupted run
 
-The provider is read from the model's name, and each one has its own key variable:
-ANTHROPIC_API_KEY for `claude-*`, DEEPSEEK_API_KEY for `deepseek-*`. A key is read
-from the environment and nowhere else: never passed on the command line, never
-printed, never written into the output file.
+A live run asks a `claude-*` model through the Claude Code CLI (`claude -p`), with the
+login you already have there. This script reads no API key at all. Saved runs of other
+providers (the DeepSeek runs in runs/) re-count with --replay.
 """
 import argparse
 import json
@@ -48,6 +47,7 @@ except ImportError:
     sys.exit(2)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(HERE))  # evals/, for claude_cli
 ROOT = os.path.dirname(os.path.dirname(HERE))
 CATALOG = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
 QUESTIONS = os.path.join(HERE, "questions.yaml")
@@ -122,131 +122,48 @@ def category_rows(catalog, category):
     return "\n".join(rows)
 
 
-# 700 was enough for Haiku and not for Opus 5, which thinks before it answers
-# and spends the budget doing it: 24 of its 144 answers came back EMPTY, and an
-# empty answer scores zero inventions -- the best possible result, for not having
-# answered. Output is billed by what is generated, so the headroom is free unless
-# it is used.
-MAX_TOKENS = 4000
-
 SYSTEM = ("You are a Power BI developer answering a colleague. Be brief: name the DAX "
           "functions involved and show a short snippet. Do not hedge with lists of "
           "alternatives you are unsure about.")
 
 
 # ---------------------------------------------------------------------------
-# Providers
+# Who answers
 # ---------------------------------------------------------------------------
 #
-# The README promises "your agent", not "Claude". Measuring only Anthropic models
-# proves the smaller claim, so the request and the response are described per provider
-# rather than written into `ask()`.
+# A live run goes through the Claude Code CLI (`claude -p`, see evals/claude_cli.py), with
+# the login the person running it already has. This script never reads, passes or prints
+# an API key -- the plugin directory holds any plugin whose files read one from the
+# environment, and the two eval runners were the only files that did.
 #
-# Which provider serves a model is read from its name. That is a convention, not a
-# lookup table to maintain, and an unknown prefix stops the run instead of guessing --
-# sending an Anthropic-shaped body to an OpenAI-shaped endpoint fails in a way that
-# looks like the model refusing to answer.
+# Other providers are replay-only. The DeepSeek runs of 2026-08-29 in runs/ still re-count
+# with --replay, and check_eval_claims.py recounts them in CI; asking DeepSeek again would
+# need its key, which is exactly what this file no longer holds.
 
-def _anthropic_request(model, question, reference, system, max_tokens):
-    user = question if not reference else (
+PROVIDER = "claude-code"
+
+
+def check_model(model):
+    """Live runs are Claude models only. Anything else stops the run, naming --replay."""
+    if not model.startswith("claude-"):
+        raise SystemExit(
+            f"ERROR: '{model}' cannot run live: only claude-* models do, through the "
+            f"Claude Code CLI. A saved run of any model still re-counts with --replay.")
+
+
+def user_message(question, reference):
+    return question if not reference else (
         f"{question}\n\n---\nDAX functions available in this category, from the "
         f"language reference:\n\n{reference}")
-    return {"model": model, "max_tokens": max_tokens, "system": system,
-            "messages": [{"role": "user", "content": user}]}
 
 
-def _anthropic_read(out):
-    usage = dict(out.get("usage", {}))
-    usage["stop_reason"] = out.get("stop_reason")
-    text = "".join(b.get("text", "") for b in out.get("content", []))
-    return text, usage
-
-
-def _openai_request(model, question, reference, system, max_tokens):
-    """The shape DeepSeek serves, which is OpenAI's.
-
-    The system prompt is a message with `role: system` rather than a top-level field,
-    and that is the whole structural difference for this workload.
-    """
-    user = question if not reference else (
-        f"{question}\n\n---\nDAX functions available in this category, from the "
-        f"language reference:\n\n{reference}")
-    return {"model": model, "max_tokens": max_tokens,
-            "messages": [{"role": "system", "content": system},
-                         {"role": "user", "content": user}]}
-
-
-def _openai_read(out):
-    choice = (out.get("choices") or [{}])[0]
-    raw = out.get("usage", {}) or {}
-    # Renamed to the Anthropic names so every run file, and `--replay` over it, reads the
-    # same whatever answered. A report that had to know its provider to be read would put
-    # the provider into every comparison.
-    usage = {"input_tokens": raw.get("prompt_tokens", 0),
-             "output_tokens": raw.get("completion_tokens", 0),
-             "stop_reason": choice.get("finish_reason")}
-    return (choice.get("message") or {}).get("content") or "", usage
-
-
-PROVIDERS = {
-    "anthropic": {
-        "prefixes": ("claude-",),
-        "url": "https://api.anthropic.com/v1/messages",
-        "key_env": "ANTHROPIC_API_KEY",
-        "headers": lambda key: {"x-api-key": key, "anthropic-version": "2023-06-01",
-                                "content-type": "application/json"},
-        "request": _anthropic_request,
-        "read": _anthropic_read,
-    },
-    "deepseek": {
-        "prefixes": ("deepseek-",),
-        "url": "https://api.deepseek.com/chat/completions",
-        "key_env": "DEEPSEEK_API_KEY",
-        "headers": lambda key: {"Authorization": f"Bearer {key}",
-                                "content-type": "application/json"},
-        "request": _openai_request,
-        "read": _openai_read,
-    },
-}
-
-
-def provider_for(model):
-    """The provider that serves this model, by name. Unknown stops the run."""
-    for name, spec in PROVIDERS.items():
-        if model.startswith(spec["prefixes"]):
-            return name, spec
-    raise SystemExit(
-        f"ERROR: no provider is configured for '{model}'. Known prefixes: "
-        + ", ".join(p for s in PROVIDERS.values() for p in s["prefixes"]))
-
-
-def ask(model, key, question, reference=None, timeout=180):
-    import urllib.request
-    _, spec = provider_for(model)
-    body = json.dumps(spec["request"](model, question, reference, SYSTEM, MAX_TOKENS)
-                      ).encode()
-    req = urllib.request.Request(spec["url"], data=body, headers=spec["headers"](key))
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        out = json.load(r)
-    return spec["read"](out)
+def ask(model, question, reference=None, timeout=180):
+    import claude_cli
+    return claude_cli.ask(model, SYSTEM, user_message(question, reference), timeout=timeout)
 
 
 def describe(exc):
-    """An API failure in the words the API used.
-
-    `type(exc).__name__` gave "HTTPError" for everything, so a 402 Insufficient Balance
-    and a 401 bad key and a 429 rate limit all looked identical -- and the run carried on
-    through 144 of them producing empty answers. The status and the provider's own message
-    are the two things that say what to do next.
-    """
-    import urllib.error
-    if isinstance(exc, urllib.error.HTTPError):
-        try:
-            body = json.loads(exc.read().decode("utf-8", "replace"))
-            message = (body.get("error") or {}).get("message") or json.dumps(body)[:200]
-        except Exception:                                     # noqa: BLE001
-            message = exc.reason
-        return f"HTTP {exc.code}: {message}"
+    """A failure in the words the CLI used, so a login problem and a rate limit differ."""
     return f"{type(exc).__name__}: {exc}"
 
 
@@ -373,12 +290,8 @@ def main(argv):
         print("no questions selected.")
         return 2
 
-    provider, spec = provider_for(args.model)
-    key = os.environ.get(spec["key_env"])
-    if not key:
-        print(f"ERROR: {spec['key_env']} is not set in the environment "
-              f"({args.model} is served by {provider}).")
-        return 2
+    check_model(args.model)
+    provider = PROVIDER
 
     print(f"model {args.model} ({provider}) · {len(questions)} question(s) · 2 arms "
           f"each = {len(questions) * 2} calls")
@@ -396,7 +309,7 @@ def main(argv):
                "question": q["question"]}
         for arm, reference in (("A", None), ("B", rows)):
             try:
-                text, usage = ask(args.model, key, q["question"], reference)
+                text, usage = ask(args.model, q["question"], reference)
                 consecutive = 0
             except Exception as exc:                          # noqa: BLE001
                 consecutive += 1
@@ -406,8 +319,8 @@ def main(argv):
             tokens_in += usage.get("input_tokens", 0)
             tokens_out += usage.get("output_tokens", 0)
         if consecutive >= 4:
-            # Four in a row is not a bad connection, it is a condition: no balance, a
-            # rejected key, a model the account cannot reach. Carrying on writes 140 more
+            # Four in a row is not a bad connection, it is a condition: not logged in,
+            # no usage left, a model the account cannot reach. Carrying on writes 140 more
             # empty answers into a file that then reports a perfect score, which is the
             # failure `silent()` exists to make visible -- and this stops it being
             # produced at all.
