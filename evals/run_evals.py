@@ -8,8 +8,9 @@ ranking, flags cross-skill trigger collisions, and checks that each *-advisor
 router references its same-prefix siblings. Hard-fails only on rot/structure so
 CI stays stable.
 
-Model mode (--model, needs ANTHROPIC_API_KEY): asks Claude which skill best
-matches each prompt and reports real routing accuracy. Gated to a manual run.
+Model mode (--model): asks Claude which skill best matches each prompt and reports real
+routing accuracy. It runs on your own machine through the Claude Code CLI (`claude -p`,
+your existing login; see claude_cli.py) and never reads an API key. Manual only.
 
 Usage:
     python evals/run_evals.py            # static, exits non-zero on failure
@@ -228,32 +229,19 @@ def accuracy_eval(catalog, cases, top_n=RETRIEVAL_TOP_N):
 
 
 def model_eval(skills, cases):
-    import urllib.request
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not key:
-        print("ERROR: ANTHROPIC_API_KEY not set"); return 2
+    import claude_cli
     model = os.environ.get("EVAL_MODEL", "claude-haiku-4-5-20251001")
     catalog = "\n".join(f"- {n}: {d['description'][:200]}" for n, d in sorted(skills.items()))
     names = set(skills)
     correct, results = 0, []
+    sys_prompt = ("You are a skill router. Given a user request and a catalog of "
+                  "skills, reply with ONLY the single best-matching skill name, "
+                  "exactly as written. No prose.")
     for c in cases:
-        sys_prompt = ("You are a skill router. Given a user request and a catalog of "
-                      "skills, reply with ONLY the single best-matching skill name, "
-                      "exactly as written. No prose.")
         user = f"Catalog:\n{catalog}\n\nUser request: {c['prompt']}\n\nBest skill name:"
-        body = json.dumps({
-            "model": model, "max_tokens": 32,
-            "system": sys_prompt,
-            "messages": [{"role": "user", "content": user}],
-        }).encode()
-        req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages", data=body,
-            headers={"x-api-key": key, "anthropic-version": "2023-06-01",
-                     "content-type": "application/json"})
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
-                out = json.load(r)
-            ans = out["content"][0]["text"].strip().strip("`").split()[0].strip(".,")
+            text, _ = claude_cli.ask(model, sys_prompt, user, timeout=60)
+            ans = text.strip().strip("`").split()[0].strip(".,")
         except Exception as e:  # noqa: BLE001
             ans = f"<error:{e}>"
         ok = ans == c["expect"]

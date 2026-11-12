@@ -67,7 +67,7 @@ class Workflows(unittest.TestCase):
         self.assertEqual(gate.commands_in_workflows(self.dir), {})
 
     def test_a_conditional_job_is_ignored(self):
-        """The LLM-judge eval job is manual and spends tokens."""
+        """A manual job (one that spends tokens, say) is not a gate."""
         self.write("evals.yml", WORKFLOW.replace(
             "    runs-on: ubuntu-latest",
             "    if: github.event_name == 'workflow_dispatch'\n    runs-on: ubuntu-latest"))

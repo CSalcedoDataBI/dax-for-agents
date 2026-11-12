@@ -22,8 +22,8 @@ Which commands count:
   `pull_request`.
 
 That rule, rather than naming validate-skills.yml, so a new unconditional gate anywhere is
-picked up on its own. A step or a job behind an `if:` is conditional by definition — the
-LLM-judge eval job is manual and costs tokens — and a list that promised it would be
+picked up on its own. A step or a job behind an `if:` is conditional by definition — a manual
+job that spends tokens is one — and a list that promised it would be
 promising something that does not run.
 
 Run: python scripts/check_documented_gates.py

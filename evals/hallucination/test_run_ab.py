@@ -137,5 +137,18 @@ class Bank(unittest.TestCase):
         self.assertTrue({"info", "visual"} & regimes)
 
 
+class LiveRuns(unittest.TestCase):
+    def test_only_claude_models_run_live(self):
+        """No other provider's key is read any more, so asking one live must stop."""
+        run_ab.check_model("claude-haiku-5-5")
+        with self.assertRaisesRegex(SystemExit, "--replay"):
+            run_ab.check_model("deepseek-v4-pro")
+
+    def test_the_runner_holds_no_credential(self):
+        with open(run_ab.__file__, encoding="utf-8") as f:
+            source = f.read()
+        self.assertNotIn("API_KEY", source)
+        self.assertNotIn("urllib", source)
+
 if __name__ == "__main__":
     unittest.main()
