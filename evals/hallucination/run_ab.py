@@ -319,8 +319,8 @@ def main(argv):
             tokens_in += usage.get("input_tokens", 0)
             tokens_out += usage.get("output_tokens", 0)
         if consecutive >= 4:
-            # Four in a row is not a bad connection, it is a condition: no balance, a
-            # rejected key, a model the account cannot reach. Carrying on writes 140 more
+            # Four in a row is not a bad connection, it is a condition: not logged in,
+            # no usage left, a model the account cannot reach. Carrying on writes 140 more
             # empty answers into a file that then reports a perfect score, which is the
             # failure `silent()` exists to make visible -- and this stops it being
             # produced at all.

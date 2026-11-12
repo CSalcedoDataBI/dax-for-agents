@@ -231,6 +231,15 @@ def accuracy_eval(catalog, cases, top_n=RETRIEVAL_TOP_N):
 def model_eval(skills, cases):
     import claude_cli
     model = os.environ.get("EVAL_MODEL", "claude-haiku-4-5-20251001")
+    # A setup problem must not look like a 0% measurement: check it once, up front.
+    if not model.startswith("claude-"):
+        print(f"ERROR: '{model}' is not a claude-* model; only those run, through the CLI.")
+        return 2
+    try:
+        claude_cli.command(model, "")
+    except claude_cli.CliError as e:
+        print(f"ERROR: {e}")
+        return 2
     catalog = "\n".join(f"- {n}: {d['description'][:200]}" for n, d in sorted(skills.items()))
     names = set(skills)
     correct, results = 0, []
