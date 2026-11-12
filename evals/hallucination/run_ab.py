@@ -122,10 +122,6 @@ def category_rows(catalog, category):
     return "\n".join(rows)
 
 
-# The CLI sets the output budget itself. The old API path needed 4000 tokens: at 700,
-# Opus 5 thought through its budget and 24 of 144 answers came back EMPTY, and an empty
-# answer scores zero inventions. `silent()` still reports any empty answer.
-
 SYSTEM = ("You are a Power BI developer answering a colleague. Be brief: name the DAX "
           "functions involved and show a short snippet. Do not hedge with lists of "
           "alternatives you are unsure about.")
@@ -169,6 +165,7 @@ def ask(model, question, reference=None, timeout=180):
 def describe(exc):
     """A failure in the words the CLI used, so a login problem and a rate limit differ."""
     return f"{type(exc).__name__}: {exc}"
+
 
 def summarise(records, names):
     """Per-regime counts for both arms. Never averaged across regimes: see questions.yaml."""
