@@ -58,8 +58,9 @@ Out:
 ## Agent query flow
 
 For a question about a specific function the agent reads `catalog.md` once, finds the
-function, then reads that function's card from `library/`. Conceptual questions go straight to
-`concepts/`. Hand-written field notes under `notes/` are never overwritten by the sync.
+function, then reads only that function's card: the catalog's `Ficha` column gives its
+bundle under `generated/bundles/` and its line range. Conceptual questions go through
+`concepts.md` the same way. Hand-written field notes under `notes/` are never overwritten by the sync.
 
 The original layout put the skills flat at the repository root, with `dax-reference/` holding
 `catalog.md`, `catalog.json`, `library/` (cards), `concepts/`, `notes/` (hand-written, never

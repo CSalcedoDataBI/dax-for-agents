@@ -19,11 +19,16 @@ Annotated with the gotchas the docs leave out.
 
 **One hop. Do not read the whole library — it is ~376,000 tokens.**
 
-1. Read **[`generated/catalog.md`](./generated/catalog.md)** (~14k tokens). Every function, one
-   row each: name, category, return type, where it applies, one-line summary, and flags.
-2. Find the function. Open its card: **`generated/library/<function>.md`**, where the
-   filename is the catalogue name lowercased with `.` turned into `-` (`ISO.CEILING` →
-   `iso-ceiling.md`, `T.DIST.2T` → `t-dist-2t.md`). `notes/` and `examples/` use the same rule.
+1. Read **[`generated/catalog.md`](./generated/catalog.md)** (~17k tokens). Every function, one
+   row each: name, category, return type, where it applies, one-line summary, flags, and
+   `Ficha` — where its card is.
+2. Find the function and open **only its card**. The cards are bundled by category under
+   `generated/bundles/`, and `Ficha` gives the bundle and the card's line range:
+   `functions-filter:587-757` means **Read `generated/bundles/functions-filter.md` with
+   `offset=587`, `limit=171`** (last − first + 1). **Never read a bundle whole** — the largest
+   is 173 KiB. If a range ever looks off, Grep `card: library/<stem>` in `generated/bundles/`.
+   The stem is the catalogue name lowercased with `.` turned into `-` (`ISO.CEILING` →
+   `iso-ceiling`, `T.DIST.2T` → `t-dist-2t`); `notes/` and `examples/` use the same rule.
 3. If the catalog row is flagged **★**, also read **`notes/<function>.md`** — that is the field
    knowledge that is not in Microsoft's docs. It sits outside `generated/` because it is
    written by hand.
@@ -41,8 +46,9 @@ intent; they are not evidence. The executable examples above them are.
 For a question that is not about one specific function — evaluation context, the query
 statements (`EVALUATE`, `DEFINE`, `ORDER BY`), operators, the glossary, best-practice guidance
 — take the other path instead: read **[`generated/concepts.md`](./generated/concepts.md)** (34
-concepts, ~2k tokens) and open the one page it points to. Going through `catalog.md` would cost
-14k tokens of function rows to reach a page that is not about a function.
+concepts, ~2k tokens) and open the one page it points to, the same way: its `Ficha` is a line
+range in `generated/bundles/concepts-<n>.md`. Going through `catalog.md` would cost 17k tokens
+of function rows to reach a page that is not about a function.
 
 ### Reading the flags
 
@@ -120,8 +126,7 @@ directory, so it can never half-update the tree, and it can never eat your notes
 | `generated/catalog.md` | The function index the agent reads. **Generated** |
 | `generated/concepts.md` | The concept index — 34 concepts. **Generated** |
 | `generated/catalog.json` | Both indexes for scripts. **Generated**, never loaded into context |
-| `generated/library/<fn>.md` | One card per function. **Generated — never edit by hand** |
-| `generated/concepts/<page>.md` | One card per conceptual page. **Generated** |
+| `generated/bundles/<bundle>.md` | The 479 function cards and 34 conceptual pages, one bundle per category, each card between `<!-- card: … -->` markers. **Generated — never edit by hand, never read whole** |
 | `notes/<fn>.md` | Field notes. **Hand-written — the sync never touches these** |
 | `overrides.json` | Values the parser cannot derive (mostly `returns`). Hand-written |
 | `scripts/sync_query_docs.py` | Regenerates `generated/` |

@@ -11,6 +11,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import card_bundles  # noqa: E402
 import sync_query_docs  # noqa: E402
 from sync_query_docs import (  # noqa: E402
     apply_filename_rules,
@@ -193,6 +194,20 @@ TABLE_INDEX = """# Table manipulation functions
 
 
 # ---- Pass 1 tests (unchanged) ----
+
+
+def cards_on_disk(out, sub):
+    """The card files one subtree held, read out of generated/bundles/ (card_bundles.py).
+
+    The tree used to be one file per card; it is one file per category now, and these
+    tests are about what the sync generates, not about how it is packed on disk."""
+    return sorted(f"{stem}.md" for stem in
+                  card_bundles.read(os.path.join(out, "generated"))[sub])
+
+
+def card_on_disk(out, sub, name):
+    return card_bundles.read(os.path.join(out, "generated"))[sub][name[:-3]]
+
 
 class ParseCategoryIndex(unittest.TestCase):
 
@@ -982,7 +997,7 @@ class WriteLibrary(unittest.TestCase):
 
     def test_writes_one_card_per_function_named_after_its_stem(self):
         self.run_write()
-        self.assertEqual(sorted(os.listdir(os.path.join(self.out, "generated", "library"))),
+        self.assertEqual(sorted(cards_on_disk(self.out, "library")),
                          ["all.md", "calculate.md"])
 
     def test_the_catalog_row_count_matches_the_cards(self):
@@ -1017,18 +1032,19 @@ class WriteLibrary(unittest.TestCase):
 
     def test_rerunning_produces_the_same_tree(self):
         self.run_write()
-        first = {p: self.gen(os.path.join("library", p))
-                 for p in os.listdir(os.path.join(self.out, "generated", "library"))}
+        first = {p: card_on_disk(self.out, "library", p)
+                 for p in cards_on_disk(self.out, "library")}
         self.run_write()
-        second = {p: self.gen(os.path.join("library", p))
-                  for p in os.listdir(os.path.join(self.out, "generated", "library"))}
+        second = {p: card_on_disk(self.out, "library", p)
+                  for p in cards_on_disk(self.out, "library")}
         self.assertEqual(first, second)
 
     def test_a_card_removed_upstream_does_not_survive_the_next_write(self):
         self.run_write()
-        self.write(self.out, "generated/library/ghost.md", "---\nname: GHOST\n---\n")
+        self.write(self.out, "generated/bundles/functions-ghost.md",
+                   card_bundles.layout({"library": {"ghost": "---\nname: GHOST\n---\n"}})[0]["functions-uncategorized.md"])
         self.run_write()
-        self.assertNotIn("ghost.md", os.listdir(os.path.join(self.out, "generated", "library")))
+        self.assertNotIn("ghost.md", cards_on_disk(self.out, "library"))
 
 
 class PublishedTreeLayout(unittest.TestCase):
@@ -1058,7 +1074,7 @@ class PublishedTreeLayout(unittest.TestCase):
         gen = os.path.join(self.out, "generated")
         self.assertTrue(os.path.isfile(os.path.join(gen, "catalog.json")))
         self.assertTrue(os.path.isfile(os.path.join(gen, "catalog.md")))
-        self.assertEqual(sorted(os.listdir(os.path.join(gen, "library"))),
+        self.assertEqual(sorted(cards_on_disk(os.path.dirname(gen), "library")),
                          ["all.md", "calculate.md"])
 
     def test_nothing_generated_is_left_at_the_skill_root(self):
@@ -1191,8 +1207,10 @@ class Idempotence(unittest.TestCase):
         root = tempfile.mkdtemp()
         os.makedirs(os.path.join(root, "scripts"))
         script = os.path.join(root, "scripts", "sync_query_docs.py")
-        shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                 "sync_query_docs.py"), script)
+        here = os.path.dirname(os.path.abspath(__file__))
+        shutil.copy(os.path.join(here, "sync_query_docs.py"), script)
+        shutil.copy(os.path.join(here, "card_bundles.py"),
+                    os.path.join(root, "scripts", "card_bundles.py"))
         trees = []
         for seed in ("0", "1"):
             out = tempfile.mkdtemp()
@@ -1454,8 +1472,7 @@ class OrphanNoteGate(unittest.TestCase):
     def test_a_note_with_its_card_is_fine(self):
         self.note("calculate")
         self._run()
-        self.assertTrue(os.path.exists(
-            os.path.join(self.out, "generated", "library", "calculate.md")))
+        self.assertTrue("calculate.md" in cards_on_disk(self.out, "library"))
 
     def test_nothing_is_published_when_a_note_is_orphaned(self):
         self.note("ghost")
@@ -1684,7 +1701,7 @@ class ConceptsIndex(unittest.TestCase):
     def test_a_card_per_concept_named_after_its_upstream_stem(self):
         self._run()
         self.assertEqual(
-            sorted(os.listdir(os.path.join(self.out, "generated", "concepts"))),
+            sorted(cards_on_disk(self.out, "concepts")),
             ["dax-glossary.md", "dax-variables.md"])
 
     def test_the_human_index_has_a_row_per_concept(self):
@@ -1710,16 +1727,16 @@ class ConceptsIndex(unittest.TestCase):
 
     def test_rerunning_produces_the_same_concepts(self):
         self._run()
-        first = self.gen("concepts/dax-variables.md")
+        first = card_on_disk(self.out, "concepts", "dax-variables.md")
         self._run()
-        self.assertEqual(self.gen("concepts/dax-variables.md"), first)
+        self.assertEqual(card_on_disk(self.out, "concepts", "dax-variables.md"), first)
 
     def test_a_concept_removed_upstream_does_not_survive(self):
         self._run()
         os.remove(os.path.join(self.src, "dax-glossary.md"))
         self._run()
         self.assertNotIn("dax-glossary.md",
-                         os.listdir(os.path.join(self.out, "generated", "concepts")))
+                         cards_on_disk(self.out, "concepts"))
 
 
 class LinksAreRelativeToTheirOwnPage(unittest.TestCase):
@@ -2024,7 +2041,7 @@ class WriteMode(MainFixture, unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertTrue(os.path.exists(os.path.join(self.out, "generated", "catalog.json")))
         self.assertTrue(os.path.exists(os.path.join(self.out, "generated", "catalog.md")))
-        self.assertEqual(sorted(os.listdir(os.path.join(self.out, "generated", "library"))),
+        self.assertEqual(sorted(cards_on_disk(self.out, "library")),
                          ["all.md", "calculate.md"])
 
     def test_write_reports_what_it_wrote(self):
@@ -2104,7 +2121,7 @@ class WriteIsFailureAtomic(unittest.TestCase):
                              source_sha="aaa", source_date="d")
 
     def test_a_failure_mid_write_leaves_the_previous_library_intact(self):
-        before = sorted(os.listdir(os.path.join(self.out, "generated", "library")))
+        before = sorted(cards_on_disk(self.out, "library"))
         boom = os.path.join(self.src, "aaa-function-dax.md")
         with open(boom, "w", encoding="utf-8") as f:
             f.write(GOOD_DOC.replace("CALCULATE", "ZZZ"))
@@ -2121,7 +2138,7 @@ class WriteIsFailureAtomic(unittest.TestCase):
                 self._write_once()
         finally:
             sync_query_docs.build_library_card = real
-        self.assertEqual(sorted(os.listdir(os.path.join(self.out, "generated", "library"))), before)
+        self.assertEqual(sorted(cards_on_disk(self.out, "library")), before)
 
     def test_a_failure_mid_write_leaves_the_catalog_agreeing_with_the_cards(self):
         with open(os.path.join(self.out, "generated", "catalog.json"), encoding="utf-8") as f:
@@ -2231,7 +2248,7 @@ class WriteIsAtomicOnDisk(unittest.TestCase):
                              source_sha="a", source_date="d")
 
     def test_a_failure_while_writing_leaves_the_previous_tree_intact(self):
-        before = sorted(os.listdir(os.path.join(self.out, "generated", "library")))
+        before = sorted(cards_on_disk(self.out, "library"))
         with open(os.path.join(self.out, "generated", "catalog.json"), encoding="utf-8") as f:
             cat_before = f.read()
         real = sync_query_docs._publish
@@ -2245,7 +2262,7 @@ class WriteIsAtomicOnDisk(unittest.TestCase):
                 self._run()
         finally:
             sync_query_docs._publish = real
-        self.assertEqual(sorted(os.listdir(os.path.join(self.out, "generated", "library"))), before)
+        self.assertEqual(sorted(cards_on_disk(self.out, "library")), before)
         with open(os.path.join(self.out, "generated", "catalog.json"), encoding="utf-8") as f:
             self.assertEqual(f.read(), cat_before)
 
@@ -2376,7 +2393,7 @@ class PublishRollback(unittest.TestCase):
 
     def test_the_previous_generation_is_put_back(self):
         before_cat = self.read("catalog.json")
-        before_card = self.read("library/calculate.md")
+        before_card = card_on_disk(self.out, "library", "calculate.md")
         self.assertIn("first", before_cat)
         import sync_query_docs as mod
         real, flaky = self._fail_installing()
@@ -2389,7 +2406,7 @@ class PublishRollback(unittest.TestCase):
         # Cards and catalogs move as one directory, so they cannot end up describing
         # different upstream commits.
         self.assertEqual(self.read("catalog.json"), before_cat)
-        self.assertEqual(self.read("library/calculate.md"), before_card)
+        self.assertEqual(card_on_disk(self.out, "library", "calculate.md"), before_card)
 
     def test_nothing_is_left_behind_after_a_rollback(self):
         import sync_query_docs as mod
@@ -2417,7 +2434,7 @@ class PublishRollback(unittest.TestCase):
         kept = [d for d in os.listdir(self.out) if d.startswith(".publish-")]
         self.assertEqual(len(kept), 1,
                          "the previous generation must survive a failed rollback")
-        self.assertTrue(os.path.isdir(os.path.join(self.out, kept[0], "prev", "library")))
+        self.assertTrue(os.path.isdir(os.path.join(self.out, kept[0], "prev", "bundles")))
 
     def test_a_failure_inside_publish_reports_itself_not_an_unbound_name(self):
         # Every name the handler reads is bound before the try. Assigned inside it, an
@@ -2567,7 +2584,7 @@ class PublishRollback(unittest.TestCase):
     def test_a_successful_run_installs_the_new_generation(self):
         self._run(sha="second")
         self.assertIn("second", self.read("catalog.json"))
-        self.assertIn("second", self.read("library/calculate.md"))
+        self.assertIn("second", card_on_disk(self.out, "library", "calculate.md"))
 
 
 DOC_CON_EJEMPLOS = """---

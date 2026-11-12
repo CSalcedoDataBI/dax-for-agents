@@ -151,16 +151,20 @@ class RefreshCard(unittest.TestCase):
             refresh.refresh_card("# ABS\n\nno frontmatter here\n", "abs", False, None)
 
 
+def card_of(gen, stem="abs"):
+    """One card, read back out of its bundle."""
+    return sync.card_bundles.read(gen)["library"][stem]
+
+
 class RefreshTree(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.mkdtemp()
         self.gen = os.path.join(self.dir, "generated")
-        os.makedirs(os.path.join(self.gen, "library"))
+        os.makedirs(self.gen)
         os.makedirs(os.path.join(self.dir, "notes"))
         os.makedirs(os.path.join(self.dir, "examples", "math-and-trig"))
-        with open(os.path.join(self.gen, "library", "abs.md"), "w",
-                  encoding="utf-8", newline="\n") as f:
-            f.write(CARD)
+        # The card lives in a bundle, written the way the sync writes it.
+        sync.card_bundles.save(self.gen, {"library": {"abs": CARD}, "concepts": {}})
         with open(os.path.join(self.dir, "examples", "math-and-trig", "abs.md"), "w",
                   encoding="utf-8", newline="\n") as f:
             f.write("# ABS\n\n```dax\nEVALUATE ROW(\"a\", ABS(-1))\n```\n\n"
@@ -191,14 +195,10 @@ class RefreshTree(unittest.TestCase):
     def test_check_mode_writes_nothing(self):
         """A gate that repairs the tree it is judging always passes, and reports a repo
         that was never in the state it claims to have verified."""
-        card = os.path.join(self.gen, "library", "abs.md")
-        with open(card, encoding="utf-8") as f:
-            before = f.read()
+        before = sync.card_bundles.read_files(self.gen)
         changed, _ = refresh.refresh(root=self.gen, ref=self.dir, check=True)
         self.assertIn(os.path.join("library", "abs.md"), changed)
-        with open(card, encoding="utf-8") as f:
-            after = f.read()
-        self.assertEqual(before, after)
+        self.assertEqual(sync.card_bundles.read_files(self.gen), before)
 
     def test_the_two_indexes_are_repaired_with_the_cards(self):
         """They rot from the same two directories. Fixing the card and leaving the
@@ -243,8 +243,7 @@ class ReturnsOverride(unittest.TestCase):
 
     def test_the_card_takes_the_overridden_return_type(self):
         refresh.refresh(root=self.gen, ref=self.dir, check=False)
-        with open(os.path.join(self.gen, "library", "abs.md"), encoding="utf-8") as f:
-            self.assertEqual(fm(f.read(), "returns"), "table")
+        self.assertEqual(fm(card_of(self.gen), "returns"), "table")
 
     def test_both_indexes_take_it_too(self):
         refresh.refresh(root=self.gen, ref=self.dir, check=False)
@@ -262,8 +261,7 @@ class ReturnsOverride(unittest.TestCase):
         """No override is not a reset: the 472 cards the parser got right stay as they are."""
         os.remove(os.path.join(self.dir, "overrides.json"))
         refresh.refresh(root=self.gen, ref=self.dir, check=False)
-        with open(os.path.join(self.gen, "library", "abs.md"), encoding="utf-8") as f:
-            self.assertEqual(fm(f.read(), "returns"), "scalar")
+        self.assertEqual(fm(card_of(self.gen), "returns"), "scalar")
 
 
 class CatalogFlags(unittest.TestCase):

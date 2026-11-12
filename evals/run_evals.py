@@ -246,13 +246,22 @@ def model_eval(skills, cases):
     sys_prompt = ("You are a skill router. Given a user request and a catalog of "
                   "skills, reply with ONLY the single best-matching skill name, "
                   "exactly as written. No prose.")
+    consecutive = 0
     for c in cases:
         user = f"Catalog:\n{catalog}\n\nUser request: {c['prompt']}\n\nBest skill name:"
         try:
             text, _ = claude_cli.ask(model, sys_prompt, user, timeout=60)
             ans = text.strip().strip("`").split()[0].strip(".,")
+            consecutive = 0
         except Exception as e:  # noqa: BLE001
             ans = f"<error:{e}>"
+            consecutive += 1
+            # The CLI is there but cannot answer (not logged in, no usage left): three in
+            # a row is a condition, not a blip, and must not be reported as 0% accuracy.
+            if consecutive >= 3:
+                print(f"ERROR: {consecutive} calls failed in a row, the last with {e}. "
+                      f"Stopping: this is a setup problem, not a measurement.")
+                return 2
         ok = ans == c["expect"]
         correct += ok
         if not ok:

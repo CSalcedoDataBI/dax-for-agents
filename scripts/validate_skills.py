@@ -88,8 +88,9 @@ for py in sorted(py_scripts):
 REF = os.path.join(SKILLS, "dax-reference")
 GEN = os.path.join(REF, "generated")
 cat_json = os.path.join(GEN, "catalog.json")
-lib_dir = os.path.join(GEN, "library")
 notes_dir = os.path.join(REF, "notes")
+sys.path.insert(0, os.path.join(REF, "scripts"))
+import card_bundles  # noqa: E402  (the one definition of the bundle layout)
 
 # The sync installs generated/ and nothing else. A copy left at the old top-level paths is
 # never refreshed again, so an agent following a stale SKILL.md would read a library frozen
@@ -107,14 +108,22 @@ def stems(d):
     return {os.path.splitext(f)[0] for f in os.listdir(d) if f.endswith(".md")}
 
 
-cards = stems(lib_dir)
+# The cards live in generated/bundles/, one file per category (card_bundles.py). A bundle
+# that does not split, or that is not what the layout writes, is an error here too.
+errors.extend(f"dax-reference/{p}" for p in card_bundles.check(GEN))
+try:
+    _trees = card_bundles.read(GEN)
+except ValueError as e:
+    errors.append(f"dax-reference/generated/bundles/ does not split into cards: {e}")
+    _trees = {"library": {}, "concepts": {}}
+cards = set(_trees["library"])
 notes = stems(notes_dir)
-concept_cards = stems(os.path.join(GEN, "concepts"))
+concept_cards = set(_trees["concepts"])
 
 # A note without its card is always an error — the sync would leave it orphaned.
 for orphan in sorted(notes - cards):
     if cards:
-        errors.append(f"dax-reference/notes/{orphan}.md has no generated/library/{orphan}.md")
+        errors.append(f"dax-reference/notes/{orphan}.md has no card in generated/bundles/")
 
 # Notes are hand-written, so the sync's broken-link gate never sees them: it checks what it
 # generated. A note that points at another note is exactly as broken as a card that does.
@@ -134,9 +143,9 @@ if os.path.exists(cat_json):
         rows = {f.get("file") or str(f.get("name", "")).lower()
                 for f in cat.get("functions", [])}
         for missing in sorted(rows - cards):
-            errors.append(f"catalog lists '{missing}' but generated/library/{missing}.md is missing")
+            errors.append(f"catalog lists '{missing}' but no bundle in generated/bundles/ holds its card")
         for extra in sorted(cards - rows):
-            errors.append(f"generated/library/{extra}.md exists but is not in the catalog")
+            errors.append(f"card library/{extra} is in generated/bundles/ but not in the catalog")
         flagged = {f.get("file") or str(f.get("name", "")).lower()
                    for f in cat.get("functions", []) if f.get("notes")}
         for bad in sorted(flagged - notes):
@@ -146,13 +155,13 @@ if os.path.exists(cat_json):
         concept_rows = {c.get("file") for c in cat.get("concepts", [])}
         for missing in sorted(concept_rows - concept_cards):
             errors.append(f"catalog lists concept '{missing}' but "
-                          f"generated/concepts/{missing}.md is missing")
+                          f"no bundle in generated/bundles/ holds it")
         for extra in sorted(concept_cards - concept_rows):
-            errors.append(f"generated/concepts/{extra}.md exists but is not in the catalog")
+            errors.append(f"card concepts/{extra} is in generated/bundles/ but not in the catalog")
     except (json.JSONDecodeError, AttributeError, TypeError) as e:
         errors.append(f"dax-reference/generated/catalog.json is not readable: {e}")
 elif cards:
-    errors.append("generated/library/ has cards but generated/catalog.json is missing — run the sync")
+    errors.append("generated/bundles/ has cards but generated/catalog.json is missing — run the sync")
 # else: pre-sync state, nothing generated yet. Not an error.
 
 # ---- report ----
