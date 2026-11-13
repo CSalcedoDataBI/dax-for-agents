@@ -90,6 +90,16 @@ def current_stable(remote="origin", cwd=ROOT):
 
 
 def main(argv=None):
+    try:
+        return _main(argv)
+    except RuntimeError as exc:
+        # One line, not a traceback: the usual causes are a --rev without the plugin
+        # folder, or a push refused because stable moved since the fetch (nothing forced).
+        print(f"FAIL: {exc}")
+        return 1
+
+
+def _main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--rev", required=True, help="the release tag or commit")
     ap.add_argument("--parent", help="the commit stable is at (default: origin/stable)")

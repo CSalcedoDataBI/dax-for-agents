@@ -251,14 +251,14 @@ The six skills sit under `plugins/dax-for-agents/skills/`, the same layout Micro
 [`skills-for-fabric`](https://github.com/microsoft/skills-for-fabric): one folder per
 skill, and `plugins/dax-for-agents/.claude-plugin/plugin.json` naming each one by path. That list is not
 decoration — it is what makes the shipped set reviewable in a diff — but it is no longer
-the only thing standing between the plugin and an empty install, because `plugins/dax-for-agents/skills/` is
-also where the default scan looks.
+the only thing standing between the plugin and an empty install, because `skills/` under the plugin root (here
+`plugins/dax-for-agents/`) is also where the default scan looks.
 
 That difference is why the floor exists at all. Claude Code only started reading a skill
 path that points at a directory holding `SKILL.md` in **2.1.142**. Measured by bisecting
 the published releases against the older flat layout: on 2.1.141 the plugin installed,
 reported success and loaded **zero** skills, because when none of the listed paths
-resolve it silently falls back to scanning `plugins/dax-for-agents/skills/` — which back then did not exist.
+resolve it silently falls back to scanning `skills/` under the plugin root — which back then did not exist.
 `scripts/check_plugin_manifest.py` keeps the manifest and the tree in step so that
 failure cannot come back quietly.
 
@@ -272,7 +272,7 @@ on its own.
 |---|---|---|
 | Any skill is used | Claude reads Markdown and JSON from the installed plugin folder | Nowhere: local reads only |
 | `dax-lib-install` installs a package you picked | Claude runs `gh api` to read that package's `functions.tmdl`, with **your own** GitHub CLI login, checks its declared licence, installs it in the model you are working on (through a modeling MCP if one is connected, otherwise as a TMDL edit) and runs one DAX query to confirm it executes | `api.github.com`, repository `daxlib/daxlib`, read-only |
-| You ask for an example `.pbip` that no lab page covers, **in a clone of this repository** | The script is not installed with the plugin; the skill links to it. In a clone, Claude runs `scripts/dax-reference/inject_example.py`: it takes the Contoso lab model (the local copy, or downloads `lab-contoso.zip` from this repository's latest release when there is none), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
+| You ask for an example `.pbip` that no lab page covers, **in a clone of this repository** | The script is not installed with the plugin; the skill links to it. In a clone, Claude runs `scripts/dax-reference/inject_example.py`: it takes the Contoso lab model from the clone's `lab/contoso` (only when the script is run outside a clone does it download `lab-contoso.zip` from this repository's latest release instead), adds the measures Claude wrote and one page, and hands you a zip. The script refuses any other download address and any line break that could add a Power Query source to the model | `github.com` release assets of `CSalcedoDataBI/dax-for-agents`, read-only. The request carries nothing from you |
 | You open a project under `lab/` | Power BI Desktop downloads the scenario's synthetic Parquet tables | `raw.githubusercontent.com`, repository `CSalcedoDataBI/SampleDataSets` |
 | You ask `dax-feedback` to report a wrong card or note | Claude drafts an issue, rewrites table, measure and project names into generic ones, shows you the full text, and only after you say yes runs `gh issue create` with **your own** GitHub CLI login | `api.github.com`, a **public** issue on `CSalcedoDataBI/dax-for-agents`, under your GitHub account. It carries only the text you approved |
 

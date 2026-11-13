@@ -122,6 +122,13 @@ class TheRealRepo(unittest.TestCase):
         self.assertIn("LICENSE.md", files)
         self.assertFalse([f for f in files if f.startswith((".git", "scripts/", "lab/"))])
 
+    def test_a_rev_without_the_folder_fails_in_one_line(self):
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = build_stable.main(["--rev", "b61c881", "--parent", ""])
+        self.assertEqual(code, 1)
+        self.assertTrue(out.getvalue().startswith("FAIL: "), out.getvalue())
+
     def test_the_dry_run_lists_the_files_and_pushes_nothing(self):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
