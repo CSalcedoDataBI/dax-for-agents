@@ -10,7 +10,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": ".claude-plugin/plugin.json",
+          "path": "plugins/dax-for-agents/.claude-plugin/plugin.json",
           "jsonpath": "$.version"
         }
       ]

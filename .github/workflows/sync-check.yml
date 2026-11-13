@@ -36,8 +36,8 @@ jobs:
         id: drift
         shell: bash
         run: |
-          if [ -f skills/dax-reference/generated/catalog.json ]; then
-            STAMPED=$(python -c "import json;print(json.load(open('skills/dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
+          if [ -f plugins/dax-for-agents/skills/dax-reference/generated/catalog.json ]; then
+            STAMPED=$(python -c "import json;print(json.load(open('plugins/dax-for-agents/skills/dax-reference/generated/catalog.json'))['source'].split('@')[-1])")
           else
             STAMPED="(never synced)"
           fi
@@ -135,7 +135,7 @@ jobs:
       # thing the gate is for.
       - name: Regenerate
         if: steps.drift.outputs.drift == 'true'
-        run: python skills/dax-reference/scripts/sync_query_docs.py /tmp/query-docs/query-languages/dax --write
+        run: python scripts/dax-reference/sync_query_docs.py /tmp/query-docs/query-languages/dax --write
 
       # A pull request opened with GITHUB_TOKEN does not trigger other workflows, so
       # validate-skills and evals would never run on it. The checks run here instead,
@@ -166,8 +166,8 @@ jobs:
         id: diff
         shell: bash
         run: |
-          git add -A skills/dax-reference/generated
-          if git diff --cached --quiet -- skills/dax-reference/generated; then
+          git add -A plugins/dax-for-agents/skills/dax-reference/generated
+          if git diff --cached --quiet -- plugins/dax-for-agents/skills/dax-reference/generated; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -175,11 +175,11 @@ jobs:
             # would name a whole category per change, so both trees are exploded back to
             # one file per card first and the summary still names the function.
             mkdir -p /tmp/sync-old
-            git archive HEAD skills/dax-reference/generated | tar -x -C /tmp/sync-old
-            python skills/dax-reference/scripts/card_bundles.py --explode \
-              /tmp/sync-old/skills/dax-reference/generated /tmp/cards/old/generated
-            python skills/dax-reference/scripts/card_bundles.py --explode \
-              skills/dax-reference/generated /tmp/cards/new/generated
+            git archive HEAD plugins/dax-for-agents/skills/dax-reference/generated | tar -x -C /tmp/sync-old
+            python scripts/dax-reference/card_bundles.py --explode \
+              /tmp/sync-old/plugins/dax-for-agents/skills/dax-reference/generated /tmp/cards/old/generated
+            python scripts/dax-reference/card_bundles.py --explode \
+              plugins/dax-for-agents/skills/dax-reference/generated /tmp/cards/new/generated
             (cd /tmp/cards && git diff --no-index -U0 old new || true) \
               | python scripts/summarize_sync_diff.py \
                   --old-sha "${{ steps.drift.outputs.stamped }}" \

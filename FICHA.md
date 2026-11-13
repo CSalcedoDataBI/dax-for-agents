@@ -26,10 +26,10 @@
 
 Lo que no se toca sin un paso del plan que lo nombre:
 
-- **Rama `stable` y `.claude-plugin/plugin.json` en la raíz** — el directorio de Anthropic rastrea
-  `stable` y busca el manifiesto en la raíz; moverlo o tocar `stable` fuera de un release rompe la
-  revisión del directorio. Ver los PR #24/#26 (no se fusionan hasta que Anthropic responda sobre la
-  ruta del manifiesto).
+- **Rama `stable` y `.claude-plugin/plugin.json` en su raíz** — el directorio de Anthropic rastrea
+  `stable` y busca el manifiesto en la raíz; en `main` el plugin vive en `plugins/dax-for-agents/`, y
+  cada release lleva a `stable` solo ese árbol (`scripts/build_stable.py`, sin force); moverlo o tocar `stable` fuera de un release rompe la
+  revisión del directorio. Ver `docs/decisions/2026-11-13-plugin-in-a-subfolder.md`.
 - **El conjunto publicado de skills, el prefijo `dax-` y el enlace cruzado por nombre** — renombrar
   una skill o un cross-link rompe las referencias ya instaladas (INDEX.md, convención 5). El
   manifiesto debe listar exactamente las skills en disco: lo verifica `check_plugin_manifest.py`.
@@ -49,7 +49,7 @@ Lo que no se toca sin un paso del plan que lo nombre:
 
 - **Check de CI requerido:** `validate` y `static` (ambos en el ruleset de `main`).
 - **Suite de pruebas:** `validate` (workflow *Validate skills* → `scripts/validate_skills.py`, las
-  compuertas de `scripts/` y `python -m unittest discover` sobre `skills/dax-reference/scripts`,
+  compuertas de `scripts/` y `python -m unittest discover` sobre `scripts/dax-reference`,
   `scripts` y `evals`) y `static` (workflow *Evals* → `python evals/run_evals.py`).
 - **Runner:** GitHub (repo público — minutos gratis; no hay runner local).
 - **Formato de tag:** `vX.Y.Z` (un solo componente; gestionado por `release-please`).
@@ -61,4 +61,4 @@ Lo que no se toca sin un paso del plan que lo nombre:
 
 ## Aprobación
 
-Aprobada: 2026-10-24 (mantenedor)
+Aprobada: 2026-11-13 (AI-Factory, por delegación: Cristóbal eligió la opción A, «elige la opción A para el DAX del directorio»)

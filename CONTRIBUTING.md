@@ -73,7 +73,7 @@ Public work is an ordinary issue here, and it belongs on #47.
 
 ## The one rule that matters
 
-**Everything under `skills/dax-reference/generated/` is generated. Never edit it by hand.** Your
+**Everything under `plugins/dax-for-agents/skills/dax-reference/generated/` is generated. Never edit it by hand.** Your
 change would be silently erased by the next regeneration, which replaces that whole directory
 in one move. Everything beside it — `SKILL.md`, `NOTICE`, `overrides.json`, `notes/`,
 `examples/` — is yours to edit and nothing generated ever writes there. CI fails if anything
@@ -86,13 +86,13 @@ it protects the option of ever regenerating again: hand edits are the one thing 
 make the swap expensive on the day a newer source arrives.
 
 **Two writers, not one.** `sync_query_docs.py` writes the whole directory from upstream and
-is parked. `skills/dax-reference/scripts/refresh_local_metadata.py` writes only the half that
+is parked. `scripts/dax-reference/refresh_local_metadata.py` writes only the half that
 comes from THIS repository — the `notes:` and `examples:` fields, the runnable-examples block,
 and the two indexes — and never touches Microsoft's prose. Run it after adding or removing a
 note or an example file:
 
 ```bash
-python skills/dax-reference/scripts/refresh_local_metadata.py
+python scripts/dax-reference/refresh_local_metadata.py
 ```
 
 Forgetting is not an option that stays quiet: `--check` runs in CI. It failed on 48 files the
@@ -107,15 +107,15 @@ If a generated card is wrong, the fix is one of:
   tree here — see [the README](README.md#the-upstream-is-gone) and
   [the decision record](docs/decisions/2026-08-27-generated-is-frozen-at-323524c.md). Treat a
   wrong card the way you would treat one that is right but incomplete: write a note.
-- **Wrong parse** → fix `skills/dax-reference/scripts/sync_query_docs.py`.
-- **Right but incomplete** → that is what `skills/dax-reference/notes/` is for. Write a note.
+- **Wrong parse** → fix `scripts/dax-reference/sync_query_docs.py`.
+- **Right but incomplete** → that is what `plugins/dax-for-agents/skills/dax-reference/notes/` is for. Write a note.
 
 ## Writing a note
 
 Notes are the reason this repo exists. They hold what Microsoft's docs do not say: the trap,
 the "you meant the other function", the performance cost.
 
-Create `skills/dax-reference/notes/<function>.md` (lowercase, matching the card filename). Use the
+Create `plugins/dax-for-agents/skills/dax-reference/notes/<function>.md` (lowercase, matching the card filename). Use the
 headings that apply — skip the ones that don't:
 
 ```markdown
@@ -153,25 +153,27 @@ Rules:
 
 ## Skills
 
-Each skill is one folder under `skills/` with a `SKILL.md`. Frontmatter needs:
+Each skill is one folder under `plugins/dax-for-agents/skills/` with a `SKILL.md`. Frontmatter needs:
 
 - `name` — kebab-case, **identical to the folder name**.
 - `description` — third person, **starts with "Use when …"**, describes *when* to reach for it
   (symptoms and triggers), not what it does.
 
-Keep the `dax-` prefix even though the plugin is already called `dax` and `skills/` already
-supplies the context. Renaming to `skills/reference/` would touch the cross-links in all
+Keep the `dax-` prefix even though the plugin is already called `dax` and `plugins/dax-for-agents/skills/` already
+supplies the context. Renaming to `plugins/dax-for-agents/skills/reference/` would touch the cross-links in all
 six `SKILL.md`, `evals/cases.yaml`, and any reference already installed elsewhere. Four
 characters do not buy that.
 
 Add the skill to [INDEX.md](INDEX.md), list its path in the `skills` array of
-[`.claude-plugin/plugin.json`](.claude-plugin/plugin.json), and give it at least one
+[`plugins/dax-for-agents/.claude-plugin/plugin.json`](plugins/dax-for-agents/.claude-plugin/plugin.json), and give it at least one
 routing case in `evals/cases.yaml`, or CI fails.
 
 The manifest list is not optional bookkeeping, but be precise about what it protects
-today. Under `skills/` the default scan would find the folders on its own, so a path left
+today. Under `plugins/dax-for-agents/skills/` the default scan would find the folders on its own, so a path left
 out of the array no longer ships an invisible skill the way it did when they sat flat at
-the repo root. What the array still buys is a reviewable diff: the set that gets published
+the repo root. Only `plugins/dax-for-agents/` ships to the plugin directory, and only as
+Markdown, text, JSON, YAML and PNG/JPEG/GIF/WebP/ICO: a script belongs under `scripts/`,
+never inside a skill, and `check_plugin_manifest.py` fails the build when one lands there. What the array still buys is a reviewable diff: the set that gets published
 is written down in one place instead of inferred from a directory listing.
 `scripts/check_plugin_manifest.py` keeps the manifest and the tree in step, and the README
 explains the Claude Code version floor that comes with this layout.
@@ -191,7 +193,7 @@ Contributions are MIT. Do **not** paste content from GPL-licensed sources — no
 which is GPL-3.0. Link to it instead.
 
 Content derived from `query-docs` is CC BY 4.0 and confined to the generated folders covered by
-[`skills/dax-reference/NOTICE`](skills/dax-reference/NOTICE). Keep it that way.
+[`plugins/dax-for-agents/skills/dax-reference/NOTICE.md`](plugins/dax-for-agents/skills/dax-reference/NOTICE.md). Keep it that way.
 
 ## Commits
 
@@ -205,6 +207,12 @@ commit that lands on the branch it tracks and puts each one in review, replacing
 — on 2026-10-05, seven pushes to `main` meant seven holds and a reviewer never given a still
 target. `stable` moves only when release-please publishes a release (the last step of
 `release-please.yml`), so `main` can take commits every day.
+
+`stable` is not a copy of `main`. The listing reads its plugin from the root of the branch,
+and only the branch of a submission can change, never its path. So each release adds one
+commit to `stable` whose tree is `plugins/dax-for-agents/` alone (`scripts/build_stable.py`,
+with `git commit-tree` on top of the current `stable`: always a fast-forward). To see exactly
+what the next release would put there, run `python scripts/build_stable.py --rev HEAD`.
 
 - **Batch the work.** A release is a review cycle measured in days, not a deploy.
 - **Test before merging the release PR**, in Claude Code against the local plugin — what is

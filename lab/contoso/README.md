@@ -30,7 +30,7 @@ the one they describe, there is no point continuing.
 Six exist because a trap from the field notes **cannot be shown in text** — it only lives inside
 a visual. The other four, added later, show live what each of the skills that existed when they
 were built contributed, one by one, to a real scenario (the 3-month moving average measured in
-[`dax-reference/notes/window.md`](../../skills/dax-reference/notes/window.md)). Both groups share
+[`dax-reference/notes/window.md`](../../plugins/dax-for-agents/skills/dax-reference/notes/window.md)). Both groups share
 the same visual language: a note textbox on top, a real data visual underneath, against measures
 persisted in `_Measures.tmdl` — never against a loose query.
 
