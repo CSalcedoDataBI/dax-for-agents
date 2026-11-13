@@ -74,7 +74,10 @@ affordable: hashing the blocks before the first edit makes the risk checkable ra
 hoped for. Here it was 348 `dax` blocks, 348 `result` blocks and 99 frontmatter headers, all
 verified identical after the last edit.
 
-The Spanish originals are kept, frozen, in [`docs/examples-es/`](../examples-es/). Not as a
+The Spanish originals are kept, frozen, in [`docs/examples-es/`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/archive/examples-es-2026-08-25/docs/examples-es)
+(since 2026-11 on the tag `archive/examples-es-2026-08-25` rather than in the tree, so the
+plugin ships under 512 files; `git checkout archive/examples-es-2026-08-25 -- docs/examples-es`
+brings them back). Not as a
 second copy to maintain — nothing reads it and it is never updated — but because translating
 prose is the one step in this migration where meaning could drift with no gate noticing. The
 queries could not drift; the sentences around them are what a reader has to take on trust, and

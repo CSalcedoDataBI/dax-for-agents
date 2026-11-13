@@ -158,27 +158,31 @@ def refresh(root=GENERATED, ref=REF, check=False):
     returns = (sync.load_overrides(os.path.join(ref, "overrides.json"))
                .get("returns") or {})
 
-    library = os.path.join(root, "library")
+    trees = sync.card_bundles.read(root)
+    library = trees["library"]
     changed, reasons = [], []
 
-    for name in sorted(os.listdir(library)):
-        if not name.endswith(".md"):
-            continue
-        stem = name[:-3]
-        path = os.path.join(library, name)
-        with open(path, encoding="utf-8") as f:
-            before = f.read()
+    for stem in sorted(library):
+        before = library[stem]
         name_ = _card_name(before) or stem.upper()
         after = refresh_card(before, stem, stem in notes, examples.get(stem),
                              returns.get(name_))
         if after == before:
             continue
-        changed.append(os.path.join("library", name))
+        changed.append(os.path.join("library", f"{stem}.md"))
         reasons += _reasons(stem, before, after, stem in notes, examples.get(stem),
                             returns.get(name_))
+        library[stem] = after
+
+    # The cards live in bundles (card_bundles.py). An edit moves every line after it, so
+    # the bundles are rebuilt whole and the catalogs get the new line ranges.
+    files, pointers = sync.card_bundles.layout(trees)
+    if files != sync.card_bundles.read_files(root):
+        if not changed:
+            changed.append(sync.card_bundles.BUNDLES)
+            reasons.append("generated/bundles/ is not what the layout of its own cards writes")
         if not check:
-            with open(path, "w", encoding="utf-8", newline="\n") as f:
-                f.write(after)
+            sync.card_bundles.write(root, files)
 
     # The two indexes are derived from the same two directories, so they rot together and
     # are repaired together. catalog.json first: catalog.md is rendered from it.
@@ -208,13 +212,29 @@ def refresh(root=GENERATED, ref=REF, check=False):
     with open(md_path, encoding="utf-8") as f:
         before_md = f.read()
     after_md = sync._catalog_md(catalog["functions"], catalog["source"],
-                                catalog.get("sourceCommitDate", ""))
+                                catalog.get("sourceCommitDate", ""),
+                                sync.card_bundles.pointers_for(pointers, "library"))
     if after_md != before_md:
         changed.append("catalog.md")
         reasons.append("catalog.md: the flag or return column disagrees with the tree")
         if not check:
             with open(md_path, "w", encoding="utf-8", newline="\n") as f:
                 f.write(after_md)
+
+    # concepts.md carries line ranges too, and a rebuilt bundle can move them.
+    concepts_path = os.path.join(root, "concepts.md")
+    if os.path.exists(concepts_path):
+        with open(concepts_path, encoding="utf-8") as f:
+            before_concepts = f.read()
+        after_concepts = sync._concepts_md(catalog.get("concepts", []), catalog["source"],
+                                           catalog.get("sourceCommitDate", ""),
+                                           sync.card_bundles.pointers_for(pointers, "concepts"))
+        if after_concepts != before_concepts:
+            changed.append("concepts.md")
+            reasons.append("concepts.md: a card's line range disagrees with the bundles")
+            if not check:
+                with open(concepts_path, "w", encoding="utf-8", newline="\n") as f:
+                    f.write(after_concepts)
 
     return changed, reasons
 

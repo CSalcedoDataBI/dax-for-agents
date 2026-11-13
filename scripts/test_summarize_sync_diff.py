@@ -268,5 +268,22 @@ class TheRealDiff(unittest.TestCase):
         self.assertIn("nothing to review", render(substantive, stamp, OLD, NEW))
 
 
+class ExplodedBundles(unittest.TestCase):
+    """The cards are bundled on disk, so sync-check.yml explodes both trees with
+    `card_bundles.py --explode` and diffs them with `git diff --no-index` from /tmp/cards.
+    The paths then read `new/generated/library/<stem>.md`, and the summary must still name
+    the function, not the bundle it lives in."""
+
+    def test_a_card_from_an_exploded_tree_is_named_by_its_function(self):
+        diff = ("diff --git a/old/generated/library/abs.md b/new/generated/library/abs.md\n"
+                "--- a/old/generated/library/abs.md\n"
+                "+++ b/new/generated/library/abs.md\n"
+                "@@ -14 +14 @@\n"
+                "-Returns the absolute value of a number.\n"
+                "+Returns the absolute value of any number.\n")
+        substantive, _ = classify(diff, OLD, NEW)
+        self.assertIn("- `abs`", render(substantive, [], OLD, NEW))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -143,7 +143,7 @@ Rules:
   do not write the note.
 - Be concrete. "It can be slow" is useless; "1M context transitions in an iterator over 1M
   rows" is a note.
-- A note without its matching `generated/library/<function>.md` **fails CI** — check the spelling.
+- A note without its matching card (`card: library/<function>` in `generated/bundles/`) **fails CI** — check the spelling.
 - After adding a note, run `refresh_local_metadata.py` so the ★ flag and the card's
   `notes:` field catch up. `WINDOW` spent a while with a hand-written note behind a card
   that said `notes: false`, which is a note nothing routes to.

@@ -56,6 +56,7 @@ def fix():
     """Repair catalog.json, the two indexes and the affected cards. Returns what changed."""
     raw = _load()
     catalog = json.loads(raw)
+    trees = sync.card_bundles.read(GENERATED)
     changed = []
     for entry in catalog["functions"]:
         good = sync.function_name(entry["name"])
@@ -64,16 +65,16 @@ def fix():
         changed.append((entry["file"], entry["name"], good))
         entry["name"] = good
 
-        card = os.path.join(GENERATED, "library", entry["file"] + ".md")
-        if os.path.exists(card):
-            with open(card, encoding="utf-8") as f:
-                text = f.read()
+        text = trees["library"].get(entry["file"])
+        if text is not None:
             # A lambda, not a replacement string: `re.sub` reads backslashes in one.
-            text = _FM_NAME.sub(lambda _: f"name: {good}", text, count=1)
-            with open(card, "w", encoding="utf-8", newline="\n") as f:
-                f.write(text)
+            trees["library"][entry["file"]] = _FM_NAME.sub(lambda _: f"name: {good}", text,
+                                                           count=1)
 
     if changed:
+        # The cards live in bundles; a renamed card moves no line, but the bundles are
+        # rebuilt whole so the catalog's line ranges are always the layout's own.
+        pointers = sync.card_bundles.save(GENERATED, trees)
         after = json.dumps(catalog, indent=2, ensure_ascii=False) + "\n"
         with open(os.path.join(GENERATED, "catalog.json"), "w",
                   encoding="utf-8", newline="\n") as f:
@@ -81,7 +82,8 @@ def fix():
         with open(os.path.join(GENERATED, "catalog.md"), "w",
                   encoding="utf-8", newline="\n") as f:
             f.write(sync._catalog_md(catalog["functions"], catalog["source"],
-                                     catalog.get("sourceCommitDate", "")))
+                                     catalog.get("sourceCommitDate", ""),
+                                     sync.card_bundles.pointers_for(pointers, "library")))
     return changed
 
 

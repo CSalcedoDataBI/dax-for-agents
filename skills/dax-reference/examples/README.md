@@ -17,7 +17,7 @@ is written in this tree is the opposite: **examples that run**.
 dax-reference/examples/<primaryCategory>/<stem>.md
 ```
 
-The `<stem>` is the same as the card's in `generated/library/` — `if.md`, `if-eager.md`,
+The `<stem>` is the same as the card's (`card: library/<stem>` in `generated/bundles/`) — `if.md`, `if-eager.md`,
 `bitlshift.md`. It is not the function's name: `IF.EAGER` lives in `if-eager.md`.
 
 **This tree is hand-written and the sync never touches it**, just like `notes/`. The examples

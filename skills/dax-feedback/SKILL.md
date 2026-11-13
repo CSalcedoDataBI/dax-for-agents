@@ -27,7 +27,8 @@ the user's model, in Power BI or in another tool is not a finding for this repos
 - **The engine:** Power BI Desktop version (or the service and its compatibility level) and
   the storage mode, import or DirectQuery.
 - **What the plugin says**: search the installed plugin folder for the claim's own words to
-  find the card or note, then give its path inside the plugin and the plugin version
+  find the card or note, then give its path inside the plugin (for a card: its bundle and
+  stem, `generated/bundles/functions-text.md`, card `rept`) and the plugin version
   (`version` in its `.claude-plugin/plugin.json`). Do not propose an edit to a card under
   `generated/`: those are copied from Microsoft Learn, and the fix lands as a field note.
 

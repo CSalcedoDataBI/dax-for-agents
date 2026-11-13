@@ -171,7 +171,16 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            git diff --cached -U0 -- skills/dax-reference/generated \
+            # The cards are bundled by category (card_bundles.py). Diffing the bundles
+            # would name a whole category per change, so both trees are exploded back to
+            # one file per card first and the summary still names the function.
+            mkdir -p /tmp/sync-old
+            git archive HEAD skills/dax-reference/generated | tar -x -C /tmp/sync-old
+            python skills/dax-reference/scripts/card_bundles.py --explode \
+              /tmp/sync-old/skills/dax-reference/generated /tmp/cards/old/generated
+            python skills/dax-reference/scripts/card_bundles.py --explode \
+              skills/dax-reference/generated /tmp/cards/new/generated
+            (cd /tmp/cards && git diff --no-index -U0 old new || true) \
               | python scripts/summarize_sync_diff.py \
                   --old-sha "${{ steps.drift.outputs.stamped }}" \
                   --new-sha "${{ steps.drift.outputs.upstream }}" > /tmp/pr-body.md

@@ -70,7 +70,6 @@ HISTORICAL = [
     "CHANGELOG.md",                                   # release-please, past releases
     os.path.join("docs", "decisions"),                # what was true when decided
     os.path.join("docs", "design.md"),               # the design record, dated
-    os.path.join("docs", "examples-es"),              # frozen Spanish snapshot of examples/
     "HANDOFF.md",                                     # a session snapshot, true when written
     ".handoffs",                                      # the archived ones, same reason
 ]
@@ -113,6 +112,9 @@ def _counts(root=ROOT):
     """
     ref = os.path.join(root, "skills", "dax-reference")
     gen = os.path.join(ref, "generated")
+    sys.path.insert(0, os.path.join(ref, "scripts"))
+    import card_bundles                                             # noqa: E402
+    trees = card_bundles.read(gen)
 
     def md(path):
         return len([f for f in os.listdir(path) if f.endswith(".md")]) \
@@ -154,9 +156,9 @@ def _counts(root=ROOT):
     covered = len(exio.example_files(os.path.join(ref, "examples")))
 
     return {
-        "cards": md(os.path.join(gen, "library")),
+        "cards": len(trees["library"]),
         "covered functions": covered,
-        "concepts": md(os.path.join(gen, "concepts")),
+        "concepts": len(trees["concepts"]),
         "notes": md(os.path.join(ref, "notes")),
         "skills": skills,
         "workflows": workflows,

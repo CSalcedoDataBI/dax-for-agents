@@ -149,7 +149,6 @@ class ModelModeSetup(unittest.TestCase):
     """A setup problem must stop the run, not print a 0% accuracy and exit 0."""
 
     def test_a_missing_cli_stops_with_exit_2(self):
-        import claude_cli
         from unittest import mock
         with mock.patch("claude_cli.shutil.which", return_value=None), \
                 mock.patch("claude_cli.subprocess.run") as run:
@@ -161,6 +160,17 @@ class ModelModeSetup(unittest.TestCase):
         from unittest import mock
         with mock.patch.dict(os.environ, {"EVAL_MODEL": "deepseek-v4-pro"}):
             self.assertEqual(run_evals.model_eval({}, []), 2)
+
+    def test_a_cli_that_cannot_answer_stops_after_three_failures(self):
+        """Installed but not logged in: every call fails. That is not 0% accuracy."""
+        from unittest import mock
+        failed = mock.Mock(returncode=1, stdout="", stderr="Not logged in")
+        cases = [{"prompt": f"p{i}", "expect": "a"} for i in range(10)]
+        with mock.patch("claude_cli.shutil.which", return_value="claude"), \
+                mock.patch("claude_cli.subprocess.run", return_value=failed) as run:
+            self.assertEqual(run_evals.model_eval({"a": {"description": "x"}}, cases), 2)
+        self.assertEqual(run.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

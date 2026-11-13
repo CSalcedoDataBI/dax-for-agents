@@ -9,7 +9,7 @@ source.
 Pass 2 (parse_function_doc and friends): read each per-function file, extract
 syntax, parameters, applies-to, and the discouraged flag from the [!INCLUDE]
 shortcode, rewrite cross-links to local library paths, and produce the markdown
-card written to generated/library/<fn>.md. Also stamps generated/catalog.json
+card, bundled by category into generated/bundles/ (card_bundles.py). Also stamps generated/catalog.json
 and generated/catalog.md.
 
 Everything the sync writes lives under generated/, so a new generation is
@@ -20,6 +20,9 @@ import os
 import posixpath
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import card_bundles  # noqa: E402
 
 # The members table lives under this heading and ends at the next one. All 15 real
 # indexes carry exactly one; scoping to it stops a future "Related content" or
@@ -965,7 +968,9 @@ def _cell(value):
     return str(value).replace("|", "\\|")
 
 
-def _catalog_md(entries, source, source_date):
+def _catalog_md(entries, source, source_date, pointers=None):
+    """The function index. `pointers` ({stem: "bundle:first-last"}) adds the Ficha
+    column: the line range of the card inside generated/bundles/."""
     head = [
         "# DAX Reference — catálogo de funciones (índice generado)",
         "",
@@ -985,8 +990,8 @@ def _catalog_md(entries, source, source_date):
                     "table*).")
     head += [
         "",
-        "| Función | Cat | Ret | Aplica | Resumen | ⚑ |",
-        "|---|---|---|---|---|---|",
+        "| Función | Cat | Ret | Aplica | Resumen | ⚑ |" + (" Ficha |" if pointers else ""),
+        "|---|---|---|---|---|---|" + ("---|" if pointers else ""),
     ]
     rows = []
     for e in entries:
@@ -999,12 +1004,15 @@ def _catalog_md(entries, source, source_date):
                  + ("▶" if e.get("examples") else ""))
         applies = " ".join(_APPLIES_CODE.get(a, a) for a in e["appliesTo"])
         summary = e["summary"].replace("|", "\\|")
-        rows.append(f"| {_cell(e['name'])} | {_cell(e['primaryCategory'])} | "
-                    f"{_cell(e['returns'])} | {applies} | {summary} | {flags} |")
+        row = (f"| {_cell(e['name'])} | {_cell(e['primaryCategory'])} | "
+               f"{_cell(e['returns'])} | {applies} | {summary} | {flags} |")
+        if pointers:
+            row += f" `{pointers.get(e['file'], '')}` |"
+        rows.append(row)
     return "\n".join(head + rows) + "\n"
 
 
-def _concepts_md(concepts, source, source_date):
+def _concepts_md(concepts, source, source_date, pointers=None):
     head = [
         "# DAX Reference — catálogo de conceptos (índice generado)",
         "",
@@ -1013,13 +1021,14 @@ def _concepts_md(concepts, source, source_date):
         "> **No editar a mano.** Para preguntas sobre una función concreta usa "
         "`catalog.md`.",
         "",
-        "| Página | Tema | Título | Resumen |",
-        "|---|---|---|---|",
+        "| Página | Tema | Título | Resumen |" + (" Ficha |" if pointers else ""),
+        "|---|---|---|---|" + ("---|" if pointers else ""),
     ]
     # Every cell, not just the summary: two upstream titles end in "| Microsoft Docs", and
     # emitted raw they added columns and the index stopped being a table.
     rows = [
         "| " + " | ".join(_cell(c[k]) for k in ("file", "topic", "title", "summary")) + " |"
+        + (f" `{pointers.get(c['file'], '')}` |" if pointers else "")
         for c in concepts
     ]
     return "\n".join(head + rows) + "\n"
@@ -1353,15 +1362,21 @@ def write_library(dax_dir, out_dir, category_map, docs, overrides,
             f"{' ...' if len(broken) > 5 else ''}. A card that promises a page which is "
             f"not there is worse than one that says nothing.")
 
+    # On disk the cards are bundled, one file per category (card_bundles.py): one file
+    # per card shipped 513 files, and the plugin directory holds anything over 512 for a
+    # reviewer. The catalogs carry each card's line range, so reading one is still one hop.
+    bundle_files, pointers = card_bundles.layout(trees)
     _publish(
         out_dir,
-        trees,
+        {card_bundles.BUNDLES: {name[:-3]: text for name, text in bundle_files.items()}},
         {
             "catalog.json": json.dumps(catalog, indent=2, ensure_ascii=False) + "\n",
-            "catalog.md": _catalog_md(entries, source, source_date),
+            "catalog.md": _catalog_md(entries, source, source_date,
+                                      card_bundles.pointers_for(pointers, "library")),
             # Its own index, not rows in catalog.md: a conceptual question should not have
             # to read 14k tokens of function rows to find the page on evaluation context.
-            "concepts.md": _concepts_md(concepts, source, source_date),
+            "concepts.md": _concepts_md(concepts, source, source_date,
+                                        card_bundles.pointers_for(pointers, "concepts")),
         },
     )
     return entries

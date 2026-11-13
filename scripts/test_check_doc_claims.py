@@ -16,6 +16,8 @@ from check_doc_claims import (  # noqa: E402
 )
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "skills", "dax-reference", "scripts"))
+import card_bundles  # noqa: E402
 
 
 class Fixture:
@@ -25,9 +27,10 @@ class Fixture:
     def __init__(self, doc="", examples=0):
         self.dir = tempfile.mkdtemp()
         gen = os.path.join(self.dir, "skills", "dax-reference", "generated")
-        for sub, names in [(os.path.join(gen, "library"), ["abs.md", "acos.md"]),
-                           (os.path.join(gen, "concepts"), ["dax-glossary.md"]),
-                           (os.path.join(self.dir, "skills", "dax-reference", "notes"),
+        # The cards live in bundles; card_bundles writes them the way the sync does.
+        card_bundles.save(gen, {"library": {"abs": "", "acos": ""},
+                                "concepts": {"dax-glossary": ""}})
+        for sub, names in [(os.path.join(self.dir, "skills", "dax-reference", "notes"),
                             ["abs.md", "acos.md", "sumx.md"])]:
             os.makedirs(sub)
             for n in names:
