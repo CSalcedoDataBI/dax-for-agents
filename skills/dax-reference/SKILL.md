@@ -47,7 +47,7 @@ For a question that is not about one specific function — evaluation context, t
 statements (`EVALUATE`, `DEFINE`, `ORDER BY`), operators, the glossary, best-practice guidance
 — take the other path instead: read **[`generated/concepts.md`](./generated/concepts.md)** (34
 concepts, ~2k tokens) and open the one page it points to, the same way: its `Ficha` is a line
-range in `generated/bundles/concepts-<n>.md`. Going through `catalog.md` would cost 17k tokens
+range in `generated/bundles/concepts-<n>.md` (fallback: Grep `card: concepts/<stem>`). Going through `catalog.md` would cost 17k tokens
 of function rows to reach a page that is not about a function.
 
 ### Reading the flags
