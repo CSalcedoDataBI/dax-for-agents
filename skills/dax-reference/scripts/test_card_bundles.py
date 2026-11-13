@@ -132,6 +132,15 @@ class Check(unittest.TestCase):
         os.makedirs(os.path.join(self.dir, "library"))
         self.assertTrue(any("library/" in p for p in cb.check(self.dir)))
 
+    def test_explode_writes_one_file_per_card_with_its_original_bytes(self):
+        """What the weekly sync diffs, so its summary can name the function that changed."""
+        out = os.path.join(self.dir, "exploded")
+        cb.explode(self.dir, out)
+        for sub, cards in TREES.items():
+            for stem, text in cards.items():
+                with open(os.path.join(out, sub, f"{stem}.md"), encoding="utf-8") as f:
+                    self.assertEqual(f.read(), text)
+
     def test_a_stale_bundle_is_removed_on_save(self):
         cb.save(self.dir, {"library": {"if": TREES["library"]["if"]}, "concepts": {}})
         self.assertEqual(sorted(cb.read_files(self.dir)), ["functions-logical.md"])

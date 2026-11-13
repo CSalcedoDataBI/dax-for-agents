@@ -19,8 +19,8 @@ The generated content in this folder is derived from Microsoft documentation.
 
 Affected paths:
 
-  skills/dax-reference/generated/library/     one card per DAX function
-  skills/dax-reference/generated/concepts/    conceptual topics
+  skills/dax-reference/generated/bundles/     one card per DAX function and per
+                                              conceptual topic, bundled by category
   skills/dax-reference/generated/catalog.md   function index
   skills/dax-reference/generated/concepts.md  concept index
   skills/dax-reference/generated/catalog.json both indexes, for scripts

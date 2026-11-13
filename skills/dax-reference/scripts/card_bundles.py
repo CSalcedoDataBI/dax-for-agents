@@ -25,6 +25,7 @@ parts named `<group>-1`, `<group>-2`... The bundles go in a NEW directory on pur
 stale `library/filter.md` path then fails loudly instead of opening the FILTER category.
 
     python card_bundles.py --check    # the tree on disk is exactly layout(split(disk))
+    python card_bundles.py --explode <generated> <out>   # one file per card, for diffs
 """
 import os
 import re
@@ -225,7 +226,27 @@ def check(generated):
     return problems
 
 
+def explode(generated, out):
+    """Write the tree one file per card under `out/{library,concepts}/`, plus the indexes.
+
+    For reading a change card by card: the weekly sync diffs two exploded trees, so its
+    pull request still names the function that changed instead of a whole bundle."""
+    import shutil
+    for sub, cards in read(generated).items():
+        d = os.path.join(out, sub)
+        os.makedirs(d, exist_ok=True)
+        for stem, text in cards.items():
+            with open(os.path.join(d, f"{stem}.md"), "w", encoding="utf-8", newline="\n") as f:
+                f.write(text)
+    for name in ("catalog.md", "concepts.md", "catalog.json"):
+        if os.path.exists(os.path.join(generated, name)):
+            shutil.copyfile(os.path.join(generated, name), os.path.join(out, name))
+
+
 def main(argv):
+    if len(argv) == 3 and argv[0] == "--explode":
+        explode(argv[1], argv[2])
+        return 0
     if argv != ["--check"]:
         print(__doc__)
         return 2
