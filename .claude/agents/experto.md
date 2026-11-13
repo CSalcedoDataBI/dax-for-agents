@@ -29,7 +29,7 @@ rutas locales de disco ni datos de workspaces. Si el diff los añade, se corrige
 
 1. **Hace lo planeado:** el diff responde al issue y no hace más.
 2. **Mantiene el norte:** no toca las zonas protegidas de la ficha (`stable`, la ruta de
-   `.claude-plugin/plugin.json`, el conjunto de skills y el prefijo `dax-`, el contrato de
+   `plugins/dax-for-agents/.claude-plugin/plugin.json`, el conjunto de skills y el prefijo `dax-`, el contrato de
    compuertas ↔ README), no edita otra herramienta (R1), no reinventa algo que ya existe (R2).
 3. **No rompe nada:** CI en verde (`validate` y `static`); cada arreglo con una prueba que falla sin
    él; la suite existente pasa.

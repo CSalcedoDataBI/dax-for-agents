@@ -30,7 +30,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GENERATED = os.path.join(ROOT, "skills", "dax-reference", "generated")
+GENERATED = os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "dax-reference", "generated")
 
 # The exact prefix the sync used to write. Narrow on purpose: this gate knows about one
 # host that is known to be gone, and says so. A general "is every URL alive" check is a

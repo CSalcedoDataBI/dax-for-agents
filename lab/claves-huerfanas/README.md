@@ -7,7 +7,7 @@ not discard those rows and does not raise an error: it adds a **blank row** to t
 hangs everything orphaned off it. That row is not in the data, it appears on its own.
 
 Contoso cannot show this because its referential integrity is intact. That is why the
-[`countrows`](../../skills/dax-reference/notes/countrows.md) note had to **withdraw** that claim
+[`countrows`](../../plugins/dax-for-agents/skills/dax-reference/notes/countrows.md) note had to **withdraw** that claim
 after a review: it could not be demonstrated, and a note you cannot demonstrate does not get
 written. This model exists so it can be.
 

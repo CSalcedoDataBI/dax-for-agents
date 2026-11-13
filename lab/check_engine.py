@@ -47,7 +47,7 @@ sys.path.insert(0, HERE)
 
 import check_lab                                                  # noqa: E402
 
-CATALOG = os.path.join(ROOT, "skills", "dax-reference", "generated", "catalog.json")
+CATALOG = os.path.join(ROOT, "plugins", "dax-for-agents", "skills", "dax-reference", "generated", "catalog.json")
 BASELINE = os.path.join(HERE, "engine-baseline.json")
 
 QUERY = 'EVALUATE SELECTCOLUMNS(INFO.FUNCTIONS(), "name", [FUNCTION_NAME])'

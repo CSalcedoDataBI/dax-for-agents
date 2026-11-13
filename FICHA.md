@@ -26,7 +26,7 @@
 
 Lo que no se toca sin un paso del plan que lo nombre:
 
-- **Rama `stable` y `.claude-plugin/plugin.json` en la raíz** — el directorio de Anthropic rastrea
+- **Rama `stable` y `plugins/dax-for-agents/.claude-plugin/plugin.json` en la raíz** — el directorio de Anthropic rastrea
   `stable` y busca el manifiesto en la raíz; moverlo o tocar `stable` fuera de un release rompe la
   revisión del directorio. Ver los PR #24/#26 (no se fusionan hasta que Anthropic responda sobre la
   ruta del manifiesto).
@@ -49,7 +49,7 @@ Lo que no se toca sin un paso del plan que lo nombre:
 
 - **Check de CI requerido:** `validate` y `static` (ambos en el ruleset de `main`).
 - **Suite de pruebas:** `validate` (workflow *Validate skills* → `scripts/validate_skills.py`, las
-  compuertas de `scripts/` y `python -m unittest discover` sobre `skills/dax-reference/scripts`,
+  compuertas de `scripts/` y `python -m unittest discover` sobre `scripts/dax-reference`,
   `scripts` y `evals`) y `static` (workflow *Evals* → `python evals/run_evals.py`).
 - **Runner:** GitHub (repo público — minutos gratis; no hay runner local).
 - **Formato de tag:** `vX.Y.Z` (un solo componente; gestionado por `release-please`).

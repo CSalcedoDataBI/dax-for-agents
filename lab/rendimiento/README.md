@@ -109,8 +109,8 @@ The rule these numbers support is not "don't use FILTER over tables", but:
 
 > **Do not put a measure where you are going to iterate two million rows.**
 
-See [`sumx`](../../skills/dax-reference/notes/sumx.md) and
-[`calculate`](../../skills/dax-reference/notes/calculate.md) for the mechanism, which is the same
+See [`sumx`](../../plugins/dax-for-agents/skills/dax-reference/notes/sumx.md) and
+[`calculate`](../../plugins/dax-for-agents/skills/dax-reference/notes/calculate.md) for the mechanism, which is the same
 one that makes `SUMX` with a measure return a different number from `SUMX` with the expression
 written out. Here you also see what it costs.
 

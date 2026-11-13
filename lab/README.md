@@ -1,6 +1,6 @@
 # lab — evidence you can run
 
-The field notes in [`dax-reference/notes/`](../skills/dax-reference/notes/) each carry the query
+The field notes in [`dax-reference/notes/`](../plugins/dax-for-agents/skills/dax-reference/notes/) each carry the query
 that demonstrates the trap and the number it returned. This directory is the other half of that
 promise: **the models to run them against**.
 
@@ -75,7 +75,7 @@ file rather than in the TMDL does not hide them — it publishes them.
 3. Compare against the published results table.
 
 In `contoso`, step 2 means the queries from the **field notes**, which live in
-[`dax-reference/notes/`](../skills/dax-reference/notes/) and are not repeated in its README.
+[`dax-reference/notes/`](../plugins/dax-for-agents/skills/dax-reference/notes/) and are not repeated in its README.
 
 Each scenario's `.gitignore` excludes `.pbi/`, the local Power BI Desktop cache (a few megabytes
 of binary per model). Only text is versioned.
@@ -105,7 +105,7 @@ Desktop bridge, against models refreshed from the published Parquet, on the same
 
 Those thirteen are the **visual-only trap** pages. `contoso` carries four more, of a different
 kind: one per skill in the library, showing what each contributed to the real scenario in
-[`window.md`](../skills/dax-reference/notes/window.md). See
+[`window.md`](../plugins/dax-for-agents/skills/dax-reference/notes/window.md). See
 [`lab/contoso/README.md`](./contoso/README.md#the-other-four-what-each-skill-contributed).
 
 And this is not a theoretical precaution. While building them, looking at the drawing found

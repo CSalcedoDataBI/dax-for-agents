@@ -36,7 +36,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-REF = ROOT / "skills" / "dax-reference"
+REF = ROOT / "plugins" / "dax-for-agents" / "skills" / "dax-reference"
 OUT = ROOT / "docs" / "assets"
 
 ACCENT = "#116B62"      # a function with a hand-written field note
