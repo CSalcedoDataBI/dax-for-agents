@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.9.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.1...v0.9.0) (2026-11-13)
+
+
+### Features
+
+* **dax-feedback:** add a skill to report wrong cards back, sanitized ([#32](https://github.com/CSalcedoDataBI/dax-for-agents/issues/32)) ([583c1c1](https://github.com/CSalcedoDataBI/dax-for-agents/commit/583c1c1693881abb7caaab1db253ef81810b1239))
+* **dax-reference:** bundle the cards by category so the plugin ships 467 files ([#45](https://github.com/CSalcedoDataBI/dax-for-agents/issues/45)) ([67a82c8](https://github.com/CSalcedoDataBI/dax-for-agents/commit/67a82c87bd5f1aeff2e97d74c62c7216fe59677f))
+
+
+### Bug Fixes
+
+* **dax-reference:** remove the injector's work folder when a spec is refused ([455c663](https://github.com/CSalcedoDataBI/dax-for-agents/commit/455c66355ec63603b7406190809b23cb3a4c423b))
+* **evals:** ask Claude through the CLI, never read an API key ([#44](https://github.com/CSalcedoDataBI/dax-for-agents/issues/44)) ([8a1509b](https://github.com/CSalcedoDataBI/dax-for-agents/commit/8a1509b793a2fbe7f9870995b9a25a8bf7e1f4ff))
+* normalize line endings to LF so the plugin directory scans the repo ([50b1b32](https://github.com/CSalcedoDataBI/dax-for-agents/commit/50b1b3274f04cdb9516d28c99b7ff65d742ae303))
+
 ## [0.8.1](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.0...v0.8.1) (2026-10-05)
 
 
