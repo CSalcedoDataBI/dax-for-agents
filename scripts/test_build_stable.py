@@ -129,6 +129,7 @@ class TheRealRepo(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertTrue(out.getvalue().startswith("FAIL: "), out.getvalue())
 
+    @with_env  # commit-tree needs an identity, and a CI runner has none configured
     def test_the_dry_run_lists_the_files_and_pushes_nothing(self):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
