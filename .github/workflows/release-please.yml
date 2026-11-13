@@ -43,7 +43,7 @@ jobs:
         if: steps.release.outputs.pr != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Este job no hace checkout -- no le hace falta ninguno. Sin GH_REPO, `gh`
+          # A esta altura el job no ha hecho checkout -- este paso no lo necesita. Sin GH_REPO, `gh`
           # busca el repositorio en el .git del directorio, que aqui no existe, y muere
           # con "not a git repository". Nombrarlo cuesta una linea; clonar, un minuto.
           GH_REPO: ${{ github.repository }}
@@ -64,13 +64,25 @@ jobs:
           TAG: ${{ steps.release.outputs.tag_name }}
         run: gh workflow run lab-assets.yml -f tag="$TAG"
 
-      # El directorio de plugins de claude.ai sigue la rama `stable`, no `main`: revisa cada
-      # commit que llega a la rama que sigue, y con `main` cada push reemplazaba la version en
-      # revision. `stable` avanza aqui y solo aqui, al commit de la release. Fast-forward sin
-      # force: si alguna vez no lo es, falla en vez de reescribir lo que el revisor ya leyo.
-      - name: Move stable to the new release
+      # El directorio de plugins de claude.ai sigue la rama `stable`, no `main`, con la ruta
+      # del plugin en la RAIZ del repo -- y un envio no puede cambiar ni repo ni ruta, solo
+      # rama. Por eso la raiz de `stable` tiene que SER el plugin: cada release es un commit
+      # nuevo cuyo arbol es el de plugins/dax-for-agents/ en el commit de la release y cuyo
+      # unico padre es el `stable` actual (scripts/build_stable.py). Siempre fast-forward,
+      # nunca force; el script lista el arbol y falla si lleva un tipo que el directorio
+      # rechaza o no tiene .claude-plugin/plugin.json en la raiz.
+      - name: Check out the release commit
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+
+      - name: Move stable to the plugin tree of the new release
         if: steps.release.outputs.release_created == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHA: ${{ steps.release.outputs.sha }}
-        run: gh api -X PATCH "repos/${{ github.repository }}/git/refs/heads/stable" -f sha="$SHA" -F force=false
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          git fetch --depth=1 origin stable:refs/remotes/origin/stable
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python scripts/build_stable.py --rev HEAD --label "$TAG" --push

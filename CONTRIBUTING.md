@@ -208,6 +208,12 @@ commit that lands on the branch it tracks and puts each one in review, replacing
 target. `stable` moves only when release-please publishes a release (the last step of
 `release-please.yml`), so `main` can take commits every day.
 
+`stable` is not a copy of `main`. The listing reads its plugin from the root of the branch,
+and only the branch of a submission can change, never its path. So each release adds one
+commit to `stable` whose tree is `plugins/dax-for-agents/` alone (`scripts/build_stable.py`,
+with `git commit-tree` on top of the current `stable`: always a fast-forward). To see exactly
+what the next release would put there, run `python scripts/build_stable.py --rev HEAD`.
+
 - **Batch the work.** A release is a review cycle measured in days, not a deploy.
 - **Test before merging the release PR**, in Claude Code against the local plugin — what is
   on claude.ai is only ever what the reviewer approved.
