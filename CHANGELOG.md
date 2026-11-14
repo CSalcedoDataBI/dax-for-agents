@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.9.0...v0.9.1) (2026-11-14)
+
+
+### Miscellaneous Chores
+
+* release 0.9.1, the first stable that holds only the plugin ([#47](https://github.com/CSalcedoDataBI/dax-for-agents/issues/47)) ([e4f7612](https://github.com/CSalcedoDataBI/dax-for-agents/commit/e4f76125547ad582254b57b786dc92f1120c48bd)), closes [#40](https://github.com/CSalcedoDataBI/dax-for-agents/issues/40)
+
 ## [0.9.0](https://github.com/CSalcedoDataBI/dax-for-agents/compare/v0.8.1...v0.9.0) (2026-11-13)
 
 
