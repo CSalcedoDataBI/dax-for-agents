@@ -30,7 +30,7 @@ came from that survives the function being copied on its own later.
    ```
    Without the `Accept` header the contents API returns a JSON envelope with the file
    base64-encoded, not the TMDL.
-   Same path convention `dax-lib/scripts/refresh-daxlib.ps1` already reads for the
+   Same path convention the repository's `scripts/dax-lib/refresh-daxlib.ps1` already reads for the
    index — used here to read a function *body*, not just its name. Pull only the
    `function '<name>' = ...` block requested out of the file; the package's other
    functions are not your concern.

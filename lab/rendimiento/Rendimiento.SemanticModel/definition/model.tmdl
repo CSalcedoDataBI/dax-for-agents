@@ -1,9 +1,0 @@
-model Model
-	culture: es-ES
-	defaultPowerBIDataSourceVersion: powerBI_V3
-	discourageImplicitMeasures
-	sourceQueryCulture: es-ES
-
-ref table Ventas
-ref table Tiempos
-ref table _Medidas

@@ -6,14 +6,14 @@ description: Use when you need what a built-in DAX function does — signature, 
 # DAX Reference
 
 The complete DAX function library, agent-native. Derived from `MicrosoftDocs/query-docs`
-(CC BY 4.0 — see [`NOTICE`](./NOTICE)), which has returned 404 since 2026-08; the same
+(CC BY 4.0 — see [`NOTICE`](./NOTICE.md)), which has returned 404 since 2026-08; the same
 material is published on [Microsoft Learn](https://learn.microsoft.com/en-us/dax/).
 Annotated with the gotchas the docs leave out.
 
 > **Status.** `generated/` is built — 479 functions and 34 conceptual pages from
 > `MicrosoftDocs/query-docs@323524c`, plus **31 field notes**, each one measured
 > against a real model rather than asserted.
-> See [the design spec](../../docs/design.md).
+> See [the design spec](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/docs/design.md).
 
 ## How to use this
 
@@ -76,7 +76,7 @@ argument and return nothing usable, so never assign them to a `VAR` or iterate t
 
 "Show me X in a PBIP", "give me an example file", "a demo I can open in Power BI": **hand over
 what already exists before building anything.** Every scenario in
-[`lab/`](../../lab/README.md) is published on each release as a zip that downloads and opens
+[`lab/`](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/lab/README.md) is published on each release as a zip that downloads and opens
 — answer with the link, the page to look at and, if there is one, the query from the note.
 
 | download | open this when the question is about |
@@ -91,14 +91,13 @@ the first refresh asks for the web source's privacy level (**Anonymous/Public** 
 
 **If none of the four covers it, inject — do not build a project.** Write the measures (read
 their cards first, like any other DAX), put them in a spec, and let
-[`scripts/inject_example.py`](./scripts/inject_example.py) add them to the Contoso master with
-one page that shows them. It takes `lab/contoso` when the repo is on disk and downloads
-`lab-contoso.zip` otherwise, refuses unknown columns, unknown measures and name clashes before
-writing, and hands back a zip to give the user:
-
-```bash
-python scripts/inject_example.py spec.json --out <dir>
-```
+[`inject_example.py`](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/scripts/dax-reference/inject_example.py)
+add them to the Contoso master with one page that shows them. The script is **not part of the
+installed plugin**; it lives in the repository. From a clone, run
+`python scripts/dax-reference/inject_example.py spec.json --out <dir>`: it takes `lab/contoso`
+from the clone, refuses unknown columns, unknown measures and name clashes before writing, and
+hands back a zip to give the user. Without a clone, give the user the spec below and that link,
+or hand over `lab-contoso.zip` with the measures to add in the DAX query view.
 
 ```json
 {"title": "CALCULATE vs KEEPFILTERS",
@@ -129,13 +128,11 @@ directory, so it can never half-update the tree, and it can never eat your notes
 | `generated/bundles/<bundle>.md` | The 479 function cards and 34 conceptual pages, one bundle per category, each card between `<!-- card: … -->` markers. **Generated — never edit by hand, never read whole** |
 | `notes/<fn>.md` | Field notes. **Hand-written — the sync never touches these** |
 | `overrides.json` | Values the parser cannot derive (mostly `returns`). Hand-written |
-| `scripts/sync_query_docs.py` | Regenerates `generated/` |
-
 ## Maintaining `generated/`
 
 Regenerating, the gates that stop a bad generation and the weekly CI sync are maintainer
-material, kept out of this file so it does not load on every lookup: see
-[`scripts/README.md`](./scripts/README.md).
+material, and the scripts that do it live in the repository, not in the plugin: see
+[`scripts/dax-reference/README.md`](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/scripts/dax-reference/README.md).
 
 ## Related skills
 

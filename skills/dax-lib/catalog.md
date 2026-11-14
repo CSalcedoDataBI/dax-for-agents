@@ -2,7 +2,7 @@
 
 > Fuente: `daxlib/daxlib@9a1c2cc` · commit 2026-05-28T11:47:17+02:00
 > 55 paquetes · 116 versiones · 1649 funciones
-> Regenerar: `pwsh ./scripts/refresh-daxlib.ps1`.
+> Regenerar: `pwsh ./scripts/dax-lib/refresh-daxlib.ps1` (desde un clon del repositorio).
 > **Indice solamente** — el codigo DAX no se redistribuye aqui. Instala desde [daxlib.org](https://daxlib.org) o Tabular Editor 3 (DAX Package Manager).
 
 | Paquete | Última | Autor | Funciones | Descripción |

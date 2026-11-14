@@ -19,7 +19,7 @@ ROW(
 | `COUNTROWS(DimStore)` | **25** |
 | `COUNT(DimStore[CloseDate])` | **(blank)** |
 
-> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> Measured against [`lab/contoso`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/contoso/) — Contoso Retail, FactSales 126,524
 > rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only and
 > does not touch the model. It runs and compares itself with `python lab/check_lab.py contoso
 > localhost:<port>`.
@@ -34,7 +34,7 @@ and that page is not in the function card.
 
 When the fact table references a key that does not exist in the dimension, the engine adds a blank
 row **to the dimension**. Measured in
-[`lab/claves-huerfanas`](../../../lab/claves-huerfanas/), with a single orphan key:
+[`lab/claves-huerfanas`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/claves-huerfanas/), with a single orphan key:
 
 | expression | result | |
 |---|---|---|
@@ -49,6 +49,6 @@ believe the blank row is in the facts, and it is not.
 And cleaning that row up is expensive: `SUMX(ALLNOBLANKROW(...))` gives **60** where the total is
 **110**. The 50 orphaned units disappear without warning.
 
-> Measured in [`lab/claves-huerfanas`](../../../lab/claves-huerfanas/) on 2026-08-12, **not**
+> Measured in [`lab/claves-huerfanas`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/claves-huerfanas/) on 2026-08-12, **not**
 > against Contoso: Contoso's referential integrity is intact and so it cannot demonstrate anything
 > in this section. The model, the data and the queries are there to run.

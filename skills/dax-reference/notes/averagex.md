@@ -40,5 +40,5 @@ is wrong is that the decision ends up hidden inside a `+ 0`.
 `AVERAGE`, which here gives exactly the same. The difference between them is not blank handling:
 it is that `AVERAGEX` can average an **expression** and `AVERAGE` only a column.
 
-> Model, data and queries in [`lab/blancos`](../../../lab/blancos/) — it opens in Power BI Desktop
+> Model, data and queries in [`lab/blancos`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/blancos/) — it opens in Power BI Desktop
 > and runs. Measured on 2026-08-12.

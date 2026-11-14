@@ -39,7 +39,7 @@ NOT covered by this notice — these are original work under the repository's MI
   skills/dax-reference/notes/        hand-written field notes
   skills/dax-reference/examples/     hand-written runnable examples
   skills/dax-reference/overrides.json
-  skills/dax-reference/scripts/      the sync pipeline
+  scripts/dax-reference/             the sync pipeline (in the repository, not in the plugin)
 
 Microsoft's own repository splits its licensing the same way: LICENSE (CC BY 4.0) for the
 documentation and LICENSE-CODE (MIT) for the code.

@@ -1,3 +1,0 @@
-# Cache de datos y estado local del editor de Power BI Desktop.
-# Son megabytes de binario por modelo y cambian en cada refresco: nunca se versionan.
-**/.pbi/

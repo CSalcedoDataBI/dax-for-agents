@@ -153,7 +153,7 @@ not protect the number being averaged. This file is that layer.
 - [`ALLSELECTED`](./allselected.md) — the other side of the same problem: `WINDOW` without an
   explicit `relation` inherits `ALLSELECTED()` by default, which is where all this starts.
 
-> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> Measured against [`lab/contoso`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/contoso/) — Contoso Retail, FactSales 126,524
 > rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-24. The query is read-only:
 > it defines its functions with `DEFINE` and does not touch the model. It runs and compares itself
 > with `python lab/check_lab.py contoso localhost:<port>`.

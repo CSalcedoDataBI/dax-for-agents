@@ -64,7 +64,7 @@ culture if you need it.
 - `CONVERT` — changes the data type, not the appearance.
 - `VALUE` — the way back: text to number. It errors if the string is not convertible.
 
-> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> Measured against [`lab/contoso`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/contoso/) — Contoso Retail, FactSales 126,524
 > rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-13. The query is read-only:
 > it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
 > with `python lab/check_lab.py contoso localhost:<port>`.

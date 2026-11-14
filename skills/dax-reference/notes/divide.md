@@ -29,7 +29,7 @@ not in the function's page, which is why this note exists.
 That is **their** recommendation, quoted, not a measurement from this repo: on this model both
 forms take the same time within the noise.
 
-> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> Measured against [`lab/contoso`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/contoso/) — Contoso Retail, FactSales 126,524
 > rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
 > it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
 > with `python lab/check_lab.py contoso localhost:<port>`.

@@ -12,7 +12,7 @@ user-defined functions. It tells you what exists, who wrote it and what it does,
 can answer "does this already exist?" without a network round trip.
 
 **It does not carry the DAX code.** The code lives at the registry, which is where it stays
-current. See [`NOTICE`](./NOTICE).
+current. See [`NOTICE`](./NOTICE.md).
 
 Pairs with **`dax-lib-install`** (actually install what this index found),
 **`dax-udf-authoring`** (how to write your own when none fits), and
@@ -24,7 +24,7 @@ Pairs with **`dax-lib-install`** (actually install what this index found),
 |---|---|
 | [`catalog.md`](./catalog.md) | Human index — one row per package: id, latest version, author, functions, description. **Scan this first.** |
 | [`catalog.json`](./catalog.json) | Machine index — every version, with `functions[]`, `tags[]`, `isLatest`, `url`. Use for keyword/tag search. |
-| `scripts/refresh-daxlib.ps1` | Rebuild the index from `daxlib/daxlib`. |
+| [`refresh-daxlib.ps1`](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/scripts/dax-lib/refresh-daxlib.ps1) | Rebuilds the index from `daxlib/daxlib`. Maintainer tool: it lives in the repository, not in the plugin. |
 
 ## Workflow
 
@@ -56,11 +56,11 @@ whose grain is a dynamic period axis.
 
 ## Refresh
 
-```powershell
-pwsh ./scripts/refresh-daxlib.ps1
-```
+A maintainer step, run from a clone of
+[the repository](https://github.com/CSalcedoDataBI/dax-for-agents) — the script is not part
+of the installed plugin: `scripts/dax-lib/refresh-daxlib.ps1`.
 
-Shallow-clones `daxlib/daxlib@main`, reads each package's `manifest.daxlib`, parses the function
+It shallow-clones `daxlib/daxlib@main`, reads each package's `manifest.daxlib`, parses the function
 names out of its `functions.tmdl`, and rewrites `catalog.json` + `catalog.md` stamped with the
 upstream commit. **It keeps no `.tmdl` file.**
 

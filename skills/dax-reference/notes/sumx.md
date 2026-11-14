@@ -38,7 +38,7 @@ Two million context transitions, one per row. On the same model, wrapping the wh
 `FILTER` — the thing everyone calls expensive — cost nothing measurable: the engine pushes the
 predicate down to storage. **The bulk is the measure inside the iterator, not the `FILTER`.**
 
-Measured in the [`lab/rendimiento`](../../../lab/rendimiento/README.md) scenario, which can be
+Measured in the [`lab/rendimiento`](https://github.com/CSalcedoDataBI/dax-for-agents/blob/main/lab/rendimiento/README.md) scenario, which can be
 opened and run again. The milliseconds are from a laptop; the ratio is what survives a change of
 machine.
 
@@ -46,7 +46,7 @@ machine.
 `SUM`, which does not open row context. If your expression multiplies two columns row by row you
 need the iterator; if it only adds up one column, `SUM` is cheaper and clearer.
 
-> Measured against [`lab/contoso`](../../../lab/contoso/) — Contoso Retail, FactSales 126,524
+> Measured against [`lab/contoso`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/contoso/) — Contoso Retail, FactSales 126,524
 > rows, 137 products, DimDate 2023-01-01 to 2024-12-31 — on 2026-08-12. The query is read-only:
 > it defines its measures with `DEFINE` and does not touch the model. It runs and compares itself
 > with `python lab/check_lab.py contoso localhost:<port>`.

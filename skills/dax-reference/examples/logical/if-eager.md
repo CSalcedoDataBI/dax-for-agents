@@ -70,4 +70,4 @@ if_barato | if_eager_caro | lo_que_costaba
 ```
 
 Measuring that difference needs volume and a cold engine: that lives in
-[`lab/rendimiento`](../../../../lab/rendimiento/), not here.
+[`lab/rendimiento`](https://github.com/CSalcedoDataBI/dax-for-agents/tree/main/lab/rendimiento/), not here.
